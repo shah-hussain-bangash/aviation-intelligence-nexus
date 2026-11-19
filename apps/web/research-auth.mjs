@@ -14,7 +14,7 @@ export function mountAuth(parent,onChange) {
   const card=document.createElement('section');
   card.className='research-card research-auth';
   card.setAttribute('aria-labelledby','authHeading');
-  card.innerHTML=`<h2 id="authHeading">Research account</h2><p>Sign in to access real historical data, model calculations and saved research. Prototype workspaces remain available below.</p>
+  card.innerHTML=`<p class="auth-eyebrow">AVIATION INTELLIGENCE NEXUS</p><h2 id="authHeading">Sign in to your research workspace</h2><p class="auth-intro">Access historical flight data, model calculations and saved research with your local account.</p>
     <p class="auth-status" role="status" aria-live="polite">Checking your session…</p>
     <form class="auth-form"><label>Username<input name="username" autocomplete="username" required maxlength="32"></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
@@ -23,11 +23,16 @@ export function mountAuth(parent,onChange) {
     <button class="btn sm" type="button" data-auth-logout hidden>Sign out</button>
     <p class="auth-enrollment" hidden>First account setup is required. In the project terminal, run <code>python -m services.api.manage_users create --username shah --role admin</code>, choose your password privately, then select Check account setup.</p>`;
   parent.prepend(card);
+  document.getElementById('authBoot')?.remove();
   const form=card.querySelector('form'),status=card.querySelector('.auth-status'),enrollment=card.querySelector('.auth-enrollment');
   const logout=card.querySelector('[data-auth-logout]');
   changed = value => {
     session=value;
     const user=value?.user;
+    document.body.classList.toggle('research-locked',!user);
+    document.title=user ? 'AIN | Research dashboard' : 'AIN | Sign in';
+    card.querySelector('#authHeading').textContent=user ? 'Research account' : 'Sign in to your research workspace';
+    card.querySelector('.auth-intro').textContent=user ? 'Your account permissions control connected research services.' : 'Access historical flight data, model calculations and saved research with your local account.';
     form.hidden=!!user; logout.hidden=!user;
     status.textContent=user ? `Signed in as ${user.username} · ${user.role}. Sessions expire after eight hours.` : 'Sign in to access connected research services.';
     onChange(user || null);

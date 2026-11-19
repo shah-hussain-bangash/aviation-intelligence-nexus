@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Sign-in UX update: the app now opens on a dedicated sign-in screen and reveals its existing 64 workspaces after a verified session. Sign-out or expiry returns to sign-in. This display gate does not replace backend authorization.
+
 Identity milestone: local account creation, Argon2id hashing, expiring/revocable sessions, Origin/CSRF controls and server-enforced admin/researcher/viewer permissions are implemented. History is scoped to its authenticated owner, with legacy anonymous rows visible to administrators. First administrator creation was confirmed by the user; browser sign-in is being verified separately; managed production identity, MFA, HTTPS deployment and protected auditing remain incomplete. See `LOCAL_IDENTITY.md`.
 
 Developer workflow milestone: `npm run dev:all` starts or safely reuses both local services, and `npm test` runs all 41 automated tests plus source checks. Dependency consistency passed locally. GitHub workflow now defines independent Linux/Windows Python checks and Linux Node checks; hosted execution must be verified against the published commit rather than inferred from local results. See `DEVELOPMENT.md`.

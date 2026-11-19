@@ -1,6 +1,6 @@
 # Local sign-in and access roles
 
-The connected research API now requires an authenticated session. The 64 prototype workspaces still use demonstration data and remain publicly browsable on the local page; they are not real privileged airline services.
+The connected research API now requires an authenticated session. The page now opens on a dedicated sign-in screen. All 64 prototype workspaces are preserved and shown after session verification. They still use demonstration data and are not real privileged airline services. The browser visibility gate is a UX control; API authorization remains enforced independently on the server.
 
 ## First account
 
