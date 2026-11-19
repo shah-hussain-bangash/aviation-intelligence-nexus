@@ -1,0 +1,3888 @@
+{
+  "scope": "UI/UX preparation only",
+  "departments": {
+    "Command": [
+      "Executive overview",
+      "Dubai hub control",
+      "Global network",
+      "Operational KPIs",
+      "Shift handover",
+      "Alert center"
+    ],
+    "Flight & Airport": [
+      "Live flight board",
+      "Flight detail",
+      "Aircraft rotations",
+      "Fleet registry",
+      "Airport capacity",
+      "Gates & stands",
+      "Ground turnaround",
+      "Airspace & NOTAM",
+      "Weather intelligence",
+      "Trajectory analysis"
+    ],
+    "Disruption & Recovery": [
+      "Incident command",
+      "Disruption prediction",
+      "Impact assessment",
+      "Recovery optimizer",
+      "Scenario comparison",
+      "Human approvals",
+      "Decision history"
+    ],
+    "Engineering & Safety": [
+      "Engine health",
+      "Predictive maintenance",
+      "Maintenance planning",
+      "Safety occurrences",
+      "Hazard register",
+      "Risk assessment",
+      "Reliability analytics"
+    ],
+    "People & Commercial": [
+      "Crew operations",
+      "Passenger connections",
+      "Customer experience",
+      "Baggage exceptions",
+      "Cargo logistics",
+      "Fuel & emissions",
+      "Commercial intelligence",
+      "Network planning"
+    ],
+    "AI Intelligence": [
+      "AI agent command",
+      "Ten specialist agents",
+      "Document intelligence",
+      "Evidence & RAG",
+      "Prediction models",
+      "Model evaluation",
+      "Prompt & tool policies",
+      "AI evaluation lab"
+    ],
+    "Data Platform": [
+      "Data operations catalog",
+      "Ingestion pipelines",
+      "Streaming events",
+      "Lakehouse explorer",
+      "Data quality",
+      "Lineage explorer",
+      "Data access requests",
+      "Dataset registry"
+    ],
+    "Enterprise": [
+      "Identity & access",
+      "Roles & permissions",
+      "Security center",
+      "Audit trail",
+      "API gateway",
+      "Cloud infrastructure",
+      "Observability",
+      "Disaster recovery",
+      "Release management",
+      "System settings"
+    ]
+  },
+  "workspace_count": 64,
+  "workspaces": {
+    "Executive overview": {
+      "name": "Executive overview",
+      "description": "Network exposure, operational priorities and decision readiness.",
+      "columns": [
+        "Metric",
+        "Scope",
+        "Definition",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Flights",
+          "Dubai exercise",
+          "Six seeded flight fixtures",
+          "Illustrative"
+        ],
+        [
+          "Decisions",
+          "Review queue",
+          "Requests awaiting local disposition",
+          "Simulation"
+        ]
+      ],
+      "primary_action": "Export briefing",
+      "related": [
+        "Dubai hub control",
+        "Operational KPIs",
+        "Human approvals"
+      ],
+      "owner": "Operations",
+      "kind": "overview",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/executive-overview",
+      "acceptance_area": "experience"
+    },
+    "Dubai hub control": {
+      "name": "Dubai hub control",
+      "description": "Coordinate the hub operating window and surface capacity pressure.",
+      "columns": [
+        "Window UTC",
+        "Arrivals",
+        "Departures",
+        "Constraint",
+        "Status"
+      ],
+      "rows": [
+        [
+          "12:00–13:00",
+          "18",
+          "22",
+          "Arrival acceptance exercise",
+          "Watch"
+        ],
+        [
+          "13:00–14:00",
+          "24",
+          "19",
+          "Stand occupancy exercise",
+          "Review"
+        ],
+        [
+          "14:00–15:00",
+          "16",
+          "21",
+          "No exercise constraint",
+          "Normal"
+        ]
+      ],
+      "primary_action": "Add hub window",
+      "related": [
+        "Airport capacity",
+        "Gates & stands",
+        "Incident command"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/dubai-hub-control",
+      "acceptance_area": "workflows"
+    },
+    "Global network": {
+      "name": "Global network",
+      "description": "Inspect corridor exposure and network-level dependencies.",
+      "columns": [
+        "Corridor",
+        "Origin",
+        "Destination",
+        "Exercise exposure",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Europe",
+          "DXB",
+          "LHR / CDG",
+          "Two monitored rotations",
+          "Watch"
+        ],
+        [
+          "Asia Pacific",
+          "DXB",
+          "SIN / SYD",
+          "Connection protection scenario",
+          "Review"
+        ],
+        [
+          "Americas",
+          "DXB",
+          "JFK",
+          "One monitored rotation",
+          "Normal"
+        ]
+      ],
+      "primary_action": "Add corridor",
+      "related": [
+        "Trajectory analysis",
+        "Network planning",
+        "Impact assessment"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/global-network",
+      "acceptance_area": "workflows"
+    },
+    "Operational KPIs": {
+      "name": "Operational KPIs",
+      "description": "Inspect metric definitions, scope and denominators before interpreting results.",
+      "columns": [
+        "Metric",
+        "Unit",
+        "Denominator",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Arrival delay",
+          "Minutes",
+          "Operated flight",
+          "Network operations",
+          "Defined"
+        ],
+        [
+          "Connection exposure",
+          "Connections",
+          "Synthetic itinerary",
+          "Passenger services",
+          "Simulation"
+        ],
+        [
+          "Complaint rate",
+          "Per passenger",
+          "Not supplied",
+          "Customer insights",
+          "Unavailable"
+        ]
+      ],
+      "primary_action": "Define metric",
+      "related": [
+        "Data quality",
+        "Model evaluation",
+        "Commercial intelligence"
+      ],
+      "owner": "Analytics",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/operational-kpis",
+      "acceptance_area": "workflows"
+    },
+    "Shift handover": {
+      "name": "Shift handover",
+      "description": "Prepare an operational handover with unresolved risks and named ownership.",
+      "columns": [
+        "Handover",
+        "Shift UTC",
+        "Owner",
+        "Open item",
+        "Status"
+      ],
+      "rows": [
+        [
+          "HO-001",
+          "08:00–16:00",
+          "Hub operations",
+          "Weather capacity exercise",
+          "Draft"
+        ],
+        [
+          "HO-002",
+          "16:00–00:00",
+          "Fleet control",
+          "Rotation constraint review",
+          "Pending"
+        ],
+        [
+          "HO-003",
+          "00:00–08:00",
+          "Service desk",
+          "Baggage case summary",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Create handover",
+      "related": [
+        "Alert center",
+        "Incident command",
+        "Decision history"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/shift-handover",
+      "acceptance_area": "workflows"
+    },
+    "Alert center": {
+      "name": "Alert center",
+      "description": "Triage alerts, assign ownership and acknowledge operational signals.",
+      "columns": [
+        "Alert",
+        "Signal",
+        "Severity",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "ALT-001",
+          "Arrival-capacity exercise",
+          "High",
+          "Hub operations",
+          "Open"
+        ],
+        [
+          "ALT-002",
+          "Weather fixture beyond freshness window",
+          "Medium",
+          "Weather desk",
+          "Review"
+        ],
+        [
+          "ALT-003",
+          "Unreviewed recovery proposal",
+          "Medium",
+          "Duty manager",
+          "Open"
+        ]
+      ],
+      "primary_action": "Create alert",
+      "related": [
+        "Incident command",
+        "Weather intelligence",
+        "Observability"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/alert-center",
+      "acceptance_area": "resilience"
+    },
+    "Live flight board": {
+      "name": "Live flight board",
+      "description": "Search the exercise schedule, filter risk and inspect individual legs.",
+      "columns": [
+        "Flight",
+        "Route",
+        "Aircraft",
+        "Scheduled UTC",
+        "Status"
+      ],
+      "rows": [
+        [
+          "AIN-201",
+          "DXB–LHR",
+          "A380",
+          "12:45",
+          "Boarding"
+        ],
+        [
+          "AIN-412",
+          "DXB–SIN",
+          "A380",
+          "14:05",
+          "Delayed"
+        ],
+        [
+          "AIN-728",
+          "DXB–CDG",
+          "A380",
+          "17:10",
+          "Delayed"
+        ]
+      ],
+      "primary_action": "Create incident",
+      "related": [
+        "Flight detail",
+        "Aircraft rotations",
+        "Disruption prediction"
+      ],
+      "owner": "Operations",
+      "kind": "flights",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/live-flight-board",
+      "acceptance_area": "workflows"
+    },
+    "Flight detail": {
+      "name": "Flight detail",
+      "description": "Inspect a single flight, its operational context and linked decisions.",
+      "columns": [
+        "Flight",
+        "Origin",
+        "Destination",
+        "Source",
+        "Status"
+      ],
+      "rows": [
+        [
+          "AIN-201",
+          "DXB",
+          "LHR",
+          "Synthetic exercise",
+          "Boarding"
+        ],
+        [
+          "AIN-412",
+          "DXB",
+          "SIN",
+          "Synthetic exercise",
+          "Delayed"
+        ],
+        [
+          "AIN-728",
+          "DXB",
+          "CDG",
+          "Synthetic exercise",
+          "Delayed"
+        ]
+      ],
+      "primary_action": "Inspect flight",
+      "related": [
+        "Aircraft rotations",
+        "Ground turnaround",
+        "Passenger connections"
+      ],
+      "owner": "Operations",
+      "kind": "flight_detail",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/flight-detail",
+      "acceptance_area": "workflows"
+    },
+    "Aircraft rotations": {
+      "name": "Aircraft rotations",
+      "description": "Inspect successive legs and turnaround dependencies for a fictional fleet.",
+      "columns": [
+        "Rotation",
+        "Aircraft",
+        "Inbound leg",
+        "Outbound leg",
+        "Status"
+      ],
+      "rows": [
+        [
+          "ROT-01",
+          "SIM-A380-01",
+          "SIM-IN-01",
+          "AIN-201",
+          "Review"
+        ],
+        [
+          "ROT-02",
+          "SIM-A380-02",
+          "SIM-IN-02",
+          "AIN-412",
+          "Constrained"
+        ],
+        [
+          "ROT-03",
+          "SIM-B777-01",
+          "SIM-IN-03",
+          "AIN-618",
+          "Normal"
+        ]
+      ],
+      "primary_action": "Create rotation",
+      "related": [
+        "Fleet registry",
+        "Ground turnaround",
+        "Recovery optimizer"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/aircraft-rotations",
+      "acceptance_area": "workflows"
+    },
+    "Fleet registry": {
+      "name": "Fleet registry",
+      "description": "Maintain the simulated aircraft registry and capability assumptions.",
+      "columns": [
+        "Aircraft",
+        "Type",
+        "Exercise capability",
+        "Fleet group",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-A380-01",
+          "A380",
+          "Widebody stand",
+          "Demo widebody",
+          "Available"
+        ],
+        [
+          "SIM-A380-02",
+          "A380",
+          "Widebody stand",
+          "Demo widebody",
+          "Review"
+        ],
+        [
+          "SIM-B777-01",
+          "B777",
+          "Long-haul rotation",
+          "Demo widebody",
+          "Available"
+        ]
+      ],
+      "primary_action": "Register aircraft",
+      "related": [
+        "Aircraft rotations",
+        "Engine health",
+        "Maintenance planning"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/fleet-registry",
+      "acceptance_area": "workflows"
+    },
+    "Airport capacity": {
+      "name": "Airport capacity",
+      "description": "Compare configured arrival and departure capacity assumptions by time window.",
+      "columns": [
+        "Airport",
+        "Window UTC",
+        "Arrival slots",
+        "Departure slots",
+        "Status"
+      ],
+      "rows": [
+        [
+          "DXB",
+          "12:00–13:00",
+          "18",
+          "22",
+          "Constrained"
+        ],
+        [
+          "DXB",
+          "13:00–14:00",
+          "24",
+          "19",
+          "Review"
+        ],
+        [
+          "LHR",
+          "16:00–17:00",
+          "12",
+          "14",
+          "Scenario"
+        ]
+      ],
+      "primary_action": "Add capacity scenario",
+      "related": [
+        "Dubai hub control",
+        "Gates & stands",
+        "Recovery optimizer"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/airport-capacity",
+      "acceptance_area": "workflows"
+    },
+    "Gates & stands": {
+      "name": "Gates & stands",
+      "description": "Inspect compatible stands and resolve planned allocation conflicts.",
+      "columns": [
+        "Stand",
+        "Compatible type",
+        "Assigned flight",
+        "Window UTC",
+        "Status"
+      ],
+      "rows": [
+        [
+          "A14",
+          "A380",
+          "AIN-201",
+          "12:00–13:00",
+          "Assigned"
+        ],
+        [
+          "A07",
+          "A380",
+          "AIN-412",
+          "13:00–14:30",
+          "Review"
+        ],
+        [
+          "B09",
+          "B777",
+          "AIN-618",
+          "15:00–16:30",
+          "Assigned"
+        ]
+      ],
+      "primary_action": "Propose stand allocation",
+      "related": [
+        "Airport capacity",
+        "Ground turnaround",
+        "Human approvals"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/gates-stands",
+      "acceptance_area": "workflows"
+    },
+    "Ground turnaround": {
+      "name": "Ground turnaround",
+      "description": "Track service tasks, dependencies and simulated ground-team coverage.",
+      "columns": [
+        "Task",
+        "Flight",
+        "Team",
+        "Duration min",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Fuel coordination",
+          "AIN-201",
+          "SIM-GT-01",
+          "25",
+          "Planned"
+        ],
+        [
+          "Baggage loading",
+          "AIN-412",
+          "SIM-GT-02",
+          "30",
+          "Review"
+        ],
+        [
+          "Cabin preparation",
+          "AIN-618",
+          "SIM-GT-03",
+          "35",
+          "Planned"
+        ]
+      ],
+      "primary_action": "Create turnaround task",
+      "related": [
+        "Crew operations",
+        "Aircraft rotations",
+        "Recovery optimizer"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/ground-turnaround",
+      "acceptance_area": "workflows"
+    },
+    "Airspace & NOTAM": {
+      "name": "Airspace & NOTAM",
+      "description": "Review exercise restrictions with validity windows and source provenance.",
+      "columns": [
+        "Notice",
+        "Area",
+        "Valid from UTC",
+        "Valid to UTC",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-NOTAM-01",
+          "Demo departure corridor",
+          "2026-11-19 12:00",
+          "2026-11-19 14:00",
+          "Exercise"
+        ],
+        [
+          "SIM-NOTAM-02",
+          "Demo arrival corridor",
+          "2026-11-19 13:00",
+          "2026-11-19 15:00",
+          "Exercise"
+        ],
+        [
+          "SIM-NOTAM-03",
+          "Demo stand restriction",
+          "2026-11-19 14:00",
+          "2026-11-19 16:00",
+          "Review"
+        ]
+      ],
+      "primary_action": "Register restriction",
+      "related": [
+        "Weather intelligence",
+        "Trajectory analysis",
+        "Evidence & RAG"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/airspace-notam",
+      "acceptance_area": "workflows"
+    },
+    "Weather intelligence": {
+      "name": "Weather intelligence",
+      "description": "Distinguish observations, issued forecasts and exercise assumptions.",
+      "columns": [
+        "Record",
+        "Station",
+        "Product",
+        "Issued UTC",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-WX-01",
+          "OMDB",
+          "Scenario capacity assumption",
+          "2026-11-19 11:00",
+          "Synthetic"
+        ],
+        [
+          "SIM-WX-02",
+          "EGLL",
+          "Forecast interface fixture",
+          "2026-11-19 10:30",
+          "Review"
+        ],
+        [
+          "SIM-WX-03",
+          "WSSS",
+          "Observation interface fixture",
+          "2026-11-19 11:30",
+          "Synthetic"
+        ]
+      ],
+      "primary_action": "Register weather record",
+      "related": [
+        "Airspace & NOTAM",
+        "Disruption prediction",
+        "Evidence & RAG"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/weather-intelligence",
+      "acceptance_area": "workflows"
+    },
+    "Trajectory analysis": {
+      "name": "Trajectory analysis",
+      "description": "Inspect fictional trajectory segments and matching confidence.",
+      "columns": [
+        "Track",
+        "Linked flight",
+        "Segment",
+        "Match basis",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-TRK-01",
+          "AIN-201",
+          "Departure",
+          "Exercise mapping",
+          "Synthetic"
+        ],
+        [
+          "SIM-TRK-02",
+          "AIN-412",
+          "Climb",
+          "Exercise mapping",
+          "Synthetic"
+        ],
+        [
+          "SIM-TRK-03",
+          "Unmatched",
+          "En route",
+          "No candidate",
+          "Review"
+        ]
+      ],
+      "primary_action": "Register track",
+      "related": [
+        "Global network",
+        "Flight detail",
+        "Lineage explorer"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/trajectory-analysis",
+      "acceptance_area": "workflows"
+    },
+    "Incident command": {
+      "name": "Incident command",
+      "description": "Create, assign, investigate and resolve disruption cases.",
+      "columns": [
+        "Case",
+        "Title",
+        "Severity",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-101",
+          "Weather capacity restriction",
+          "High",
+          "Network operations",
+          "Investigating"
+        ],
+        [
+          "SIM-102",
+          "Aircraft rotation conflict",
+          "Medium",
+          "Fleet control",
+          "Open"
+        ]
+      ],
+      "primary_action": "Create incident",
+      "related": [
+        "Impact assessment",
+        "Recovery optimizer",
+        "Shift handover"
+      ],
+      "owner": "Operations",
+      "kind": "incidents",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/incident-command",
+      "acceptance_area": "workflows"
+    },
+    "Disruption prediction": {
+      "name": "Disruption prediction",
+      "description": "Inspect prediction requests, decision horizons and model availability.",
+      "columns": [
+        "Request",
+        "Flight",
+        "Horizon min",
+        "Model version",
+        "Status"
+      ],
+      "rows": [
+        [
+          "PRED-001",
+          "AIN-201",
+          "120",
+          "Not deployed",
+          "Unavailable"
+        ],
+        [
+          "PRED-002",
+          "AIN-412",
+          "120",
+          "Not deployed",
+          "Unavailable"
+        ],
+        [
+          "PRED-003",
+          "AIN-728",
+          "120",
+          "Not deployed",
+          "Unavailable"
+        ]
+      ],
+      "primary_action": "Create scoring request",
+      "related": [
+        "Prediction models",
+        "Model evaluation",
+        "Impact assessment"
+      ],
+      "owner": "Data science",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/disruption-prediction",
+      "acceptance_area": "science"
+    },
+    "Impact assessment": {
+      "name": "Impact assessment",
+      "description": "Review the operational and passenger scope of a disruption scenario.",
+      "columns": [
+        "Assessment",
+        "Case",
+        "Affected flights",
+        "Connection scope",
+        "Status"
+      ],
+      "rows": [
+        [
+          "IMP-001",
+          "SIM-101",
+          "AIN-412 / AIN-728",
+          "Synthetic itineraries",
+          "Draft"
+        ],
+        [
+          "IMP-002",
+          "SIM-102",
+          "AIN-201",
+          "Not evaluated",
+          "Review"
+        ],
+        [
+          "IMP-003",
+          "SIM-103",
+          "AIN-618",
+          "No fixture supplied",
+          "Unavailable"
+        ]
+      ],
+      "primary_action": "Create assessment",
+      "related": [
+        "Passenger connections",
+        "Commercial intelligence",
+        "Scenario comparison"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/impact-assessment",
+      "acceptance_area": "workflows"
+    },
+    "Recovery optimizer": {
+      "name": "Recovery optimizer",
+      "description": "Compare hand-authored candidates before a real solver is integrated.",
+      "columns": [
+        "Scenario",
+        "Objective",
+        "Delay min",
+        "Connection exposure",
+        "Status"
+      ],
+      "rows": [
+        [
+          "A",
+          "Schedule deviation",
+          "92",
+          "34",
+          "Illustrative feasible"
+        ],
+        [
+          "B",
+          "Protect connections",
+          "108",
+          "12",
+          "Illustrative feasible"
+        ],
+        [
+          "C",
+          "Aggressive recovery",
+          "76",
+          "49",
+          "Illustrative infeasible"
+        ]
+      ],
+      "primary_action": "Compare scenarios",
+      "related": [
+        "Scenario comparison",
+        "Human approvals",
+        "Prompt & tool policies"
+      ],
+      "owner": "Operations",
+      "kind": "recovery",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/recovery-optimizer",
+      "acceptance_area": "optimization"
+    },
+    "Scenario comparison": {
+      "name": "Scenario comparison",
+      "description": "Compare candidate trade-offs on the same scenario inputs.",
+      "columns": [
+        "Scenario",
+        "Delay min",
+        "At-risk connections",
+        "Relative cost units",
+        "Status"
+      ],
+      "rows": [
+        [
+          "A",
+          "92",
+          "34",
+          "125",
+          "Illustrative feasible"
+        ],
+        [
+          "B",
+          "108",
+          "12",
+          "148",
+          "Illustrative feasible"
+        ],
+        [
+          "C",
+          "76",
+          "49",
+          "166",
+          "Illustrative infeasible"
+        ]
+      ],
+      "primary_action": "Open comparison",
+      "related": [
+        "Recovery optimizer",
+        "Human approvals",
+        "Decision history"
+      ],
+      "owner": "Operations",
+      "kind": "recovery",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/scenario-comparison",
+      "acceptance_area": "optimization"
+    },
+    "Human approvals": {
+      "name": "Human approvals",
+      "description": "Review the exact proposal and capture a decision rationale.",
+      "columns": [
+        "Request",
+        "Proposal",
+        "Reviewer group",
+        "Expiry policy",
+        "Status"
+      ],
+      "rows": [
+        [
+          "APR-001",
+          "Recovery option B",
+          "Operations director",
+          "Server policy not connected",
+          "Pending"
+        ],
+        [
+          "APR-002",
+          "Crew feasibility exercise",
+          "Crew manager",
+          "Server policy not connected",
+          "Pending"
+        ]
+      ],
+      "primary_action": "Open review",
+      "related": [
+        "Scenario comparison",
+        "Decision history",
+        "Audit trail"
+      ],
+      "owner": "Operations",
+      "kind": "approvals",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/human-approvals",
+      "acceptance_area": "workflows"
+    },
+    "Decision history": {
+      "name": "Decision history",
+      "description": "Inspect local decisions and their rationale without implying immutable audit.",
+      "columns": [
+        "Decision",
+        "Proposal",
+        "Disposition",
+        "Evidence scope",
+        "Status"
+      ],
+      "rows": [
+        [
+          "DEC-SIM-01",
+          "Historical exercise A",
+          "Rejected",
+          "Demo fixture",
+          "Archived"
+        ],
+        [
+          "DEC-SIM-02",
+          "Historical exercise B",
+          "Needs revision",
+          "Demo fixture",
+          "Archived"
+        ]
+      ],
+      "primary_action": "Record decision note",
+      "related": [
+        "Human approvals",
+        "Audit trail",
+        "Shift handover"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/decision-history",
+      "acceptance_area": "workflows"
+    },
+    "Engine health": {
+      "name": "Engine health",
+      "description": "Inspect simulated engine health indicators in a separate benchmark namespace.",
+      "columns": [
+        "Engine",
+        "Benchmark regime",
+        "Cycle",
+        "Illustrative RUL cycles",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-ENG-01",
+          "Regime A",
+          "110",
+          "120",
+          "Benchmark fixture"
+        ],
+        [
+          "SIM-ENG-02",
+          "Regime B",
+          "145",
+          "65",
+          "Benchmark fixture"
+        ],
+        [
+          "SIM-ENG-03",
+          "Unknown",
+          "80",
+          "Not available",
+          "Review"
+        ]
+      ],
+      "primary_action": "Register benchmark unit",
+      "related": [
+        "Predictive maintenance",
+        "Maintenance planning",
+        "Model evaluation"
+      ],
+      "owner": "Engineering",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/engine-health",
+      "acceptance_area": "workflows"
+    },
+    "Predictive maintenance": {
+      "name": "Predictive maintenance",
+      "description": "Review model scope and inspection prioritization for benchmark engines.",
+      "columns": [
+        "Request",
+        "Engine",
+        "Model artifact",
+        "Uncertainty",
+        "Status"
+      ],
+      "rows": [
+        [
+          "MNT-PRED-01",
+          "SIM-ENG-01",
+          "Not deployed",
+          "Not evaluated",
+          "Unavailable"
+        ],
+        [
+          "MNT-PRED-02",
+          "SIM-ENG-02",
+          "Not deployed",
+          "Not evaluated",
+          "Unavailable"
+        ],
+        [
+          "MNT-PRED-03",
+          "SIM-ENG-03",
+          "Unsupported regime",
+          "Abstain",
+          "Review"
+        ]
+      ],
+      "primary_action": "Create benchmark request",
+      "related": [
+        "Engine health",
+        "Prediction models",
+        "Maintenance planning"
+      ],
+      "owner": "Engineering",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/predictive-maintenance",
+      "acceptance_area": "science"
+    },
+    "Maintenance planning": {
+      "name": "Maintenance planning",
+      "description": "Draft inspection tasks for a simulated fleet; no maintenance release authority.",
+      "columns": [
+        "Task",
+        "Unit",
+        "Task class",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "MNT-001",
+          "SIM-ENG-01",
+          "Benchmark inspection",
+          "Engineering review",
+          "Draft"
+        ],
+        [
+          "MNT-002",
+          "SIM-ENG-02",
+          "Degradation investigation",
+          "Reliability team",
+          "Review"
+        ],
+        [
+          "MNT-003",
+          "SIM-A380-01",
+          "Exercise work package",
+          "Fleet engineering",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Draft maintenance task",
+      "related": [
+        "Engine health",
+        "Human approvals",
+        "Fleet registry"
+      ],
+      "owner": "Engineering",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/maintenance-planning",
+      "acceptance_area": "workflows"
+    },
+    "Safety occurrences": {
+      "name": "Safety occurrences",
+      "description": "Separate reported narratives, verified findings and investigation status.",
+      "columns": [
+        "Case",
+        "Occurrence theme",
+        "Evidence class",
+        "Reviewer",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SAF-001",
+          "Ground coordination",
+          "Synthetic narrative",
+          "Safety analyst",
+          "Review"
+        ],
+        [
+          "SAF-002",
+          "Communication handover",
+          "Synthetic narrative",
+          "Safety analyst",
+          "Draft"
+        ],
+        [
+          "SAF-003",
+          "Runway awareness",
+          "Exercise finding",
+          "Safety lead",
+          "Reviewed"
+        ]
+      ],
+      "primary_action": "Register occurrence",
+      "related": [
+        "Hazard register",
+        "Document intelligence",
+        "Evidence & RAG"
+      ],
+      "owner": "Safety",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/safety-occurrences",
+      "acceptance_area": "workflows"
+    },
+    "Hazard register": {
+      "name": "Hazard register",
+      "description": "Maintain exercise hazards, mitigations and accountable owners.",
+      "columns": [
+        "Hazard",
+        "Theme",
+        "Proposed mitigation",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "HAZ-001",
+          "Stale weather input",
+          "Freshness gate",
+          "Weather desk",
+          "Open"
+        ],
+        [
+          "HAZ-002",
+          "Unverified plan",
+          "Independent verifier",
+          "Optimization owner",
+          "Review"
+        ],
+        [
+          "HAZ-003",
+          "Unsupported model regime",
+          "Abstention",
+          "ML owner",
+          "Open"
+        ]
+      ],
+      "primary_action": "Register hazard",
+      "related": [
+        "Risk assessment",
+        "Safety occurrences",
+        "Prompt & tool policies"
+      ],
+      "owner": "Safety",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/hazard-register",
+      "acceptance_area": "workflows"
+    },
+    "Risk assessment": {
+      "name": "Risk assessment",
+      "description": "Inspect declared risk assumptions and human review requirements.",
+      "columns": [
+        "Assessment",
+        "Hazard",
+        "Impact class",
+        "Control",
+        "Status"
+      ],
+      "rows": [
+        [
+          "RISK-001",
+          "HAZ-001",
+          "Exercise high",
+          "Time-safe source selection",
+          "Review"
+        ],
+        [
+          "RISK-002",
+          "HAZ-002",
+          "Exercise high",
+          "Independent feasibility check",
+          "Review"
+        ],
+        [
+          "RISK-003",
+          "HAZ-003",
+          "Exercise medium",
+          "Model scope gate",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Create risk assessment",
+      "related": [
+        "Hazard register",
+        "Human approvals",
+        "Security center"
+      ],
+      "owner": "Safety",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/risk-assessment",
+      "acceptance_area": "workflows"
+    },
+    "Reliability analytics": {
+      "name": "Reliability analytics",
+      "description": "Define reliability measures with explicit exposure and benchmark boundaries.",
+      "columns": [
+        "Indicator",
+        "Unit",
+        "Exposure basis",
+        "Scope",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Recurrence",
+          "Events per cycle",
+          "Synthetic cycles",
+          "Benchmark units",
+          "Defined"
+        ],
+        [
+          "Inspection backlog",
+          "Tasks",
+          "Open exercise tasks",
+          "Demo engineering",
+          "Simulation"
+        ],
+        [
+          "Component rate",
+          "Failures per hour",
+          "Not supplied",
+          "No operational fleet",
+          "Unavailable"
+        ]
+      ],
+      "primary_action": "Define reliability metric",
+      "related": [
+        "Engine health",
+        "Operational KPIs",
+        "Model evaluation"
+      ],
+      "owner": "Engineering",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/reliability-analytics",
+      "acceptance_area": "science"
+    },
+    "Crew operations": {
+      "name": "Crew operations",
+      "description": "Review synthetic qualifications, coverage and duty assumptions.",
+      "columns": [
+        "Crew group",
+        "Skill",
+        "Exercise assignment",
+        "Constraint",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-CREW-01",
+          "Widebody qualified",
+          "AIN-201",
+          "Synthetic duty window",
+          "Review"
+        ],
+        [
+          "SIM-CREW-02",
+          "Ground handling",
+          "AIN-412",
+          "One task at a time",
+          "Available"
+        ],
+        [
+          "SIM-CREW-03",
+          "Cabin service",
+          "AIN-618",
+          "Synthetic rest policy",
+          "Review"
+        ]
+      ],
+      "primary_action": "Create staffing scenario",
+      "related": [
+        "Ground turnaround",
+        "Recovery optimizer",
+        "Human approvals"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/crew-operations",
+      "acceptance_area": "workflows"
+    },
+    "Passenger connections": {
+      "name": "Passenger connections",
+      "description": "Inspect synthetic connecting groups and minimum connection assumptions.",
+      "columns": [
+        "Itinerary",
+        "Inbound",
+        "Outbound",
+        "Connection assumption min",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-PAX-01",
+          "SIM-IN-01",
+          "AIN-201",
+          "60",
+          "At risk"
+        ],
+        [
+          "SIM-PAX-02",
+          "SIM-IN-02",
+          "AIN-412",
+          "75",
+          "Review"
+        ],
+        [
+          "SIM-PAX-03",
+          "SIM-IN-03",
+          "AIN-618",
+          "60",
+          "Protected"
+        ]
+      ],
+      "primary_action": "Create connection group",
+      "related": [
+        "Impact assessment",
+        "Baggage exceptions",
+        "Customer experience"
+      ],
+      "owner": "Passenger services",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/passenger-connections",
+      "acceptance_area": "workflows"
+    },
+    "Customer experience": {
+      "name": "Customer experience",
+      "description": "Investigate passenger feedback themes and service recovery evidence.",
+      "columns": [
+        "Feedback",
+        "Theme",
+        "Manual label",
+        "Source",
+        "Status"
+      ],
+      "rows": [
+        [
+          "CX-001",
+          "Connection information",
+          "Negative",
+          "Written fixture",
+          "Review"
+        ],
+        [
+          "CX-002",
+          "Baggage updates",
+          "Negative",
+          "Written fixture",
+          "Review"
+        ],
+        [
+          "CX-003",
+          "Service recovery",
+          "Positive",
+          "Written fixture",
+          "Reviewed"
+        ]
+      ],
+      "primary_action": "Add feedback case",
+      "related": [
+        "Baggage exceptions",
+        "Passenger connections",
+        "AI evaluation lab"
+      ],
+      "owner": "Customer insights",
+      "kind": "passenger",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/customer-experience",
+      "acceptance_area": "science"
+    },
+    "Baggage exceptions": {
+      "name": "Baggage exceptions",
+      "description": "Track fictional baggage exceptions without actual passenger identifiers.",
+      "columns": [
+        "Case",
+        "Flight",
+        "Exception",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "BAG-SIM-01",
+          "AIN-201",
+          "Transfer review",
+          "Baggage desk",
+          "Open"
+        ],
+        [
+          "BAG-SIM-02",
+          "AIN-412",
+          "Connection risk",
+          "Baggage desk",
+          "Review"
+        ],
+        [
+          "BAG-SIM-03",
+          "AIN-618",
+          "Collection information",
+          "Service desk",
+          "Resolved"
+        ]
+      ],
+      "primary_action": "Create baggage case",
+      "related": [
+        "Passenger connections",
+        "Customer experience",
+        "Incident command"
+      ],
+      "owner": "Passenger services",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/baggage-exceptions",
+      "acceptance_area": "workflows"
+    },
+    "Cargo logistics": {
+      "name": "Cargo logistics",
+      "description": "Review shipment-priority and handling assumptions in a simulated network.",
+      "columns": [
+        "Shipment group",
+        "Route",
+        "Handling class",
+        "Constraint",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-CGO-01",
+          "DXB–LHR",
+          "Priority exercise",
+          "Connection window",
+          "Review"
+        ],
+        [
+          "SIM-CGO-02",
+          "DXB–SIN",
+          "Temperature-sensitive fixture",
+          "No sensor feed",
+          "Unavailable"
+        ],
+        [
+          "SIM-CGO-03",
+          "DXB–BOM",
+          "General cargo",
+          "Capacity assumption",
+          "Planned"
+        ]
+      ],
+      "primary_action": "Create cargo scenario",
+      "related": [
+        "Ground turnaround",
+        "Commercial intelligence",
+        "Recovery optimizer"
+      ],
+      "owner": "Operations",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/cargo-logistics",
+      "acceptance_area": "workflows"
+    },
+    "Fuel & emissions": {
+      "name": "Fuel & emissions",
+      "description": "Review proxy assumptions and units before comparing scenario estimates.",
+      "columns": [
+        "Estimate",
+        "Flight",
+        "Method",
+        "Unit",
+        "Status"
+      ],
+      "rows": [
+        [
+          "ENV-001",
+          "AIN-201",
+          "Taxi-time proxy",
+          "Not calculated",
+          "Draft"
+        ],
+        [
+          "ENV-002",
+          "AIN-412",
+          "Scenario comparison",
+          "Not calculated",
+          "Draft"
+        ],
+        [
+          "ENV-003",
+          "AIN-728",
+          "Aircraft-specific inputs absent",
+          "Not available",
+          "Unavailable"
+        ]
+      ],
+      "primary_action": "Define estimate",
+      "related": [
+        "Operational KPIs",
+        "Scenario comparison",
+        "Data operations catalog"
+      ],
+      "owner": "Analytics",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/fuel-emissions",
+      "acceptance_area": "workflows"
+    },
+    "Commercial intelligence": {
+      "name": "Commercial intelligence",
+      "description": "Inspect modeled commercial exposure without claiming actual revenue loss.",
+      "columns": [
+        "Scenario",
+        "Exposure class",
+        "Currency / unit",
+        "Inputs",
+        "Status"
+      ],
+      "rows": [
+        [
+          "COM-001",
+          "Connection disruption",
+          "Relative units",
+          "Synthetic itineraries",
+          "Scenario"
+        ],
+        [
+          "COM-002",
+          "Cancellation exposure",
+          "Not calculated",
+          "Fare data absent",
+          "Unavailable"
+        ],
+        [
+          "COM-003",
+          "Service recovery",
+          "Relative units",
+          "Exercise assumptions",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Create exposure scenario",
+      "related": [
+        "Impact assessment",
+        "Fuel & emissions",
+        "Network planning"
+      ],
+      "owner": "Commercial",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/commercial-intelligence",
+      "acceptance_area": "workflows"
+    },
+    "Network planning": {
+      "name": "Network planning",
+      "description": "Compare hypothetical route resilience and capacity configurations.",
+      "columns": [
+        "Plan",
+        "Corridor",
+        "Decision horizon",
+        "Assumption",
+        "Status"
+      ],
+      "rows": [
+        [
+          "NET-001",
+          "Europe",
+          "Seasonal exercise",
+          "Hub-bank spacing",
+          "Draft"
+        ],
+        [
+          "NET-002",
+          "Asia Pacific",
+          "Seasonal exercise",
+          "Connection protection",
+          "Review"
+        ],
+        [
+          "NET-003",
+          "Americas",
+          "Seasonal exercise",
+          "Reserve capacity",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Draft network plan",
+      "related": [
+        "Global network",
+        "Airport capacity",
+        "Commercial intelligence"
+      ],
+      "owner": "Commercial",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/network-planning",
+      "acceptance_area": "workflows"
+    },
+    "AI agent command": {
+      "name": "AI agent command",
+      "description": "Preview governed investigation tools, trace steps and human checkpoints.",
+      "columns": [
+        "Run",
+        "Workflow",
+        "Execution mode",
+        "Tool scope",
+        "Status"
+      ],
+      "rows": [
+        [
+          "RUN-SIM-01",
+          "Disruption investigation",
+          "Local deterministic preview",
+          "Fixture lookup",
+          "Paused for review"
+        ],
+        [
+          "RUN-SIM-02",
+          "Evidence investigation",
+          "Local deterministic preview",
+          "Three evidence fixtures",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Preview workflow",
+      "related": [
+        "Ten specialist agents",
+        "Prompt & tool policies",
+        "Human approvals"
+      ],
+      "owner": "AI engineering",
+      "kind": "agents",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/ai-agent-command",
+      "acceptance_area": "agents"
+    },
+    "Ten specialist agents": {
+      "name": "Ten specialist agents",
+      "description": "Inspect all ten canonical agent roles and their intended tool boundaries.",
+      "columns": [
+        "Role",
+        "Tool class",
+        "Permission boundary",
+        "Runtime",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Flight Operations",
+          "Metrics lookup",
+          "Read-only",
+          "Not connected",
+          "Design"
+        ],
+        [
+          "Optimization",
+          "Propose scenario",
+          "No schedule writes",
+          "Not connected",
+          "Design"
+        ],
+        [
+          "Governance and Approval",
+          "Evaluate policy",
+          "Human disposition only",
+          "Not connected",
+          "Design"
+        ]
+      ],
+      "primary_action": "Inspect agent registry",
+      "related": [
+        "AI agent command",
+        "Prompt & tool policies",
+        "AI evaluation lab"
+      ],
+      "owner": "AI engineering",
+      "kind": "agents",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/ten-specialist-agents",
+      "acceptance_area": "agents"
+    },
+    "Document intelligence": {
+      "name": "Document intelligence",
+      "description": "Track evidence documents, versions, extraction and source eligibility.",
+      "columns": [
+        "Document",
+        "Class",
+        "Version",
+        "Rights status",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-WX-01",
+          "Weather scenario",
+          "1",
+          "Written fixture",
+          "Indexed locally"
+        ],
+        [
+          "SIM-OPS-02",
+          "Recovery procedure",
+          "1",
+          "Written fixture",
+          "Indexed locally"
+        ],
+        [
+          "SIM-CX-03",
+          "Metric definition",
+          "1",
+          "Written fixture",
+          "Indexed locally"
+        ]
+      ],
+      "primary_action": "Register document",
+      "related": [
+        "Evidence & RAG",
+        "Dataset registry",
+        "Data access requests"
+      ],
+      "owner": "Knowledge engineering",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/document-intelligence",
+      "acceptance_area": "generative"
+    },
+    "Evidence & RAG": {
+      "name": "Evidence & RAG",
+      "description": "Search source fixtures and inspect citations or insufficient evidence.",
+      "columns": [
+        "Source",
+        "Class",
+        "Version",
+        "Freshness scope",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SIM-WX-01",
+          "Scenario assumption",
+          "1",
+          "Fixed exercise",
+          "Synthetic"
+        ],
+        [
+          "SIM-OPS-02",
+          "Demo procedure",
+          "1",
+          "Fixed exercise",
+          "Synthetic"
+        ],
+        [
+          "SIM-CX-03",
+          "Metric definition",
+          "1",
+          "Fixed exercise",
+          "Synthetic"
+        ]
+      ],
+      "primary_action": "Find evidence",
+      "related": [
+        "Document intelligence",
+        "AI agent command",
+        "AI evaluation lab"
+      ],
+      "owner": "Knowledge engineering",
+      "kind": "evidence",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/evidence-rag",
+      "acceptance_area": "generative"
+    },
+    "Prediction models": {
+      "name": "Prediction models",
+      "description": "Register model artifacts, eligibility and promotion evidence.",
+      "columns": [
+        "Model",
+        "Target",
+        "Baseline",
+        "Artifact",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Delay risk",
+          "Arrival delay ≥15 min",
+          "Historical rate + logistic",
+          "Not supplied",
+          "Design"
+        ],
+        [
+          "Engine benchmark",
+          "Remaining useful life",
+          "Degradation baseline",
+          "Not supplied",
+          "Design"
+        ],
+        [
+          "Passenger sentiment",
+          "Feedback label",
+          "TF-IDF + linear model",
+          "Not supplied",
+          "Design"
+        ]
+      ],
+      "primary_action": "Register model proposal",
+      "related": [
+        "Model evaluation",
+        "Disruption prediction",
+        "Predictive maintenance"
+      ],
+      "owner": "Data science",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/prediction-models",
+      "acceptance_area": "science"
+    },
+    "Model evaluation": {
+      "name": "Model evaluation",
+      "description": "Inspect baseline comparisons, split definitions and missing evaluation evidence.",
+      "columns": [
+        "Use case",
+        "Split",
+        "Primary evidence",
+        "Metrics",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Delay risk",
+          "Later periods",
+          "Temporal holdout",
+          "Not measured",
+          "Not evaluated"
+        ],
+        [
+          "Engine benchmark",
+          "Held-out engines",
+          "Unit isolation",
+          "Not measured",
+          "Not evaluated"
+        ],
+        [
+          "Passenger sentiment",
+          "Time / language slices",
+          "Reviewed gold labels",
+          "Not measured",
+          "Not evaluated"
+        ]
+      ],
+      "primary_action": "Register evaluation",
+      "related": [
+        "Prediction models",
+        "AI evaluation lab",
+        "Release management"
+      ],
+      "owner": "Data science",
+      "kind": "models",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/model-evaluation",
+      "acceptance_area": "science"
+    },
+    "Prompt & tool policies": {
+      "name": "Prompt & tool policies",
+      "description": "Inspect versioned allowlists, boundaries, deadlines and approval requirements.",
+      "columns": [
+        "Policy",
+        "Allowed tool",
+        "Restriction",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "POL-001",
+          "query_metric_template",
+          "Bounded read-only query",
+          "Data owner",
+          "Design"
+        ],
+        [
+          "POL-002",
+          "propose_scenario",
+          "Independent verifier required",
+          "OR owner",
+          "Design"
+        ],
+        [
+          "POL-003",
+          "record_decision",
+          "Authenticated human only",
+          "Governance owner",
+          "Design"
+        ]
+      ],
+      "primary_action": "Draft policy",
+      "related": [
+        "Ten specialist agents",
+        "Human approvals",
+        "Security center"
+      ],
+      "owner": "AI governance",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/prompt-tool-policies",
+      "acceptance_area": "agents"
+    },
+    "AI evaluation lab": {
+      "name": "AI evaluation lab",
+      "description": "Prepare grounded-answer, tool-selection and adversarial regression cases.",
+      "columns": [
+        "Test case",
+        "Suite",
+        "Expected behavior",
+        "Result",
+        "Status"
+      ],
+      "rows": [
+        [
+          "EVAL-001",
+          "Unanswerable question",
+          "Abstain",
+          "Not run",
+          "Planned"
+        ],
+        [
+          "EVAL-002",
+          "Retrieved instructions",
+          "No tool execution",
+          "Not run",
+          "Planned"
+        ],
+        [
+          "EVAL-003",
+          "Changed approval digest",
+          "Reject stale proposal",
+          "Not run",
+          "Planned"
+        ]
+      ],
+      "primary_action": "Create evaluation case",
+      "related": [
+        "Model evaluation",
+        "Evidence & RAG",
+        "Prompt & tool policies"
+      ],
+      "owner": "AI quality",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/ai-evaluation-lab",
+      "acceptance_area": "acceptance"
+    },
+    "Data operations catalog": {
+      "name": "Data operations catalog",
+      "description": "Browse the aviation domain catalogue and ownership boundaries.",
+      "columns": [
+        "Domain",
+        "Owner",
+        "Grain",
+        "Source status",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Flight legs",
+          "Operations",
+          "One operated leg",
+          "Not connected",
+          "Design"
+        ],
+        [
+          "Weather",
+          "Weather desk",
+          "Station / issue / validity",
+          "Not connected",
+          "Design"
+        ],
+        [
+          "Passenger experience",
+          "Customer insights",
+          "Permitted feedback record",
+          "Not connected",
+          "Design"
+        ]
+      ],
+      "primary_action": "Register data domain",
+      "related": [
+        "Dataset registry",
+        "Data quality",
+        "Lineage explorer"
+      ],
+      "owner": "Data platform",
+      "kind": "catalog",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/data-operations-catalog",
+      "acceptance_area": "data"
+    },
+    "Ingestion pipelines": {
+      "name": "Ingestion pipelines",
+      "description": "Inspect collector schedules, schema versions and quarantine handling.",
+      "columns": [
+        "Pipeline",
+        "Mode",
+        "Target layer",
+        "Source",
+        "Status"
+      ],
+      "rows": [
+        [
+          "PIPE-FLIGHT",
+          "Historical batch",
+          "Bronze",
+          "BTS adapter planned",
+          "Not connected"
+        ],
+        [
+          "PIPE-WEATHER",
+          "Archived batch",
+          "Bronze",
+          "Forecast adapter planned",
+          "Not connected"
+        ],
+        [
+          "PIPE-EVIDENCE",
+          "Document batch",
+          "Evidence store",
+          "Approved corpus planned",
+          "Not connected"
+        ]
+      ],
+      "primary_action": "Register pipeline",
+      "related": [
+        "Streaming events",
+        "Lakehouse explorer",
+        "Data quality"
+      ],
+      "owner": "Data platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/ingestion-pipelines",
+      "acceptance_area": "data"
+    },
+    "Streaming events": {
+      "name": "Streaming events",
+      "description": "Preview event-time, ingestion-time and retry handling.",
+      "columns": [
+        "Event",
+        "Entity",
+        "Event UTC",
+        "Ingest UTC",
+        "Status"
+      ],
+      "rows": [
+        [
+          "EV-SIM-01",
+          "AIN-201",
+          "2026-11-19 11:50",
+          "2026-11-19 11:51",
+          "Fixture"
+        ],
+        [
+          "EV-SIM-02",
+          "AIN-412",
+          "2026-11-19 11:45",
+          "2026-11-19 11:55",
+          "Late fixture"
+        ],
+        [
+          "EV-SIM-03",
+          "AIN-728",
+          "2026-11-19 11:58",
+          "2026-11-19 11:59",
+          "Fixture"
+        ]
+      ],
+      "primary_action": "Create replay fixture",
+      "related": [
+        "Ingestion pipelines",
+        "Data quality",
+        "Observability"
+      ],
+      "owner": "Data platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/streaming-events",
+      "acceptance_area": "data"
+    },
+    "Lakehouse explorer": {
+      "name": "Lakehouse explorer",
+      "description": "Inspect planned Bronze, Silver and Gold table contracts.",
+      "columns": [
+        "Table",
+        "Layer",
+        "Business key",
+        "Storage",
+        "Status"
+      ],
+      "rows": [
+        [
+          "raw_asset",
+          "Bronze",
+          "Asset checksum",
+          "Object store planned",
+          "Design"
+        ],
+        [
+          "flight_leg",
+          "Silver",
+          "Flight / source revision",
+          "Iceberg planned",
+          "Design"
+        ],
+        [
+          "flight_risk_features",
+          "Gold",
+          "Flight / cutoff / revision",
+          "Iceberg planned",
+          "Design"
+        ]
+      ],
+      "primary_action": "Register table contract",
+      "related": [
+        "Lineage explorer",
+        "Dataset registry",
+        "Operational KPIs"
+      ],
+      "owner": "Data platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/lakehouse-explorer",
+      "acceptance_area": "data"
+    },
+    "Data quality": {
+      "name": "Data quality",
+      "description": "Review validation rules and quarantine policies.",
+      "columns": [
+        "Rule",
+        "Dataset",
+        "Check",
+        "Failure handling",
+        "Status"
+      ],
+      "rows": [
+        [
+          "DQ-001",
+          "Flight fixtures",
+          "Unique flight ID",
+          "Quarantine duplicate",
+          "Defined"
+        ],
+        [
+          "DQ-002",
+          "Weather",
+          "Available before cutoff",
+          "Exclude future input",
+          "Design"
+        ],
+        [
+          "DQ-003",
+          "Passenger feedback",
+          "Permitted nonempty text",
+          "Quarantine / review",
+          "Design"
+        ]
+      ],
+      "primary_action": "Add quality rule",
+      "related": [
+        "Ingestion pipelines",
+        "Lineage explorer",
+        "Alert center"
+      ],
+      "owner": "Data platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/data-quality",
+      "acceptance_area": "acceptance"
+    },
+    "Lineage explorer": {
+      "name": "Lineage explorer",
+      "description": "Trace source releases to derived metrics, predictions and evidence.",
+      "columns": [
+        "Lineage edge",
+        "From",
+        "To",
+        "Version binding",
+        "Status"
+      ],
+      "rows": [
+        [
+          "LIN-001",
+          "Source release",
+          "Raw asset",
+          "Checksum",
+          "Design"
+        ],
+        [
+          "LIN-002",
+          "Silver flight",
+          "Gold feature",
+          "Decision cutoff",
+          "Design"
+        ],
+        [
+          "LIN-003",
+          "Evidence span",
+          "Answer claim",
+          "Source version",
+          "Design"
+        ]
+      ],
+      "primary_action": "Register lineage link",
+      "related": [
+        "Lakehouse explorer",
+        "Prediction models",
+        "Document intelligence"
+      ],
+      "owner": "Data platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/lineage-explorer",
+      "acceptance_area": "data"
+    },
+    "Data access requests": {
+      "name": "Data access requests",
+      "description": "Draft purpose-bound access requests with scope and expiry.",
+      "columns": [
+        "Request",
+        "Resource",
+        "Purpose",
+        "Reviewer",
+        "Status"
+      ],
+      "rows": [
+        [
+          "DAR-001",
+          "Flight replay",
+          "Portfolio research",
+          "Data steward",
+          "Pending"
+        ],
+        [
+          "DAR-002",
+          "Passenger narratives",
+          "Sentiment evaluation",
+          "Privacy reviewer",
+          "Pending"
+        ],
+        [
+          "DAR-003",
+          "Engine benchmark",
+          "Model research",
+          "ML owner",
+          "Draft"
+        ]
+      ],
+      "primary_action": "Create access request",
+      "related": [
+        "Identity & access",
+        "Dataset registry",
+        "Human approvals"
+      ],
+      "owner": "Data governance",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/data-access-requests",
+      "acceptance_area": "security"
+    },
+    "Dataset registry": {
+      "name": "Dataset registry",
+      "description": "Pin source releases, checksums, coverage and permitted use.",
+      "columns": [
+        "Dataset",
+        "Domain",
+        "Coverage",
+        "Release / rights",
+        "Status"
+      ],
+      "rows": [
+        [
+          "BTS source proposal",
+          "Flight operations",
+          "US domestic",
+          "Exact release to verify",
+          "Proposed"
+        ],
+        [
+          "Weather archive proposal",
+          "Weather",
+          "Station-dependent",
+          "Exact release to verify",
+          "Proposed"
+        ],
+        [
+          "NASA benchmark proposal",
+          "Engine simulation",
+          "Simulated units",
+          "Exact release to verify",
+          "Proposed"
+        ]
+      ],
+      "primary_action": "Register dataset",
+      "related": [
+        "Data access requests",
+        "Ingestion pipelines",
+        "Data operations catalog"
+      ],
+      "owner": "Data governance",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/dataset-registry",
+      "acceptance_area": "data"
+    },
+    "Identity & access": {
+      "name": "Identity & access",
+      "description": "Specify identity providers, service principals and session boundaries.",
+      "columns": [
+        "Principal",
+        "Type",
+        "Purpose",
+        "Identity provider",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Operations reviewer",
+          "Human role",
+          "Review proposals",
+          "OIDC not connected",
+          "Design"
+        ],
+        [
+          "Evidence reader",
+          "Service identity",
+          "Authorized retrieval",
+          "Not provisioned",
+          "Design"
+        ],
+        [
+          "Pipeline worker",
+          "Service identity",
+          "Bounded ingestion",
+          "Not provisioned",
+          "Design"
+        ]
+      ],
+      "primary_action": "Draft identity mapping",
+      "related": [
+        "Roles & permissions",
+        "Security center",
+        "Human approvals"
+      ],
+      "owner": "Security",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/identity-access",
+      "acceptance_area": "security"
+    },
+    "Roles & permissions": {
+      "name": "Roles & permissions",
+      "description": "Review the proposed permission matrix; this UI does not enforce server authorization.",
+      "columns": [
+        "Role",
+        "Resource",
+        "Allowed action",
+        "Boundary",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Analyst",
+          "Metrics and evidence",
+          "Read / investigate",
+          "Tenant + purpose",
+          "Design"
+        ],
+        [
+          "Reviewer",
+          "Proposal digest",
+          "Approve / reject",
+          "Current authorization",
+          "Design"
+        ],
+        [
+          "Platform operator",
+          "Jobs and releases",
+          "Operate scoped services",
+          "Least privilege",
+          "Design"
+        ]
+      ],
+      "primary_action": "Draft role mapping",
+      "related": [
+        "Identity & access",
+        "Prompt & tool policies",
+        "Audit trail"
+      ],
+      "owner": "Security",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/roles-permissions",
+      "acceptance_area": "security"
+    },
+    "Security center": {
+      "name": "Security center",
+      "description": "Track threats, controls and verification evidence.",
+      "columns": [
+        "Control",
+        "Risk",
+        "Required evidence",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "SEC-001",
+          "Cross-tenant retrieval",
+          "Negative access tests",
+          "Security engineer",
+          "Not tested"
+        ],
+        [
+          "SEC-002",
+          "Prompt injection",
+          "Tool isolation cases",
+          "AI engineer",
+          "Not tested"
+        ],
+        [
+          "SEC-003",
+          "Secret exposure",
+          "Secret scan + rotation",
+          "Platform owner",
+          "Not tested"
+        ]
+      ],
+      "primary_action": "Register security control",
+      "related": [
+        "Roles & permissions",
+        "AI evaluation lab",
+        "Release management"
+      ],
+      "owner": "Security",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/security-center",
+      "acceptance_area": "security"
+    },
+    "Audit trail": {
+      "name": "Audit trail",
+      "description": "Inspect browser-local actions; production audit must be server-enforced and tamper-evident.",
+      "columns": [
+        "Event",
+        "Timestamp",
+        "Actor scope",
+        "Integrity",
+        "Status"
+      ],
+      "rows": [
+        [
+          "AUD-SIM",
+          "Local demonstration",
+          "Browser persona",
+          "Not immutable",
+          "Simulation"
+        ]
+      ],
+      "primary_action": "Export audit",
+      "related": [
+        "Decision history",
+        "Security center",
+        "Observability"
+      ],
+      "owner": "Governance",
+      "kind": "audit",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/audit-trail",
+      "acceptance_area": "security"
+    },
+    "API gateway": {
+      "name": "API gateway",
+      "description": "Inspect proposed API routes, limits and authentication contracts.",
+      "columns": [
+        "Route",
+        "Method",
+        "Purpose",
+        "Authorization",
+        "Status"
+      ],
+      "rows": [
+        [
+          "/v1/flights",
+          "GET",
+          "Bounded flight query",
+          "Scoped identity",
+          "Not connected"
+        ],
+        [
+          "/v1/runs",
+          "POST",
+          "Create bounded investigation",
+          "Allowlisted task",
+          "Not connected"
+        ],
+        [
+          "/v1/approvals/{id}/decision",
+          "POST",
+          "Record disposition",
+          "Reviewer + digest",
+          "Not connected"
+        ]
+      ],
+      "primary_action": "Register API contract",
+      "related": [
+        "Identity & access",
+        "Prompt & tool policies",
+        "Observability"
+      ],
+      "owner": "Platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/api-gateway",
+      "acceptance_area": "services"
+    },
+    "Cloud infrastructure": {
+      "name": "Cloud infrastructure",
+      "description": "Plan one reproducible deployment before expanding cloud profiles.",
+      "columns": [
+        "Component",
+        "Primary profile",
+        "Purpose",
+        "Provisioning",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Object storage",
+          "AWS candidate",
+          "Immutable source assets",
+          "Terraform planned",
+          "Not deployed"
+        ],
+        [
+          "PostgreSQL",
+          "AWS candidate",
+          "Workflow and policy state",
+          "Terraform planned",
+          "Not deployed"
+        ],
+        [
+          "Container runtime",
+          "Selection pending",
+          "API and workers",
+          "Sizing required",
+          "Design"
+        ]
+      ],
+      "primary_action": "Draft infrastructure change",
+      "related": [
+        "API gateway",
+        "Disaster recovery",
+        "Release management"
+      ],
+      "owner": "Platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/cloud-infrastructure",
+      "acceptance_area": "delivery"
+    },
+    "Observability": {
+      "name": "Observability",
+      "description": "Define service indicators, alert ownership and trace correlation.",
+      "columns": [
+        "Signal",
+        "Service",
+        "Measurement",
+        "Alert owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "API latency",
+          "Gateway",
+          "p50 / p95 / p99",
+          "Platform owner",
+          "Not measured"
+        ],
+        [
+          "Backlog age",
+          "Worker queue",
+          "Oldest eligible job",
+          "Data platform",
+          "Not measured"
+        ],
+        [
+          "Tool failure rate",
+          "Agent runtime",
+          "Failed / eligible calls",
+          "AI owner",
+          "Not measured"
+        ]
+      ],
+      "primary_action": "Define monitor",
+      "related": [
+        "Alert center",
+        "Audit trail",
+        "Disaster recovery"
+      ],
+      "owner": "Platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/observability",
+      "acceptance_area": "resilience"
+    },
+    "Disaster recovery": {
+      "name": "Disaster recovery",
+      "description": "Prepare restore procedures and record actual drill evidence later.",
+      "columns": [
+        "Runbook",
+        "Resource",
+        "Recovery evidence",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "DR-001",
+          "Workflow database",
+          "Restore test not run",
+          "Platform owner",
+          "Planned"
+        ],
+        [
+          "DR-002",
+          "Evidence index",
+          "Rebuild parity not tested",
+          "Knowledge owner",
+          "Planned"
+        ],
+        [
+          "DR-003",
+          "Worker checkpoint",
+          "Resume test not run",
+          "AI owner",
+          "Planned"
+        ]
+      ],
+      "primary_action": "Create recovery drill",
+      "related": [
+        "Cloud infrastructure",
+        "Observability",
+        "Release management"
+      ],
+      "owner": "Platform",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/disaster-recovery",
+      "acceptance_area": "resilience"
+    },
+    "Release management": {
+      "name": "Release management",
+      "description": "Track candidate qualification, unresolved gates and rollout decisions.",
+      "columns": [
+        "Release",
+        "Scope",
+        "Required evidence",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "UI-1.0",
+          "Standalone frontend",
+          "Browser checks",
+          "Product owner",
+          "Interaction prototype"
+        ],
+        [
+          "CORE-0.1",
+          "First backend vertical slice",
+          "Integration and security tests",
+          "Engineering owner",
+          "Planned"
+        ],
+        [
+          "PILOT-0.1",
+          "Sponsored read-only pilot",
+          "Qualified data + operator review",
+          "Sponsor required",
+          "Not authorized"
+        ]
+      ],
+      "primary_action": "Create release candidate",
+      "related": [
+        "Model evaluation",
+        "Security center",
+        "Disaster recovery"
+      ],
+      "owner": "Delivery",
+      "kind": "records",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/release-management",
+      "acceptance_area": "delivery"
+    },
+    "System settings": {
+      "name": "System settings",
+      "description": "Configure browser-local workspace preferences and inspect service integration status.",
+      "columns": [
+        "Preference",
+        "Current scope",
+        "Persistence",
+        "Production equivalent",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Color theme",
+          "This browser",
+          "Browser session",
+          "User preferences API",
+          "Local"
+        ],
+        [
+          "Operational timezone",
+          "UTC exercise",
+          "Fixed fixture",
+          "Explicit UTC contracts",
+          "Defined"
+        ],
+        [
+          "Service connections",
+          "None",
+          "Not configured",
+          "Managed secrets and policy",
+          "Not connected"
+        ]
+      ],
+      "primary_action": "Edit preferences",
+      "related": [
+        "Identity & access",
+        "Cloud infrastructure",
+        "Data operations catalog"
+      ],
+      "owner": "Platform",
+      "kind": "settings",
+      "data_mode": "Synthetic UI fixtures",
+      "backend_status": "Not connected",
+      "endpoint": "/v1/system-settings",
+      "acceptance_area": "services"
+    }
+  },
+  "agent_contracts": [
+    {
+      "name": "Flight Operations",
+      "intended_tool": "query_flight_kpis",
+      "input_scope": "Airport / route / decision time",
+      "output": "Frozen metric snapshot and coverage",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Aircraft Maintenance",
+      "intended_tool": "get_rul",
+      "input_scope": "Benchmark engine / regime / cycle",
+      "output": "Interval, artifact and abstention reason",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Weather Intelligence",
+      "intended_tool": "get_weather_asof",
+      "input_scope": "Station / cutoff / product",
+      "output": "Eligible issue and availability timestamps",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Aviation Safety",
+      "intended_tool": "search_safety",
+      "input_scope": "Taxonomy / permitted scope",
+      "output": "Authorized narratives or findings",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Passenger Experience",
+      "intended_tool": "query_service_quality",
+      "input_scope": "Carrier / period / cohort",
+      "output": "Rates with denominator provenance",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Predictive Intelligence",
+      "intended_tool": "score_approved_model",
+      "input_scope": "Model use case / entity / as_of",
+      "output": "Versioned score with feature lineage",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Data Analytics",
+      "intended_tool": "query_metric_template",
+      "input_scope": "Allowlisted metric / bounded filters",
+      "output": "Aggregate, units and snapshot",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Optimization",
+      "intended_tool": "propose_scenario",
+      "input_scope": "Input digest / signed constraints",
+      "output": "Candidate and independent verifier result",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Evidence Research",
+      "intended_tool": "retrieve_evidence",
+      "input_scope": "Purpose / date / authorized query",
+      "output": "Source IDs and versioned spans",
+      "runtime": "not connected"
+    },
+    {
+      "name": "Governance and Approval",
+      "intended_tool": "evaluate_policy",
+      "input_scope": "Principal / proposal digest / expiry",
+      "output": "Required human reviewer or denial",
+      "runtime": "not connected"
+    }
+  ],
+  "implementation_areas": [
+    {
+      "id": "experience",
+      "title": "Application experience",
+      "route": "Executive overview",
+      "owner": "Product & design",
+      "summary": "All 64 workspaces, responsive journeys and clear service states.",
+      "requirements": [
+        "64 connected workspace routes",
+        "Validated forms and record lifecycle",
+        "Search, filters, sorting and pagination",
+        "Accessible navigation and modal focus",
+        "Responsive desktop and mobile layouts",
+        "Loading, empty, denied, error, stale and partial states"
+      ]
+    },
+    {
+      "id": "data",
+      "title": "Data ingestion & processing",
+      "route": "Ingestion pipelines",
+      "owner": "Data engineering",
+      "summary": "Source registration, batch/stream pipelines, quality, replay and lineage.",
+      "requirements": [
+        "Authorized source releases and licenses",
+        "Historical imports and incremental updates",
+        "Schema, units and identifier validation",
+        "Deduplication and quarantine",
+        "Retry, cancellation and replay",
+        "Source timestamps, lineage and retention"
+      ]
+    },
+    {
+      "id": "services",
+      "title": "Backend & persistence",
+      "route": "API gateway",
+      "owner": "Backend engineering",
+      "summary": "Typed contracts, transactions, background jobs and protected storage.",
+      "requirements": [
+        "Documented validated API schemas",
+        "Persistent database and migrations",
+        "Server-side search and pagination",
+        "Idempotency and concurrent-write handling",
+        "Background job progress and cancellation",
+        "Versioned snapshots and evidence storage"
+      ]
+    },
+    {
+      "id": "science",
+      "title": "Data science & prediction",
+      "route": "Prediction models",
+      "owner": "Data science",
+      "summary": "Forecasting, risk classification, sentiment, clustering and model evaluation.",
+      "requirements": [
+        "Delay and disruption baselines",
+        "Passenger sentiment and issue clustering",
+        "Demand, trends and anomaly analysis",
+        "Leakage-safe temporal/entity splits",
+        "Measured metrics, uncertainty and cohort errors",
+        "Versioning, drift, retraining and rollback"
+      ]
+    },
+    {
+      "id": "generative",
+      "title": "Generative AI & evidence",
+      "route": "Document intelligence",
+      "owner": "Knowledge engineering",
+      "summary": "Document processing, grounded questions, citations and evaluation.",
+      "requirements": [
+        "Authorized extraction and document versions",
+        "Chunking, embeddings and retrieval",
+        "Permission-aware source filtering",
+        "Grounded summaries and cited answers",
+        "Abstention on insufficient evidence",
+        "Grounding, citation and injection evaluations"
+      ]
+    },
+    {
+      "id": "agents",
+      "title": "Agentic investigation",
+      "route": "AI agent command",
+      "owner": "AI engineering",
+      "summary": "Ten specialist contracts, bounded tools, durable traces and human checkpoints.",
+      "requirements": [
+        "Typed and allowlisted tools",
+        "Explicit run states and checkpoints",
+        "Evidence-linked execution traces",
+        "Bounded retries, timeouts and cancellation",
+        "Resume after interruption",
+        "Human approval before consequential actions"
+      ]
+    },
+    {
+      "id": "optimization",
+      "title": "Mathematical optimization",
+      "route": "Recovery optimizer",
+      "owner": "Operations research",
+      "summary": "Objectives, constraints, candidate comparison and independent verification.",
+      "requirements": [
+        "Explicit objectives and constraint versions",
+        "Aircraft, rotation and capacity inputs",
+        "Solver-backed candidate generation",
+        "Independent feasibility verification",
+        "Infeasibility and timeout handling",
+        "Same-input comparison and human approval"
+      ]
+    },
+    {
+      "id": "workflows",
+      "title": "Connected aviation journeys",
+      "route": "Incident command",
+      "owner": "Operations product",
+      "summary": "Disruption, passenger, engineering and data-to-decision workflows.",
+      "requirements": [
+        "Persistent incident and assignment history",
+        "Disruption-to-recovery journey",
+        "Passenger feedback-to-resolution journey",
+        "Engineering-to-human-review journey",
+        "Shared identifiers and evidence links",
+        "Authorized execution and outcome tracking"
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Identity, security & governance",
+      "route": "Security center",
+      "owner": "Security & governance",
+      "summary": "Authentication, permissions, audit, privacy and proposal-bound approvals.",
+      "requirements": [
+        "Authentication, sessions and MFA",
+        "Server-enforced resource authorization",
+        "Encryption and managed secrets",
+        "Privacy, minimization and retention",
+        "Protected audit and security testing",
+        "Version-bound, expiring human approvals"
+      ]
+    },
+    {
+      "id": "delivery",
+      "title": "Deployment & releases",
+      "route": "Release management",
+      "owner": "Platform engineering",
+      "summary": "Environments, infrastructure, release evidence and rollback.",
+      "requirements": [
+        "Reproducible environments and infrastructure",
+        "Controlled build and release automation",
+        "Database migration verification",
+        "Health checks and safe rollout",
+        "Tested release and model rollback",
+        "Measured capacity and load tests"
+      ]
+    },
+    {
+      "id": "resilience",
+      "title": "Monitoring & recovery",
+      "route": "Observability",
+      "owner": "Platform reliability",
+      "summary": "Service objectives, alert ownership, backups and recovery drills.",
+      "requirements": [
+        "Service, data, model and agent monitoring",
+        "Freshness and operating-cost visibility",
+        "Service objectives and response ownership",
+        "Backup and restoration procedures",
+        "Queue replay and safe degradation",
+        "Measured restore and interruption drills"
+      ]
+    },
+    {
+      "id": "acceptance",
+      "title": "Testing & acceptance",
+      "route": "AI evaluation lab",
+      "owner": "Quality engineering",
+      "summary": "Requirements traced to evidence, owners and unresolved limitations.",
+      "requirements": [
+        "Integration and critical journey tests",
+        "Authorization and isolation tests",
+        "Data, model, retrieval and agent evaluation",
+        "Independent optimization validation",
+        "Accessibility and performance checks",
+        "Recovery drills and user acceptance"
+      ]
+    }
+  ],
+  "release_gates": [
+    [
+      "Data rights",
+      "Source license and permitted-use review"
+    ],
+    [
+      "Data quality",
+      "Reconciliation and validation results"
+    ],
+    [
+      "Backend",
+      "API integration and database migration results"
+    ],
+    [
+      "Models",
+      "Baseline, holdout metrics and approved scope"
+    ],
+    [
+      "GenAI & agents",
+      "Grounding, tool policy and failure evaluations"
+    ],
+    [
+      "Optimization",
+      "Solver results and independent verification"
+    ],
+    [
+      "Security",
+      "Authentication and negative authorization tests"
+    ],
+    [
+      "Accessibility & load",
+      "User journeys, access review and capacity results"
+    ],
+    [
+      "Deployment & rollback",
+      "Reproducible release and rollback evidence"
+    ],
+    [
+      "Recovery & acceptance",
+      "Restore drill and user acceptance sign-off"
+    ]
+  ],
+  "functions": {
+    "Executive overview": [
+      "Calculate scoped KPIs",
+      "Drill into source records",
+      "Review pending decisions",
+      "Show source freshness"
+    ],
+    "Dubai hub control": [
+      "Inspect hub operating windows",
+      "Compare arrival and departure demand",
+      "Review capacity pressure",
+      "Link affected turnaround tasks"
+    ],
+    "Global network": [
+      "Explore routes and airports",
+      "Trace network dependencies",
+      "Filter corridors and periods",
+      "Inspect disruption propagation"
+    ],
+    "Operational KPIs": [
+      "Version metric definitions",
+      "Maintain units and denominators",
+      "Reconcile source records",
+      "Review calculation changes"
+    ],
+    "Shift handover": [
+      "Create versioned handover",
+      "Assign unresolved actions",
+      "Attach incident evidence",
+      "Record receiving-owner acknowledgment"
+    ],
+    "Alert center": [
+      "Deduplicate related alerts",
+      "Assign response ownership",
+      "Acknowledge and escalate",
+      "Resolve with an outcome record"
+    ],
+    "Live flight board": [
+      "Query schedules and movements",
+      "Filter status and risk",
+      "Inspect snapshot freshness",
+      "Open a flight investigation"
+    ],
+    "Flight detail": [
+      "Inspect flight event history",
+      "Review rotation and turnaround",
+      "Link passenger exposure",
+      "Inspect evidence and decisions"
+    ],
+    "Aircraft rotations": [
+      "Connect consecutive legs",
+      "Calculate turnaround margins",
+      "Identify rotation conflicts",
+      "Review recovery alternatives"
+    ],
+    "Fleet registry": [
+      "Register aircraft identity",
+      "Version aircraft capabilities",
+      "Track availability assumptions",
+      "Inspect source revision history"
+    ],
+    "Airport capacity": [
+      "Maintain capacity by interval",
+      "Compare demand and capacity",
+      "Review scenario assumptions",
+      "Link impacted flights"
+    ],
+    "Gates & stands": [
+      "Maintain stand compatibility",
+      "Inspect occupancy intervals",
+      "Detect assignment conflicts",
+      "Review a proposed allocation"
+    ],
+    "Ground turnaround": [
+      "Track planned and actual milestones",
+      "Maintain task dependencies",
+      "Assign responsible teams",
+      "Escalate overdue work"
+    ],
+    "Airspace & NOTAM": [
+      "Ingest authorized notices",
+      "Preserve publication and validity times",
+      "Filter operational relevance",
+      "Flag expired restrictions"
+    ],
+    "Weather intelligence": [
+      "Separate observations and forecasts",
+      "Retain source issue times",
+      "Associate conditions with flights",
+      "Apply freshness and availability checks"
+    ],
+    "Trajectory analysis": [
+      "Inspect eligible track segments",
+      "Link tracks with confidence",
+      "Identify unmatched records",
+      "Trace source coverage gaps"
+    ],
+    "Incident command": [
+      "Create and classify incident",
+      "Assign accountable owner",
+      "Link impacted entities and evidence",
+      "Resolve with a versioned outcome"
+    ],
+    "Disruption prediction": [
+      "Submit scoped scoring request",
+      "Validate model eligibility",
+      "Return versioned risk and uncertainty",
+      "Abstain on unsupported inputs"
+    ],
+    "Impact assessment": [
+      "Identify affected flights and rotations",
+      "Estimate connection exposure",
+      "Document commercial assumptions",
+      "Link assessment to input snapshot"
+    ],
+    "Recovery optimizer": [
+      "Define objectives and constraints",
+      "Execute bounded solver request",
+      "Verify candidate feasibility",
+      "Submit exact proposal for review"
+    ],
+    "Scenario comparison": [
+      "Compare common input snapshots",
+      "Show baseline trade-offs",
+      "Explain constraint violations",
+      "Select an eligible alternative"
+    ],
+    "Human approvals": [
+      "Check reviewer authorization",
+      "Review exact input and proposal versions",
+      "Apply expiry and invalidation rules",
+      "Record disposition and rationale"
+    ],
+    "Decision history": [
+      "Retrieve proposal history",
+      "Inspect reviewer rationale",
+      "Trace evidence and assumptions",
+      "Compare recorded outcome"
+    ],
+    "Engine health": [
+      "Inspect eligible measurements",
+      "Review degradation trends",
+      "Identify missing inputs",
+      "Separate supported operating regimes"
+    ],
+    "Predictive maintenance": [
+      "Validate benchmark scope",
+      "Produce evaluated predictions",
+      "Expose uncertainty and abstention",
+      "Route recommendations to engineering review"
+    ],
+    "Maintenance planning": [
+      "Draft inspection priorities",
+      "Check resource and task dependencies",
+      "Request engineering disposition",
+      "Track approved planning outcomes"
+    ],
+    "Safety occurrences": [
+      "Register protected narratives",
+      "Maintain investigation states",
+      "Separate reported and verified findings",
+      "Restrict evidence access"
+    ],
+    "Hazard register": [
+      "Register hazards and controls",
+      "Assign accountable owner",
+      "Schedule review dates",
+      "Link occurrences and mitigations"
+    ],
+    "Risk assessment": [
+      "Apply documented assessment method",
+      "Record assumptions and severity",
+      "Review control effectiveness",
+      "Capture human review outcome"
+    ],
+    "Reliability analytics": [
+      "Define exposure populations",
+      "Calculate valid reliability rates",
+      "Compare equivalent periods",
+      "Identify denominator limitations"
+    ],
+    "Crew operations": [
+      "Inspect eligible qualifications",
+      "Review assignments and coverage",
+      "Check configured duty constraints",
+      "Escalate unsupported staffing proposals"
+    ],
+    "Passenger connections": [
+      "Calculate transfer margins",
+      "Apply connection assumptions",
+      "Track affected groups",
+      "Propose protection for review"
+    ],
+    "Customer experience": [
+      "Ingest permitted feedback",
+      "Classify sentiment and issue themes",
+      "Detect comparable-period trends",
+      "Track service recovery cases"
+    ],
+    "Baggage exceptions": [
+      "Register baggage exception",
+      "Link permitted flight or group reference",
+      "Assign response owner",
+      "Track resolution and communication"
+    ],
+    "Cargo logistics": [
+      "Inspect handling requirements",
+      "Prioritize shipment groups",
+      "Review capacity and connection constraints",
+      "Track proposed recovery disposition"
+    ],
+    "Fuel & emissions": [
+      "Version calculation inputs",
+      "Apply documented methods and units",
+      "Expose uncertainty and missing data",
+      "Separate measured and proxy estimates"
+    ],
+    "Commercial intelligence": [
+      "Estimate authorized commercial exposure",
+      "Document assumptions and currency",
+      "Show missing-input limitations",
+      "Compare scenario exposure"
+    ],
+    "Network planning": [
+      "Configure planning horizon",
+      "Compare route and capacity scenarios",
+      "Review connection-bank resilience",
+      "Record planning assumptions"
+    ],
+    "AI agent command": [
+      "Start bounded investigation",
+      "Inspect tool and evidence trace",
+      "Pause cancel retry and resume",
+      "Stop at human approval checkpoint"
+    ],
+    "Ten specialist agents": [
+      "Version role contracts",
+      "Maintain typed input and output schemas",
+      "Inspect tool authority",
+      "Define limits and failure behavior"
+    ],
+    "Document intelligence": [
+      "Register rights and document versions",
+      "Extract and review source content",
+      "Create versioned searchable chunks",
+      "Track indexing errors and updates"
+    ],
+    "Evidence & RAG": [
+      "Retrieve authorized sources",
+      "Generate evidence-grounded responses",
+      "Inspect source citations",
+      "Abstain when evidence is insufficient"
+    ],
+    "Prediction models": [
+      "Register experiment and dataset",
+      "Version feature and artifact definitions",
+      "Maintain baseline and model scope",
+      "Control promotion and rollback"
+    ],
+    "Model evaluation": [
+      "Evaluate valid holdout populations",
+      "Compare measured baseline results",
+      "Review cohort errors and uncertainty",
+      "Approve or reject model promotion evidence"
+    ],
+    "Prompt & tool policies": [
+      "Version instruction templates",
+      "Maintain allowlisted tools and schemas",
+      "Enforce budgets and approval rules",
+      "Evaluate policy changes before release"
+    ],
+    "AI evaluation lab": [
+      "Execute grounding and citation tests",
+      "Evaluate abstention and injection resistance",
+      "Test tool-selection behavior",
+      "Run workflow regression suites"
+    ],
+    "Data operations catalog": [
+      "Maintain domain ownership",
+      "Define grain and business meanings",
+      "Publish quality and retention conditions",
+      "Link authorized sources and lineage"
+    ],
+    "Ingestion pipelines": [
+      "Run batch or incremental ingestion",
+      "Validate and deduplicate records",
+      "Quarantine invalid inputs",
+      "Retry replay and resume checkpoints"
+    ],
+    "Streaming events": [
+      "Track event and ingestion times",
+      "Apply ordering and lateness policy",
+      "Maintain durable replay cursor",
+      "Inspect failed-event queues"
+    ],
+    "Lakehouse explorer": [
+      "Inspect raw normalized and curated layers",
+      "Version schemas and partitions",
+      "Run authorized bounded queries",
+      "Trace dataset snapshots"
+    ],
+    "Data quality": [
+      "Execute validation rules",
+      "Reconcile counts and business keys",
+      "Investigate quarantined records",
+      "Track quality remediation"
+    ],
+    "Lineage explorer": [
+      "Trace source transformations",
+      "Inspect feature and model dependencies",
+      "Link evidence to source versions",
+      "Trace decisions to input snapshots"
+    ],
+    "Data access requests": [
+      "Request purpose-bound access",
+      "Review resource scope",
+      "Apply expiry and revocation",
+      "Record access disposition"
+    ],
+    "Dataset registry": [
+      "Pin exact source release",
+      "Verify rights and coverage",
+      "Retain checksums and schemas",
+      "Document known source limitations"
+    ],
+    "Identity & access": [
+      "Authenticate users and services",
+      "Manage sessions and MFA",
+      "Handle account lifecycle",
+      "Revoke eligible access"
+    ],
+    "Roles & permissions": [
+      "Enforce resource permissions",
+      "Apply separation of duties",
+      "Test tenant and purpose boundaries",
+      "Review privileged role assignments"
+    ],
+    "Security center": [
+      "Maintain threat and control register",
+      "Review vulnerabilities and remediation",
+      "Attach verified security test evidence",
+      "Coordinate security incident response"
+    ],
+    "Audit trail": [
+      "Record actor resource action and outcome",
+      "Correlate requests and workflow events",
+      "Protect against unauthorized changes",
+      "Apply retention and authorized search"
+    ],
+    "API gateway": [
+      "Validate authenticated requests",
+      "Enforce schemas and request limits",
+      "Return safe versioned errors",
+      "Correlate requests with audit and traces"
+    ],
+    "Cloud infrastructure": [
+      "Provision reproducible environments",
+      "Protect configuration and secrets",
+      "Review network and capacity",
+      "Track infrastructure changes"
+    ],
+    "Observability": [
+      "Collect service and job signals",
+      "Monitor freshness model and agent behavior",
+      "Route actionable alerts",
+      "Review actual usage and cost"
+    ],
+    "Disaster recovery": [
+      "Manage protected backup policies",
+      "Restore into isolated environment",
+      "Verify records and access after restore",
+      "Measure recovery time and data loss"
+    ],
+    "Release management": [
+      "Enforce release evidence gates",
+      "Verify builds and migrations",
+      "Control rollout and rollback",
+      "Record acceptance and release scope"
+    ],
+    "System settings": [
+      "Persist authorized preferences",
+      "Manage integration configuration references",
+      "Apply environment-specific settings",
+      "Protect secrets from browser exposure"
+    ]
+  },
+  "shared_requirements": [
+    "Server-side search, filtering, sorting and pagination",
+    "Validated forms and record lifecycle",
+    "Ownership, assignment and status transitions",
+    "Attachments, evidence and notes",
+    "Version history and concurrent-update protection",
+    "Archive and restore where permitted",
+    "Saved views and user preferences",
+    "Authorized exports and data restrictions",
+    "Related-record navigation",
+    "Source provenance and freshness",
+    "Loading, empty, error, stale, partial and denied states",
+    "Consequential-action confirmation",
+    "Persistence across sessions and restarts",
+    "Responsive and keyboard-accessible controls",
+    "Server-enforced permissions",
+    "Correlated protected audit events"
+  ],
+  "service_dependencies": [
+    [
+      "Data ingestion",
+      "Ingestion pipelines",
+      "Licensed releases, validation, quarantine and replay"
+    ],
+    [
+      "Persistent application data",
+      "Lakehouse explorer",
+      "Database integrity, migrations, transactions and storage"
+    ],
+    [
+      "Typed API gateway",
+      "API gateway",
+      "Authentication, schemas, bounded queries and idempotency"
+    ],
+    [
+      "Prediction service",
+      "Prediction models",
+      "Versioned artifacts, measured evaluation and fallback"
+    ],
+    [
+      "Evidence and generative AI",
+      "Evidence & RAG",
+      "Authorized retrieval, provider calls and grounded evaluation"
+    ],
+    [
+      "Agent execution",
+      "AI agent command",
+      "Tool gateway, durable checkpoints and execution limits"
+    ],
+    [
+      "Optimization service",
+      "Recovery optimizer",
+      "Real mathematical formulation and independent verifier"
+    ],
+    [
+      "Identity and policy",
+      "Identity & access",
+      "Real sessions, resource authorization and MFA"
+    ],
+    [
+      "Approval and audit",
+      "Human approvals",
+      "Transactional proposal-bound decisions and protected audit"
+    ],
+    [
+      "Delivery environment",
+      "Cloud infrastructure",
+      "Reproducible infrastructure, safe release and rollback"
+    ],
+    [
+      "Monitoring",
+      "Observability",
+      "Measured service, data, model, agent and cost signals"
+    ],
+    [
+      "Backup and restoration",
+      "Disaster recovery",
+      "Verified backup integrity and measured restore drills"
+    ]
+  ],
+  "connected_journeys": [
+    {
+      "id": "disruption",
+      "name": "Disruption to recovery decision",
+      "description": "Follow one flight investigation through evidence, alternatives, review and outcome.",
+      "steps": [
+        [
+          "Live flight board",
+          "Select flight snapshot",
+          "Record the synthetic flight ID and source cutoff."
+        ],
+        [
+          "Incident command",
+          "Open and assign incident",
+          "Document the disruption, scope and accountable owner."
+        ],
+        [
+          "Impact assessment",
+          "Assess operational impact",
+          "Record affected rotations, connection groups and assumptions."
+        ],
+        [
+          "Recovery optimizer",
+          "Compare recovery alternatives",
+          "Record candidate ID, input version and constraint limitations."
+        ],
+        [
+          "Human approvals",
+          "Human decision",
+          "An explicit reviewer and decision rationale are required."
+        ],
+        [
+          "Decision history",
+          "Record outcome",
+          "Record recommendation or simulated outcome; no real flight execution."
+        ]
+      ]
+    },
+    {
+      "id": "passenger",
+      "name": "Passenger feedback to resolution",
+      "description": "Connect feedback analysis, evidence, service review and a recorded resolution.",
+      "steps": [
+        [
+          "Customer experience",
+          "Register feedback scope",
+          "Use synthetic text and record manual or measured-label provenance."
+        ],
+        [
+          "Passenger connections",
+          "Review affected connections",
+          "Record eligible group IDs and connection assumptions."
+        ],
+        [
+          "Evidence & RAG",
+          "Inspect supporting sources",
+          "Record exact fixture source identifiers and limitations."
+        ],
+        [
+          "Human approvals",
+          "Human decision",
+          "Review the proposed service recommendation and rationale."
+        ],
+        [
+          "Customer experience",
+          "Record resolution",
+          "Record the local service outcome and unresolved limitations."
+        ]
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering investigation to review",
+      "description": "Keep benchmark predictions distinct from maintenance authority.",
+      "steps": [
+        [
+          "Engine health",
+          "Inspect benchmark unit",
+          "Record benchmark unit, regime and measurement availability."
+        ],
+        [
+          "Predictive maintenance",
+          "Review prediction eligibility",
+          "Record unsupported inputs and missing measured artifacts."
+        ],
+        [
+          "Maintenance planning",
+          "Draft inspection proposal",
+          "Record task scope, dependencies and engineering owner."
+        ],
+        [
+          "Human approvals",
+          "Human decision",
+          "Capture engineering review; no maintenance release authority."
+        ],
+        [
+          "Reliability analytics",
+          "Record investigation outcome",
+          "Document benchmark-only outcome and exposure limitations."
+        ]
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Source to evaluated release",
+      "description": "Trace data, model or retrieval design through evidence and delivery qualification.",
+      "steps": [
+        [
+          "Dataset registry",
+          "Pin authorized source",
+          "Record source release, rights reference and known limitations."
+        ],
+        [
+          "Ingestion pipelines",
+          "Define processing contract",
+          "Record schema, quality handling and checkpoint assumptions."
+        ],
+        [
+          "Data quality",
+          "Review validation evidence",
+          "Attach exact quality-check scope and reconciliation references."
+        ],
+        [
+          "Prediction models",
+          "Define model or evidence artifact",
+          "Record baseline, dataset and leakage-safe evaluation plan."
+        ],
+        [
+          "AI evaluation lab",
+          "Review evaluation evidence",
+          "Record actual evidence availability; do not invent metrics."
+        ],
+        [
+          "Release management",
+          "Human decision",
+          "Capture release review and unresolved implementation gates."
+        ],
+        [
+          "Observability",
+          "Record monitoring and recovery handoff",
+          "Record owners and required service or restore measurements."
+        ]
+      ]
+    }
+  ],
+  "production_services_connected": 0
+}

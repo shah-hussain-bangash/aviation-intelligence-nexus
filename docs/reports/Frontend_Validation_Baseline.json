@@ -1,0 +1,568 @@
+{
+  "scope": "Frontend UI/UX and synthetic browser-local walkthroughs only",
+  "workspace_count": 64,
+  "workspace_function_count": 256,
+  "shared_requirements": 16,
+  "view_check_count": 320,
+  "workspace_views": [
+    {
+      "name": "Executive overview",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Dubai hub control",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Global network",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Operational KPIs",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Shift handover",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Alert center",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Live flight board",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Flight detail",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Aircraft rotations",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Fleet registry",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Airport capacity",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Gates & stands",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Ground turnaround",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Airspace & NOTAM",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Weather intelligence",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Trajectory analysis",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Incident command",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Disruption prediction",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Impact assessment",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Recovery optimizer",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Scenario comparison",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Human approvals",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Decision history",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Engine health",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Predictive maintenance",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Maintenance planning",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Safety occurrences",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Hazard register",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Risk assessment",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Reliability analytics",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Crew operations",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Passenger connections",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Customer experience",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Baggage exceptions",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Cargo logistics",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Fuel & emissions",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Commercial intelligence",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Network planning",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "AI agent command",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Ten specialist agents",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Document intelligence",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Evidence & RAG",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Prediction models",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Model evaluation",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Prompt & tool policies",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "AI evaluation lab",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Data operations catalog",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Ingestion pipelines",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Streaming events",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Lakehouse explorer",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Data quality",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Lineage explorer",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Data access requests",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Dataset registry",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Identity & access",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Roles & permissions",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Security center",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Audit trail",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "API gateway",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Cloud infrastructure",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Observability",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Disaster recovery",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "Release management",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    },
+    {
+      "name": "System settings",
+      "Workspace": true,
+      "Data contract": true,
+      "UI states": true,
+      "Acceptance": true,
+      "Functions": true
+    }
+  ],
+  "connected_journey_checks": [
+    {
+      "journey": "Disruption to recovery decision",
+      "completed": true
+    },
+    {
+      "journey": "Passenger feedback to resolution",
+      "completed": true
+    },
+    {
+      "journey": "Engineering investigation to review",
+      "completed": true
+    },
+    {
+      "journey": "Source to evaluated release",
+      "completed": true
+    }
+  ],
+  "interaction_checks": {
+    "case_context": "retained across routes and reload",
+    "archive_restore": "completed case restored",
+    "human_revision": "request revision returns to previous checkpoint",
+    "record_versions": "original and revised notes both visible",
+    "case_export": "inspected JSON: five final records, seven historical records, production_execution=false",
+    "function_catalogue": "256 functions; sentiment filter and navigation passed",
+    "function_reviews": "saved and persisted after reload",
+    "service_readiness": "0/12 connected after completed cases",
+    "leave_context": "clears active banner without deleting cases",
+    "reset": "clears case and review state",
+    "portable_source": "split HTML/CSS/JS function map verified"
+  },
+  "mobile": {
+    "actual_css_width": 433,
+    "document_width": 416,
+    "checkpoint_form": "submitted; context advanced to next engineering stage",
+    "tab_navigation": "horizontally scrollable within tab strip"
+  },
+  "limits": [
+    "No real backend integrations",
+    "No actual data ingestion at scale",
+    "No trained prediction, LLM or agent execution",
+    "No actual solver or operational execution",
+    "No enforced identity, permissions or protected audit",
+    "No cloud deployment, monitoring or measured recovery",
+    "No full accessibility audit or native print verification"
+  ],
+  "production_qualification": false
+}

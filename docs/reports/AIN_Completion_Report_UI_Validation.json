@@ -1,0 +1,457 @@
+{
+  "scope": "Completion-report UI verification only; no production capability validation",
+  "requirement_detail_checks": [
+    {
+      "id": "P01",
+      "passed": true
+    },
+    {
+      "id": "P02",
+      "passed": true
+    },
+    {
+      "id": "P03",
+      "passed": true
+    },
+    {
+      "id": "P04",
+      "passed": true
+    },
+    {
+      "id": "P05",
+      "passed": true
+    },
+    {
+      "id": "P06",
+      "passed": true
+    },
+    {
+      "id": "P07",
+      "passed": true
+    },
+    {
+      "id": "P08",
+      "passed": true
+    },
+    {
+      "id": "P09",
+      "passed": true
+    },
+    {
+      "id": "P10",
+      "passed": true
+    },
+    {
+      "id": "P11",
+      "passed": true
+    },
+    {
+      "id": "P12",
+      "passed": true
+    },
+    {
+      "id": "P13",
+      "passed": true
+    },
+    {
+      "id": "P14",
+      "passed": true
+    },
+    {
+      "id": "P15",
+      "passed": true
+    },
+    {
+      "id": "P16",
+      "passed": true
+    },
+    {
+      "id": "P17",
+      "passed": true
+    },
+    {
+      "id": "P18",
+      "passed": true
+    },
+    {
+      "id": "P19",
+      "passed": true
+    },
+    {
+      "id": "P20",
+      "passed": true
+    },
+    {
+      "id": "P21",
+      "passed": true
+    },
+    {
+      "id": "P22",
+      "passed": true
+    },
+    {
+      "id": "P23",
+      "passed": true
+    },
+    {
+      "id": "P24",
+      "passed": true
+    }
+  ],
+  "preserved_workspace_checks": [
+    {
+      "name": "Executive overview",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Dubai hub control",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Global network",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Operational KPIs",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Shift handover",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Alert center",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Live flight board",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Flight detail",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Aircraft rotations",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Fleet registry",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Airport capacity",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Gates & stands",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Ground turnaround",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Airspace & NOTAM",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Weather intelligence",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Trajectory analysis",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Incident command",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Disruption prediction",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Impact assessment",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Recovery optimizer",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Scenario comparison",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Human approvals",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Decision history",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Engine health",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Predictive maintenance",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Maintenance planning",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Safety occurrences",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Hazard register",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Risk assessment",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Reliability analytics",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Crew operations",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Passenger connections",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Customer experience",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Baggage exceptions",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Cargo logistics",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Fuel & emissions",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Commercial intelligence",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Network planning",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "AI agent command",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Ten specialist agents",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Document intelligence",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Evidence & RAG",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Prediction models",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Model evaluation",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Prompt & tool policies",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "AI evaluation lab",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Data operations catalog",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Ingestion pipelines",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Streaming events",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Lakehouse explorer",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Data quality",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Lineage explorer",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Data access requests",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Dataset registry",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Identity & access",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Roles & permissions",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Security center",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Audit trail",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "API gateway",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Cloud infrastructure",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Observability",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Disaster recovery",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "Release management",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    },
+    {
+      "name": "System settings",
+      "workspaceVisible": true,
+      "completionReportAvailable": true
+    }
+  ],
+  "status_filter_counts": {
+    "not_implemented": 20,
+    "partially_evidenced": 3,
+    "not_verified": 1,
+    "verified_complete": 0
+  },
+  "checks": {
+    "ui_summary_count": 6,
+    "requirement_count": 24,
+    "id_search": "P02 returns one requirement",
+    "empty_search": "no-match state shown",
+    "local_evidence": "reference persists after reload",
+    "status_integrity": "accepted local submission does not alter P01 or overall production conclusion",
+    "json_export": "download inspected: 24 requirements, 0 verified completions and 0 connected services",
+    "filtered_csv_export": "download inspected: one P24 row for Not verified filter",
+    "standalone_report": "main and web_source links open the readable HTML report",
+    "report_reload": "completion-report deep link survives reload",
+    "global_navigation": "report shortcut works from existing workspace",
+    "reset": "local test evidence cleared"
+  },
+  "mobile": {
+    "actual_css_width": 433,
+    "document_width": 416,
+    "search": "one P02 card",
+    "detail": "persistent database detail readable"
+  },
+  "evidence_basis": "evidence/Frontend_Validation_Baseline.json plus current report interaction checks",
+  "limits": [
+    "No backend implementation performed",
+    "No actual data/model/AI/agent/solver execution verified",
+    "No real identity, security, cloud, monitoring or recovery tests",
+    "No full accessibility audit or native PDF print verification"
+  ],
+  "production_status": "Incomplete"
+}

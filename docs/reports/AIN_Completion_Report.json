@@ -1,0 +1,459 @@
+{
+  "title": "AIN completion and outstanding work report",
+  "generated_at": "2026-11-19T07:15:40.339426+00:00",
+  "audit_scope": "Supplied frontend artifacts and documented local checks",
+  "overall_status": "Production system incomplete",
+  "production_services_connected": 0,
+  "production_requirements_verified_complete": 0,
+  "production_requirements_total": 24,
+  "ui_delivery": [
+    {
+      "name": "Workspace navigation and screens",
+      "status": "Complete for prototype",
+      "evidence": "64 original workspaces across eight departments; 320 saved view checks.",
+      "limit": "Checks cover UI views, not backend correctness."
+    },
+    {
+      "name": "Functional scope and acceptance maps",
+      "status": "Complete as specification",
+      "evidence": "256 workspace functions, 16 shared requirements and 72 acceptance requirements.",
+      "limit": "A function description does not implement its service."
+    },
+    {
+      "name": "Connected local case walkthroughs",
+      "status": "Complete for local walkthrough",
+      "evidence": "Four journeys tested; context, human revision, version history, archive/restore and export checked.",
+      "limit": "Records live in browser storage and do not execute airline actions."
+    },
+    {
+      "name": "Local record and rehearsal tools",
+      "status": "Demonstrated locally",
+      "evidence": "Drafts, notes, filters, exports, job checkpoints, fixture validation and authored-candidate comparisons.",
+      "limit": "No durable server workers, prediction providers or optimization solver."
+    },
+    {
+      "name": "Responsive interface",
+      "status": "Demonstrated at tested viewport",
+      "evidence": "Mobile checkpoint submission tested at 433 CSS pixels with no page overflow.",
+      "limit": "A full accessibility audit, device matrix and load test remain outstanding."
+    },
+    {
+      "name": "Editable application and handoff",
+      "status": "Delivered",
+      "evidence": "Self-contained HTML, split HTML/CSS/JS, system specification, guide and validation results.",
+      "limit": "Deployment infrastructure, operational service runbooks and production acceptance remain incomplete."
+    }
+  ],
+  "production_requirements": [
+    {
+      "id": "P01",
+      "name": "Backend services",
+      "status": "Not implemented",
+      "owner": "Backend engineering",
+      "workspace": "API gateway",
+      "current": "Typed route sketches and a local request/response sandbox.",
+      "missing": "Implement operational, case, prediction, document, job and approval services.",
+      "completion_evidence": "Integrated deployed APIs pass success, failure and authorization tests.",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "Persistent database",
+      "status": "Not implemented",
+      "owner": "Backend engineering",
+      "workspace": "Lakehouse explorer",
+      "current": "Browser-local records; planned storage layers.",
+      "missing": "Implement database relationships, migrations, integrity, transactions and conflict handling.",
+      "completion_evidence": "Records survive service restarts; integrity, migration and concurrent-write tests pass.",
+      "dependencies": []
+    },
+    {
+      "id": "P03",
+      "name": "Authorized datasets",
+      "status": "Not implemented",
+      "owner": "Data governance",
+      "workspace": "Dataset registry",
+      "current": "Synthetic fixtures and source-release proposal forms.",
+      "missing": "Acquire exact authorized releases; verify rights, coverage, units and identifiers.",
+      "completion_evidence": "Reviewed licenses/permissions and reproducible source manifests.",
+      "dependencies": []
+    },
+    {
+      "id": "P04",
+      "name": "Data ingestion",
+      "status": "Not implemented",
+      "owner": "Data engineering",
+      "workspace": "Ingestion pipelines",
+      "current": "Manually advanced job rehearsals and bounded JSON checks.",
+      "missing": "Implement batch/incremental collectors, scheduling, validation, quarantine and replay.",
+      "completion_evidence": "Successful ingestion with reconciled counts and recoverable dependency failures.",
+      "dependencies": [
+        "P02",
+        "P03"
+      ]
+    },
+    {
+      "id": "P05",
+      "name": "Big-data processing",
+      "status": "Not implemented",
+      "owner": "Data engineering",
+      "workspace": "Data quality",
+      "current": "Small fixture checks and a 5,000-row/1 MB pasted-preview limit.",
+      "missing": "Implement representative large-scale processing, partitioning and bounded queries.",
+      "completion_evidence": "Actual record counts, storage, runtime and resource measurements.",
+      "dependencies": [
+        "P04"
+      ]
+    },
+    {
+      "id": "P06",
+      "name": "Data science models",
+      "status": "Not implemented",
+      "owner": "Data science",
+      "workspace": "Prediction models",
+      "current": "Seven model designs with baseline, split and metric plans.",
+      "missing": "Train and evaluate the agreed regression, classification, sentiment, clustering, forecasting and anomaly models.",
+      "completion_evidence": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
+      "dependencies": [
+        "P03",
+        "P04",
+        "P05"
+      ]
+    },
+    {
+      "id": "P07",
+      "name": "Prediction deployment",
+      "status": "Not implemented",
+      "owner": "ML engineering",
+      "workspace": "Disruption prediction",
+      "current": "Scoring request designs; no deployed model artifacts.",
+      "missing": "Implement artifact loading, feature validation, versioned inference, uncertainty and abstention.",
+      "completion_evidence": "Inference, fallback, monitoring and model-rollback tests pass.",
+      "dependencies": [
+        "P01",
+        "P06"
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Generative AI",
+      "status": "Not implemented",
+      "owner": "Knowledge engineering",
+      "workspace": "Evidence & RAG",
+      "current": "Exact excerpts from three written fixtures and an explicit provider-unavailable state.",
+      "missing": "Implement authorized extraction, chunks, embeddings, retrieval and provider-backed generation.",
+      "completion_evidence": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
+      "dependencies": [
+        "P01",
+        "P03",
+        "P13"
+      ]
+    },
+    {
+      "id": "P09",
+      "name": "Agent execution",
+      "status": "Not implemented",
+      "owner": "AI engineering",
+      "workspace": "AI agent command",
+      "current": "Ten role contracts and manually advanced local investigation traces.",
+      "missing": "Implement bounded tools, durable checkpoints, limits, cancellation and interruption recovery.",
+      "completion_evidence": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
+      "dependencies": [
+        "P01",
+        "P08",
+        "P13",
+        "P14"
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "Mathematical optimization",
+      "status": "Not implemented",
+      "owner": "Operations research",
+      "workspace": "Recovery optimizer",
+      "current": "Three hand-authored candidates with local bounds and authored feasibility flags.",
+      "missing": "Implement a real formulation, solver, time limits and independent feasibility verifier.",
+      "completion_evidence": "Reproducible computed candidates, infeasibility cases and verifier evidence.",
+      "dependencies": [
+        "P03",
+        "P04"
+      ]
+    },
+    {
+      "id": "P11",
+      "name": "Connected business workflows",
+      "status": "Not implemented",
+      "owner": "Operations product",
+      "workspace": "Incident command",
+      "current": "Four connected browser-local case walkthroughs.",
+      "missing": "Connect persistent source, incident, analysis, proposal, decision and outcome services.",
+      "completion_evidence": "Critical journeys pass across deployed services with shared persistent identifiers.",
+      "dependencies": [
+        "P01",
+        "P02",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P14",
+        "P17"
+      ]
+    },
+    {
+      "id": "P12",
+      "name": "Authentication",
+      "status": "Not implemented",
+      "owner": "Identity engineering",
+      "workspace": "Identity & access",
+      "current": "Demo identity and verification screens; no authenticated session.",
+      "missing": "Integrate user/service identities, sign-in, sessions, appropriate MFA and revocation.",
+      "completion_evidence": "Identity lifecycle, session expiry and revocation tests pass.",
+      "dependencies": []
+    },
+    {
+      "id": "P13",
+      "name": "Authorization",
+      "status": "Not implemented",
+      "owner": "Security engineering",
+      "workspace": "Roles & permissions",
+      "current": "Editable proposed matrix and local allow/deny previews.",
+      "missing": "Enforce resource permissions, separation of duties and applicable tenant/purpose boundaries.",
+      "completion_evidence": "Negative tests prove unauthorized requests and retrieval are denied.",
+      "dependencies": [
+        "P12"
+      ]
+    },
+    {
+      "id": "P14",
+      "name": "Human approval controls",
+      "status": "Not implemented",
+      "owner": "Governance engineering",
+      "workspace": "Human approvals",
+      "current": "Local input-version binding, expiry and reviewer-rationale demonstrations.",
+      "missing": "Implement authorized, transactional, expiring decisions tied to exact proposal versions.",
+      "completion_evidence": "Changed/expired proposals and duplicate/conflicting decisions are rejected.",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13",
+        "P15"
+      ]
+    },
+    {
+      "id": "P15",
+      "name": "Protected audit",
+      "status": "Not implemented",
+      "owner": "Governance engineering",
+      "workspace": "Audit trail",
+      "current": "Editable browser-local demonstration events and case history.",
+      "missing": "Implement correlated server-side actor/resource/action/outcome records with protected retention.",
+      "completion_evidence": "Relevant actions can be reconstructed; unauthorized modification is prevented.",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13"
+      ]
+    },
+    {
+      "id": "P16",
+      "name": "Security and privacy",
+      "status": "Not implemented",
+      "owner": "Security engineering",
+      "workspace": "Security center",
+      "current": "Control designs and limited frontend input/CSV handling; no production security review.",
+      "missing": "Implement protected secrets, encryption, safe handling, restricted exports, retention and vulnerability management.",
+      "completion_evidence": "Reviewed controls, security results and resolved material findings.",
+      "dependencies": [
+        "P12",
+        "P13",
+        "P15"
+      ]
+    },
+    {
+      "id": "P17",
+      "name": "Production deployment",
+      "status": "Not implemented",
+      "owner": "Platform engineering",
+      "workspace": "Cloud infrastructure",
+      "current": "Portable static frontend; cloud topology and release drafts.",
+      "missing": "Deploy reproducible environments, persistent services, configuration and controlled releases.",
+      "completion_evidence": "Deployed environment has passing readiness/health checks and reviewed configuration.",
+      "dependencies": [
+        "P01",
+        "P02",
+        "P12",
+        "P16"
+      ]
+    },
+    {
+      "id": "P18",
+      "name": "Monitoring",
+      "status": "Not implemented",
+      "owner": "Platform reliability",
+      "workspace": "Observability",
+      "current": "Monitor definition forms; counters reflect local rehearsals only.",
+      "missing": "Collect actual service, pipeline, model, retrieval, agent and cost signals with alert ownership.",
+      "completion_evidence": "Working measured dashboards, actionable alerts and response procedures.",
+      "dependencies": [
+        "P17"
+      ]
+    },
+    {
+      "id": "P19",
+      "name": "Backup and recovery",
+      "status": "Not implemented",
+      "owner": "Platform reliability",
+      "workspace": "Disaster recovery",
+      "current": "Recovery target/runbook forms and manual restoration rehearsals.",
+      "missing": "Implement backups, isolated restoration, reconciliation and job/interruption replay.",
+      "completion_evidence": "Successful drills measure recovery time and data loss against agreed targets.",
+      "dependencies": [
+        "P02",
+        "P17",
+        "P18"
+      ]
+    },
+    {
+      "id": "P20",
+      "name": "Rollback",
+      "status": "Not implemented",
+      "owner": "Platform engineering",
+      "workspace": "Release management",
+      "current": "Rollback-plan fields and release gate designs.",
+      "missing": "Implement compatible application, database, model and prompt rollback paths.",
+      "completion_evidence": "Demonstrated rollback preserves acceptable integrity and availability.",
+      "dependencies": [
+        "P17",
+        "P19"
+      ]
+    },
+    {
+      "id": "P21",
+      "name": "Performance and accessibility",
+      "status": "Partially evidenced",
+      "owner": "Quality engineering",
+      "workspace": "AI evaluation lab",
+      "current": "Basic responsive and keyboard-oriented UI checks; mobile checkpoint submission passed.",
+      "missing": "Complete accessibility review, representative load tests and capacity measurements.",
+      "completion_evidence": "Reviewed results meet agreed targets and material accessibility defects are resolved.",
+      "dependencies": [
+        "P17"
+      ]
+    },
+    {
+      "id": "P22",
+      "name": "Integrated acceptance testing",
+      "status": "Partially evidenced",
+      "owner": "Quality engineering",
+      "workspace": "AI evaluation lab",
+      "current": "320 saved UI-view checks, local journey tests and limited fixture assertions.",
+      "missing": "Execute integrated service, authorization, data, model, AI, optimization and outage suites.",
+      "completion_evidence": "Reviewed real execution evidence with critical defects resolved.",
+      "dependencies": [
+        "P11",
+        "P16",
+        "P18",
+        "P19",
+        "P20"
+      ]
+    },
+    {
+      "id": "P23",
+      "name": "Operational documentation",
+      "status": "Partially evidenced",
+      "owner": "Delivery engineering",
+      "workspace": "Shift handover",
+      "current": "UI guide, specification, code package and local-check records delivered.",
+      "missing": "Write actual deployment, API, dataset/model, ownership, incident and recovery runbooks.",
+      "completion_evidence": "A responsible engineer can deploy, operate, investigate and restore the implemented system.",
+      "dependencies": [
+        "P17",
+        "P18",
+        "P19",
+        "P20"
+      ]
+    },
+    {
+      "id": "P24",
+      "name": "Final scope acceptance",
+      "status": "Not verified",
+      "owner": "Product and engineering owners",
+      "workspace": "Release management",
+      "current": "Documented agreed scope; no deployed production acceptance or sign-off.",
+      "missing": "Review implemented capabilities, exclusions, limitations and remaining defects.",
+      "completion_evidence": "Acceptance confirms claims match tested implemented behavior.",
+      "dependencies": [
+        "P21",
+        "P22",
+        "P23"
+      ]
+    }
+  ],
+  "implementation_groups": [
+    {
+      "name": "Foundation and trust",
+      "ids": [
+        "P01",
+        "P02",
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "outcome": "Persistent services and enforced identity, permissions and decision controls."
+    },
+    {
+      "name": "Authorized data and scale",
+      "ids": [
+        "P03",
+        "P04",
+        "P05"
+      ],
+      "outcome": "Reviewed data rights, reproducible ingestion and measured processing scale."
+    },
+    {
+      "name": "Measured analytics and optimization",
+      "ids": [
+        "P06",
+        "P07",
+        "P10"
+      ],
+      "outcome": "Evaluated model artifacts, inference and verified computed alternatives."
+    },
+    {
+      "name": "Grounded AI and connected operations",
+      "ids": [
+        "P08",
+        "P09",
+        "P11"
+      ],
+      "outcome": "Authorized retrieval, actual agent tools and integrated persistent workflows."
+    },
+    {
+      "name": "Reliable deployment",
+      "ids": [
+        "P17",
+        "P18",
+        "P19",
+        "P20"
+      ],
+      "outcome": "Deployed services, active monitoring and tested restore/rollback."
+    },
+    {
+      "name": "Qualification and handoff",
+      "ids": [
+        "P21",
+        "P22",
+        "P23",
+        "P24"
+      ],
+      "outcome": "Accepted accessibility, performance, integration evidence and operating documentation."
+    }
+  ],
+  "limits": "No actual backend, trained inference, provider generation, agent runtime, solver, authentication, cloud monitoring or recovery verification supplied."
+}
