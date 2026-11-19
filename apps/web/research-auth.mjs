@@ -17,6 +17,14 @@ export function mountAuth(parent,onChange) {
   card.innerHTML=`<div class="auth-visual">
       <img class="auth-hero-image" src="assets/login-family-aviation.png" alt="AI-generated scene of an Emirati family travelling through a Dubai airport beside a passenger aircraft.">
       <div class="auth-visual-shade"></div>
+      <div class="auth-uae-flag">
+        <svg viewBox="0 0 240 120" role="img" aria-label="Flag of the United Arab Emirates" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="uaeFlagSilk" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".28" stop-color="#000" stop-opacity=".08"/><stop offset=".55" stop-color="#fff" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient></defs>
+          <path fill="#009a49" d="M0 0h240v40H0z"/><path fill="#fff" d="M0 40h240v40H0z"/><path fill="#111" d="M0 80h240v40H0z"/>
+          <path fill="#ed1c24" d="M0 0h60v120H0z"/><path fill="url(#uaeFlagSilk)" d="M0 0h240v120H0z"/>
+        </svg>
+        <span lang="ar" dir="rtl">الإمارات العربية المتحدة</span>
+      </div>
       <div class="auth-visual-brand"><span class="auth-brand-mark" aria-hidden="true">✈</span><div><strong>AIN<span>.</span></strong><small>AVIATION INTELLIGENCE NEXUS</small></div></div>
       <div class="auth-hero-copy"><p class="auth-hero-eyebrow">EMIRATES-INSPIRED · DUBAI SPIRIT</p><p class="auth-arabic" lang="ar" dir="rtl">أهلاً بكم</p><h1>A world of journeys.<br>A clearer perspective.</h1><p>Connecting the people, possibilities and intelligence behind every journey.</p><div class="auth-hero-rule"></div><span>People at the heart. Intelligence at the horizon.</span></div>
       <div class="auth-visual-footer"><span>DUBAI, UNITED ARAB EMIRATES</span><span>AI-generated travel concept</span></div>
