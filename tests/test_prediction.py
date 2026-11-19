@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from uuid import uuid4
 
-from fastapi.testclient import TestClient
+from auth_helpers import authenticated_client as TestClient
 import joblib
 import pandas as pd
 from threadpoolctl import threadpool_limits

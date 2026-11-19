@@ -15,7 +15,7 @@ Open http://127.0.0.1:8080 with the Python API on port 8002. Wait for the connec
 - The same-origin proxy allows only the exact POST route and JSON bodies up to 4 KiB; it does not forward browser credentials. This is not authentication or general abuse protection.
 - Editing inputs or refreshing the connection clears old results and cancels the browser request. Failed requests never display a previous probability as a new answer.
 
-Successful calculations now commit a local research-history record before returning a result; see `RESEARCH_HISTORY.md`. Imported flight rows are not modified. The v2 model and its May evaluation are unchanged. Operational serving remains disabled; the status separately declares the research scenario endpoint available. There is no cloud deployment, user authorization, rate-limit service, monitoring or recovery qualification. Keep both servers bound to loopback.
+Successful calculations now commit a local research-history record before returning a result; see `RESEARCH_HISTORY.md`. Imported flight rows are not modified. The v2 model and its May evaluation are unchanged. Operational serving remains disabled; the status separately declares the research scenario endpoint available. Local role authorization now protects this endpoint; see `LOCAL_IDENTITY.md`. There is no cloud deployment, distributed rate-limit service, monitoring or recovery qualification. Keep both servers bound to loopback.
 
 ## Verification
 

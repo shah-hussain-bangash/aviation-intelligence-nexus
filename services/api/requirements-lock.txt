@@ -1,7 +1,10 @@
 annotated-doc==0.0.7
 annotated-types==0.8.0
 anyio==4.16.0
+argon2-cffi==25.1.0
+argon2-cffi-bindings==26.2.0
 certifi==2026.10.23
+cffi==2.1.1
 click==8.5.1
 cloudpickle==3.1.3
 fastapi==0.163.1
@@ -14,6 +17,7 @@ narwhals==2.29.0
 numpy==2.5.5
 opentelemetry-api==1.45.2
 pandas==3.1.1
+pycparser==3.12
 pydantic==2.14.3
 pydantic_core==2.50.4
 python-dateutil==4.0.0

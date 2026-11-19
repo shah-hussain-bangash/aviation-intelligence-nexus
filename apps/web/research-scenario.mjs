@@ -1,4 +1,5 @@
 import { mountHistory } from './research-history.mjs';
+import { apiFetch } from './research-auth.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export function renderPrediction(result) {
@@ -54,7 +55,7 @@ export function mountScenario(parent) {
     const timeout = setTimeout(() => controller.abort(), 12000);
     button.disabled = true; output.textContent = 'Calculating a research probability…';
     try {
-      const response = await fetch('/api/v1/research/predict', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
+      const response = await apiFetch('/api/v1/research/predict', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
         body: JSON.stringify(Object.fromEntries(new FormData(form))), signal: controller.signal, cache: 'no-store' });
       const result = await response.json();
       if (current !== generation) return;
@@ -73,9 +74,9 @@ export function mountScenario(parent) {
       if (current === generation) button.disabled = !available;
     }
   });
-  return { setAvailable(value) {
+  return { clearHistory:()=>historyUI.clear(), refreshHistory:()=>historyUI.refresh(), setAvailable(value,reason) {
     available = value; generation++; request?.abort(); output.replaceChildren(); button.disabled = !value;
     availability.textContent = value ? 'Verified v2 model connected. Results are illustrative research outputs.'
-      : 'Connect to the verified research model to use this form.';
+      : reason || 'Connect to the verified research model to use this form.';
   } };
 }

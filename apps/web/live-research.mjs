@@ -1,4 +1,5 @@
 import { mountScenario } from './research-scenario.mjs';
+import { apiFetch, canCalculate, mountAuth } from './research-auth.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Invalid numeric response');
@@ -65,13 +66,14 @@ if (typeof document !== 'undefined') {
     body.innerHTML = '<p>Checking the local backend…</p>';
     try {
       if (location.protocol === 'file:') throw new Error('Use the local dashboard server');
-      const response = await fetch('/api/v1/research/summary', { cache: 'no-store', signal: AbortSignal.timeout(12000) });
+      const response = await apiFetch('/api/v1/research/summary', { signal: AbortSignal.timeout(12000) });
       if (!response.ok) throw new Error('Backend unavailable');
       const payload = await response.json();
       body.innerHTML = renderResearchSummary(payload);
       status.textContent = 'Backend connected · historical data';
       section.dataset.state = 'connected';
-      scenarioUI.setAvailable(payload.model?.research_gate_passed === true);
+      scenarioUI.setAvailable(payload.model?.research_gate_passed === true && canCalculate(),
+        canCalculate() ? undefined : 'Viewer access: data and reports are available; calculations require a researcher or administrator.');
     } catch {
       status.textContent = 'Backend unavailable';
       section.dataset.state = 'unavailable';
@@ -81,5 +83,12 @@ if (typeof document !== 'undefined') {
     }
   }
   refresh.addEventListener('click', update);
-  update();
+  section.querySelector('details').hidden=true;
+  mountAuth(section,user=>{
+    section.querySelector('details').hidden=!user;
+    scenarioUI.setAvailable(false);
+    scenarioUI.clearHistory();
+    body.replaceChildren();
+    if(user){scenarioUI.refreshHistory();update();}
+  });
 }

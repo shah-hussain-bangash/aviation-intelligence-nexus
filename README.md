@@ -2,7 +2,7 @@
 
 An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
 
-**Current status: dashboard prototype with a connected local historical-data/model-evaluation panel, read-only Python API, SQLite database, BTS ingestion and two measured delay-model experiments. The second model passed prespecified research checks on a fresh May holdout; neither model is approved for operational serving. Generative AI, agent execution, optimization, authentication and production deployment are not implemented.**
+**Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion and two measured model experiments. The second model passed prespecified research checks; neither model is approved for operational airline serving. Generative AI, agent execution, optimization, managed production identity and production deployment are not implemented.**
 
 ![Aviation dashboard prototype](docs/images/dashboard.jpg)
 
@@ -30,6 +30,7 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 - Connected historical research panel with actual database counts, same-period model comparison and verified backend failure/recovery states. See [dashboard setup](docs/CONNECTED_DASHBOARD.md).
 - Local historical-scenario form with actual v2 model inference, strict scope checks and research-only output. See [research prediction](docs/RESEARCH_PREDICTION.md).
 - Persistent local research history with model/input provenance, retry deduplication, saved-result review and JSON export. See [research history](docs/RESEARCH_HISTORY.md).
+- Local password sign-in, expiring sessions and server-enforced admin/researcher/viewer roles. See [account setup and limits](docs/LOCAL_IDENTITY.md).
 
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.

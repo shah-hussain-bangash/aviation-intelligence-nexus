@@ -16,3 +16,5 @@ The default database is `.local/ain.sqlite3`, excluded from Git. `AIN_DB_PATH` o
 No sample flights are inserted at startup. A fresh database starts at zero; the development database now contains the BTS import described in `DATA_INGESTION.md`. Test fixtures exist only in temporary test databases. Schema version 2 adds flight identity fields, cancellation/diversion flags and an import provenance table.
 
 This is a read-only local development API. Bind only to loopback. Authentication, permissions, predictions, dashboard integration, cloud deployment and recovery qualification are still pending. The dependency file pins direct packages; a complete dependency lock and isolated CI verification remain release work.
+
+Identity update: schema version 4 adds local users/sessions, login throttling and research-run ownership. All connected research endpoints now require sign-in. See `LOCAL_IDENTITY.md` for account setup and current limits; the original read-only foundation description above is historical.

@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, nine Node dashboard/proxy/startup tests and 32 Python backend/data/model/history tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, ten Node dashboard/proxy/startup tests and 43 Python backend/data/model/history tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -34,3 +34,5 @@ The **Project checks** workflow runs after pushes to main and pull requests. Its
 CI uses synthetic temporary fixtures to test behavior. It does not repeat the million-row model experiments or establish production suitability. Experiment metrics remain separately recorded in sanitized reports. A fresh clone does not contain this workstation's local database or trained artifacts; import and training are separate reproducible steps.
 
 The GitHub sync policy now requires `npm test` before publication. A successful local test is not proof of a successful hosted run; check the actual commit's GitHub Actions results. Authentication, authorization, cloud deployment, monitoring and protected recovery remain separate outstanding work.
+
+Connected research now requires local sign-in. Create your first administrator using `docs/LOCAL_IDENTITY.md`; CI uses isolated temporary accounts, never your real account.

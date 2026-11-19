@@ -4,7 +4,7 @@ Successful research calculations are now saved in the local SQLite database and 
 
 ## Stored evidence
 
-Each record stores its UUID, UTC save time, validated input scenario, input hash, model version, artifact hash, probability and research warnings. The actor is explicitly `anonymous_local`; no authenticated identity is inferred. The local database is excluded from GitHub. Inputs and results are not sent to an external model provider.
+Each record stores its UUID, UTC save time, validated input scenario, input hash, model version, artifact hash, probability and research warnings. Legacy records retain actor `anonymous_local`. New records store the authenticated username and owner ID; researchers/viewers can read their own records, while administrators can also review legacy records. The local database is excluded from GitHub. Inputs and results are not sent to an external model provider.
 
 Schema migration 3 creates `research_runs` and its time index. Startup migrations now run inside an explicit transaction. Existing flight records, import provenance and prior schema versions are preserved. A successful response is returned only after its history record commits. Invalid inputs, failed inference and failed integrity checks create no successful-run record.
 
@@ -22,6 +22,6 @@ The prediction route and fixed history route are available through the local das
 
 ## Limits and checks
 
-This is append-only through the provided API; it is **not tamper-proof auditing**. Anyone with local database access can change or remove rows. No user authentication, permissions, cryptographic audit signing, retention service or protected backup is implemented. Do not expose these local services publicly.
+This is append-only through the provided API; it is **not tamper-proof auditing**. Anyone with local database access can change or remove rows. Local session authentication and owner-scoped permissions are now implemented; managed identity, cryptographic audit signing, retention service and protected backup remain incomplete. See `LOCAL_IDENTITY.md`. Do not expose these local services publicly.
 
 Verification covers saved results across restart, version-2 migration preserving existing flights, concurrent duplicate requests, conflicting request keys, failed calculations, bounded history and escaped UI output. The Python and Node suites remain the reproducible checks; browser testing exercises save, review and JSON export. Production readiness remains false.

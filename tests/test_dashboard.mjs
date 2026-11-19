@@ -40,6 +40,25 @@ test('history shows empty state, escapes saved text and rejects invalid probabil
   assert.throws(()=>renderHistory([{...run,arrival_delay_15_probability:NaN}]));
 });
 
+test('auth proxy preserves the session cookie and CSRF while filtering unrelated credentials', async t=>{
+  const backend=await serve(t,async(req,res)=>{
+    if(req.url==='/api/v1/auth/login'){
+      for await(const chunk of req){}
+      res.setHeader('Set-Cookie','ain_session=fixturetoken; HttpOnly; Path=/api; SameSite=Strict');
+    }else{
+      assert.equal(req.headers.cookie,'ain_session=fixturetoken');
+      assert.equal(req.headers.authorization,undefined);
+      assert.equal(req.headers['x-csrf-token'],'fixture-csrf');
+    }
+    res.end('{"authenticated":true}');
+  });
+  const frontend=await serve(t,async(req,res)=>{await proxyResearchRequest(req,res,req.url,backend);});
+  const login=await fetch(`http://127.0.0.1:${frontend}/api/v1/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+  assert.ok(login.headers.get('set-cookie').includes('HttpOnly'));
+  const session=await fetch(`http://127.0.0.1:${frontend}/api/v1/auth/session`,{headers:{Cookie:'unrelated=private; ain_session=fixturetoken',Authorization:'local-test-only','X-CSRF-Token':'fixture-csrf'}});
+  assert.equal(session.status,200);
+});
+
 test('prediction proxy limits methods, media type and body size', async t => {
   let forwarded = 0;
   const backend = await serve(t, async (req, res) => {

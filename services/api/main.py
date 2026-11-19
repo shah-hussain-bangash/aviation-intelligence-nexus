@@ -9,13 +9,22 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Literal
 
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, Request
+from pydantic import BaseModel, ConfigDict, Field
+import hmac
 from uuid import UUID, uuid4
 from fastapi.responses import JSONResponse
 from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfScope
 from services.api.history import IdempotencyConflict, ResearchHistory
+from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class LoginInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    username: str = Field(pattern=r"^[a-zA-Z0-9_.-]{3,32}$")
+    password: str = Field(min_length=1, max_length=128)
 
 
 def connect(database: Path):
@@ -32,7 +41,7 @@ def initialize(database: Path):
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
         version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > 3:
+        if version > 4:
             raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
@@ -68,6 +77,14 @@ def initialize(database: Path):
             )""")
             connection.execute("CREATE INDEX research_runs_created ON research_runs(created_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (3)")
+        if version < 4:
+            connection.execute("CREATE TABLE auth_users(id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, "
+                               "password_hash TEXT NOT NULL, role TEXT NOT NULL, active INTEGER NOT NULL)")
+            connection.execute("CREATE TABLE auth_sessions(token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at REAL NOT NULL)")
+            connection.execute("CREATE TABLE auth_limits(key TEXT PRIMARY KEY, failures INTEGER NOT NULL, window_start REAL NOT NULL)")
+            connection.execute("ALTER TABLE research_runs ADD COLUMN owner_id TEXT")
+            connection.execute("CREATE INDEX research_runs_owner ON research_runs(owner_id,created_at)")
+            connection.execute("INSERT INTO schema_migrations(version) VALUES (4)")
 
 
 def read_model_report(directory: Path):
@@ -90,6 +107,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     research_model_directory = research_model_directory if research_model_directory is not None else ROOT / ".local/models/delay-v2"
     predictor = ResearchPredictor(research_model_directory)
     history = ResearchHistory(database)
+    auth = AuthStore(database)
+    origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
+               for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
 
     @asynccontextmanager
     async def lifespan(app):
@@ -99,9 +119,66 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     app = FastAPI(
         title="Aviation Intelligence Nexus — Local API",
         version="0.2.0",
-        description="Local research service: historical aggregates, model reports and bounded scenario inference. No authentication or operational approval.",
+        description="Local authenticated research service with server-enforced roles. Loopback development only; no operational approval.",
         lifespan=lifespan,
     )
+    app.state.auth_store = auth
+
+    @app.middleware("http")
+    async def require_session(request: Request, call_next):
+        if not request.url.path.startswith("/api/v1/"):
+            return await call_next(request)
+        unsafe = request.method not in ("GET", "HEAD", "OPTIONS")
+        if unsafe and request.headers.get("origin") not in origins:
+            return JSONResponse(status_code=403, content={"error": "origin_rejected"})
+        try:
+            token = request.cookies.get(COOKIE, "")
+            user = auth.session(token)
+            request.state.user = user
+            public = request.url.path in ("/api/v1/auth/login", "/api/v1/auth/session")
+            if not public and not user:
+                return JSONResponse(status_code=401, content={"error": "sign_in_required"})
+            if unsafe and request.url.path != "/api/v1/auth/login":
+                if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
+                    return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
+            if request.url.path == "/api/v1/research/predict" and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+                return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
+        except sqlite3.Error:
+            return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+    @app.get("/api/v1/auth/session")
+    def auth_session(request: Request):
+        user = request.state.user
+        try:
+            return {"authenticated": bool(user), "user": user,
+                    "csrf_token": csrf_token(request.cookies[COOKIE]) if user else None,
+                    "enrollment_required": auth.enrollment_required(), "local_development_only": True}
+        except sqlite3.Error:
+            return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
+
+    @app.post("/api/v1/auth/login")
+    def login(credentials: LoginInput):
+        try:
+            token = auth.login(credentials.username, credentials.password)
+            response = JSONResponse({"authenticated": True, "user": auth.session(token), "csrf_token": csrf_token(token)})
+            response.set_cookie(COOKIE, token, max_age=SESSION_SECONDS, httponly=True, samesite="strict", secure=False, path="/api")
+            return response
+        except LoginLimited:
+            return JSONResponse(status_code=429, content={"error": "login_rate_limited", "message": "Try again after one minute."})
+        except LoginDenied:
+            return JSONResponse(status_code=401, content={"error": "invalid_credentials"})
+        except sqlite3.Error:
+            return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
+
+    @app.post("/api/v1/auth/logout")
+    def logout(request: Request):
+        auth.logout(request.cookies[COOKIE])
+        response = JSONResponse({"authenticated": False})
+        response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict")
+        return response
 
     @app.get("/health/live")
     def live():
@@ -186,14 +263,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             return JSONResponse(status_code=503, content={"error": "research_database_unavailable"})
 
     @app.post("/api/v1/research/predict")
-    def predict_scenario(scenario: Scenario, idempotency_key: UUID | None = Header(default=None)):
+    def predict_scenario(scenario: Scenario, request: Request, idempotency_key: UUID | None = Header(default=None)):
         key = str(idempotency_key or uuid4())
         payload = scenario.model_dump(mode="json")
         try:
-            existing = history.lookup(key, payload)
+            existing = history.lookup(key, payload, request.state.user["id"])
             if existing:
                 return existing
-            return history.save(key, payload, predictor.predict(scenario))
+            return history.save(key, payload, predictor.predict(scenario), request.state.user)
         except IdempotencyConflict:
             return JSONResponse(status_code=409, content={"error": "request_key_conflict",
                 "message": "This request key belongs to different inputs. Use a new request key."})
@@ -208,9 +285,11 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
                 "message": "A verified research model could not produce a result. No probability was produced."})
 
     @app.get("/api/v1/research/history")
-    def research_history():
+    def research_history(request: Request):
         try:
-            return {"runs": history.recent(), "limit": 10, "actor_scope": "anonymous_local",
+            user = request.state.user
+            return {"runs": history.recent(user["id"], user["role"] == "admin"), "limit": 10,
+                    "actor_scope": "all_local_runs" if user["role"] == "admin" else "own_runs",
                     "research_only": True, "tamper_proof": False}
         except (sqlite3.Error, ValueError):
             return JSONResponse(status_code=503, content={"error": "research_history_unavailable"})
