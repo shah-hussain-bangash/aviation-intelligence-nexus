@@ -1,0 +1,86 @@
+{
+  "dataset_version": "bts-q1-2025-v1",
+  "features": [
+    "carrier",
+    "origin",
+    "destination",
+    "flight_number",
+    "month",
+    "day_of_month",
+    "day_of_week",
+    "scheduled_departure_hour",
+    "scheduled_departure_minute"
+  ],
+  "target": "arrival_delayed_15",
+  "target_rule": "arrival_delay_minutes >= 15",
+  "prediction_context": "Scheduled-flight risk before departure, conditional on completed non-diverted flights",
+  "split_policy": "January train; February validation; March held-out test; no random shuffle",
+  "source_scope": "US domestic reporting carriers; not UAE operations",
+  "excluded_fields": [
+    "departure_delay_minutes",
+    "arrival_delay_minutes",
+    "cancelled",
+    "diverted"
+  ],
+  "limitations": [
+    "Historical reported schedules, not point-in-time schedule snapshots",
+    "One quarter does not establish seasonal generalization",
+    "Test labels must remain unused during feature selection and tuning",
+    "No model trained or operational performance measured"
+  ],
+  "splits": {
+    "train": {
+      "period": "2025-01",
+      "input_records": 539747,
+      "eligible_records": 522269,
+      "excluded_cancelled": 16312,
+      "excluded_diverted": 1166,
+      "excluded_missing_or_invalid": 0,
+      "sha256": "dbe1c153e44d6240f2557ebd422966efd3b23f74ef34dbb073670d5289768468"
+    },
+    "validation": {
+      "period": "2025-02",
+      "input_records": 504884,
+      "eligible_records": 496476,
+      "excluded_cancelled": 7405,
+      "excluded_diverted": 1003,
+      "excluded_missing_or_invalid": 0,
+      "sha256": "3587666330881a07eb0b3a7d58b14800546b3fd8ad128eace834418212d743a4"
+    },
+    "test": {
+      "period": "2025-03",
+      "input_records": 600872,
+      "eligible_records": 592301,
+      "excluded_cancelled": 6923,
+      "excluded_diverted": 1648,
+      "excluded_missing_or_invalid": 0,
+      "sha256": "e79efb5f653f24627395540a90129c9b011ec5942d2ad66f2270b6b3be2daead"
+    }
+  },
+  "source_imports": [
+    {
+      "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+      "source_url": "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2025_1.zip",
+      "period": "2025-01",
+      "rows_read": 539747,
+      "rows_inserted": 539747,
+      "duplicate_rows": 0
+    },
+    {
+      "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+      "source_url": "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2025_2.zip",
+      "period": "2025-02",
+      "rows_read": 504884,
+      "rows_inserted": 504884,
+      "duplicate_rows": 0
+    },
+    {
+      "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+      "source_url": "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2025_3.zip",
+      "period": "2025-03",
+      "rows_read": 600872,
+      "rows_inserted": 600872,
+      "duplicate_rows": 0
+    }
+  ]
+}

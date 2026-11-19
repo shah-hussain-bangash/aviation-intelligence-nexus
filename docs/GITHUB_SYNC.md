@@ -13,7 +13,7 @@ On this workstation, authenticated Git operations run through the connected Desk
 1. Check the repository, origin URL, current branch and working-tree state.
 2. Stop if another operation is in progress, the branch is not `main`, there are staged user changes, conflicts, unexpected paths or uncertain credentials/personal data.
 3. Fetch the remote without changing the working tree. Stop if the remote is ahead or histories diverge; do not auto-rebase, merge or stash.
-4. Inspect the actual diff and eligible new files. Run `npm run sync:plan` and `npm run check`.
+4. Inspect the actual diff and eligible new files. Run `npm run sync:plan` and `npm test` (source, dashboard/proxy/startup and Python backend/model tests). Stop if the project Python environment or dependencies are unavailable; do not skip backend checks.
 5. Stage only reviewed, explicit file paths. Never use an indiscriminate add of the whole working tree.
 6. Create a concise commit describing the real change, then push `main` without force.
 7. Verify the remote head matches the published local commit. If nothing changed and nothing is ahead, do nothing.
@@ -24,4 +24,4 @@ Existing local commits also require review before automatic publication. No comm
 
 Raw datasets, archives, credentials, private keys, `.env` files, personal documents, local databases, logs and model checkpoints must not be automatically published. Report CSVs under `docs/reports` are permitted only after content review. Secret-pattern detection is a basic guard, not a guarantee that content is safe.
 
-Future task-specific check commands must be added as real backend/model code is introduced. Frontend source checks do not validate production behavior.
+`npm test` now includes source validation, Node integration/startup tests and the Python suite. GitHub also runs Python tests on Linux and Windows using synthetic temporary test fixtures; raw datasets and model artifacts are not needed. These checks do not establish production behavior or airline model suitability.

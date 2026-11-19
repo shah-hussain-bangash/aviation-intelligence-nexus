@@ -1,6 +1,9 @@
 {
   "version": "2.0.0",
   "tasks": [
+    { "label": "AIN: Start API and dashboard", "type": "process", "command": "node", "args": ["scripts/start-local.mjs"], "problemMatcher": [], "isBackground": true },
+    { "label": "AIN: Test backend", "type": "process", "command": "node", "args": ["scripts/python-checks.mjs"], "problemMatcher": [] },
+    { "label": "AIN: Test dashboard", "type": "process", "command": "node", "args": ["--test", "tests/test_dashboard.mjs", "tests/test_startup.mjs"], "problemMatcher": [] },
     { "label": "AIN: Start dashboard", "type": "process", "command": "node", "args": ["scripts/dev.mjs"], "problemMatcher": [], "isBackground": true },
     { "label": "AIN: Validate source", "type": "process", "command": "node", "args": ["scripts/check.mjs"], "problemMatcher": [], "group": { "kind": "build", "isDefault": true } },
     { "label": "AIN: Review sync plan", "type": "process", "command": "node", "args": ["scripts/sync-plan.mjs"], "problemMatcher": [] }

@@ -2,7 +2,7 @@
 
 An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
 
-**Current status: frontend prototype. Real backend services, trained models, generative AI, agent execution, optimization, authentication and production deployment are not implemented.**
+**Current status: dashboard prototype with a connected local historical-data/model-evaluation panel, read-only Python API, SQLite database, BTS ingestion and two measured delay-model experiments. The second model passed prespecified research checks on a fresh May holdout; neither model is approved for operational serving. Generative AI, agent execution, optimization, authentication and production deployment are not implemented.**
 
 ![Aviation dashboard prototype](docs/images/dashboard.jpg)
 
@@ -17,9 +17,19 @@ npm run dev
 
 Open **http://127.0.0.1:8080**. Stop the local server with Ctrl+C.
 
+For the connected API and dashboard together, use `npm run dev:all` after installing the project Python environment. `npm test` runs the complete local test suite. See [daily development](docs/DEVELOPMENT.md) for setup and GitHub checks.
+
 You can also open `apps/web/index.html` directly. A local server gives browser storage a consistent origin.
 
 ## Included today
+
+- Local Python API with liveness/readiness checks, persistent SQLite schema and truthful record counts. See [backend setup](docs/BACKEND_SETUP.md).
+- Three-month BTS import (1,645,503 local records) and chronological training/validation/test dataset preparation. See [model dataset](docs/MODEL_DATASET.md).
+- Trained and evaluated logistic delay baseline, artifact integrity and measured suitability review. See [model results](docs/DELAY_BASELINE.md).
+- Five-month database (2,835,101 local records) and a prespecified gradient-boosting experiment trained on 1,611,046 flights. See [second experiment](docs/DELAY_V2.md).
+- Connected historical research panel with actual database counts, same-period model comparison and verified backend failure/recovery states. See [dashboard setup](docs/CONNECTED_DASHBOARD.md).
+- Local historical-scenario form with actual v2 model inference, strict scope checks and research-only output. See [research prediction](docs/RESEARCH_PREDICTION.md).
+- Persistent local research history with model/input provenance, retry deduplication, saved-result review and JSON export. See [research history](docs/RESEARCH_HISTORY.md).
 
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
@@ -57,6 +67,6 @@ Authorized historical flight data -> persistent database -> evaluated delay base
 
 ## Data and operational boundaries
 
-All shipped operational records are synthetic. Large datasets, credentials, personal documents and local databases are excluded from Git. Source registrations do not grant data rights. A local review does not enforce authentication or authorize an airline operation.
+The dashboard's bundled operational records are synthetic. The separate local database now contains an official BTS January 2025 import; see [data ingestion](docs/DATA_INGESTION.md). Large datasets, credentials, personal documents and local databases are excluded from Git. Source registrations do not grant data rights. A local review does not enforce authentication or authorize an airline operation.
 
 AIN is not affiliated with Emirates, Etihad or any airline. It does not provide dispatch, air-traffic, maintenance-release or passenger-communication authority. Use a production description only after implementation and verified deployment, security, monitoring and recovery evidence.

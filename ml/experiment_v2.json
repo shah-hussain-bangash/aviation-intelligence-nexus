@@ -1,0 +1,29 @@
+{
+  "experiment": "delay-v2",
+  "dataset_version": "bts-jan-may-2025-v2",
+  "period_groups": {
+    "train": ["2025-01", "2025-02", "2025-03"],
+    "validation": ["2025-04"],
+    "test": ["2025-05"]
+  },
+  "target": "arrival_delayed_15",
+  "categorical_features": ["carrier", "origin", "destination"],
+  "derived_features": ["departure_time_sin", "departure_time_cos", "weekday_sin", "weekday_cos"],
+  "excluded_inputs": ["flight_number", "month", "day_of_month", "departure_delay_minutes", "arrival_delay_minutes", "cancelled", "diverted"],
+  "candidates": [15, 31],
+  "max_iter": 120,
+  "learning_rate": 0.08,
+  "min_samples_leaf": 200,
+  "l2_regularization": 10.0,
+  "max_categories": 200,
+  "seed": 42,
+  "selection": "minimum April log loss; train-only preprocessing; no random early-stopping split",
+  "threshold": "maximum April F1 over 0.10..0.60 step 0.01; demonstration only",
+  "research_gate": {
+    "validation_and_test_min_auc": 0.60,
+    "validation_and_test_max_log_loss_ratio_to_training_prior": 0.99,
+    "validation_and_test_brier_must_beat_training_prior": true
+  },
+  "production_approval": false,
+  "test_policy": "Freeze selection before reading May labels; no tuning after May evaluation; preserve v1"
+}

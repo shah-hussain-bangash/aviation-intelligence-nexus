@@ -1,0 +1,28 @@
+{
+  "source_scope": "US domestic reporting carriers; not UAE airline data",
+  "summary": {
+    "records": 539747,
+    "first_date": "2025-01-01",
+    "last_date": "2025-01-31",
+    "carriers": 14,
+    "cancelled": 16312,
+    "diverted": 1166,
+    "missing_departure_delay": 15923,
+    "missing_arrival_delay": 17478
+  },
+  "import_manifest": {
+    "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+    "source_url": "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2025_1.zip",
+    "period": "2025-01",
+    "rows_read": 539747,
+    "rows_inserted": 539747,
+    "duplicate_rows": 0,
+    "imported_at": "2026-11-19 10:34:07"
+  },
+  "limits": [
+    "One month only; not a complete training dataset",
+    "No model trained",
+    "Missing delays preserved as null; do not treat cancellations as zero delay",
+    "No dashboard integration or production qualification"
+  ]
+}

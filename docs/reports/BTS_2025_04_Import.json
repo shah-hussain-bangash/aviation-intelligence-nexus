@@ -1,0 +1,9 @@
+{
+  "status": "imported",
+  "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+  "source_url": "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2025_4.zip",
+  "period": "2025-04",
+  "rows_read": 583950,
+  "rows_inserted": 583950,
+  "duplicate_rows": 0
+}
