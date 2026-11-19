@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const expectedRemote = 'https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus.git';
 export function git(args) {
-  const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', windowsHide: true, maxBuffer: 16 * 1024 * 1024 });
+  // Trust only this explicitly opened checkout when local execution uses a different Windows identity.
+  const result = spawnSync('git', ['-c', `safe.directory=${root}`, ...args], { cwd: root, encoding: 'utf8', windowsHide: true, maxBuffer: 16 * 1024 * 1024 });
   if (result.error) throw result.error;
   return result;
 }
