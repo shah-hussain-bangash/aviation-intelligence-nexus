@@ -18,12 +18,23 @@ export function mountAuth(parent,onChange) {
       <img class="auth-hero-image" src="assets/login-family-aviation.png" alt="AI-generated scene of an Emirati family travelling through a Dubai airport beside a passenger aircraft.">
       <div class="auth-visual-shade"></div>
       <div class="auth-uae-flag">
-        <svg viewBox="0 0 240 120" role="img" aria-label="Flag of the United Arab Emirates" xmlns="http://www.w3.org/2000/svg">
-          <defs><linearGradient id="uaeFlagSilk" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".28" stop-color="#000" stop-opacity=".08"/><stop offset=".55" stop-color="#fff" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient></defs>
-          <path fill="#009a49" d="M0 0h240v40H0z"/><path fill="#fff" d="M0 40h240v40H0z"/><path fill="#111" d="M0 80h240v40H0z"/>
-          <path fill="#ed1c24" d="M0 0h60v120H0z"/><path fill="url(#uaeFlagSilk)" d="M0 0h240v120H0z"/>
+        <svg viewBox="0 0 330 200" role="img" aria-label="Flag of the United Arab Emirates" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="uaePoleGold"><stop stop-color="#8c713f"/><stop offset=".35" stop-color="#fff0bc"/><stop offset=".65" stop-color="#c9a35d"/><stop offset="1" stop-color="#7d6439"/></linearGradient>
+            <linearGradient id="uaeSilkLight" x1="0" x2="1"><stop stop-color="#fff" stop-opacity=".12"/><stop offset=".18" stop-color="#fff" stop-opacity=".28"/><stop offset=".4" stop-color="#000" stop-opacity=".16"/><stop offset=".62" stop-color="#fff" stop-opacity=".2"/><stop offset=".84" stop-color="#000" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient>
+            <clipPath id="uaeFlowingSilhouette"><path d="M38 28C86 14 122 42 172 28C218 14 262 14 306 28V163C262 149 218 149 172 163C122 177 86 149 38 163Z"/></clipPath>
+            <filter id="uaeClothShadow" x="-20%" y="-30%" width="150%" height="170%"><feDropShadow dx="2" dy="8" stdDeviation="5" flood-color="#06151f" flood-opacity=".3"/></filter>
+          </defs>
+          <rect x="29" y="16" width="5" height="175" rx="2.5" fill="url(#uaePoleGold)"/>
+          <circle cx="31.5" cy="12" r="6" fill="url(#uaePoleGold)"/>
+          <g filter="url(#uaeClothShadow)"><g clip-path="url(#uaeFlowingSilhouette)">
+            <path fill="#009a49" d="M38 0h268v200H38z"/>
+            <path fill="#fff" d="M38 73C86 59 122 87 172 73C218 59 262 59 306 73V118C262 104 218 104 172 118C122 132 86 104 38 118Z"/>
+            <path fill="#101314" d="M38 118C86 104 122 132 172 118C218 104 262 104 306 118V200H38Z"/>
+            <path fill="#ef2533" d="M38 0h67v200H38z"/>
+            <path fill="url(#uaeSilkLight)" d="M38 0h268v200H38z"/>
+          </g></g>
         </svg>
-        <span lang="ar" dir="rtl">الإمارات العربية المتحدة</span>
       </div>
       <div class="auth-visual-brand"><span class="auth-brand-mark" aria-hidden="true">✈</span><div><strong>AIN<span>.</span></strong><small>AVIATION INTELLIGENCE NEXUS</small></div></div>
       <div class="auth-hero-copy"><p class="auth-hero-eyebrow">EMIRATES-INSPIRED · DUBAI SPIRIT</p><p class="auth-arabic" lang="ar" dir="rtl">أهلاً بكم</p><h1>A world of journeys.<br>A clearer perspective.</h1><p>Connecting the people, possibilities and intelligence behind every journey.</p><div class="auth-hero-rule"></div><span>People at the heart. Intelligence at the horizon.</span></div>
