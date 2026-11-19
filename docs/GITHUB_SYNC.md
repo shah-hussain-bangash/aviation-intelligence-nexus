@@ -6,6 +6,8 @@ Repository: `https://github.com/zenithdevelopers7-source/aviation-intelligence-n
 
 The schedule is configured separately in Codex; this document is not a scheduler. The local checkout, Git authentication and execution environment must be available when the automation runs.
 
+On this workstation, authenticated Git operations run through the connected Desktop Commander device in the normal signed-in Windows session. This uses its existing protected Git Credential Manager login. A separate restricted execution account does not share that credential store. No token is copied into project files.
+
 ## Review policy
 
 1. Check the repository, origin URL, current branch and working-tree state.
