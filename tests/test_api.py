@@ -38,7 +38,7 @@ class ApiTests(unittest.TestCase):
         with TestClient(create_app(self.database)) as client:
             self.assertEqual(client.get("/api/v1/status").json()["flight_records"], 1)
         with closing(sqlite3.connect(self.database)) as connection, connection:
-            self.assertEqual(connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 4)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 5)
 
     def test_database_failure_is_not_reported_as_ready(self):
         with TestClient(create_app(self.database)) as client:

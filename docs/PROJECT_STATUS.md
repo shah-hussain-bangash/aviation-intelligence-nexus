@@ -2,9 +2,11 @@
 
 ## Delivered
 
+Operations Research milestone: Gate Allocation Lab computes synthetic proposals with a mixed-integer solver, independently checks conflicts and aircraft compatibility, compares a greedy baseline and persists owner-scoped results. The exact five-flight sample assigns 5/5 versus the greedy baseline's 4/5 with the default settings. All 62 current automated tests pass locally. This is a bounded research demonstration, not real airline allocation or production readiness. See `GATE_OPTIMIZATION.md`.
+
 Sign-in UX update: the app now opens on a dedicated sign-in screen and reveals its existing 64 workspaces after a verified session. Sign-out or expiry returns to sign-in. This display gate does not replace backend authorization.
 
-Identity milestone: local account creation, Argon2id hashing, expiring/revocable sessions, Origin/CSRF controls and server-enforced admin/researcher/viewer permissions are implemented. History is scoped to its authenticated owner, with legacy anonymous rows visible to administrators. First administrator creation was confirmed by the user; browser sign-in is being verified separately; managed production identity, MFA, HTTPS deployment and protected auditing remain incomplete. See `LOCAL_IDENTITY.md`.
+Identity milestone: local account creation, Argon2id hashing, expiring/revocable sessions, Origin/CSRF controls and server-enforced admin/researcher/viewer permissions are implemented. History is scoped to its authenticated owner, with legacy anonymous rows visible to administrators. First administrator creation and browser sign-in were verified; managed production identity, MFA, HTTPS deployment and protected auditing remain incomplete. See `LOCAL_IDENTITY.md`.
 
 Developer workflow milestone: `npm run dev:all` starts or safely reuses both local services, and `npm test` runs all 41 automated tests plus source checks. Dependency consistency passed locally. GitHub workflow now defines independent Linux/Windows Python checks and Linux Node checks; hosted execution must be verified against the published commit rather than inferred from local results. See `DEVELOPMENT.md`.
 
@@ -26,10 +28,10 @@ The current frontend preserves 64 workspaces, 256 specified functions, 72 accept
 
 ## Not yet delivered
 
-Implementation update: a read-only local FastAPI service now provides health checks and database status with SQLite schema versioning. Automated tests cover empty state, persistence across restart, database failure and unsupported schema versions. This is a partial foundation only; historical reports below retain their original baseline. Dashboard integration, data ingestion, identity and authorization remain pending.
+Current outstanding work includes provider-backed generation, agent execution, operational-scale optimization and validation, managed identity, cloud deployment, monitoring and measured backup restoration. The implemented local research capabilities above do not complete these production requirements.
 
 The production audit records **20 areas not implemented, 3 partially evidenced and 1 unverified**. No production requirement is independently verified complete and no production service is connected.
 
-No actual trained inference, provider-backed generation, agent tool runtime, mathematical solver, server authorization, cloud monitoring or measured backup restoration is claimed.
+The original production audit predates the local inference, solver and authorization milestones above. Its counts describe that baseline and must not be presented as a current acceptance assessment. No provider-backed generation, agent tool runtime, cloud monitoring or measured production backup restoration is claimed.
 
 See `reports/AIN_Completion_Report.json` for the full baseline and `ROADMAP.md` for implementation order. Update this document with verified evidence as capabilities are built; local review labels cannot change implementation facts.

@@ -1,4 +1,4 @@
-"""Read-only local service. No airline data or trained model is bundled."""
+"""Authenticated local research service. No airline data or trained model is bundled."""
 
 from contextlib import asynccontextmanager, closing
 import hashlib
@@ -17,6 +17,8 @@ from fastapi.responses import JSONResponse
 from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfScope
 from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
+from optimization.gates import GateScenario, optimize
+from optimization.history import GateRunStore
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -41,7 +43,7 @@ def initialize(database: Path):
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
         version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > 4:
+        if version > 5:
             raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
@@ -85,6 +87,11 @@ def initialize(database: Path):
             connection.execute("ALTER TABLE research_runs ADD COLUMN owner_id TEXT")
             connection.execute("CREATE INDEX research_runs_owner ON research_runs(owner_id,created_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (4)")
+        if version < 5:
+            connection.execute("CREATE TABLE gate_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,request_key TEXT NOT NULL, "
+                "scenario_hash TEXT NOT NULL,result_json TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(owner_id,request_key))")
+            connection.execute("CREATE INDEX gate_runs_owner ON gate_runs(owner_id,created_at)")
+            connection.execute("INSERT INTO schema_migrations(version) VALUES (5)")
 
 
 def read_model_report(directory: Path):
@@ -107,6 +114,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     research_model_directory = research_model_directory if research_model_directory is not None else ROOT / ".local/models/delay-v2"
     predictor = ResearchPredictor(research_model_directory)
     history = ResearchHistory(database)
+    gate_history = GateRunStore(database)
     auth = AuthStore(database)
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
                for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
@@ -141,7 +149,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path == "/api/v1/research/predict" and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -293,6 +301,25 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
                     "research_only": True, "tamper_proof": False}
         except (sqlite3.Error, ValueError):
             return JSONResponse(status_code=503, content={"error": "research_history_unavailable"})
+
+    @app.post("/api/v1/research/optimize-gates")
+    def optimize_gates(scenario: GateScenario, request: Request, idempotency_key: UUID | None = Header(default=None)):
+        key = str(idempotency_key or uuid4())
+        user = request.state.user
+        try:
+            existing = gate_history.lookup(user,key,scenario.model_dump())
+            return existing or gate_history.save(user,key,optimize(scenario))
+        except ValueError:
+            return JSONResponse(status_code=409,content={"error":"request_key_conflict"})
+        except (RuntimeError,sqlite3.Error):
+            return JSONResponse(status_code=503,content={"error":"verified_optimization_unavailable"})
+
+    @app.get("/api/v1/research/gate-history")
+    def gate_runs(request: Request):
+        try:
+            return {"runs":gate_history.recent(request.state.user),"research_only":True}
+        except (sqlite3.Error,ValueError):
+            return JSONResponse(status_code=503,content={"error":"optimization_history_unavailable"})
 
     return app
 

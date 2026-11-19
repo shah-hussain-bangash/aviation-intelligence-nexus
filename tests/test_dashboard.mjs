@@ -6,6 +6,7 @@ import { renderResearchSummary } from '../apps/web/live-research.mjs';
 import { proxyResearchRequest } from '../scripts/api-proxy.mjs';
 import { renderPrediction } from '../apps/web/research-scenario.mjs';
 import { renderHistory } from '../apps/web/research-history.mjs';
+import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 
 function fixture() {
   return { generated_at: '2025-06-01T12:00:00Z', source_scope: '<unsafe>',
@@ -38,6 +39,13 @@ test('history shows empty state, escapes saved text and rejects invalid probabil
   assert.ok(renderHistory([run]).includes('&lt;unsafe&gt;'));
   assert.ok(renderHistory([run]).includes('20.0%'));
   assert.throws(()=>renderHistory([{...run,arrival_delay_15_probability:NaN}]));
+});
+
+test('gate sample and output keep synthetic scope and reject unchecked plans',()=>{
+  const scenario=sampleGateScenario(20,true);
+  assert.equal(scenario.data_kind,'synthetic');assert.equal(scenario.flights.length,5);assert.equal(scenario.gates.length,3);
+  assert.ok(scenario.flights.every(f=>Object.keys(f.costs).length===3));
+  assert.throws(()=>renderGatePlan({research_only:true,operational_approval:false,candidate:{verification:{feasible:false}}}));
 });
 
 test('auth proxy preserves the session cookie and CSRF while filtering unrelated credentials', async t=>{

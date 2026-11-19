@@ -1,0 +1,453 @@
+{
+  "scope": "synthetic research only",
+  "results": [
+    {
+      "engine": "scipy-highs-milp",
+      "formulation_version": "gate-v1",
+      "scenario_sha256": "9a757b8b41b2e9744c7e21390fe95652850aed9efeb83d291513b67ca5ac90f6",
+      "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+      "scenario": {
+        "data_kind": "synthetic",
+        "buffer_minutes": 10,
+        "gates": [
+          {
+            "id": "N1",
+            "capacity": "narrow"
+          },
+          {
+            "id": "W1",
+            "capacity": "wide"
+          }
+        ],
+        "flights": [
+          {
+            "id": "SIM-101",
+            "aircraft": "narrow",
+            "arrival": 480,
+            "departure": 600,
+            "costs": {
+              "N1": 6,
+              "W1": 1
+            }
+          },
+          {
+            "id": "SIM-202",
+            "aircraft": "wide",
+            "arrival": 500,
+            "departure": 590,
+            "costs": {
+              "N1": 20,
+              "W1": 3
+            }
+          },
+          {
+            "id": "SIM-303",
+            "aircraft": "narrow",
+            "arrival": 605,
+            "departure": 680,
+            "costs": {
+              "N1": 2,
+              "W1": 2
+            }
+          },
+          {
+            "id": "SIM-404",
+            "aircraft": "narrow",
+            "arrival": 700,
+            "departure": 760,
+            "costs": {
+              "N1": 1,
+              "W1": 4
+            }
+          },
+          {
+            "id": "SIM-505",
+            "aircraft": "wide",
+            "arrival": 780,
+            "departure": 840,
+            "costs": {
+              "N1": 20,
+              "W1": 2
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-202",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 5,
+          "unassigned": 0,
+          "assignment_cost": 14
+        }
+      },
+      "baseline": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [
+          "SIM-202"
+        ],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 4,
+          "unassigned": 1,
+          "assignment_cost": 6
+        }
+      },
+      "solver_status": "optimal",
+      "objective": 14.0,
+      "unassigned_penalty": 101,
+      "mip_gap": 0.0,
+      "elapsed_ms": 4.52,
+      "research_only": true,
+      "operational_approval": false,
+      "limitations": [
+        "Synthetic schedules only; no live airline systems",
+        "Only time overlap, aircraft size and assignment costs are represented",
+        "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+        "No allocation is applied to an operational system"
+      ]
+    },
+    {
+      "engine": "scipy-highs-milp",
+      "formulation_version": "gate-v1",
+      "scenario_sha256": "73b76038783bdd5cb2101b948ac38ec3518a616235be032fac6ad265ee286d97",
+      "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+      "scenario": {
+        "data_kind": "synthetic",
+        "buffer_minutes": 20,
+        "gates": [
+          {
+            "id": "N1",
+            "capacity": "narrow"
+          },
+          {
+            "id": "W1",
+            "capacity": "wide"
+          }
+        ],
+        "flights": [
+          {
+            "id": "SIM-101",
+            "aircraft": "narrow",
+            "arrival": 480,
+            "departure": 600,
+            "costs": {
+              "N1": 6,
+              "W1": 1
+            }
+          },
+          {
+            "id": "SIM-202",
+            "aircraft": "wide",
+            "arrival": 500,
+            "departure": 590,
+            "costs": {
+              "N1": 20,
+              "W1": 3
+            }
+          },
+          {
+            "id": "SIM-303",
+            "aircraft": "narrow",
+            "arrival": 605,
+            "departure": 680,
+            "costs": {
+              "N1": 2,
+              "W1": 2
+            }
+          },
+          {
+            "id": "SIM-404",
+            "aircraft": "narrow",
+            "arrival": 700,
+            "departure": 760,
+            "costs": {
+              "N1": 1,
+              "W1": 4
+            }
+          },
+          {
+            "id": "SIM-505",
+            "aircraft": "wide",
+            "arrival": 780,
+            "departure": 840,
+            "costs": {
+              "N1": 20,
+              "W1": 2
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [
+          "SIM-202"
+        ],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 4,
+          "unassigned": 1,
+          "assignment_cost": 6
+        }
+      },
+      "baseline": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [
+          "SIM-202"
+        ],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 4,
+          "unassigned": 1,
+          "assignment_cost": 6
+        }
+      },
+      "solver_status": "optimal",
+      "objective": 107.0,
+      "unassigned_penalty": 101,
+      "mip_gap": 0.0,
+      "elapsed_ms": 3.17,
+      "research_only": true,
+      "operational_approval": false,
+      "limitations": [
+        "Synthetic schedules only; no live airline systems",
+        "Only time overlap, aircraft size and assignment costs are represented",
+        "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+        "No allocation is applied to an operational system"
+      ]
+    },
+    {
+      "engine": "scipy-highs-milp",
+      "formulation_version": "gate-v1",
+      "scenario_sha256": "c3cd9d681accf88c1cbc2f1289b903dc0a841788dc9303f9c57cd1815b292590",
+      "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+      "scenario": {
+        "data_kind": "synthetic",
+        "buffer_minutes": 20,
+        "gates": [
+          {
+            "id": "N1",
+            "capacity": "narrow"
+          },
+          {
+            "id": "W1",
+            "capacity": "wide"
+          },
+          {
+            "id": "N2",
+            "capacity": "narrow"
+          }
+        ],
+        "flights": [
+          {
+            "id": "SIM-101",
+            "aircraft": "narrow",
+            "arrival": 480,
+            "departure": 600,
+            "costs": {
+              "N1": 6,
+              "W1": 1,
+              "N2": 5
+            }
+          },
+          {
+            "id": "SIM-202",
+            "aircraft": "wide",
+            "arrival": 500,
+            "departure": 590,
+            "costs": {
+              "N1": 20,
+              "W1": 3,
+              "N2": 5
+            }
+          },
+          {
+            "id": "SIM-303",
+            "aircraft": "narrow",
+            "arrival": 605,
+            "departure": 680,
+            "costs": {
+              "N1": 2,
+              "W1": 2,
+              "N2": 5
+            }
+          },
+          {
+            "id": "SIM-404",
+            "aircraft": "narrow",
+            "arrival": 700,
+            "departure": 760,
+            "costs": {
+              "N1": 1,
+              "W1": 4,
+              "N2": 5
+            }
+          },
+          {
+            "id": "SIM-505",
+            "aircraft": "wide",
+            "arrival": 780,
+            "departure": 840,
+            "costs": {
+              "N1": 20,
+              "W1": 2,
+              "N2": 5
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "N2"
+          },
+          {
+            "flight": "SIM-202",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 5,
+          "unassigned": 0,
+          "assignment_cost": 13
+        }
+      },
+      "baseline": {
+        "assignments": [
+          {
+            "flight": "SIM-101",
+            "gate": "W1"
+          },
+          {
+            "flight": "SIM-303",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-404",
+            "gate": "N1"
+          },
+          {
+            "flight": "SIM-505",
+            "gate": "W1"
+          }
+        ],
+        "unassigned": [
+          "SIM-202"
+        ],
+        "verification": {
+          "feasible": true,
+          "errors": [],
+          "assigned": 4,
+          "unassigned": 1,
+          "assignment_cost": 6
+        }
+      },
+      "solver_status": "optimal",
+      "objective": 13.0,
+      "unassigned_penalty": 101,
+      "mip_gap": 0.0,
+      "elapsed_ms": 8.03,
+      "research_only": true,
+      "operational_approval": false,
+      "limitations": [
+        "Synthetic schedules only; no live airline systems",
+        "Only time overlap, aircraft size and assignment costs are represented",
+        "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+        "No allocation is applied to an operational system"
+      ]
+    }
+  ]
+}

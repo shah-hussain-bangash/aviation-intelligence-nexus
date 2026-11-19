@@ -1,9 +1,10 @@
 // Fixed local research routes; never forward arbitrary destinations or browser credentials.
 export async function proxyResearchRequest(req, res, pathname, apiPort) {
   const prediction = pathname === '/api/v1/research/predict';
+  const optimization = pathname === '/api/v1/research/optimize-gates';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
-  const write = prediction || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/auth/session'].includes(pathname) && !write) return false;
+  const write = prediction || optimization || authWrite;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session'].includes(pathname) && !write) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
@@ -16,7 +17,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
     let bytes = 0;
     for await (const chunk of req) {
       bytes += chunk.length;
-      if (bytes > 4096) {
+      if (bytes > (optimization ? 16384 : 4096)) {
         res.writeHead(413); res.end(); return true;
       }
       chunks.push(chunk);
