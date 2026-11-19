@@ -14,14 +14,24 @@ export function mountAuth(parent,onChange) {
   const card=document.createElement('section');
   card.className='research-card research-auth';
   card.setAttribute('aria-labelledby','authHeading');
-  card.innerHTML=`<p class="auth-eyebrow">AVIATION INTELLIGENCE NEXUS</p><h2 id="authHeading">Sign in to your research workspace</h2><p class="auth-intro">Access historical flight data, model calculations and saved research with your local account.</p>
+  card.innerHTML=`<div class="auth-visual">
+      <img class="auth-hero-image" src="assets/login-family-aviation.png" alt="AI-generated scene of an Emirati family travelling through a Dubai airport beside a passenger aircraft.">
+      <div class="auth-visual-shade"></div>
+      <div class="auth-visual-brand"><span class="auth-brand-mark" aria-hidden="true">✈</span><div><strong>AIN<span>.</span></strong><small>AVIATION INTELLIGENCE NEXUS</small></div></div>
+      <div class="auth-hero-copy"><p class="auth-hero-eyebrow">EMIRATES-INSPIRED · DUBAI SPIRIT</p><p class="auth-arabic" lang="ar" dir="rtl">أهلاً بكم</p><h1>A world of journeys.<br>A clearer perspective.</h1><p>Connecting the people, possibilities and intelligence behind every journey.</p><div class="auth-hero-rule"></div><span>People at the heart. Intelligence at the horizon.</span></div>
+      <div class="auth-visual-footer"><span>DUBAI, UNITED ARAB EMIRATES</span><span>AI-generated travel concept</span></div>
+    </div><div class="auth-panel"><div class="auth-panel-inner">
+    <div class="auth-panel-top"><span class="auth-panel-monogram">AIN<span>.</span></span><span lang="ar" dir="rtl">مرحباً بعودتك</span></div>
+    <p class="auth-eyebrow">YOUR AVIATION RESEARCH WORKSPACE</p><h2 id="authHeading">Welcome back</h2><p class="auth-intro">Sign in to explore your aviation intelligence workspace.</p>
     <p class="auth-status" role="status" aria-live="polite">Checking your session…</p>
-    <form class="auth-form"><label>Username<input name="username" autocomplete="username" required maxlength="32"></label>
-    <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+    <form class="auth-form"><label>Username<input name="username" autocomplete="username" required maxlength="32" placeholder="Enter your username"></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter your password"></label>
     <button class="btn" type="submit">Sign in</button></form>
     <button class="btn sm" type="button" data-auth-refresh>Check account setup</button>
     <button class="btn sm" type="button" data-auth-logout hidden>Sign out</button>
-    <p class="auth-enrollment" hidden>First account setup is required. In the project terminal, run <code>python -m services.api.manage_users create --username shah --role admin</code>, choose your password privately, then select Check account setup.</p>`;
+    <p class="auth-enrollment" hidden>First account setup is required. In the project terminal, run <code>python -m services.api.manage_users create --username shah --role admin</code>, choose your password privately, then select Check account setup.</p>
+    <div class="auth-panel-footer"><span class="auth-footer-line"></span><p>Independent aviation portfolio.<br>Not affiliated with or endorsed by Emirates.</p><span>Thoughtfully built for the future of aviation.</span></div>
+    </div></div>`;
   parent.prepend(card);
   document.getElementById('authBoot')?.remove();
   const form=card.querySelector('form'),status=card.querySelector('.auth-status'),enrollment=card.querySelector('.auth-enrollment');
@@ -31,8 +41,8 @@ export function mountAuth(parent,onChange) {
     const user=value?.user;
     document.body.classList.toggle('research-locked',!user);
     document.title=user ? 'AIN | Research dashboard' : 'AIN | Sign in';
-    card.querySelector('#authHeading').textContent=user ? 'Research account' : 'Sign in to your research workspace';
-    card.querySelector('.auth-intro').textContent=user ? 'Your account permissions control connected research services.' : 'Access historical flight data, model calculations and saved research with your local account.';
+    card.querySelector('#authHeading').textContent=user ? 'Research account' : 'Welcome back';
+    card.querySelector('.auth-intro').textContent=user ? 'Your account permissions control connected research services.' : 'Sign in to explore your aviation intelligence workspace.';
     form.hidden=!!user; logout.hidden=!user;
     status.textContent=user ? `Signed in as ${user.username} · ${user.role}. Sessions expire after eight hours.` : 'Sign in to access connected research services.';
     onChange(user || null);
