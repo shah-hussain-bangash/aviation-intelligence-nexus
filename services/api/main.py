@@ -28,6 +28,7 @@ from agents.store import AgentStore, Conflict
 from services.api.paths import STATE, SCHEMA_VERSION
 from infra.status import restore_status, encrypted_drill_status, rollback_drill_status
 from services.api.monitoring import Monitor
+from services.api.agent_operations import snapshot as agent_operations_snapshot, OperationsUnavailable
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from services.api.segments import load_segments
@@ -228,6 +229,16 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         if request.url.path.startswith('/api/v1/') and (request.url.path != '/api/v1/research/monitoring' or response.status_code >= 400):
             monitor.record(response.status_code, (time.monotonic() - started) * 1000)
         return response
+
+    @app.get('/api/v1/research/agent-operations')
+    def agent_operations(request: Request):
+        if request.state.user['role']!='admin':
+            return JSONResponse(status_code=403,content={'error':'administrator_role_required'})
+        try:
+            return agent_operations_snapshot(database,job_worker.status())
+        except OperationsUnavailable:
+            return JSONResponse(status_code=503,content={'error':'agent_operations_unavailable',
+                'message':'Current queue observations could not be verified. Previous status must be cleared.'})
 
     @app.get('/api/v1/research/monitoring')
     def monitoring(request: Request):

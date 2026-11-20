@@ -1,3 +1,4 @@
+import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
 import {validateModelSnapshot,renderModelSnapshot} from '../apps/web/agent-model-evidence.mjs';
 import {renderExplanations,validateExplanations} from '../apps/web/model-explanations.mjs';
 import {renderDiagnostics,validateDiagnostics} from '../apps/web/model-diagnostics.mjs';
@@ -447,4 +448,22 @@ test('model snapshot warnings and descriptive evidence are escaped and mismatch 
   let run=modelAgentFixture();run.steps[0].observation.snapshot.limitations=['<script>bad()</script>'];const html=renderModelSnapshot(run.steps[0].observation);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
   run=modelAgentFixture();run.quality.model_evidence_mismatches=[run.steps[0].id];assert.match(renderInvestigation(run),/has been withheld/);
   run.quality.model_limitations_uncited=['<img>'];assert.match(renderInvestigation(run),/Required model limitation quotation missing: &lt;img&gt;/);
+});
+
+const operationsFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Agent_Operations_Dashboard.json',import.meta.url),'utf8')).fixture;
+test('operations distinguishes retained totals, recent tool time and saved coverage flags',()=>{
+  const data=operationsFixture(),html=renderOperations(data,Date.parse(data.checked_at)+1000);
+  assert.equal(data.total_background_runs,7);assert.match(html,/Local worker: active/);assert.match(html,/2.0 minutes/);assert.match(html,/p95 30.00 ms/);assert.match(html,/does not recompute them or measure semantic accuracy/);assert.match(html,/exclude queue waiting, model planning/);assert.match(html,/Synchronous engineering runs are excluded/);
+});
+test('operations hides stale observations and rejects inconsistent counters or timings',()=>{
+  let data=operationsFixture();const html=renderOperations(data,Date.parse(data.checked_at)+91000);assert.match(html,/snapshot is stale/);assert.doesNotMatch(html,/Local worker: active/);
+  data.total_background_runs=0;assert.throws(()=>validateOperations(data));data=operationsFixture();data.recent_window.tools.model_evidence.completed=99;assert.throws(()=>validateOperations(data));
+  data=operationsFixture();data.recent_window.tool_time.p95_ms=NaN;assert.throws(()=>validateOperations(data));data=operationsFixture();data.worker.state='<script>';assert.throws(()=>validateOperations(data));
+});
+test('operations proxy is fixed, read-only and strips unrelated cookies',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/agent-operations');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/agent-operations`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });

@@ -442,18 +442,26 @@
       "dependencies": [
         "P17"
       ],
-      "local_progress": "Admin monitoring shows bounded API response metrics and fresh/stale component checks with local snapshots.",
-      "remaining": "Independent uptime, centralized protected telemetry, AI/pipeline quality signals and owned external alerts remain outstanding.",
+      "local_progress": "Admin monitoring shows bounded API response metrics and fresh/stale component checks with local snapshots. Administrator-only queue observations add active ages, retained states, bounded recent tool times and saved coverage flags; these are not semantic accuracy or independent uptime.",
+      "remaining": "Independent uptime, centralized protected telemetry, semantic AI/pipeline quality evaluation and owned external alerts remain outstanding.",
       "acceptance": "Working measured dashboards, actionable alerts and response procedures.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/LOCAL_MONITORING.md",
-          "sha256": "0d678e2b76738b9f7d4fd4bc88a95dd1d2b7a89eaa4ad723991d5837c277cbf7"
+          "sha256": "d003b05a863645e6677beabf1b88b20d88d1021d6213e0150f965e2d9b16be0e"
         },
         {
           "path": "docs/reports/Local_Monitoring.json",
           "sha256": "eb5bb47098a97374fec91a0fad515cbed4f1f7dc3650acb033da111bf004e96d"
+        },
+        {
+          "path": "docs/AGENT_OPERATIONS.md",
+          "sha256": "9590fbae2b67a1bd93b45d55f4d3253405544b0a9452b040b0f0cf5f9630e610"
+        },
+        {
+          "path": "docs/reports/Agent_Operations_Dashboard.json",
+          "sha256": "b2f3c45c9d2246318d703439287712c525f74ca019d2f44ec2b736914e9e0bb0"
         }
       ]
     },
@@ -552,7 +560,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "750a3cb0ef2bac29fb2a3321cdceeb247e21cf9668127989d76893d1d088cdf8"
+          "sha256": "e17ca44b9fd0948d1a41d5760a174d6f89a00cf4b4e9f0d3134ecd6478c9d7e6"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
@@ -589,7 +597,7 @@
         },
         {
           "path": "docs/LOCAL_MONITORING.md",
-          "sha256": "0d678e2b76738b9f7d4fd4bc88a95dd1d2b7a89eaa4ad723991d5837c277cbf7"
+          "sha256": "d003b05a863645e6677beabf1b88b20d88d1021d6213e0150f965e2d9b16be0e"
         },
         {
           "path": "docs/ENCRYPTED_RECOVERY.md",

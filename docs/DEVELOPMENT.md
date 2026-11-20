@@ -18,7 +18,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 45 Node dashboard/proxy/startup tests and 178 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 48 Node dashboard/proxy/startup tests and 185 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -66,3 +66,5 @@ The recorded model diagnostic panel reads a pinned public report, not the active
 Frozen-model grouped permutation diagnostics use April validation only. See MODEL_INPUT_RELIANCE.md for source checks, reproduction and interpretation.
 
 Recorded model investigations are opt-in and use a fixed public snapshot, not live model inference. See MODEL_AGENT_REVIEW.md for actual-model evidence, retained failures and review limits.
+
+Administrator queue observation is read-only and separate from worker execution. See AGENT_OPERATIONS.md for privacy, bounds and interpretation.

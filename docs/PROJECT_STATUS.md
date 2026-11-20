@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Investigation operations milestone: an administrator-only read-only panel now shows retained background states, active ages, local worker observations and a bounded 200-run tool/recorded-coverage window. Three-second query/processing bounds, privacy projection and stale/session clearing are tested. Tool time excludes model generation and is not end-to-end latency; saved flags are not semantic accuracy. Six synthetic component browser cases passed. Windows passes 233 tests (185 Python, 48 Node). See `AGENT_OPERATIONS.md`.
+
 Model evidence agent milestone: an explicit opt-in tool retains pinned April/May errors/calibration and April-only permutation summaries. Canonical snapshot checks and a mandatory non-causal source quotation protect research review, with one bounded repair. A real Qwen3 run produced two verified extracts and awaits review; its omitted input-reliance quotation remains visible as structured evidence, so general objective completeness is not claimed. Seven desktop/mobile/permission/reset preview scenarios passed. Windows passes 223 tests (178 Python, 45 Node). See `MODEL_AGENT_REVIEW.md`.
 
 Frozen-model reliance milestone: a prespecified 10,000-row April validation sample and three grouped permutations quantify log-loss/AUC/Brier changes without fitting or May outcome analysis. Exact sample/results were reproduced, and source hashes remained unchanged. A signed-in read-only panel exposes all shuffle results, variation, provenance and export, with desktop/390-pixel and failure/session preview checks. These are global performance diagnostics, not causality or individual flight explanations. The Windows suite passes 213 tests (171 Python, 42 Node). See `MODEL_INPUT_RELIANCE.md`.

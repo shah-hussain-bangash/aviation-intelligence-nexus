@@ -105,3 +105,5 @@ Recorded model quality: [Model diagnostics](docs/MODEL_DIAGNOSTICS.md) exposes c
 Model input reliance: [Grouped permutation evidence](docs/MODEL_INPUT_RELIANCE.md) provides a frozen April-only experiment and interactive metric exploration.
 
 AI model review: [Recorded model-evidence investigations](docs/MODEL_AGENT_REVIEW.md) retain metrics, provenance and limitations alongside source-extract drafts for human review.
+
+Workflow visibility: [Investigation operations](docs/AGENT_OPERATIONS.md) provides administrator-only aggregate queue observations with explicit timing and quality limits.
