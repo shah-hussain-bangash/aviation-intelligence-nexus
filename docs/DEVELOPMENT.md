@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 27 Node dashboard/proxy/startup tests and 134 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 27 Node dashboard/proxy/startup tests and 137 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -50,3 +50,5 @@ The combined launcher enables the local investigation worker by default for newl
 Pinned local rollback is an operator-only isolated drill, not a main-dashboard action. See LOCAL_RELEASE_ROLLBACK.md before using its fixed project/port and private manifests.
 
 Bounded anonymous HTTP measurements can be repeated with `python -m infra.load_check`; the container CI job runs the same client on empty state. See LOCAL_HTTP_PERFORMANCE.md for bounds, methodology and limits.
+
+The disposable authenticated native HTTP workflow drill uses a copied trusted model and temporary state. See AUTHENTICATED_RESEARCH_WORKLOAD.md; it never targets the running dashboard or requires your credentials.

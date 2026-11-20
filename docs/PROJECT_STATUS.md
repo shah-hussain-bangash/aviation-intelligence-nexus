@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Authenticated workflow milestone: a fresh native loopback API with disposable accounts/database and a copied trained model passed concurrent prediction, saved-history, duplicate-race, CSRF/role/owner and session-revocation checks. Twelve measured predictions had zero failures; all fourteen expected research rows were reconciled before temporary state removal. This does not measure Docker, full-flight SQL or AI-agent capacity. The Windows suite now has 164 tests (137 Python, 27 Node). See `AUTHENTICATED_RESEARCH_WORKLOAD.md`.
+
 HTTP measurement milestone: a bounded loopback client recorded 90 valid anonymous responses across dashboard HTML, backend readiness and signed-out session endpoints, with p50/p95/max and error-inclusive counts. The container CI job repeats the check on fresh empty state. This is a short local HTTP sample, not a capacity, browser or authenticated AI workflow qualification. The Windows suite now has 161 tests (134 Python, 27 Node). See `LOCAL_HTTP_PERFORMANCE.md`.
 
 Local rollback milestone: an isolated restored deployment switched from a pinned candidate image pair to the prior 85a2310 release and back. Health/isolation checks, the same named volume, 2,835,101 flight rows, account records, model/index hashes and exact prediction parity passed. The main image pair was unchanged by the drill. Schema/state-contract changes and active jobs are rejected. Windows passes 156 tests (129 Python, 27 Node); Linux skips the Windows DPAPI provider case. Database/model/prompt rollback and production failover remain incomplete. See `LOCAL_RELEASE_ROLLBACK.md`.

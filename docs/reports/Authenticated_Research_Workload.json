@@ -1,0 +1,62 @@
+{
+  "format": "ain-disposable-research-workload-v1",
+  "checked_at": "2026-11-20T08:25:58.335557+00:00",
+  "scope": "Native loopback API with disposable accounts/empty flight database and copied trusted model; not Docker or airline capacity qualification",
+  "model_version": "delay-v2",
+  "artifact_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+  "scenario": {
+    "carrier": "AA",
+    "origin": "JFK",
+    "destination": "LAX",
+    "flight_date": "2025-05-15",
+    "scheduled_departure": "09:00"
+  },
+  "workers": 2,
+  "prediction_requests": 12,
+  "cold_prediction_ms": 79.62,
+  "warm_prediction_measurement": {
+    "requests": 12,
+    "failures": 0,
+    "error_classes": {},
+    "status_counts": {
+      "200": 12
+    },
+    "elapsed_seconds": 0.195738,
+    "completed_requests_per_second": 61.307,
+    "latency_ms": {
+      "min": 13.369,
+      "p50": 24.624,
+      "p95": 70.407,
+      "max": 70.407
+    }
+  },
+  "prediction_probability": 0.14414301173592028,
+  "saved_rows_before_cleanup": 14,
+  "checks": {
+    "isolated_server_started": true,
+    "disposable_login_admin": true,
+    "disposable_login_researcher": true,
+    "disposable_login_viewer": true,
+    "anonymous_history_denied": true,
+    "viewer_prediction_denied": true,
+    "missing_csrf_denied": true,
+    "unknown_vocabulary_denied": true,
+    "cold_prediction_verified": true,
+    "same_request_replayed": true,
+    "changed_request_conflict": true,
+    "other_owner_key_conflict": true,
+    "concurrent_predictions_valid": true,
+    "concurrent_duplicate_saved_once": true,
+    "owner_history_readable": true,
+    "other_owner_history_empty": true,
+    "exact_saved_row_count": true,
+    "database_integrity": true,
+    "logout_succeeded": true,
+    "revoked_session_denied": true,
+    "temporary_server_stopped": true,
+    "temporary_state_removed": true
+  },
+  "passed": true,
+  "performance_target_assessed": false,
+  "production_ready": false
+}

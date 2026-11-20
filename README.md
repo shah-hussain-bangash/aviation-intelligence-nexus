@@ -50,6 +50,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Bounded anonymous HTTP latency/correctness measurements, with a repeatable container CI check. See [measured scope and limits](docs/LOCAL_HTTP_PERFORMANCE.md).
 
+- Disposable authenticated native HTTP drill with concurrent real-model predictions, owner isolation, duplicate-race checks and session revocation. See [workflow evidence and limits](docs/AUTHENTICATED_RESEARCH_WORKLOAD.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

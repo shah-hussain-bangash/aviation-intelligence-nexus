@@ -451,7 +451,7 @@
       "dependencies": [
         "P17"
       ],
-      "local_progress": "Selected desktop/mobile views have been inspected; a bounded anonymous loopback HTTP sample measured 90 valid responses with endpoint latency distributions. No full accessibility, authenticated workload or capacity qualification is claimed.",
+      "local_progress": "Selected desktop/mobile views have been inspected; a bounded anonymous loopback HTTP sample measured 90 valid responses with endpoint latency distributions. No full accessibility, authenticated workload or capacity qualification is claimed. A separate native authenticated HTTP drill measured concurrent real-model predictions with temporary accounts/state; deployed sustained/AI workloads remain unqualified.",
       "remaining": "Agreed performance objectives, sustained representative authenticated/AI workloads, resource/queue contention, keyboard/screen-reader review and device matrix remain outstanding.",
       "acceptance": "Reviewed results meet agreed targets and material accessibility defects are resolved.",
       "production_accepted": false,
@@ -463,6 +463,14 @@
         {
           "path": "docs/reports/Local_HTTP_Performance.json",
           "sha256": "c131dbef642f954bc8a198a6b5787170d7a6ae19fe9d32bc159b8e598357933b"
+        },
+        {
+          "path": "docs/AUTHENTICATED_RESEARCH_WORKLOAD.md",
+          "sha256": "77da17cdae7f2315205914289853525c3829de044e40abb6a2b8429cb0d14b18"
+        },
+        {
+          "path": "docs/reports/Authenticated_Research_Workload.json",
+          "sha256": "d4e53e97a972826d96fddde10b6c97588abdd9630833341637b873b894aafcda"
         }
       ]
     },
@@ -477,18 +485,26 @@
         "P19",
         "P20"
       ],
-      "local_progress": "Automated backend/proxy tests and recorded real-data model/AI/recovery checks cover the bounded local research scope.",
+      "local_progress": "Automated backend/proxy tests and recorded real-data model/AI/recovery checks cover the bounded local research scope. A disposable native HTTP drill additionally checks concurrent real-model predictions, persisted-row reconciliation, owner/role/CSRF controls, duplicate races and session revocation.",
       "remaining": "Reviewed deployed critical journeys, security/load results and resolution of material defects remain outstanding.",
       "acceptance": "Reviewed real execution evidence with critical defects resolved.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "e147e0f3d20b348234bdf2b7935e4b114d7a088c8fcef2abcf5f1d1fab17c051"
+          "sha256": "1777347ce6c21c23d642ed804ec4178d95337df871798e22198bbc800158a721"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
           "sha256": "441de17aa7052a60aeef593627d03e5256eb6109544496bd8bf251cb7ce5c906"
+        },
+        {
+          "path": "docs/AUTHENTICATED_RESEARCH_WORKLOAD.md",
+          "sha256": "77da17cdae7f2315205914289853525c3829de044e40abb6a2b8429cb0d14b18"
+        },
+        {
+          "path": "docs/reports/Authenticated_Research_Workload.json",
+          "sha256": "d4e53e97a972826d96fddde10b6c97588abdd9630833341637b873b894aafcda"
         }
       ]
     },
