@@ -4,6 +4,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const {apiHost,sessionCookie:cookieName}=routing(config);
   const prediction = pathname === '/api/v1/research/predict';
   const optimization = pathname === '/api/v1/research/optimize-gates';
+  const gateReview = pathname === '/api/v1/research/gate-review';
   const knowledge = pathname === '/api/v1/research/knowledge-query';
   const agent = pathname === '/api/v1/research/agent-run';
   const jobSubmit = pathname === '/api/v1/research/agent-jobs';
@@ -12,7 +13,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const routeProfile = pathname === '/api/v1/research/route-profile';
   const agentReview = pathname === '/api/v1/research/agent-review';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
-  const write = jobSubmit || jobCancel || prediction || optimization || knowledge || agent || agentReview || authWrite;
+  const write = gateReview || jobSubmit || jobCancel || prediction || optimization || knowledge || agent || agentReview || authWrite;
   if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations'].includes(pathname) && !write && !jobRead && !routeProfile) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
@@ -34,7 +35,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
     let bytes = 0;
     for await (const chunk of req) {
       bytes += chunk.length;
-      if (bytes > (optimization ? 16384 : 4096)) {
+      if (bytes > (optimization || gateReview ? 16384 : 4096)) {
         res.writeHead(413); res.end(); return true;
       }
       chunks.push(chunk);

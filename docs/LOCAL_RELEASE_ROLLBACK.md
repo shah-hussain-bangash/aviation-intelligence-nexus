@@ -56,3 +56,5 @@ Measured results are recorded separately in [the drill report](reports/Local_Rel
 The isolated worker is disabled, so this drill does not establish worker recovery under load. The same model/index stay in place; model and prompt rollback remain unimplemented. Cloud deployment, managed TLS/identity, off-site/key recovery, independent observability, operational approval and full production release acceptance remain incomplete.
 
 Later scoped-route agent changes alter protected runtime contracts. Older captured manifests may now be rejected by compatibility checks; this historical drill does not qualify rollback of that newer release. Review and re-drill the exact intended pair before claiming compatibility.
+
+Synthetic gate review extends protected compatibility contracts to optimization/gates.py, optimization/history.py and optimization/reviews.py. Older manifests with the previous contract set are rejected. This preserves conservative compatibility checks; the historical drill does not qualify this new release. See GATE_PROPOSAL_REVIEW.md.

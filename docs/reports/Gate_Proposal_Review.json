@@ -1,0 +1,408 @@
+{
+  "format": "ain-gate-review-evidence-v1",
+  "scope": "Actual solver and research-review store on a temporary synthetic fixture, not a real user account or operational approval",
+  "pending": {
+    "engine": "scipy-highs-milp",
+    "formulation_version": "gate-v1",
+    "scenario_sha256": "9a757b8b41b2e9744c7e21390fe95652850aed9efeb83d291513b67ca5ac90f6",
+    "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+    "scenario": {
+      "data_kind": "synthetic",
+      "buffer_minutes": 10,
+      "gates": [
+        {
+          "id": "N1",
+          "capacity": "narrow"
+        },
+        {
+          "id": "W1",
+          "capacity": "wide"
+        }
+      ],
+      "flights": [
+        {
+          "id": "SIM-101",
+          "aircraft": "narrow",
+          "arrival": 480,
+          "departure": 600,
+          "costs": {
+            "N1": 6,
+            "W1": 1
+          }
+        },
+        {
+          "id": "SIM-202",
+          "aircraft": "wide",
+          "arrival": 500,
+          "departure": 590,
+          "costs": {
+            "N1": 20,
+            "W1": 3
+          }
+        },
+        {
+          "id": "SIM-303",
+          "aircraft": "narrow",
+          "arrival": 605,
+          "departure": 680,
+          "costs": {
+            "N1": 2,
+            "W1": 2
+          }
+        },
+        {
+          "id": "SIM-404",
+          "aircraft": "narrow",
+          "arrival": 700,
+          "departure": 760,
+          "costs": {
+            "N1": 1,
+            "W1": 4
+          }
+        },
+        {
+          "id": "SIM-505",
+          "aircraft": "wide",
+          "arrival": 780,
+          "departure": 840,
+          "costs": {
+            "N1": 20,
+            "W1": 2
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "assignments": [
+        {
+          "flight": "SIM-101",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-202",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-303",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-404",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-505",
+          "gate": "W1"
+        }
+      ],
+      "unassigned": [],
+      "verification": {
+        "feasible": true,
+        "errors": [],
+        "assigned": 5,
+        "unassigned": 0,
+        "assignment_cost": 14
+      }
+    },
+    "baseline": {
+      "assignments": [
+        {
+          "flight": "SIM-101",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-303",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-404",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-505",
+          "gate": "W1"
+        }
+      ],
+      "unassigned": [
+        "SIM-202"
+      ],
+      "verification": {
+        "feasible": true,
+        "errors": [],
+        "assigned": 4,
+        "unassigned": 1,
+        "assignment_cost": 6
+      }
+    },
+    "solver_status": "optimal",
+    "objective": 14.0,
+    "unassigned_penalty": 101,
+    "mip_gap": 0.0,
+    "elapsed_ms": 3.94,
+    "research_only": true,
+    "operational_approval": false,
+    "limitations": [
+      "Synthetic schedules only; no live airline systems",
+      "Only time overlap, aircraft size and assignment costs are represented",
+      "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+      "No allocation is applied to an operational system"
+    ],
+    "run_id": "fdce806f-f59e-4295-b9a5-a7d82bb00bb3",
+    "saved_at": "2026-11-20T12:14:59.614666+00:00",
+    "actor": "fixture-reviewer",
+    "replayed": false,
+    "review_expires_at": "2026-11-21T12:14:59.614666+00:00",
+    "review": null,
+    "proposal_sha256": "c8a95355038e573ce41bb7556f941bb189a7bb1523c589c3d6c9d008cff8cce7",
+    "review_status": {
+      "state": "pending",
+      "eligible": true,
+      "window_hours": 24,
+      "expires_at": "2026-11-21T12:14:59.614666+00:00",
+      "scope": "Synthetic research review only; no independent-reviewer or operational approval claim"
+    }
+  },
+  "reviewed": {
+    "engine": "scipy-highs-milp",
+    "formulation_version": "gate-v1",
+    "scenario_sha256": "9a757b8b41b2e9744c7e21390fe95652850aed9efeb83d291513b67ca5ac90f6",
+    "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+    "scenario": {
+      "data_kind": "synthetic",
+      "buffer_minutes": 10,
+      "gates": [
+        {
+          "id": "N1",
+          "capacity": "narrow"
+        },
+        {
+          "id": "W1",
+          "capacity": "wide"
+        }
+      ],
+      "flights": [
+        {
+          "id": "SIM-101",
+          "aircraft": "narrow",
+          "arrival": 480,
+          "departure": 600,
+          "costs": {
+            "N1": 6,
+            "W1": 1
+          }
+        },
+        {
+          "id": "SIM-202",
+          "aircraft": "wide",
+          "arrival": 500,
+          "departure": 590,
+          "costs": {
+            "N1": 20,
+            "W1": 3
+          }
+        },
+        {
+          "id": "SIM-303",
+          "aircraft": "narrow",
+          "arrival": 605,
+          "departure": 680,
+          "costs": {
+            "N1": 2,
+            "W1": 2
+          }
+        },
+        {
+          "id": "SIM-404",
+          "aircraft": "narrow",
+          "arrival": 700,
+          "departure": 760,
+          "costs": {
+            "N1": 1,
+            "W1": 4
+          }
+        },
+        {
+          "id": "SIM-505",
+          "aircraft": "wide",
+          "arrival": 780,
+          "departure": 840,
+          "costs": {
+            "N1": 20,
+            "W1": 2
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "assignments": [
+        {
+          "flight": "SIM-101",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-202",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-303",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-404",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-505",
+          "gate": "W1"
+        }
+      ],
+      "unassigned": [],
+      "verification": {
+        "feasible": true,
+        "errors": [],
+        "assigned": 5,
+        "unassigned": 0,
+        "assignment_cost": 14
+      }
+    },
+    "baseline": {
+      "assignments": [
+        {
+          "flight": "SIM-101",
+          "gate": "W1"
+        },
+        {
+          "flight": "SIM-303",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-404",
+          "gate": "N1"
+        },
+        {
+          "flight": "SIM-505",
+          "gate": "W1"
+        }
+      ],
+      "unassigned": [
+        "SIM-202"
+      ],
+      "verification": {
+        "feasible": true,
+        "errors": [],
+        "assigned": 4,
+        "unassigned": 1,
+        "assignment_cost": 6
+      }
+    },
+    "solver_status": "optimal",
+    "objective": 14.0,
+    "unassigned_penalty": 101,
+    "mip_gap": 0.0,
+    "elapsed_ms": 3.94,
+    "research_only": true,
+    "operational_approval": false,
+    "limitations": [
+      "Synthetic schedules only; no live airline systems",
+      "Only time overlap, aircraft size and assignment costs are represented",
+      "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+      "No allocation is applied to an operational system"
+    ],
+    "run_id": "fdce806f-f59e-4295-b9a5-a7d82bb00bb3",
+    "saved_at": "2026-11-20T12:14:59.614666+00:00",
+    "actor": "fixture-reviewer",
+    "replayed": false,
+    "review_expires_at": "2026-11-21T12:14:59.614666+00:00",
+    "review": {
+      "review_key": "f17c74a1-e69d-45bd-8332-dd4c8aba0056",
+      "reviewer": "fixture-reviewer",
+      "proposal_sha256": "c8a95355038e573ce41bb7556f941bb189a7bb1523c589c3d6c9d008cff8cce7",
+      "decision": "reviewed",
+      "note": "Synthetic fixture review: checked aircraft compatibility, occupancy and assignment cost. No airport action is authorized.",
+      "reviewed_at": "2026-11-20T12:15:00.614666+00:00",
+      "acknowledged": true,
+      "decision_sha256": "e0dbd8e27cce39a90eebcce9c756baf0673989955d610441d319562c54063f44"
+    },
+    "proposal_sha256": "c8a95355038e573ce41bb7556f941bb189a7bb1523c589c3d6c9d008cff8cce7",
+    "review_status": {
+      "state": "reviewed",
+      "eligible": false,
+      "window_hours": 24,
+      "expires_at": "2026-11-21T12:14:59.614666+00:00",
+      "scope": "Synthetic research review only; no independent-reviewer or operational approval claim"
+    },
+    "review_replayed": false
+  },
+  "replay_identical_receipt": true,
+  "production_ready": false,
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "pending_review": true,
+        "receipt_bound": true,
+        "export_receipt": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "pending_review": true,
+        "receipt_bound": true,
+        "export_receipt": true,
+        "no_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Retry",
+      "checks": {
+        "pending_review": true,
+        "unconfirmed_keeps_form": true,
+        "receipt_bound": true,
+        "same_key_retry": true,
+        "export_receipt": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Expiry",
+      "checks": {
+        "pending_review": true,
+        "expiry_blocks": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Input",
+      "checks": {
+        "pending_review": true,
+        "cleared_late_response": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session",
+      "checks": {
+        "pending_review": true,
+        "cleared_late_response": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "cannot_compute": true,
+        "view_only": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    }
+  ]
+}

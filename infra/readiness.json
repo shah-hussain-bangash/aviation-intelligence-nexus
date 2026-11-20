@@ -355,7 +355,7 @@
         "P13",
         "P15"
       ],
-      "local_progress": "Research report review is tied to the exact report hash and mechanical evidence coverage.",
+      "local_progress": "Research report review is tied to the exact report hash and mechanical evidence coverage. Synthetic gate proposals now have content-bound, expiring research reviews with independent feasibility rechecks, transactional conflict rejection and identical retry replay; self-review is still permitted.",
       "remaining": "Operational proposal expiry, transactional approval separation, changed-proposal controls and business authorization remain outstanding.",
       "acceptance": "Changed/expired proposals and duplicate/conflicting decisions are rejected.",
       "production_accepted": false,
@@ -363,6 +363,14 @@
         {
           "path": "docs/AGENT_REPORT_QUALITY.md",
           "sha256": "c4e919213bc24e42e51c01fa80539cd7447e4cc037cd8ee9b50bd400b76bb323"
+        },
+        {
+          "path": "docs/GATE_PROPOSAL_REVIEW.md",
+          "sha256": "ff542d5fda2065567870e47af78bb5b2ffb7d17858ad79b728725114a64dbf7a"
+        },
+        {
+          "path": "docs/reports/Gate_Proposal_Review.json",
+          "sha256": "2a090e0adb741d0ebf5a5804a58258f79b078f21fbe7e9ce507f85b4ad5d618b"
         }
       ]
     },
@@ -504,7 +512,7 @@
       "evidence": [
         {
           "path": "docs/LOCAL_RELEASE_ROLLBACK.md",
-          "sha256": "7a836802b2248f9a14d31d965bcfa31ea234a78d9e289d4acbc569f2f98aada3"
+          "sha256": "8ed5d7c63f72012ecd13c5ca740ed14aa5fa0880d8f274c1f1a8cf7a066994c9"
         },
         {
           "path": "docs/reports/Local_Release_Rollback.json",
@@ -560,7 +568,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "e17ca44b9fd0948d1a41d5760a174d6f89a00cf4b4e9f0d3134ecd6478c9d7e6"
+          "sha256": "e0976cf28407a87e0ead4901119704c943af222d2d47c784174d38e7fe97dcc2"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

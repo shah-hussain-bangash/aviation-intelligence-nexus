@@ -1,3 +1,4 @@
+import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
 import {validateModelSnapshot,renderModelSnapshot} from '../apps/web/agent-model-evidence.mjs';
 import {renderExplanations,validateExplanations} from '../apps/web/model-explanations.mjs';
@@ -466,4 +467,26 @@ test('operations proxy is fixed, read-only and strips unrelated cookies',async t
   const url=`http://127.0.0.1:${frontend}/api/v1/research/agent-operations`;
   assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
   assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+
+const gateReviewFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Gate_Proposal_Review.json',import.meta.url),'utf8'));
+test('gate review is limited by role, exact pending scope and expiry boundary',()=>{
+  const run=gateReviewFixture().pending,now=Date.parse(run.saved_at)+1000;
+  assert.equal(gateReviewEligible(run,{role:'researcher'},now),true);assert.equal(gateReviewEligible(run,{role:'admin'},now),true);
+  assert.equal(gateReviewEligible(run,{role:'viewer'},now),false);assert.equal(gateReviewEligible(run,{role:'admin'},Date.parse(run.review_expires_at)),false);
+  assert.equal(gateReviewEligible({...run,review_status:{state:'legacy',eligible:false}},{role:'admin'},now),false);
+  assert.throws(()=>renderGatePlan({...run,review_status:{state:'invalid'}}),/integrity/);
+});
+test('gate review retains proposal and decision fingerprints and escapes review notes',()=>{
+  const run=gateReviewFixture().reviewed;run.review.note='<script>bad()</script>';const html=renderGateReview(run);
+  assert.match(html,/Reviewed as research/);assert.match(html,/Decision SHA-256/);assert.match(html,/Exact proposal fingerprint/);assert.match(html,/not independent approval/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+  assert.match(renderGateReview({...run,review:null,review_status:{state:'legacy',eligible:false}}),/Compute a new proposal/);
+});
+test('gate review proxy forwards bounded Unicode notes, session and CSRF only to fixed writes',async t=>{
+  const note='🚀'.repeat(1000),body=JSON.stringify({note,acknowledged:true});
+  const backend=await serve(t,async(req,res)=>{assert.equal(req.url,'/api/v1/research/gate-review');assert.equal(req.headers.cookie,'ain_session=fixture');assert.equal(req.headers['x-csrf-token'],'fixture-csrf');let received='';for await(const chunk of req)received+=chunk;assert.equal(received,body);res.setHeader('Content-Type','application/json');res.end('{}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/gate-review`;
+  assert.equal((await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Cookie':'ain_session=fixture; unrelated=secret','X-CSRF-Token':'fixture-csrf'},body})).status,200);
+  assert.equal((await fetch(url)).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });

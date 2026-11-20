@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Synthetic gate review milestone: newly saved proposals now have exact-content fingerprints and a 24-hour review window. Transactional researcher/admin decisions bind to the proposal, recheck feasibility/objective, replay identical retries and reject changed, expired or conflicting decisions. Legacy proposals remain readable without automatic review enrollment. Self-review remains allowed; no independent or operational approval is claimed. Seven desktop/mobile/retry/expiry/reset preview scenarios passed. Windows passes 244 tests (193 Python, 51 Node). See `GATE_PROPOSAL_REVIEW.md`.
+
 Investigation operations milestone: an administrator-only read-only panel now shows retained background states, active ages, local worker observations and a bounded 200-run tool/recorded-coverage window. Three-second query/processing bounds, privacy projection and stale/session clearing are tested. Tool time excludes model generation and is not end-to-end latency; saved flags are not semantic accuracy. Six synthetic component browser cases passed. Windows passes 233 tests (185 Python, 48 Node). See `AGENT_OPERATIONS.md`.
 
 Model evidence agent milestone: an explicit opt-in tool retains pinned April/May errors/calibration and April-only permutation summaries. Canonical snapshot checks and a mandatory non-causal source quotation protect research review, with one bounded repair. A real Qwen3 run produced two verified extracts and awaits review; its omitted input-reliance quotation remains visible as structured evidence, so general objective completeness is not claimed. Seven desktop/mobile/permission/reset preview scenarios passed. Windows passes 223 tests (178 Python, 45 Node). See `MODEL_AGENT_REVIEW.md`.

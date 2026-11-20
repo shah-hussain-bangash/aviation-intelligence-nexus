@@ -13,7 +13,7 @@ from services.api.paths import ROOT
 PROJECT = 'ain-rollback-drill'
 PORT = 8091
 CONTRACTS = ('services/api/paths.py', 'services/api/prediction.py', 'agents/jobs.py',
-             'agents/store.py', 'agents/runtime.py', 'rag/index.py', 'infra/recovery.py')
+             'agents/store.py', 'agents/runtime.py', 'optimization/history.py', 'optimization/reviews.py', 'optimization/gates.py', 'rag/index.py', 'infra/recovery.py')
 OVERRIDE = ROOT / '.local/releases/rollback-drill.override.json'
 
 

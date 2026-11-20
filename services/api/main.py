@@ -20,6 +20,7 @@ from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
 from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
+from optimization.reviews import GateReview,ReviewConflict
 from rag.service import Knowledge, Question
 from rag.history import EvidenceHistory
 from rag import ollama
@@ -209,7 +210,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/gate-review", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -403,11 +404,24 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (RuntimeError,sqlite3.Error):
             return JSONResponse(status_code=503,content={"error":"verified_optimization_unavailable"})
 
+    @app.post('/api/v1/research/gate-review')
+    def review_gate_proposal(review: GateReview, request: Request):
+        try:
+            return gate_history.review(request.state.user,review)
+        except PermissionError:
+            return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
+        except KeyError:
+            return JSONResponse(status_code=404,content={'error':'gate_proposal_unavailable'})
+        except ReviewConflict as error:
+            return JSONResponse(status_code=409,content={'error':'gate_review_blocked','message':str(error)})
+        except (sqlite3.Error,ValueError,TypeError):
+            return JSONResponse(status_code=503,content={'error':'gate_review_unavailable','message':'No decision confirmed. Refresh the saved proposal before retrying.'})
+
     @app.get("/api/v1/research/gate-history")
     def gate_runs(request: Request):
         try:
             return {"runs":gate_history.recent(request.state.user),"research_only":True}
-        except (sqlite3.Error,ValueError):
+        except (sqlite3.Error,ValueError,TypeError,KeyError):
             return JSONResponse(status_code=503,content={"error":"optimization_history_unavailable"})
 
     @app.get('/api/v1/research/knowledge-status')
