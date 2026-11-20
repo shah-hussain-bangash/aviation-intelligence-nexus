@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 18 Node dashboard/proxy/startup tests and 90 Python backend/data/model/history/optimization/knowledge/agent/recovery tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 20 Node dashboard/proxy/startup tests and 98 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -38,3 +38,5 @@ The GitHub sync policy now requires `npm test` before publication. A successful 
 Connected research now requires local sign-in. Create your first administrator using `docs/LOCAL_IDENTITY.md`; CI uses isolated temporary accounts, never your real account.
 
 Local container deployment and restoration are described in [the recovery runbook](LOCAL_DEPLOYMENT_RECOVERY.md). The workflow also builds fresh API/web images, verifies health and container settings, restarts the API and verifies again on Linux. It uses empty synthetic state, not the workstation backup or host Ollama.
+
+The Docker API enables local monitoring. Native developers can set `AIN_MONITOR_ENABLED=1` before API startup. See [monitoring](LOCAL_MONITORING.md) for counters, persistence, freshness and permission boundaries.

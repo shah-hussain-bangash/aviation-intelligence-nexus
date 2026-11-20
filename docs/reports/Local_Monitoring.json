@@ -1,0 +1,88 @@
+{
+  "milestone": "Local service monitoring",
+  "date": "2026-11-20",
+  "scope": "Single-process local research services; not independent uptime monitoring or production qualification",
+  "runtime_observation": {
+    "format": "ain-monitor-v1",
+    "instance": "dfb01c64-ab35-4411-b4a4-44b7d7361d01",
+    "checked_at": "2026-11-20T06:55:28.977676+00:00",
+    "components": {
+      "database": true,
+      "active_model": true,
+      "local_ai_models": true
+    },
+    "transitions": [],
+    "request_counts": {
+      "4xx": 1
+    },
+    "recent_server_failures": [],
+    "production_ready": false
+  },
+  "background_snapshot_updated": true,
+  "unauthenticated_history_probe_status": 401,
+  "response_counter_persisted": true,
+  "container_checks": {
+    "scope": "Local container smoke and isolation checks, not production qualification",
+    "project": "ain-local-release",
+    "checks": {
+      "api_healthy": true,
+      "api_non_root": true,
+      "api_read_only_root": true,
+      "api_capabilities_dropped": true,
+      "api_not_privileged": true,
+      "api_no_privilege_escalation": true,
+      "api_port_scope": true,
+      "web_healthy": true,
+      "web_non_root": true,
+      "web_read_only_root": true,
+      "web_capabilities_dropped": true,
+      "web_not_privileged": true,
+      "web_no_privilege_escalation": true,
+      "web_port_scope": true,
+      "database_backed_readiness": true,
+      "unauthenticated_access_not_granted": true
+    },
+    "passed": true,
+    "images": {
+      "api": {
+        "image_id": "sha256:efe1d773156ce1b78cdd1817110169232a6a2528a654979e039a266a64c6ea7d",
+        "source_revision": "monitoring-working-tree"
+      },
+      "web": {
+        "image_id": "sha256:7ee0dae6e115c2cebad4cc0490e82d9685f0ef855e92b9f838ad20212de81e19",
+        "source_revision": "monitoring-working-tree"
+      }
+    },
+    "production_ready": false
+  },
+  "automated_tests": {
+    "python": 98,
+    "node": 20,
+    "total": 118,
+    "monitoring_python_cases": 8,
+    "monitoring_node_cases": 2
+  },
+  "isolated_fault_checks": [
+    "unavailable component and recovery transition",
+    "probe exception sanitization",
+    "snapshot write failure",
+    "stale samples withhold health",
+    "API model unavailable returns 503 and increments error count",
+    "role enforcement and credential/query redaction",
+    "new process does not reuse old healthy state"
+  ],
+  "browser_checks": {
+    "existing_admin_session": true,
+    "live_component_checks_visible": true,
+    "desktop_layout": true,
+    "mobile_390px_layout": true
+  },
+  "limits": [
+    "No external alert delivery or independent observer",
+    "Counters and in-memory incidents reset on restart",
+    "Snapshot contains current process only and is not protected audit storage",
+    "HTTP 200 agent semantic failures are not HTTP server errors",
+    "No service objective or model-drift qualification"
+  ],
+  "production_ready": false
+}

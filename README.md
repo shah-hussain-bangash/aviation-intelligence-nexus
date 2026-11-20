@@ -38,6 +38,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Local Docker release with loopback-only dashboard, non-root/read-only containers, trusted snapshot verification, measured restoration and controlled API outage/restart checks. See [deployment and recovery](docs/LOCAL_DEPLOYMENT_RECOVERY.md).
 
+- Administrator service-health panel with fresh/stale component checks, bounded response metrics and locally persisted snapshots. See [local monitoring and limits](docs/LOCAL_MONITORING.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

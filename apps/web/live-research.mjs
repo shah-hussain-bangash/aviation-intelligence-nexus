@@ -4,6 +4,7 @@ import { mountGateLab } from './gate-lab.mjs';
 import { mountKnowledge } from './knowledge-lab.mjs';
 import { mountInvestigation } from './investigation-lab.mjs';
 import { mountPlatformStatus } from './platform-status.mjs';
+import { mountMonitoring } from './monitoring-lab.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Invalid numeric response');
@@ -59,6 +60,7 @@ if (typeof document !== 'undefined') {
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
+  const monitoringUI = mountMonitoring(section.querySelector('.research-inner'));
   const gateLab = mountGateLab(section.querySelector('.research-inner'));
   const knowledgeLab = mountKnowledge(section.querySelector('.research-inner'));
   const investigationLab = mountInvestigation(section.querySelector('.research-inner'));
@@ -97,6 +99,7 @@ if (typeof document !== 'undefined') {
     knowledgeLab.setSession(user);
     investigationLab.setSession(user);
     platformStatus.setSession(user);
+    monitoringUI.setSession(user);
     section.querySelector('details').hidden=!user;
     scenarioUI.setAvailable(false);
     scenarioUI.clearHistory();

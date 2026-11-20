@@ -11,6 +11,25 @@ import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
 import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
 import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
+import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
+
+test('monitoring renderer withholds stale component health and escapes transition text',()=>{
+  const data={production_ready:false,external_alert_delivery:false,state:'unknown',request_counts:{'2xx':4,'5xx':1},latency:{p95_ms:25,sample_size:5},components:{database:true},transitions:[{at:'<script>',component:'database',state:'unavailable'}],recent_server_failures:[],persistence_ok:true};
+  const html=renderMonitoring(data);
+  assert.match(html,/Current component health is unknown/);
+  assert.doesNotMatch(html,/Check passed/);
+  assert.match(html,/&lt;script&gt;/);
+  assert.doesNotMatch(html,/<script>/);
+  assert.throws(()=>renderMonitoring({...data,production_ready:true}));
+});
+
+test('monitoring route uses the authenticated proxy and rejects writes',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"state":"unknown"}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/monitoring`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);
+});
 
 test('release configuration restricts backend hosts, binding and cookie namespaces',()=>{
   assert.equal(runtimeConfig({}).bindHost,'127.0.0.1');

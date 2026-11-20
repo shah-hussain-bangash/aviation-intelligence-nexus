@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager, closing
 import hashlib
 import json
 import os
+import time
 from pathlib import Path
 import sqlite3
 from datetime import datetime, timezone
@@ -26,6 +27,7 @@ from agents.runtime import Investigation, Investigator, Review
 from agents.store import AgentStore, Conflict
 from services.api.paths import STATE, SCHEMA_VERSION
 from infra.status import restore_status
+from services.api.monitoring import Monitor
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -138,6 +140,19 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     agent_store = AgentStore(database)
     investigator = Investigator(database,knowledge,agent_store)
     auth = AuthStore(database)
+    def database_probe():
+        with closing(connect(database)) as connection:
+            return connection.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0] == SCHEMA_VERSION
+
+    def ai_probe():
+        installed = ollama.models()
+        return ollama.EMBED_MODEL in installed and ollama.CHAT_MODEL in installed
+
+    monitor = Monitor(database.parent / 'monitoring.json', {
+        'database': database_probe,
+        'active_model': lambda: read_model_report(research_model_directory) is not None,
+        'local_ai_models': ai_probe,
+    }, enabled=os.environ.get('AIN_MONITOR_ENABLED') == '1')
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
                for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
 
@@ -145,7 +160,11 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     async def lifespan(app):
         initialize(database)
         agent_store.recover()
-        yield
+        monitor.start()
+        try:
+            yield
+        finally:
+            await monitor.stop()
 
     app = FastAPI(
         title="Aviation Intelligence Nexus — Local API",
@@ -154,6 +173,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         lifespan=lifespan,
     )
     app.state.auth_store = auth
+    app.state.monitor = monitor
 
     @app.middleware("http")
     async def require_session(request: Request, call_next):
@@ -179,6 +199,25 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         response = await call_next(request)
         response.headers["Cache-Control"] = "no-store"
         return response
+
+    @app.middleware('http')
+    async def measure_requests(request: Request, call_next):
+        started = time.monotonic()
+        try:
+            response = await call_next(request)
+        except Exception:
+            monitor.record(500, (time.monotonic() - started) * 1000)
+            raise
+        # Health probes and metrics polling should not inflate research request metrics.
+        if request.url.path.startswith('/api/v1/') and (request.url.path != '/api/v1/research/monitoring' or response.status_code >= 400):
+            monitor.record(response.status_code, (time.monotonic() - started) * 1000)
+        return response
+
+    @app.get('/api/v1/research/monitoring')
+    def monitoring(request: Request):
+        if request.state.user['role'] != 'admin':
+            return JSONResponse(status_code=403, content={'error': 'admin_role_required'})
+        return monitor.snapshot()
 
     @app.get("/api/v1/auth/session")
     def auth_session(request: Request):
