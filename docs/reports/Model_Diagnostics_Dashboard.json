@@ -1,0 +1,74 @@
+{
+  "format": "ain-model-diagnostics-dashboard-v1",
+  "scope": "Recorded evaluation dashboard; no retraining or real user session browser test",
+  "report_sha256": "e58f44086ba8c271f2e00c1965a136911018f2dd82bc625cbf7fb2752fb0c3f9",
+  "observed": {
+    "validation": {
+      "records": 577730,
+      "binned_ece": 0.012217606880382837,
+      "false_alerts": 243401,
+      "missed_delays": 31539
+    },
+    "test": {
+      "records": 597574,
+      "binned_ece": 0.04094139713990346,
+      "false_alerts": 241732,
+      "missed_delays": 36371
+    }
+  },
+  "carrier_count": 14,
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "initial_may": true,
+        "carrier_slice": true,
+        "export_cohort": true,
+        "april_resets_carrier": true,
+        "may_restores_carriers": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "initial_may": true,
+        "carrier_slice": true,
+        "export_cohort": true,
+        "april_resets_carrier": true,
+        "may_restores_carriers": true,
+        "no_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Failure",
+      "checks": {
+        "initial_may": true,
+        "carrier_slice": true,
+        "export_cohort": true,
+        "april_resets_carrier": true,
+        "may_restores_carriers": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session",
+      "checks": {
+        "initial_may": true,
+        "carrier_slice": true,
+        "export_cohort": true,
+        "april_resets_carrier": true,
+        "may_restores_carriers": true,
+        "session_clears": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

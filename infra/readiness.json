@@ -112,7 +112,7 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim.",
       "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
@@ -148,6 +148,14 @@
         {
           "path": "docs/reports/Route_History_Lookup.json",
           "sha256": "30af22480720920c6441224e308e7ed097a52cea5f70201322252fd29b2acf39"
+        },
+        {
+          "path": "docs/MODEL_DIAGNOSTICS.md",
+          "sha256": "ce161614ed987e41f84c2b87864ce94c3be98c9a7bf4151e67489f64eddf2c02"
+        },
+        {
+          "path": "docs/reports/Model_Diagnostics_Dashboard.json",
+          "sha256": "eebce9e8d2af76f8ddf10ffb063a35c6e94ce60392f44ca2a2ec90856b2c9eab"
         }
       ]
     },
@@ -524,7 +532,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "367d305fc4961aff73ddf7fcef30392ba0ea14f83cd2b5cd9f81089be66f7446"
+          "sha256": "4e23ffd9a66e455dfed184eb46386b60c17d6882f37a365baa330d0a2f0eaefb"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

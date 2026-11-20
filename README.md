@@ -99,3 +99,5 @@ Authorized historical flight data -> persistent database -> evaluated delay base
 The dashboard's bundled operational records are synthetic. The separate local database now contains an official BTS January 2025 import; see [data ingestion](docs/DATA_INGESTION.md). Large datasets, credentials, personal documents and local databases are excluded from Git. Source registrations do not grant data rights. A local review does not enforce authentication or authorize an airline operation.
 
 AIN is not affiliated with Emirates, Etihad or any airline. It does not provide dispatch, air-traffic, maintenance-release or passenger-communication authority. Use a production description only after implementation and verified deployment, security, monitoring and recovery evidence.
+
+Recorded model quality: [Model diagnostics](docs/MODEL_DIAGNOSTICS.md) exposes calibration, errors and carrier slices without retraining.

@@ -31,6 +31,7 @@ from services.api.monitoring import Monitor
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from services.api.segments import load_segments
+from services.api.diagnostics import load_diagnostics
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -511,6 +512,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError):
             return JSONResponse(status_code=503, content={'error': 'readiness_evidence_unavailable',
                 'message': 'The scope/evidence assessment could not be verified. No readiness claim is returned.'})
+
+    @app.get('/api/v1/research/model-diagnostics')
+    def model_diagnostics():
+        try:
+            return load_diagnostics()
+        except (OSError, ValueError, KeyError, TypeError, ZeroDivisionError):
+            return JSONResponse(status_code=503, content={'error':'model_diagnostics_unavailable',
+                'message':'The recorded model evaluation could not be verified. Results are withheld.'})
 
     @app.get('/api/v1/research/route-segments')
     def route_segments():

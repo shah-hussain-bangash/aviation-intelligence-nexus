@@ -10,7 +10,7 @@ npm.cmd run dev:all
 
 This starts the API on 127.0.0.1:8002 and dashboard on 127.0.0.1:8080. Keep the terminal open. Ctrl+C stops only processes started by that launcher; it leaves reused services alone. The launcher checks service identities before reusing occupied ports and refuses unrelated or older services. It never searches for or kills another process by port. `PORT` and `AIN_API_PORT` select different valid local ports.
 
-VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the same launcher. The older **Start dashboard** task remains frontend-only.
+VS Code: **Terminal â†’ Run Task â†’ AIN: Start API and dashboard** provides the same launcher. The older **Start dashboard** task remains frontend-only.
 
 ## One command to test
 
@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 36 Node dashboard/proxy/startup tests and 160 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 39 Node dashboard/proxy/startup tests and 164 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -60,3 +60,5 @@ The authenticated route-pattern panel reads a pinned public experiment summary. 
 The route-history endpoint is a bounded read-only current-database lookup; it does not rerun clustering. See HISTORICAL_ROUTE_LOOKUP.md for query parameters, concurrency/deadline behavior, statistical scope and local verification.
 
 Scoped route investigations use explicit airport echo and saved profile arithmetic checks. Run the optional route index setup before large local-model checks; `python -m agents.evaluate_route` records private engineering receipts. See ROUTE_AGENT_INTEGRATION.md for retained failures, bounds, reproduction and current rollback limits.
+
+The recorded model diagnostic panel reads a pinned public report, not the active model or live data. See MODEL_DIAGNOSTICS.md for cohort/calibration methods and failure behavior.

@@ -1,3 +1,4 @@
+import {renderDiagnostics,validateDiagnostics} from '../apps/web/model-diagnostics.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { spawn } from 'node:child_process';
@@ -378,4 +379,30 @@ test('proxy forwards only the read-only summary route and returns safe failures'
   assert.equal((await fetch(url + '/api/v1/model/report')).status, 404);
   fail = true;
   assert.equal((await fetch(url + '/api/v1/research/summary')).status, 503);
+});
+
+function diagnosticsFixture(){
+  const r=JSON.parse(fs.readFileSync(new URL('../docs/reports/Delay_v2.json',import.meta.url),'utf8'));
+  const summary=m=>({...m,binned_ece:m.calibration_bins.reduce((n,b)=>n+b.count*Math.abs(b.mean_probability-b.observed_rate),0)/m.records,false_alerts:m.confusion_matrix_labels_0_1[0][1],missed_delays:m.confusion_matrix_labels_0_1[1][0],alert_count:m.confusion_matrix_labels_0_1[0][1]+m.confusion_matrix_labels_0_1[1][1]});
+  return {format:'ain-model-diagnostics-v1',integrity_verified:true,research_only:true,production_ready:false,report_sha256:'a'.repeat(64),threshold:r.threshold,periods:Object.fromEntries(['validation','test'].map(k=>[k,{model:summary(r[k].model),baseline:r[k].constant_training_prior}])),carriers:Object.fromEntries(Object.entries(r.test_by_carrier).map(([k,m])=>[k,summary(m)])),method:'Recorded evidence',limitations:r.limitations};
+}
+test('model diagnostics exposes fixed-threshold errors, calibration and supported cohorts',()=>{
+  const data=diagnosticsFixture();const html=renderDiagnostics(data);
+  assert.match(html,/241,732 false alerts/);assert.match(html,/36,371 missed delays/);assert.match(html,/4.09%/);assert.match(html,/0.6506/);
+  assert.match(html,/No confidence intervals/);assert.match(renderDiagnostics(data,'validation'),/April 2025/);
+  assert.match(renderDiagnostics(data,'test','AA'),/84,496/);
+  assert.throws(()=>renderDiagnostics(data,'validation','AA'));assert.throws(()=>renderDiagnostics(data,'test','EK'));
+});
+test('diagnostics rejects inconsistent populations and escapes descriptive evidence',()=>{
+  let data=diagnosticsFixture();data.periods.test.model.calibration_bins[0].bin='<img>';
+  assert.throws(()=>validateDiagnostics(data));data=diagnosticsFixture();data.periods.test.model.false_alerts=0;assert.throws(()=>validateDiagnostics(data));
+  data=diagnosticsFixture();data.carriers.AA.records=1;assert.throws(()=>validateDiagnostics(data));
+  data=diagnosticsFixture();data.limitations=['<script>bad()</script>'];assert.match(renderDiagnostics(data),/&lt;script&gt;/);assert.doesNotMatch(renderDiagnostics(data),/<script>/);
+});
+test('model diagnostics proxy is authenticated, fixed and read-only',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/model-diagnostics');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/model-diagnostics`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });
