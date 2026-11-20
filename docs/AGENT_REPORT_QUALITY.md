@@ -63,3 +63,5 @@ Browser checks on 20 November 2026 used the existing signed-in administrator acc
 Existing local account credentials, the 64 workspaces and the no-operational-write boundary are preserved. Managed deployment, monitoring, durable workers, protected auditing and recovery qualification remain incomplete.
 
 Scoped route integration now adds request/argument/profile binding and arithmetic/interval checks, plus structured evidence that remains visible independently of generated extract selection. See ROUTE_AGENT_INTEGRATION.md for actual-model results, retained failures and the current test count.
+
+Model evidence update: canonical saved-snapshot equality and the specific non-causal quotation are required for opted-in model reviews. Missing boundary coverage uses the existing bounded repair. This is not general semantic or objective-completeness verification. See MODEL_AGENT_REVIEW.md.

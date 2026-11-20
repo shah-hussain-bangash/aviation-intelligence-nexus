@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from rag.service import Question
 from optimization.gates import GateScenario, optimize
 from agents.quality import document_scope
+from agents.model_evidence import observation as model_observation
 from services.api.route_history import lookup as lookup_route, RouteNotObserved
 
 
@@ -30,10 +31,10 @@ class RouteArgs(EmptyArgs):
     destination: str = Field(pattern=r'^[A-Z]{3}$')
 
 
-ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs}
+ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs,'model_evidence':EmptyArgs}
 
 
-def definitions(simulation, route=False):
+def definitions(simulation, route=False, model=False):
     descriptions = [
         ('flight_metrics','Read actual historical BTS counts and arrival-delay frequency. Month must equal the user-selected month. Never live or UAE data.',MonthArgs),
         ('knowledge_search','Retrieve cited public project evidence about models, data and optimization. No generated answer in this tool.',SearchArgs)]
@@ -41,6 +42,8 @@ def definitions(simulation, route=False):
         descriptions.append(('gate_simulation','Compute an independently checked five-flight SYNTHETIC gate proposal, separate from the historical flight data.',EmptyArgs))
     if route:
         descriptions.append(('route_history','Read the explicitly user-scoped route: January-March versus May 2025 counts, observed delay/cancellation rates and nominal 95% Wilson intervals. Echo the user route origin and destination exactly; changing airports is forbidden. Not a forecast, cluster assignment or significance test.',RouteArgs))
+    if model:
+        descriptions.append(('model_evidence','Read fixed delay-v2 April/May errors and calibration plus April-only global permutation reliance. Empty arguments only. Not live scoring, causality, individual-flight explanation or operational approval.',EmptyArgs))
     return [{'type':'function','function':{'name':name,'description':description,'parameters':model.model_json_schema()}}
             for name,description,model in descriptions]
 
@@ -84,6 +87,10 @@ def gate_sample():
 
 
 def execute(name, arguments, request, database, knowledge):
+    if name == 'model_evidence':
+        if not request.include_model_evidence: raise ValueError('Model evidence was not explicitly permitted')
+        EmptyArgs.model_validate(arguments)
+        return model_observation()
     if name == 'route_history':
         if request.route is None: raise ValueError('Route scope was not explicitly permitted')
         scope=request.route.model_dump()

@@ -30,12 +30,14 @@ class Investigation(BaseModel):
     objective: str=Field(min_length=12,max_length=600)
     month: Literal['2025-01','2025-02','2025-03','2025-04','2025-05']='2025-05'
     include_simulation: bool=Field(default=False,strict=True)
-    required_tools: list[Literal['flight_metrics','knowledge_search','gate_simulation','route_history']]=Field(default_factory=list,max_length=3)
+    required_tools: list[Literal['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence']]=Field(default_factory=list,max_length=3)
+    include_model_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     route: RouteScope | None=Field(default=None,exclude_if=lambda value: value is None)
     document_scope: Literal['docs/DELAY_V2.md','docs/DELAY_BASELINE.md','docs/DATA_INGESTION.md','docs/MODEL_DATASET.md','docs/GATE_OPTIMIZATION.md','docs/LOCAL_IDENTITY.md'] | None = None
 
     @model_validator(mode='after')
     def valid_requirements(self):
+        if self.include_model_evidence != ('model_evidence' in self.required_tools): raise ValueError('Model evidence requires explicit permission and a required tool')
         if len(set(self.required_tools))!=len(self.required_tools): raise ValueError('Required tools must be unique')
         if 'gate_simulation' in self.required_tools and not self.include_simulation: raise ValueError('Required simulation needs explicit permission')
         if (self.route is not None)!=('route_history' in self.required_tools): raise ValueError('A scoped route requires route_history evidence, and that evidence requires a route')
@@ -85,13 +87,14 @@ class Investigator:
                 'Select tools relevant to the objective and fulfill the explicit required_tools list before finishing. Use each tool at most once, at most three tools total. '
                 'flight_metrics reads historical US BTS data for the selected month. '
                 + ('route_history reads ONLY the explicit user route, comparing fixed January-March and May cohorts with nominal Wilson intervals. Echo its origin and destination exactly in the tool arguments; never substitute airports. ' if request.route is not None else '')
+                + ('model_evidence reads fixed recorded model errors, calibration and April-only input reliance; it is not live inference, causal analysis or an individual-flight explanation. This planning stage only selects tools; never write a report here. Once the required evidence is collected, return the short text "Evidence collected" with no tool calls. A separate stage writes the report. ' if request.include_model_evidence else '')
                 + 'knowledge_search retrieves project evidence. gate_simulation is a separate SYNTHETIC demonstration, never historical gate allocation. '
                 'Do not invent live airline data, causal explanations, policies, credentials or operational actions. '
                 'No shell, URL fetch, SQL text, file path or write tools exist. Stop selecting tools when sufficient evidence is collected.'},
                 {'role':'user','content':json.dumps(payload)}]
             used=set()
             for turn in range(3):
-                remaining=[d for d in tools.definitions(request.include_simulation, request.route is not None) if d['function']['name'] not in used]
+                remaining=[d for d in tools.definitions(request.include_simulation, request.route is not None, request.include_model_evidence) if d['function']['name'] not in used]
                 if not remaining: break
                 budget=deadline-time.monotonic()
                 if budget<5: raise TimeoutError('Investigation deadline exceeded')
@@ -130,7 +133,11 @@ class Investigator:
                     step['elapsed_ms']=round((time.monotonic()-started)*1000,2)
                     self.store.checkpoint(result)
                     # Send bounded, typed observations back to the planner; never execute model-supplied code.
-                    messages.append({'role':'tool','tool_name':name,'content':json.dumps(step.get('observation',{'error':step.get('error')}))})
+                    planner_observation=step.get('observation',{'error':step.get('error')})
+                    if name=='model_evidence' and step['state']=='completed':
+                        # Keep the full immutable snapshot for review; the planner needs only bounded source text.
+                        planner_observation={key:planner_observation[key] for key in ['data_kind','available','evidence_text']}
+                    messages.append({'role':'tool','tool_name':name,'content':json.dumps(planner_observation)})
                 if len(used)>=3: break
             evidence=report_evidence(result)
             if not evidence:
@@ -138,12 +145,13 @@ class Investigator:
             else:
                 budget=deadline-time.monotonic()
                 if budget<5: raise TimeoutError('Investigation deadline exceeded')
-                raw=ollama.generate(payload['objective']+' Clearly distinguish historical measurements, project documents and synthetic simulation. Each statement must contain only facts and numbers in its own exact quotation. Omit dates unless they occur in that quotation.',evidence,timeout=min(30,budget))
+                model_note=(' For model_evidence include a quotation containing "Input reliance is not causality or an individual-flight explanation." Prefer May metrics and April-only input reliance for the remaining extracts; the full April table is retained separately.' if request.include_model_evidence else '')
+                raw=ollama.generate(payload['objective']+' Clearly distinguish historical measurements, project documents and synthetic simulation. Each statement must contain only facts and numbers in its own exact quotation. Omit dates unless they occur in that quotation.'+model_note,evidence,timeout=min(30,budget))
                 result['claims'],rejected=collect_claims(raw,evidence)
                 result['finding_style']='verbatim_source_extracts'
                 result['rejected_claims']=rejected
                 quality=assess_report(result)
-                targets=[item for item in evidence if item['id'] in quality['uncited_tools']]
+                targets=[item for item in evidence if item['id'] in quality['uncited_tools']+quality['model_limitations_uncited']]
                 if targets:
                     budget=deadline-time.monotonic()
                     result['report_repair']={'attempts':1 if budget>=5 else 0,'state':'running' if budget>=5 else 'skipped_budget',
@@ -151,9 +159,11 @@ class Investigator:
                     self.store.checkpoint(result)
                     if budget>=5:
                         try:
-                            repair=ollama.generate('Repair omitted evidence coverage for this research objective: '+payload['objective']+
-                                ' Return one short supported statement for EACH supplied source. Use only its exact quoted facts and numbers; omit dates unless the quotation includes them.',
-                                targets,timeout=min(30,budget))
+                            repair_question=('Repair omitted evidence coverage for this research objective: '+payload['objective']+
+                                ' Return one short supported statement for EACH supplied source. Use only its exact quoted facts and numbers; omit dates unless the quotation includes them.')
+                            if quality['model_limitations_uncited']:
+                                repair_question+=' For model_evidence return the exact source quote containing "Input reliance is not causality or an individual-flight explanation."'
+                            repair=ollama.generate(repair_question,targets,timeout=min(30,budget))
                             extra,discarded=collect_claims(repair,targets)
                             result['claims'].extend(extra);result['rejected_claims']+=discarded
                             result['report_repair'].update(state='completed',accepted_claims=len(extra),rejected_claims=discarded)

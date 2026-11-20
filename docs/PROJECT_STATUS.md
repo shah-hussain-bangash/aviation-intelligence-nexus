@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Model evidence agent milestone: an explicit opt-in tool retains pinned April/May errors/calibration and April-only permutation summaries. Canonical snapshot checks and a mandatory non-causal source quotation protect research review, with one bounded repair. A real Qwen3 run produced two verified extracts and awaits review; its omitted input-reliance quotation remains visible as structured evidence, so general objective completeness is not claimed. Seven desktop/mobile/permission/reset preview scenarios passed. Windows passes 223 tests (178 Python, 45 Node). See `MODEL_AGENT_REVIEW.md`.
+
 Frozen-model reliance milestone: a prespecified 10,000-row April validation sample and three grouped permutations quantify log-loss/AUC/Brier changes without fitting or May outcome analysis. Exact sample/results were reproduced, and source hashes remained unchanged. A signed-in read-only panel exposes all shuffle results, variation, provenance and export, with desktop/390-pixel and failure/session preview checks. These are global performance diagnostics, not causality or individual flight explanations. The Windows suite passes 213 tests (171 Python, 42 Node). See `MODEL_INPUT_RELIANCE.md`.
 
 Model diagnostics milestone: authenticated read-only evidence now exposes April/May calibration, fixed-threshold confusion counts, 14 May carrier slices and cohort export. Report integrity and count/rate reconciliation are checked before display. May binned ECE is 4.09% with 241,732 false alerts; no retuning, live drift monitoring, fairness or operational benefit is claimed. Desktop/390-pixel, export, outage/recovery and session clearing passed isolated component checks. The Windows suite passes 203 tests (164 Python, 39 Node). See `MODEL_DIAGNOSTICS.md`.

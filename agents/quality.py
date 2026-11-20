@@ -2,6 +2,7 @@
 from rag.service import validate_claims
 from rag.index import SOURCES
 from services.api.route_history import valid_saved_profile
+from agents.model_evidence import valid_observation
 
 
 def document_scope(request):
@@ -57,6 +58,8 @@ def assess_report(run):
     missing=sorted(set(run['request'].get('required_tools',[]))-selected)
     if run['request'].get('route') is not None and 'route_history' not in selected and 'route_history' not in missing:
         missing.append('route_history')
+    if run['request'].get('include_model_evidence') and 'model_evidence' not in selected and 'model_evidence' not in missing:
+        missing.append('model_evidence')
     failed=[s['id'] for s in run['steps'] if s['state']!='completed']
     unavailable=[s['id'] for s in run['steps'] if s['state']=='completed' and not s.get('observation',{}).get('available')]
     uncited=[item['id'] for item in evidence if item['id'] not in cited]
@@ -66,11 +69,17 @@ def assess_report(run):
     route_mismatches=[s['id'] for s in run['steps'] if s['tool']=='route_history' and s['state']=='completed'
         and s.get('observation',{}).get('available') and (s.get('arguments')!=run['request'].get('route') or s['observation'].get('scope')!=run['request'].get('route')
             or not valid_saved_profile(s['observation'].get('profile'),run['request'].get('route')))]
-    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches or route_mismatches)
+    model_mismatches=[s['id'] for s in run['steps'] if s['tool']=='model_evidence' and s['state']=='completed'
+        and s.get('observation',{}).get('available') and (run['request'].get('include_model_evidence') is not True
+            or s.get('arguments')!={} or not valid_observation(s['observation']))]
+    model_limits=[s['id'] for s in run['steps'] if s['tool']=='model_evidence' and s['state']=='completed'
+        and s.get('observation',{}).get('available') and not any(c.get('citation')==s['id']
+            and 'Input reliance is not causality or an individual-flight explanation.' in c.get('quote','') for c in run['claims'])]
+    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches or route_mismatches or model_mismatches or model_limits)
     return {'version':'research-coverage-v1','passed':passed,'required_tools':run['request'].get('required_tools',[]),
         'missing_tools':missing,'failed_steps':failed,'unavailable_steps':unavailable,'uncited_tools':uncited,
         'invalid_claims':invalid,'covered_sources':len(available&cited),'available_sources':len(available),
         'document_scope':scope,'document_scope_mismatches':mismatches,
-        'route_scope_mismatches':route_mismatches,
+        'route_scope_mismatches':route_mismatches,'model_evidence_mismatches':model_mismatches,'model_limitations_uncited':model_limits,
         'finding_style':'verbatim_source_extracts','semantic_entailment_verified':False,'all_objective_parts_verified':False,
         'meaning':'Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required.'}

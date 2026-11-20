@@ -103,3 +103,5 @@ AIN is not affiliated with Emirates, Etihad or any airline. It does not provide 
 Recorded model quality: [Model diagnostics](docs/MODEL_DIAGNOSTICS.md) exposes calibration, errors and carrier slices without retraining.
 
 Model input reliance: [Grouped permutation evidence](docs/MODEL_INPUT_RELIANCE.md) provides a frozen April-only experiment and interactive metric exploration.
+
+AI model review: [Recorded model-evidence investigations](docs/MODEL_AGENT_REVIEW.md) retain metrics, provenance and limitations alongside source-extract drafts for human review.

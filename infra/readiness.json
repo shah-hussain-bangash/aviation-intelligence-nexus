@@ -224,14 +224,14 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified.",
       "remaining": "External worker isolation, distributed leases/failover, running-tool cancellation, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/AGENT_REPORT_QUALITY.md",
-          "sha256": "c0f1177970b5ae90fd6a6635643a2a22fd77f7adbd63e6bb987d7b376b3314f5"
+          "sha256": "c4e919213bc24e42e51c01fa80539cd7447e4cc037cd8ee9b50bd400b76bb323"
         },
         {
           "path": "docs/reports/Agent_Quality_Evaluation.json",
@@ -252,6 +252,14 @@
         {
           "path": "docs/reports/Route_Agent_Integration.json",
           "sha256": "fe2f61f9a7511028e022c47a3a5d4afd9724d4fb9e425d957bb80eb50e30b6b9"
+        },
+        {
+          "path": "docs/MODEL_AGENT_REVIEW.md",
+          "sha256": "e92f377f4b7a6bc391d1be4ff1c2bb4633779959d17fd127ded15ab5e5022d60"
+        },
+        {
+          "path": "docs/reports/Model_Agent_Integration.json",
+          "sha256": "e50c650c4b9975c8cfba38b8ee088d3886e280f67c2b87bb139131276cca62b1"
         }
       ]
     },
@@ -299,7 +307,7 @@
       "evidence": [
         {
           "path": "docs/INVESTIGATION_AGENT.md",
-          "sha256": "912e229dfe8c3745560d9c9b4af56b314b2031255f2217a3a15af22a5c6b3d61"
+          "sha256": "89031399781cdcaabdfe19f4d66828362759b2111ee938df26340a2756ee9052"
         }
       ]
     },
@@ -354,7 +362,7 @@
       "evidence": [
         {
           "path": "docs/AGENT_REPORT_QUALITY.md",
-          "sha256": "c0f1177970b5ae90fd6a6635643a2a22fd77f7adbd63e6bb987d7b376b3314f5"
+          "sha256": "c4e919213bc24e42e51c01fa80539cd7447e4cc037cd8ee9b50bd400b76bb323"
         }
       ]
     },
@@ -544,7 +552,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "d85268c3cf312b246f19c9406bcb935086e012fb321dd47b4bd0516f5508d553"
+          "sha256": "750a3cb0ef2bac29fb2a3321cdceeb247e21cf9668127989d76893d1d088cdf8"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

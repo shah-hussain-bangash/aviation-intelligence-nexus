@@ -1,0 +1,401 @@
+{
+  "format": "ain-model-agent-engineering-v1",
+  "scope": "Actual local-model direct runtime with separate private checkpoints; not a real-user authenticated browser run or held-out benchmark",
+  "elapsed_ms": 3788.49,
+  "checks": {
+    "model_tool_completed": true,
+    "saved_snapshot_valid": true,
+    "coverage_passed": true,
+    "max_three_tools": true,
+    "awaiting_human_review": true,
+    "retry_replayed": true,
+    "operational_approval_false": true
+  },
+  "passed": true,
+  "run": {
+    "run_id": "7ab811a0-919b-4e21-9f16-6bdf4e458370",
+    "actor": "engineering-model-agent",
+    "request": {
+      "objective": "Use model_evidence to review the frozen delay-v2 model. Include May false alerts and calibration error, April-only input reliance, and the non-causal and non-operational limitations. Use only recorded model evidence; no monthly SQL metrics, document search or simulation is needed.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "model_evidence"
+      ],
+      "include_model_evidence": true,
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "model_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_model_evidence",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-model-snapshot-v1",
+            "model_version": "delay-v2",
+            "diagnostics_sha256": "e58f44086ba8c271f2e00c1965a136911018f2dd82bc625cbf7fb2752fb0c3f9",
+            "reliance_sha256": "b8fc7102c0a7d36cb563279dccc0e64b30ff2f92ed9226c858ed4f48a9865677",
+            "threshold": 0.17,
+            "periods": {
+              "validation": {
+                "records": 577730,
+                "roc_auc": 0.6355034413087679,
+                "log_loss": 0.47806446428692456,
+                "brier_score": 0.15277209710520148,
+                "binned_ece": 0.012217606880382837,
+                "precision": 0.2521461535152673,
+                "recall": 0.7223777331784093,
+                "confusion_matrix_labels_0_1": [
+                  [
+                    220725,
+                    243401
+                  ],
+                  [
+                    31539,
+                    82065
+                  ]
+                ],
+                "false_alerts": 243401,
+                "missed_delays": 31539,
+                "baseline": {
+                  "records": 577730,
+                  "log_loss": 0.4957073015009855,
+                  "brier_score": 0.15797192760598774,
+                  "roc_auc": 0.5
+                }
+              },
+              "test": {
+                "records": 597574,
+                "roc_auc": 0.650608779323226,
+                "log_loss": 0.5261181880337645,
+                "brier_score": 0.17330130532507354,
+                "binned_ece": 0.04094139713990346,
+                "precision": 0.3021573387913937,
+                "recall": 0.742119145194912,
+                "confusion_matrix_labels_0_1": [
+                  [
+                    214804,
+                    241732
+                  ],
+                  [
+                    36371,
+                    104667
+                  ]
+                ],
+                "false_alerts": 241732,
+                "missed_delays": 36371,
+                "baseline": {
+                  "records": 597574,
+                  "log_loss": 0.5510578394648522,
+                  "brier_score": 0.18184102037175778,
+                  "roc_auc": 0.5
+                }
+              }
+            },
+            "input_reliance": {
+              "period": "2025-04",
+              "sample_records": 10000,
+              "validation_population": 577730,
+              "repeats": 3,
+              "baseline": {
+                "log_loss": 0.46579173831009113,
+                "roc_auc": 0.6494541538824028,
+                "brier_score": 0.14792229966131876
+              },
+              "groups": [
+                {
+                  "group": "carrier",
+                  "columns": [
+                    "carrier"
+                  ],
+                  "mean": {
+                    "log_loss_increase": 0.005107496120897466,
+                    "roc_auc_decrease": 0.01809692349024598,
+                    "brier_increase": 0.0016038858243052994
+                  },
+                  "repeat_std": {
+                    "log_loss_increase": 0.0006197046576540284,
+                    "roc_auc_decrease": 0.002447032446814981,
+                    "brier_increase": 0.00021232637419351695
+                  }
+                },
+                {
+                  "group": "origin",
+                  "columns": [
+                    "origin"
+                  ],
+                  "mean": {
+                    "log_loss_increase": 0.006585230960836482,
+                    "roc_auc_decrease": 0.024410018762940022,
+                    "brier_increase": 0.002103051722170207
+                  },
+                  "repeat_std": {
+                    "log_loss_increase": 0.0010949894034712755,
+                    "roc_auc_decrease": 0.003232581966817496,
+                    "brier_increase": 0.0003753797206477613
+                  }
+                },
+                {
+                  "group": "destination",
+                  "columns": [
+                    "destination"
+                  ],
+                  "mean": {
+                    "log_loss_increase": 0.004131691437325761,
+                    "roc_auc_decrease": 0.014673781135477904,
+                    "brier_increase": 0.0012936764602738404
+                  },
+                  "repeat_std": {
+                    "log_loss_increase": 0.000832603106024188,
+                    "roc_auc_decrease": 0.0028558074115072924,
+                    "brier_increase": 0.00022588560187729325
+                  }
+                },
+                {
+                  "group": "departure_time",
+                  "columns": [
+                    "scheduled_departure_hour",
+                    "scheduled_departure_minute"
+                  ],
+                  "mean": {
+                    "log_loss_increase": 0.027287678354124878,
+                    "roc_auc_decrease": 0.09506446322353053,
+                    "brier_increase": 0.00814532595939288
+                  },
+                  "repeat_std": {
+                    "log_loss_increase": 0.001728148378529788,
+                    "roc_auc_decrease": 0.0065564662839754165,
+                    "brier_increase": 0.000591141229121242
+                  }
+                },
+                {
+                  "group": "weekday",
+                  "columns": [
+                    "day_of_week"
+                  ],
+                  "mean": {
+                    "log_loss_increase": 0.004465580601341057,
+                    "roc_auc_decrease": 0.018388915904800667,
+                    "brier_increase": 0.001359871825927228
+                  },
+                  "repeat_std": {
+                    "log_loss_increase": 0.0010609642902961495,
+                    "roc_auc_decrease": 0.00560507380709245,
+                    "brier_increase": 0.0002798462554982317
+                  }
+                }
+              ]
+            },
+            "limitations": [
+              "US domestic data; no UAE validation",
+              "Historical schedules lack point-in-time snapshots",
+              "Conditional on completed non-diverted flights with observed target",
+              "No weather inputs; category cap groups rare airports; limited seasonal history",
+              "Threshold maximizes validation F1, not operational value",
+              "May evaluated once; further tuning requires another untouched holdout",
+              "Post-hoc April validation subset, not a new untouched holdout or full-population estimate.",
+              "Permutation measures this frozen model's performance reliance, not causality or a reason for one flight.",
+              "Correlated inputs can share or mask importance; independent shuffling can create implausible schedules/routes.",
+              "Departure hour and minute are shuffled together; derived cyclic pairs are recomputed by the frozen pipeline.",
+              "Three-repeat sample standard deviation measures shuffle variation only, not a confidence interval or sampling uncertainty.",
+              "Negative importance is possible. No model, feature, threshold or calibration selection is performed.",
+              "US domestic history only; no UAE validation or operational approval."
+            ],
+            "research_only": true,
+            "production_ready": false
+          },
+          "evidence_text": "Frozen delay-v2 recorded model evidence; no live inference or model fitting.\nApril validation: 577730 eligible flights; ROC-AUC 0.6355; log loss 0.4781; binned calibration error 1.22%; 243401 false alerts and 31539 missed delays at the fixed 0.17 threshold.\nMay test: 597574 eligible flights; ROC-AUC 0.6506; log loss 0.5261; binned calibration error 4.09%; 241732 false alerts and 36371 missed delays at the fixed 0.17 threshold.\nApril-only input-reliance diagnostic: 10000 sampled flights, three shuffles per group. Scheduled departure time had the largest mean log-loss increase, 0.02729, with repeat sample SD 0.00173.\nShuffle variation is not a confidence interval; correlated inputs and implausible shuffled combinations limit interpretation.\nInput reliance is not causality or an individual-flight explanation. These are recorded US domestic experiments with no UAE validation or operational approval.\nThe April diagnostic sample is not a new untouched holdout. No new model, threshold or calibration selection was performed."
+        },
+        "elapsed_ms": 1.62
+      }
+    ],
+    "claims": [
+      {
+        "text": "May test: 597574 eligible flights; ROC-AUC 0.6506; log loss 0.5261; binned calibration error 4.09%; 241732 false alerts and 36371 missed delays at the fixed 0.17 threshold.",
+        "citation": "T1",
+        "quote": "May test: 597574 eligible flights; ROC-AUC 0.6506; log loss 0.5261; binned calibration error 4.09%; 241732 false alerts and 36371 missed delays at the fixed 0.17 threshold."
+      },
+      {
+        "text": "Input reliance is not causality or an individual-flight explanation.",
+        "citation": "T1",
+        "quote": "Input reliance is not causality or an individual-flight explanation."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-20T11:31:17.268262+00:00",
+    "updated_at": "2026-11-20T11:31:21.040613+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "model": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+    },
+    "bounds": {
+      "max_tool_calls": 3,
+      "max_planner_calls": 3,
+      "max_summary_calls": 2,
+      "first_planner_timeout_seconds": 45,
+      "later_planner_timeout_seconds": 20,
+      "deadline_seconds": 120,
+      "operational_writes": false
+    },
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      },
+      {
+        "turn": 2,
+        "tool_calls_received": 0
+      }
+    ],
+    "finding_style": "verbatim_source_extracts",
+    "rejected_claims": 0,
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "model_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "uncited_tools": [],
+    "report_sha256": "4097caab46f2bba55581d443c14173947c0562a1f5ef9f51cf5d11efa53277fc",
+    "report_status": "coverage_passed",
+    "limitations": [
+      "Historical US research data and synthetic simulation are separate; no live airline feed.",
+      "Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.",
+      "Review records document a research review only; no airline action is authorized or applied."
+    ]
+  },
+  "production_ready": false,
+  "development_attempts": [
+    {
+      "stage": "initial",
+      "elapsed_ms": 9469.87,
+      "state": "failed",
+      "reason": "Overlong planner response; incomplete provider decision rejected"
+    },
+    {
+      "stage": "diagnostic",
+      "state": "failed",
+      "reason": "Provider done_reason length confirmed; no accepted report"
+    },
+    {
+      "stage": "bounded planner before boundary requirement",
+      "elapsed_ms": 4477.26,
+      "state": "awaiting_review",
+      "reason": "Earlier mechanical checks passed but manual inspection found omitted non-causal limitation; current gate rejects that omission"
+    }
+  ],
+  "manual_source_inspection": {
+    "retained_extracts_checked": true,
+    "input_reliance_not_quoted_in_draft": true,
+    "input_reliance_retained_in_structured_snapshot": true,
+    "general_objective_completeness_verified": false,
+    "human_research_acceptance_recorded": false
+  },
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "saved_figures": true,
+        "human_review": true,
+        "export_evidence": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "saved_figures": true,
+        "human_review": true,
+        "export_evidence": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Tool_Bound",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "no_submission_for_four": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Synthetic_Reset",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "synthetic_resets_model": true,
+        "route_resets_model": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "viewer_cannot_submit": true,
+        "viewer_can_inspect_saved_fixture": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Input_Clear",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "saved_figures": true,
+        "human_review": true,
+        "export_evidence": true,
+        "input_clears": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "model_example": true,
+        "late_readiness_preserves_model": true,
+        "session_clears": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ]
+}

@@ -62,4 +62,6 @@ Future work includes larger evaluation sets, report completeness checks, framewo
 
 Provider reference: [Ollama native tool calling](https://docs.ollama.com/capabilities/tool-calling).
 
-Background execution update: the dashboard now submits saved jobs and polls progress. Queued-only cancellation, owner limits, request deduplication and restart/restore rules are implemented without a schema change. The synchronous API description above is the earlier milestone; it is disabled when the background worker is enabled. See [background investigations](BACKGROUND_INVESTIGATIONS.md) for the current 147-test suite and single-process limitations.
+Background execution update: the dashboard now submits saved jobs and polls progress. Queued-only cancellation, owner limits, request deduplication and restart/restore rules are implemented without a schema change. The synchronous API description above is the earlier milestone; it is disabled when the background worker is enabled. See [background investigations](BACKGROUND_INVESTIGATIONS.md) for that 147-test milestone and single-process limitations.
+
+Recorded model review update: an explicit model-evidence permission adds fixed April/May errors and April-only input reliance, canonical saved-snapshot checks and a required non-causal quotation. The complete current suite is 223 tests; see MODEL_AGENT_REVIEW.md for retained failures and semantic-completeness limits.

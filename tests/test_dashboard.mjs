@@ -1,3 +1,4 @@
+import {validateModelSnapshot,renderModelSnapshot} from '../apps/web/agent-model-evidence.mjs';
 import {renderExplanations,validateExplanations} from '../apps/web/model-explanations.mjs';
 import {renderDiagnostics,validateDiagnostics} from '../apps/web/model-diagnostics.mjs';
 import assert from 'node:assert/strict';
@@ -427,4 +428,23 @@ test('input reliance proxy forwards only fixed authenticated reads',async t=>{
   const url=`http://127.0.0.1:${frontend}/api/v1/research/model-explanations`;
   assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
   assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+
+const modelAgentFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Model_Agent_Integration.json',import.meta.url),'utf8')).run;
+test('model investigation opt-in preserves old payloads and shared three-tool limit',()=>{
+  const input={objective:'Review frozen model evidence.',month:'2025-05',simulation:false,requireFlights:true,requireKnowledge:true,requireSimulation:false,routeEnabled:false,includeModelEvidence:false};
+  assert.ok(!Object.hasOwn(investigationPayload(input),'include_model_evidence'));
+  input.includeModelEvidence=true;const payload=investigationPayload(input);assert.equal(payload.include_model_evidence,true);assert.ok(payload.required_tools.includes('model_evidence'));assert.equal(payload.required_tools.length,3);
+  assert.throws(()=>investigationPayload({...input,routeEnabled:true,routeOrigin:'JFK',routeDestination:'LAX'}),/at most three/);
+});
+test('saved structured model evidence survives omitted extracts and withholds invalid scope or counts',()=>{
+  let run=modelAgentFixture();run.claims=[];let html=renderInvestigation(run);assert.match(html,/241,732/);assert.match(html,/4.09%/);assert.match(html,/Scheduled departure time/);assert.match(html,/not a confidence interval/);
+  run.request.include_model_evidence=false;assert.match(renderInvestigation(run),/has been withheld/);
+  run=modelAgentFixture();run.steps[0].arguments={period:'2025-05'};assert.match(renderInvestigation(run),/has been withheld/);
+  run=modelAgentFixture();run.steps[0].observation.snapshot.periods.test.false_alerts=0;assert.throws(()=>validateModelSnapshot(run.steps[0].observation));assert.match(renderInvestigation(run),/has been withheld/);
+});
+test('model snapshot warnings and descriptive evidence are escaped and mismatch blocks display',()=>{
+  let run=modelAgentFixture();run.steps[0].observation.snapshot.limitations=['<script>bad()</script>'];const html=renderModelSnapshot(run.steps[0].observation);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+  run=modelAgentFixture();run.quality.model_evidence_mismatches=[run.steps[0].id];assert.match(renderInvestigation(run),/has been withheld/);
+  run.quality.model_limitations_uncited=['<img>'];assert.match(renderInvestigation(run),/Required model limitation quotation missing: &lt;img&gt;/);
 });
