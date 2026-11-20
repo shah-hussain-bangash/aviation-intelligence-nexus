@@ -2,6 +2,9 @@
 
 ## Delivered
 
+Local rollback milestone: an isolated restored deployment switched from a pinned candidate image pair to the prior 85a2310 release and back. Health/isolation checks, the same named volume, 2,835,101 flight rows, account records, model/index hashes and exact prediction parity passed. The main image pair was unchanged by the drill. Schema/state-contract changes and active jobs are rejected. Windows passes 156 tests (129 Python, 27 Node); Linux skips the Windows DPAPI provider case. Database/model/prompt rollback and production failover remain incomplete. See `LOCAL_RELEASE_ROLLBACK.md`.
+
+
 Background investigation milestone: saved SQLite queue submission returns promptly while one local API worker executes the existing bounded agent. Progress polling, owner-scoped retrieval, request/active-input deduplication, waiting limits, permission recheck and queued-only cancellation are implemented. Normal restart preserves waiting work but never replays interrupted runs; restoration cancels waiting work in the restored copy. The schema/account credentials remain unchanged. Windows passes 147 tests (121 Python, 26 Node); Linux skips the Windows DPAPI provider test. External worker orchestration and production failover remain incomplete. See `BACKGROUND_INVESTIGATIONS.md`.
 
 

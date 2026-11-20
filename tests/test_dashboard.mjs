@@ -15,6 +15,15 @@ import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
 import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
 
+test('rollback receipt stays separate from live release qualification and escapes revisions',()=>{
+  const data={production_ready:false,recovery:{recorded:false,production_qualified:false},rollback_drill:{recorded:true,production_qualified:false,flight_records:100,checked_at:'2026-11-20',candidate_revision:'<script>',rollback_revision:'previous'}};
+  const html=renderPlatform(data);
+  assert.match(html,/Isolated application rollback drill passed/);
+  assert.match(html,/main deployment was not rolled back/);
+  assert.match(html,/&lt;script&gt;/);
+  assert.throws(()=>renderPlatform({...data,rollback_drill:{...data.rollback_drill,production_qualified:true}}));
+});
+
 test('background job proxy acknowledges submission and permits only fixed UUID reads',async t=>{
   const backend=await serve(t,(req,res)=>{res.setHeader('Content-Type','application/json');if(req.method==='POST'){assert.equal(req.headers['idempotency-key'],'fixture-job-key');res.writeHead(202);res.end('{"state":"queued"}');}else{assert.equal(req.url,'/api/v1/research/agent-jobs/11111111-1111-4111-8111-111111111111');res.end('{"state":"running"}');}});
   const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
@@ -40,7 +49,7 @@ function readinessFixture(){
 
 test('readiness keeps all requirements open and filters progress without accepting production',()=>{
   const data=readinessFixture();
-  assert.equal(filterReadiness(data,'','planned').length,2);
+  assert.equal(filterReadiness(data,'','planned').length,1);
   assert.equal(filterReadiness(data,'P20').length,1);
   assert.equal(filterReadiness(data,'nothing matches this phrase').length,0);
   const html=renderReadiness(data,'P20');

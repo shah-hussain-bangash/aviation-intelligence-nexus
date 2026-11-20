@@ -26,7 +26,7 @@ from rag import ollama
 from agents.runtime import Investigation, Investigator, Review
 from agents.store import AgentStore, Conflict
 from services.api.paths import STATE, SCHEMA_VERSION
-from infra.status import restore_status, encrypted_drill_status
+from infra.status import restore_status, encrypted_drill_status, rollback_drill_status
 from services.api.monitoring import Monitor
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
@@ -498,6 +498,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             'active_model_verified':read_model_report(research_model_directory) is not None,
             'ai_models_present':ai_models_present,'recovery':restore_status(database.parent),
             'encrypted_backup_drill':encrypted_drill_status(database.parent),
+            'rollback_drill':rollback_drill_status(database.parent),
             'production_ready':False,'limitations':['Local deployment and recorded recovery checks do not establish production qualification.',
                 'No managed TLS, cloud monitoring, protected backup storage or high-availability worker service is configured.']}
 

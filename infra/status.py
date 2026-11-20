@@ -2,6 +2,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
+import re
 
 
 def restore_status(state):
@@ -35,5 +36,28 @@ def encrypted_drill_status(state):
         return {'recorded': True, 'checked_at': receipt['checked_at'], 'flight_records': count,
                 'encryption': 'Cobblestone-128', 'key_provider': 'Windows DPAPI CurrentUser',
                 'independent_recovery_qualified': False, 'production_qualified': False}
+    except (OSError, ValueError, TypeError, KeyError):
+        return {'recorded': False, 'production_qualified': False}
+
+
+def rollback_drill_status(state):
+    try:
+        file = Path(state) / 'rollback-drill.json'
+        if file.stat().st_size > 16000:
+            raise ValueError('Oversized rollback receipt')
+        receipt = json.loads(file.read_text(encoding='utf-8'))
+        flags = ('pinned_images_verified', 'same_volume_preserved', 'row_counts_preserved',
+                 'account_records_preserved', 'model_index_preserved', 'prediction_parity',
+                 'candidate_returned_healthy', 'rollback_target_healthy')
+        if receipt.get('format') != 'ain-rollback-drill-v1' or not all(receipt.get(flag) is True for flag in flags):
+            raise ValueError('Unverified rollback drill')
+        if receipt.get('production_qualified') is not False or type(receipt.get('flight_records')) is not int or receipt['flight_records'] < 0:
+            raise ValueError('Unsupported rollback qualification')
+        datetime.fromisoformat(receipt['checked_at'])
+        for field in ('candidate_revision', 'rollback_revision'):
+            if not re.fullmatch('[a-z0-9-]{1,64}', receipt[field]):
+                raise ValueError('Invalid release revision')
+        return {'recorded': True, **{key: receipt[key] for key in ('checked_at', 'candidate_revision', 'rollback_revision', 'flight_records')},
+                'scope': 'Separate restored local volume; main deployment not rolled back', 'production_qualified': False}
     except (OSError, ValueError, TypeError, KeyError):
         return {'recorded': False, 'production_qualified': False}

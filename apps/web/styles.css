@@ -31,3 +31,6 @@ body{font-family:'Segoe UI',Arial,sans-serif}h1,h2,h3{letter-spacing:-.025em}.ap
 
 /* Readiness evidence controls preserve source visibility at narrow widths. */
 .readiness-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 20px;margin:18px 0}.readiness-controls label:first-child{grid-column:1;grid-row:1}.readiness-controls input{grid-column:1;grid-row:2}.readiness-controls label[for="readinessFilter"]{grid-column:2;grid-row:1}.readiness-controls select{grid-column:2;grid-row:2}.readiness-controls .control{width:100%;min-width:0}.release-readiness p,.release-readiness a{overflow-wrap:anywhere}.release-readiness details>summary{cursor:pointer;line-height:1.6}.release-readiness details[open]>summary{margin-bottom:16px}@media(max-width:640px){.readiness-controls{display:flex;flex-direction:column;gap:8px}.readiness-controls select{margin-bottom:8px}}
+
+/* Preserve long release identifiers inside narrow status cards. */
+.platform-status p{overflow-wrap:anywhere}

@@ -46,6 +46,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Saved background investigations with bounded waiting queues, owner permissions, live checkpoints, safe retry handling and queued-only cancellation. See [execution and recovery limits](docs/BACKGROUND_INVESTIGATIONS.md).
 
+- Pinned application-image rollback controller tested on an isolated restored copy, with compatibility gates and state/prediction reconciliation. See [rollback scope and evidence](docs/LOCAL_RELEASE_ROLLBACK.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

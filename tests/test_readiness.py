@@ -34,7 +34,7 @@ class ReadinessTests(unittest.TestCase):
         result = assessment(self.root)
         self.assertEqual(result['production_open'], 24)
         self.assertEqual(result['production_accepted'], 0)
-        self.assertEqual(result['with_local_evidence'], 22)
+        self.assertEqual(result['with_local_evidence'], 23)
         self.assertFalse(result['production_ready'])
         path = self.root / 'docs/DEVELOPMENT.md'
         path.write_bytes(path.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))

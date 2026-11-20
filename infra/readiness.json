@@ -429,11 +429,20 @@
         "P17",
         "P19"
       ],
-      "local_progress": "Rollback remains a design requirement; a container restart or data restoration does not demonstrate rollback.",
-      "remaining": "Demonstrate compatible application, schema, model and prompt rollback with measured integrity/availability.",
+      "local_progress": "A pinned application-image rollback and return-to-candidate drill passed on a separate restored volume, with health, row-count, account, artifact and prediction checks.",
+      "remaining": "Database downgrade, model/prompt rollback, independent production release/failover and zero-downtime compatibility qualification remain outstanding.",
       "acceptance": "Demonstrated rollback preserves acceptable integrity and availability.",
       "production_accepted": false,
-      "evidence": []
+      "evidence": [
+        {
+          "path": "docs/LOCAL_RELEASE_ROLLBACK.md",
+          "sha256": "ba76e93ac0d9c883b2a33f6bb8fd2a4a1ff62e99149abf971f3b2d9c8d0148aa"
+        },
+        {
+          "path": "docs/reports/Local_Release_Rollback.json",
+          "sha256": "1b953b547668b97e27afd8870c74ca3b03d6f2c96d4bc20f4fc276ef182d2322"
+        }
+      ]
     },
     {
       "id": "P21",
@@ -449,7 +458,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "5840fc9960a2fef67b9467e341b83d2f4b9e1f3080ea06a564152a90b42a8fc7"
+          "sha256": "633a493068d875b8ebbf81bcc5a92d2e1de00176d4a801591c6d2b2b38884d14"
         }
       ]
     },
@@ -471,7 +480,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "5840fc9960a2fef67b9467e341b83d2f4b9e1f3080ea06a564152a90b42a8fc7"
+          "sha256": "633a493068d875b8ebbf81bcc5a92d2e1de00176d4a801591c6d2b2b38884d14"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

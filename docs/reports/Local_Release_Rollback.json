@@ -1,0 +1,64 @@
+{
+  "milestone": "Isolated pinned application rollback",
+  "date": "2026-11-20",
+  "scope": "Separate restored local volume; application images only, with unchanged schema/model/index",
+  "receipt": {
+    "format": "ain-rollback-drill-v1",
+    "checked_at": "2026-11-20T08:01:47.644579+00:00",
+    "scope": "Separate restored local volume; main deployment not changed by this drill",
+    "candidate_revision": "rollback-working-tree",
+    "rollback_revision": "85a2310afd9b6b6d611b8e894e2d312f85be6e8b",
+    "candidate_images": {
+      "api": "sha256:bc5aa0c2ff0cd9ed2374df95219ff2d14ae51c9c7c5bb8ccb23c117097733500",
+      "web": "sha256:08a51e05a08f3fd8ea6e554173d627e2929cb61034528b9c1153549780d0b514"
+    },
+    "rollback_images": {
+      "api": "sha256:13720f0e24cc5e745286eff24de1874de45a87d5366d5c83caa3732a5a67e64a",
+      "web": "sha256:fcc3c84903a5135abb659319862110abb4c49a969f21f25a669d7de7c965a91f"
+    },
+    "schema_version": 7,
+    "flight_records": 2835101,
+    "pinned_images_verified": true,
+    "same_volume_preserved": true,
+    "row_counts_preserved": true,
+    "account_records_preserved": true,
+    "model_index_preserved": true,
+    "prediction_parity": true,
+    "prediction_probability": 0.14414301173592028,
+    "candidate_returned_healthy": true,
+    "rollback_target_healthy": true,
+    "active_jobs_at_start": 0,
+    "production_qualified": false
+  },
+  "main_image_pair_unchanged_during_drill": true,
+  "automated_tests": {
+    "windows_python": 129,
+    "node": 27,
+    "windows_total": 156,
+    "linux_dpapi_provider_skips": 1
+  },
+  "negative_fixture_checks": [
+    "mutable tag and incomplete pair rejected",
+    "schema/state-contract changes rejected",
+    "waiting/running jobs block change",
+    "primary/host state mount rejected",
+    "failed target triggers candidate recovery attempt",
+    "state mismatch produces no successful receipt",
+    "unverified/private receipt fields withheld"
+  ],
+  "browser_checks": {
+    "existing_admin_session_preserved": true,
+    "isolated_receipt_visible": true,
+    "scope_and_production_limits_visible": true,
+    "desktop_mobile_layout": true
+  },
+  "limits": [
+    "Current Compose configuration retained, not infrastructure rollback",
+    "No database downgrade or model/prompt rollback",
+    "No zero-downtime or running-worker failover qualification",
+    "Local image labels/manifests are not signed attestations",
+    "No production acceptance established"
+  ],
+  "production_ready": false,
+  "verification_environment_note": "One separate-execution-account run stalled in the existing concurrent-history test and was stopped. The full normal Windows-session suite passed; hosted results are checked separately."
+}
