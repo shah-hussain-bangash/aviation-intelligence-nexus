@@ -59,6 +59,7 @@ jobs:
       - run: docker compose -p ain-ci build api web
       - run: docker compose -p ain-ci up -d --wait --wait-timeout 90 api web
       - run: python -m infra.verify_deployment --project ain-ci --port 8090
+      - run: python -m infra.load_check --port 8090 --requests 12 --workers 2 --output /tmp/ain-http-measurement.json
       - run: docker compose -p ain-ci restart api
       - run: docker compose -p ain-ci up -d --wait --wait-timeout 90 api web
       - run: python -m infra.verify_deployment --project ain-ci --port 8090

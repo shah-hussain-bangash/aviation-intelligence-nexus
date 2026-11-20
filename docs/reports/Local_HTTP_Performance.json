@@ -1,0 +1,92 @@
+{
+  "format": "ain-local-http-measurement-v1",
+  "checked_at": "2026-11-20T08:17:06.138278+00:00",
+  "scope": "Anonymous local HTTP correctness and latency sample; not capacity, browser rendering or production qualification",
+  "client": {
+    "host": "127.0.0.1",
+    "port": 8090,
+    "workers": 2,
+    "requests_per_endpoint": 30,
+    "socket_timeout_seconds": 3,
+    "connection_reuse": false,
+    "warmups_per_endpoint": 1
+  },
+  "percentile_method": "nearest-rank; all measured request durations including failures",
+  "endpoints": [
+    {
+      "path": "/",
+      "warmup": {
+        "milliseconds": 5.7548999902792275,
+        "status": 200,
+        "error": null
+      },
+      "measurement": {
+        "requests": 30,
+        "failures": 0,
+        "error_classes": {},
+        "status_counts": {
+          "200": 30
+        },
+        "elapsed_seconds": 0.029095,
+        "completed_requests_per_second": 1031.094,
+        "latency_ms": {
+          "min": 1.413,
+          "p50": 1.825,
+          "p95": 2.488,
+          "max": 2.513
+        }
+      }
+    },
+    {
+      "path": "/__ain/ready",
+      "warmup": {
+        "milliseconds": 4.384800035040826,
+        "status": 200,
+        "error": null
+      },
+      "measurement": {
+        "requests": 30,
+        "failures": 0,
+        "error_classes": {},
+        "status_counts": {
+          "200": 30
+        },
+        "elapsed_seconds": 0.083524,
+        "completed_requests_per_second": 359.18,
+        "latency_ms": {
+          "min": 2.585,
+          "p50": 4.028,
+          "p95": 14.71,
+          "max": 26.546
+        }
+      }
+    },
+    {
+      "path": "/api/v1/auth/session",
+      "warmup": {
+        "milliseconds": 4.503700009081513,
+        "status": 200,
+        "error": null
+      },
+      "measurement": {
+        "requests": 30,
+        "failures": 0,
+        "error_classes": {},
+        "status_counts": {
+          "200": 30
+        },
+        "elapsed_seconds": 0.06946,
+        "completed_requests_per_second": 431.901,
+        "latency_ms": {
+          "min": 3.418,
+          "p50": 4.249,
+          "p95": 6.328,
+          "max": 6.661
+        }
+      }
+    }
+  ],
+  "all_responses_valid": true,
+  "performance_target_assessed": false,
+  "production_ready": false
+}

@@ -48,6 +48,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Pinned application-image rollback controller tested on an isolated restored copy, with compatibility gates and state/prediction reconciliation. See [rollback scope and evidence](docs/LOCAL_RELEASE_ROLLBACK.md).
 
+- Bounded anonymous HTTP latency/correctness measurements, with a repeatable container CI check. See [measured scope and limits](docs/LOCAL_HTTP_PERFORMANCE.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

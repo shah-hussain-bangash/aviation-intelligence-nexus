@@ -451,14 +451,18 @@
       "dependencies": [
         "P17"
       ],
-      "local_progress": "Selected desktop/mobile research views have been inspected; a full accessibility or load audit is not claimed.",
-      "remaining": "Keyboard/screen-reader review, device matrix, representative load tests and agreed targets remain outstanding.",
+      "local_progress": "Selected desktop/mobile views have been inspected; a bounded anonymous loopback HTTP sample measured 90 valid responses with endpoint latency distributions. No full accessibility, authenticated workload or capacity qualification is claimed.",
+      "remaining": "Agreed performance objectives, sustained representative authenticated/AI workloads, resource/queue contention, keyboard/screen-reader review and device matrix remain outstanding.",
       "acceptance": "Reviewed results meet agreed targets and material accessibility defects are resolved.",
       "production_accepted": false,
       "evidence": [
         {
-          "path": "docs/DEVELOPMENT.md",
-          "sha256": "633a493068d875b8ebbf81bcc5a92d2e1de00176d4a801591c6d2b2b38884d14"
+          "path": "docs/LOCAL_HTTP_PERFORMANCE.md",
+          "sha256": "5172fe84607550bebef879433c9dc8654c397293970e2ed767d1cb9d922ae2ed"
+        },
+        {
+          "path": "docs/reports/Local_HTTP_Performance.json",
+          "sha256": "c131dbef642f954bc8a198a6b5787170d7a6ae19fe9d32bc159b8e598357933b"
         }
       ]
     },
@@ -480,7 +484,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "633a493068d875b8ebbf81bcc5a92d2e1de00176d4a801591c6d2b2b38884d14"
+          "sha256": "e147e0f3d20b348234bdf2b7935e4b114d7a088c8fcef2abcf5f1d1fab17c051"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
