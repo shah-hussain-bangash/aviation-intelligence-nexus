@@ -74,7 +74,9 @@ class Knowledge:
             return {'index_ready': False, 'embedding_ready': False, 'generation_available': False,
                 'message': 'Knowledge index or local model service unavailable; rebuild/restore before searching.', 'research_only': True}
 
-    def query(self, request):
+    def query(self, request, source_document=None):
+        if source_document is not None and source_document not in SOURCES:
+            raise ValueError('Document scope is outside the approved corpus')
         index_hash, payload, vectorizer, sparse, dense = self.load()
         installed = ollama.models()
         if installed.get(ollama.EMBED_MODEL) != payload['embedding_digest']:
@@ -84,7 +86,11 @@ class Knowledge:
         semantic = dense @ query_dense
         scores = .65 * semantic + .35 * lexical
         # Conservative lexical anchor prevents broad semantic similarity alone from being presented as evidence.
-        ranked = [int(i) for i in np.argsort(-scores) if lexical[i] >= .035 and semantic[i] >= .25][:3]
+        ranked = [int(i) for i in np.argsort(-scores) if lexical[i] >= .035 and semantic[i] >= .25
+                  and (source_document is None or payload['chunks'][i]['source']==source_document)][:3]
+        if source_document is not None and ranked:
+            # An explicitly selected small document needs contextual coverage, not just its three best headings.
+            ranked=[int(i) for i in np.argsort(-scores) if payload['chunks'][i]['source']==source_document][:8]
         evidence = [{**payload['chunks'][i], 'score': round(float(scores[i]), 4),
             'source_sha256': next(s['sha256'] for s in payload['sources'] if s['path'] == payload['chunks'][i]['source']),
             'source_url': 'https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/' + payload['revision'] + '/' + payload['chunks'][i]['source'] + '#L' + str(payload['chunks'][i]['start_line'])}

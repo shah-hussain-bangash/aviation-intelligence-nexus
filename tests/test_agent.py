@@ -8,6 +8,8 @@ from uuid import uuid4
 from auth_helpers import authenticated_client
 from agents.runtime import Investigation, Investigator
 from agents.store import AgentStore, Conflict
+from agents.quality import assess_report, collect_claims, document_scope
+from pydantic import ValidationError
 from agents.tools import execute, flight_metrics
 from services.api.main import create_app, initialize
 from rag import ollama
@@ -17,8 +19,11 @@ def call(name,args=None): return {'function':{'name':name,'arguments':args or {}
 
 
 def summary(question,evidence,**kwargs):
-    quote=evidence[0]['text'].splitlines()[0]
-    return {'claims':[{'text':quote,'citation':evidence[0]['id'],'quote':quote}]}
+    rows=[]
+    for item in evidence[:3]:
+        quote=next(line for line in item['text'].splitlines() if len(line)>=20 and not line.startswith(('Source:','#')))
+        rows.append({'text':quote,'citation':item['id'],'quote':quote})
+    return {'claims':rows}
 
 
 class AgentTests(unittest.TestCase):
@@ -41,7 +46,7 @@ class AgentTests(unittest.TestCase):
         self.summary_patch.stop();self.model_patch.stop();self.folder.cleanup()
 
     def run_tools(self,calls,request=None,key=None):
-        with patch('agents.runtime.select_tools',side_effect=[calls,[]]):
+        with patch('agents.runtime.select_tools',side_effect=[calls,[],[]]):
             return self.runtime.run(self.user,key or str(uuid4()),request or self.request)
 
     def test_sql_measurements_exclude_synthetic_cancelled_and_missing_targets(self):
@@ -56,7 +61,7 @@ class AgentTests(unittest.TestCase):
         self.assertTrue(all(s['state']=='completed' for s in run['steps']))
         self.assertEqual(run['steps'][2]['observation']['result']['candidate']['verification']['assigned'],5)
         self.assertFalse(run['operational_approval']);self.assertEqual(len(run['report_sha256']),64)
-        self.assertEqual(run['uncited_tools'],['T2','T3']);self.assertEqual(run['report_status'],'coverage_incomplete')
+        self.assertEqual(run['uncited_tools'],[]);self.assertEqual(run['report_status'],'coverage_passed')
         self.assertEqual(self.store.recent(self.user)[0]['run_id'],run['run_id'])
 
     def test_shell_unknown_sql_and_month_scope_are_rejected_before_execution(self):
@@ -97,8 +102,8 @@ class AgentTests(unittest.TestCase):
     def test_unverifiable_summary_is_excluded_and_failed_tool_is_visible(self):
         with patch.object(ollama,'generate',return_value={'claims':[{'text':'There were 9999 flights','citation':'T1','quote':'An invented quotation that does not exist.'}]}):
             run=self.run_tools([call('flight_metrics')])
-        self.assertEqual(run['claims'],[]);self.assertEqual(run['rejected_claims'],1)
-        self.assertEqual(run['report_status'],'evidence_only')
+        self.assertEqual(run['claims'],[]);self.assertEqual(run['rejected_claims'],2)
+        self.assertEqual(run['report_status'],'coverage_incomplete');self.assertFalse(run['quality']['passed'])
         with patch('agents.runtime.tools.execute',side_effect=RuntimeError('Private diagnostic')):
             run=self.run_tools([call('flight_metrics')])
         self.assertEqual(run['state'],'failed');self.assertEqual(run['steps'][0]['state'],'failed')
@@ -116,6 +121,83 @@ class AgentTests(unittest.TestCase):
             run=self.store.begin(self.user,str(uuid4()),self.request.model_dump())
             run['state']='interrupted';self.store.checkpoint(run)
             self.assertEqual(self.store.recent(self.user)[0]['state'],'interrupted')
+
+    def test_one_bounded_repair_fills_omitted_sources(self):
+        def omit_then_repair(question,evidence,**kwargs):
+            selected=evidence[:1] if 'Repair omitted' not in question else evidence
+            return summary(question,selected)
+        with patch.object(ollama,'generate',side_effect=omit_then_repair) as generate:
+            run=self.run_tools([call('flight_metrics'),call('knowledge_search',{'question':'What are model limitations?'}),call('gate_simulation')])
+        self.assertEqual(generate.call_count,2);self.assertEqual(run['report_repair']['attempts'],1)
+        self.assertEqual(run['report_repair']['target_sources'],['T2','T3'])
+        self.assertTrue(run['quality']['passed']);self.assertEqual(len(run['claims']),3)
+
+    def test_failed_repair_cannot_be_accepted_even_with_forged_cached_quality(self):
+        def fail_repair(question,evidence,**kwargs):
+            if 'Repair omitted' in question: raise TimeoutError()
+            return summary(question,evidence[:1])
+        with patch.object(ollama,'generate',side_effect=fail_repair):
+            run=self.run_tools([call('flight_metrics'),call('knowledge_search',{'question':'What are model limitations?'})])
+        self.assertEqual(run['report_repair']['state'],'failed');self.assertFalse(run['quality']['passed'])
+        run['quality']['passed']=True;self.store.checkpoint(run)
+        with self.assertRaises(Conflict):self.store.review(self.user,run['run_id'],run['report_sha256'],'reviewed','Checked the evidence')
+        changed=self.store.review(self.user,run['run_id'],run['report_sha256'],'needs_changes','Document evidence is omitted; revise the findings.')
+        self.assertEqual(changed['state'],'needs_changes');self.assertFalse(changed['quality']['passed'])
+
+    def test_required_tool_missing_is_not_hidden_by_complete_executed_tool_coverage(self):
+        request=Investigation(objective='Report flight data and project limitations.',required_tools=['flight_metrics','knowledge_search'])
+        run=self.run_tools([call('flight_metrics')],request)
+        self.assertEqual(run['quality']['missing_tools'],['knowledge_search']);self.assertFalse(run['quality']['passed'])
+        with self.assertRaises(Conflict):self.store.review(self.user,run['run_id'],run['report_sha256'],'reviewed','Checked the evidence')
+
+    def test_unavailable_tool_evidence_blocks_acceptance_of_other_findings(self):
+        request=Investigation(objective='Report April flight data and project limitations.',month='2025-04',required_tools=['flight_metrics','knowledge_search'])
+        run=self.run_tools([call('flight_metrics'),call('knowledge_search',{'question':'What are model limitations?'})],request)
+        self.assertEqual(run['quality']['unavailable_steps'],['T1']);self.assertFalse(run['quality']['passed'])
+        self.assertTrue(run['claims'])
+
+    def test_required_tool_contract_rejects_invalid_or_unpermitted_requirements(self):
+        for requirements,permission in [(['shell'],False),(['flight_metrics','flight_metrics'],False),(['gate_simulation'],False)]:
+            with self.assertRaises(ValidationError):Investigation(objective='Research this historical data.',required_tools=requirements,include_simulation=permission)
+
+    def test_legacy_retry_key_remains_compatible_only_with_empty_requirements(self):
+        legacy=self.request.model_dump();legacy.pop('required_tools');key=str(uuid4())
+        run=self.store.begin(self.user,key,legacy);run['state']='interrupted';self.store.checkpoint(run)
+        self.assertTrue(self.store.lookup(self.user,key,self.request.model_dump())['replayed'])
+        with self.assertRaises(Conflict):self.store.lookup(self.user,key,{**self.request.model_dump(),'required_tools':['flight_metrics']})
+
+    def test_gate_revalidates_retained_claim_numbers_and_legacy_history(self):
+        run=self.run_tools([call('flight_metrics')])
+        run['claims'][0]['text']='There were 999999 flights';run.pop('quality',None)
+        self.assertEqual(assess_report(run)['invalid_claims'],[1])
+        self.store.checkpoint(run)
+        self.assertFalse(self.store.recent(self.user)[0]['quality']['passed'])
+
+    def test_published_findings_use_verbatim_evidence_and_metadata_is_not_a_finding(self):
+        evidence=[{'id':'T1','text':'The test month is March 2025.\nSource: docs/DELAY_BASELINE.md'}]
+        accepted,rejected=collect_claims({'claims':[{'text':'The test month is May 2025.','citation':'T1','quote':'The test month is March 2025.'}]},evidence)
+        self.assertEqual(accepted[0]['text'],'The test month is March 2025.');self.assertNotIn('May',accepted[0]['text'])
+        accepted,rejected=collect_claims({'claims':[{'text':'Source: docs/DELAY_BASELINE.md','citation':'T1','quote':'Source: docs/DELAY_BASELINE.md'}]},evidence)
+        self.assertFalse(accepted);self.assertEqual(rejected,1)
+
+    def test_document_scope_is_explicit_or_uniquely_named_and_mismatches_block_review(self):
+        self.assertEqual(document_scope({'objective':'Use docs/DELAY_V2.md for this report.'}),'docs/DELAY_V2.md')
+        self.assertIsNone(document_scope({'objective':'Compare docs/DELAY_V2.md and docs/DELAY_BASELINE.md.'}))
+        self.assertEqual(document_scope({'objective':'Use the chosen document.','document_scope':'docs/LOCAL_IDENTITY.md'}),'docs/LOCAL_IDENTITY.md')
+        request=Investigation(objective='Use docs/DELAY_V2.md for model limitations.',required_tools=['knowledge_search'])
+        run=self.run_tools([call('knowledge_search',{'question':'What are model limitations?'})],request)
+        self.assertTrue(run['quality']['passed']);self.knowledge.query.assert_called_with(unittest.mock.ANY,source_document='docs/DELAY_V2.md')
+        run['steps'][0]['observation']['evidence'][0]['source']='docs/DELAY_BASELINE.md'
+        self.assertEqual(assess_report(run)['document_scope_mismatches'],['T1'])
+
+    def test_api_rejects_acceptance_of_incomplete_report(self):
+        with authenticated_client(create_app(self.db)) as client:
+            with patch('agents.runtime.select_tools',side_effect=[[call('flight_metrics')],[],[]]):
+                response=client.post('/api/v1/research/agent-run',json={'objective':'Report flight data and model limitations.','required_tools':['flight_metrics','knowledge_search']},headers={'Idempotency-Key':str(uuid4())})
+            run=response.json();self.assertFalse(run['quality']['passed'])
+            review={'run_id':run['run_id'],'report_sha256':run['report_sha256'],'decision':'reviewed','note':'Checked available evidence.'}
+            self.assertEqual(client.post('/api/v1/research/agent-review',json=review).status_code,409)
+            self.assertEqual(client.post('/api/v1/research/agent-review',json={**review,'decision':'needs_changes'}).status_code,200)
 
     def test_api_requires_role_csrf_and_request_key_and_preserves_history(self):
         app=create_app(self.db)

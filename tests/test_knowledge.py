@@ -45,6 +45,12 @@ class KnowledgeTests(unittest.TestCase):
             self.assertEqual(unknown['mode'], 'abstained')
             generate.assert_not_called()
 
+    def test_explicit_document_scope_keeps_context_inside_the_allowlist(self):
+        result=self.knowledge.query(Question(question='What are the operational limitations of the delay model?'),source_document='docs/DELAY_V2.md')
+        self.assertTrue(result['evidence']);self.assertLessEqual(len(result['evidence']),8)
+        self.assertTrue(all(row['source']=='docs/DELAY_V2.md' for row in result['evidence']))
+        with self.assertRaises(ValueError):self.knowledge.query(Question(question='What are the operational limitations?'),source_document='../private.txt')
+
     def test_generated_claims_require_matching_quote_citation_and_numbers(self):
         evidence = [{'id':'c1','text':'The May ROC-AUC is 0.6506 in this research experiment.'}]
         valid = {'claims':[{'text':'May ROC-AUC is 0.6506','citation':'c1','quote':evidence[0]['text']}]}

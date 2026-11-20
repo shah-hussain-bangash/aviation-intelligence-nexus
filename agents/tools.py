@@ -8,6 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from rag.service import Question
 from optimization.gates import GateScenario, optimize
+from agents.quality import document_scope
 
 
 class EmptyArgs(BaseModel):
@@ -77,10 +78,12 @@ def gate_sample():
 def execute(name, arguments, request, database, knowledge):
     if name == 'knowledge_search':
         args = SearchArgs.model_validate(arguments)
-        result = knowledge.query(Question(question=args.question,generate=False))
+        scope=document_scope(request.model_dump())
+        result = knowledge.query(Question(question=args.question,generate=False),source_document=scope)
         return {'data_kind':'project_documents','available':bool(result['evidence']),
+            'document_scope':scope,
             'evidence':result['evidence'],'index_sha256':result['index_sha256'],
-            'evidence_text':'\n\n'.join(row['text'] for row in result['evidence']) or 'No matching project evidence was retrieved.'}
+            'evidence_text':'\n\n'.join('Source: '+row['source']+' · '+row.get('heading','Project evidence')+'\n'+row['text'] for row in result['evidence']) or 'No matching project evidence was retrieved.'}
     if name == 'flight_metrics':
         args=MonthArgs.model_validate(arguments)
         if args.month is not None and args.month != request.month: raise ValueError('Tool month differs from user scope')

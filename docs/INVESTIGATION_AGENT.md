@@ -1,5 +1,7 @@
 # Bounded aviation research investigation agent
 
+Current report-policy update: [agent report quality](AGENT_REPORT_QUALITY.md) adds explicit evidence requirements, scoped document retrieval, one repair call, verbatim findings and server-blocked acceptance of mechanical gaps. The original three-tool demo below remains historical baseline evidence; the current complete test count is 95.
+
 The connected dashboard now includes an Investigation Desk. An actual local Qwen3 model selects tools through Ollama's native tool-calling interface, receives the tool observations and produces a cited research draft. The backend validates and executes each selection; a model cannot supply executable SQL, shell commands, file paths or destination URLs.
 
 This is one bounded tool-calling agent implemented as a small custom runtime. It is not LangGraph, CrewAI, AutoGen, a multi-agent system or a deployed autonomous airline service.

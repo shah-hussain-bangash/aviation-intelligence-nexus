@@ -34,6 +34,7 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 - Gate Allocation Lab with an actual mixed-integer solver, independent conflict checking, greedy comparison, saved proposals and JSON export. Synthetic research scenarios only. See [optimization evidence](docs/GATE_OPTIMIZATION.md).
 - Local aviation research Q&A with neural embeddings, hybrid retrieval, actual Ollama generation, checked citation/quotation references and saved/exportable results across six public project documents. See [evidence studio setup and limits](docs/KNOWLEDGE_STUDIO.md).
 - Local investigation agent with actual model-selected tools, read-only SQL metrics, document retrieval, optional synthetic optimization, persisted execution checkpoints and report-bound research review. See [agent evidence and limits](docs/INVESTIGATION_AGENT.md).
+- Agent report quality checks with explicit evidence requirements, document scope, one bounded repair, verified source extracts and server-blocked acceptance of mechanically incomplete reports. See [measured checks and remaining semantic limits](docs/AGENT_REPORT_QUALITY.md).
 
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.

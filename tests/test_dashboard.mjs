@@ -10,6 +10,11 @@ import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
 import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
 
+test('quality-blocked reports show only source extracts and escape missing-tool labels',()=>{
+  const run={research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'Research report',month:'2025-05',include_simulation:false},finding_style:'verbatim_source_extracts',steps:[{id:'T1',tool:'flight_metrics',state:'completed',arguments:{},observation:{data_kind:'historical_bts',evidence_text:'An exact source quotation for the report.'}}],claims:[{text:'UNSUPPORTED INTERPRETATION',citation:'T1',quote:'An exact source quotation for the report.'}],reviews:[],runtime:'fixture',quality:{passed:false,covered_sources:1,available_sources:1,missing_tools:['<unsafe>'],failed_steps:[],unavailable_steps:[]}};
+  const html=renderInvestigation(run);assert.ok(html.includes('Coverage checks blocked acceptance'));assert.ok(html.includes('&lt;unsafe&gt;'));assert.ok(!html.includes('UNSUPPORTED INTERPRETATION'));assert.ok(html.includes('verbatim source wording'));
+});
+
 test('investigation rendering escapes trace content and rejects unsupported claims',()=>{
   const run={research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'<unsafe>',month:'2025-05',include_simulation:false},steps:[{id:'T1',tool:'flight_metrics',state:'completed',arguments:{},observation:{data_kind:'historical_bts',evidence_text:'An exact source quotation for the report.'}}],claims:[{text:'<script>bad</script>',citation:'T1',quote:'An exact source quotation for the report.'}],reviews:[],runtime:'fixture'};
   const html=renderInvestigation(run);assert.ok(html.includes('&lt;script&gt;'));assert.ok(!html.includes('<script>'));

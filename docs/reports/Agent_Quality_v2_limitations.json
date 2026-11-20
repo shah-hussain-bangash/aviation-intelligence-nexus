@@ -1,0 +1,73 @@
+{
+  "scope": "Curated development cases, not a held-out airline accuracy benchmark",
+  "contract_sha256": "beaa6faaa257f62aac1c1959bb010c7a727a457c6f57149dd573c4fb0519321c",
+  "runtime": "bounded-ollama-tools-v2",
+  "passed": 1,
+  "total": 1,
+  "cases": [
+    {
+      "case": "v2_limitations",
+      "expect": "coverage",
+      "passed": true,
+      "checks": {
+        "scope_preserved": true,
+        "tool_limit": true,
+        "tools_allowlisted": true,
+        "permission_preserved": true,
+        "retry_replayed_without_new_run": true,
+        "coverage_gate_passed": true,
+        "relevant_document_retrieved": true,
+        "finding_from_expected_document": true
+      },
+      "state": "awaiting_review",
+      "quality": {
+        "version": "research-coverage-v1",
+        "passed": true,
+        "required_tools": [
+          "knowledge_search"
+        ],
+        "missing_tools": [],
+        "failed_steps": [],
+        "unavailable_steps": [],
+        "uncited_tools": [],
+        "invalid_claims": [],
+        "covered_sources": 1,
+        "available_sources": 1,
+        "document_scope": "docs/DELAY_V2.md",
+        "document_scope_mismatches": [],
+        "finding_style": "verbatim_source_extracts",
+        "semantic_entailment_verified": false,
+        "all_objective_parts_verified": false,
+        "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+      },
+      "repair": null,
+      "tools": [
+        {
+          "id": "T1",
+          "tool": "knowledge_search",
+          "state": "completed"
+        }
+      ],
+      "claims": [
+        {
+          "text": "Five months of US domestic historical data cannot establish seasonal robustness, point-in-time availability of schedules, UAE airline transfer, airline business benefit or distributed data-processing performance.",
+          "citation": "T1",
+          "quote": "Five months of US domestic historical data cannot establish seasonal robustness, point-in-time availability of schedules, UAE airline transfer, airline business benefit or distributed data-processing performance."
+        },
+        {
+          "text": "Research suitability is **passed**; operational and production approval remain **false**.",
+          "citation": "T1",
+          "quote": "Research suitability is **passed**; operational and production approval remain **false**."
+        }
+      ],
+      "rejected_claims": 1,
+      "model": {
+        "name": "qwen3:8b",
+        "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+      },
+      "elapsed_ms": 8450.89,
+      "report_sha256": "327175363240f2511dd54400080c1831b7a96935c05bdc6a965aa18a7c21efff"
+    }
+  ],
+  "semantic_review": "Not a general semantic entailment or task-completeness score; expected-document checks are specific to these development cases."
+}
