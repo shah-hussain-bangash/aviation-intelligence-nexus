@@ -56,6 +56,7 @@ class JobQueue:
             return {**result, **({'quality': assess_report(result)} if result.get('report_sha256') else {})}
 
     def cancel(self, user, run_id):
+        if user['role'] not in ('admin','researcher'):raise PermissionError('Researcher access required')
         with closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT owner_id,result_json FROM agent_runs WHERE id=?', (run_id,)).fetchone()
@@ -64,9 +65,13 @@ class JobQueue:
             result = json.loads(row['result_json'])
             if result['state'] == 'cancelled':
                 return result
-            if result['state'] != 'queued':
-                raise Conflict('Only a queued investigation can be cancelled; running tools are not forcibly stopped')
-            result.update(state='cancelled', updated_at=now(), error='Cancelled before background execution.')
+            if result['state']=='running':
+                if result.get('cancel_requested_at'):return result
+                result.update(cancel_requested_at=now(),cancel_requested_by=user['username'],updated_at=now())
+            elif result['state']=='queued':
+                result.update(state='cancelled',updated_at=now(),cancelled_at=now(),error='Cancelled before background execution.')
+            else:
+                raise Conflict('Only queued or running investigations can be stopped; completed reports are unchanged')
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?', (json.dumps(result), result['updated_at'], run_id))
             return result
 
@@ -139,4 +144,4 @@ class JobWorker:
         return {'enabled': self.enabled, 'alive': bool(self.task and not self.task.done()),
                 'last_poll': self.last_poll, 'error': self.last_error,
                 'global_waiting_limit': 5, 'owner_waiting_limit': 2, 'running_limit': 1,
-                'scope': 'One local API process; no external worker failover or running-tool cancellation'}
+                'scope': 'One local API process; cooperative stops between bounded calls; no external worker failover or forced interruption'}

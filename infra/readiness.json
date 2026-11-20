@@ -236,8 +236,8 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified.",
-      "remaining": "External worker isolation, distributed leases/failover, running-tool cancellation, broader task-completeness evaluation and operational acceptance remain outstanding.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded.",
+      "remaining": "External worker isolation, distributed leases/failover, forced interruption of running calls, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
       "evidence": [
@@ -251,7 +251,7 @@
         },
         {
           "path": "docs/BACKGROUND_INVESTIGATIONS.md",
-          "sha256": "f4cac035996271d3e97205eedc74e2a49fe8120309bd0c237af4123bddeb26a3"
+          "sha256": "e3ae41a1700ee72bc724e2fb523fd2e26429b673cfd3cb4719dee7ffa4d37671"
         },
         {
           "path": "docs/reports/Background_Investigations.json",
@@ -272,6 +272,14 @@
         {
           "path": "docs/reports/Model_Agent_Integration.json",
           "sha256": "e50c650c4b9975c8cfba38b8ee088d3886e280f67c2b87bb139131276cca62b1"
+        },
+        {
+          "path": "docs/COOPERATIVE_INVESTIGATION_STOP.md",
+          "sha256": "1cb8d98d3a440b2fff0a778262e03d49a06efc8daa3a5aeab8c4814bec3c815f"
+        },
+        {
+          "path": "docs/reports/Cooperative_Stop.json",
+          "sha256": "b99d2d46c06bc670ef4221989571e649ee07d97ec4604484def4e837a1206afb"
         }
       ]
     },
@@ -580,7 +588,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "4dc6ff0b24314ccfa2b4f43c0976485e2b03abadcd4bf5d546f5f4e48f0233ab"
+          "sha256": "d882bd3bdc01ac44efb151f3bdf46ec6e8aac0fb628bceb49475e2c6a1d51899"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

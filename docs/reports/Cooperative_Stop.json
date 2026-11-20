@@ -1,0 +1,145 @@
+{
+  "format": "ain-cooperative-stop-engineering-v1",
+  "checked_at": "2026-11-20T13:10:22.145006+00:00",
+  "scope": "One actual local Qwen3 planner call, separate engineering database, no real user session; not an interruption benchmark",
+  "elapsed_ms": 3566.69,
+  "provider_responses": [
+    {
+      "done": true,
+      "done_reason": "stop"
+    }
+  ],
+  "checks": {
+    "request_acknowledged_while_running": true,
+    "current_provider_call_returned_normally": true,
+    "stopped_before_tools": true,
+    "no_reviewable_draft": true,
+    "retry_replays_without_new_provider_call": true,
+    "no_operational_approval": true
+  },
+  "passed": true,
+  "run": {
+    "run_id": "f5ef650c-a51f-4111-ab8a-87be6ac6f3bd",
+    "actor": "engineering-stop",
+    "request": {
+      "objective": "Use model_evidence to review the frozen delay-v2 model. Include May false alerts and calibration error, April-only input reliance, and the non-causal and non-operational limitations. Use only recorded model evidence; no monthly SQL metrics, document search or simulation is needed.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "model_evidence"
+      ],
+      "include_model_evidence": true,
+      "document_scope": null
+    },
+    "state": "cancelled",
+    "steps": [],
+    "claims": [],
+    "reviews": [],
+    "created_at": "2026-11-20T13:10:18.580279+00:00",
+    "updated_at": "2026-11-20T13:10:22.125893+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "model": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+    },
+    "bounds": {
+      "max_tool_calls": 3,
+      "max_planner_calls": 3,
+      "max_summary_calls": 2,
+      "first_planner_timeout_seconds": 45,
+      "later_planner_timeout_seconds": 20,
+      "deadline_seconds": 120,
+      "operational_writes": false
+    },
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      }
+    ],
+    "cancelled_at": "2026-11-20T13:10:22.125856+00:00",
+    "error": "Stopped at a safe boundary. Completed tool evidence is retained; no draft is available for review.",
+    "cancel_requested_at": "2026-11-20T13:10:18.658812+00:00",
+    "cancel_requested_by": "engineering-stop"
+  },
+  "production_ready": false,
+  "browser_verification": {
+    "scope": "Isolated stop controls with simulated queue responses and recorded model evidence; no real user session",
+    "results": [
+      {
+        "scenario": "Desktop",
+        "checks": {
+          "running_control_visible": true,
+          "pending_visible": true,
+          "pending_not_reviewable": true,
+          "terminal_stop_hidden": true,
+          "no_review": true,
+          "completed_evidence": true,
+          "export_cancelled": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Mobile_390",
+        "checks": {
+          "running_control_visible": true,
+          "pending_visible": true,
+          "pending_not_reviewable": true,
+          "terminal_stop_hidden": true,
+          "no_review": true,
+          "completed_evidence": true,
+          "export_cancelled": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 390
+      },
+      {
+        "scenario": "Queued",
+        "checks": {
+          "running_control_visible": true,
+          "terminal_stop_hidden": true,
+          "no_review": true,
+          "completed_evidence": true,
+          "export_cancelled": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Viewer",
+        "checks": {
+          "viewer_stop_hidden": true,
+          "review_hidden": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Failure_Reconcile",
+        "checks": {
+          "running_control_visible": true,
+          "terminal_stop_hidden": true,
+          "no_review": true,
+          "completed_evidence": true,
+          "export_cancelled": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Session_Clear",
+        "checks": {
+          "running_control_visible": true,
+          "late_response_cleared": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      }
+    ],
+    "production_ready": false
+  }
+}

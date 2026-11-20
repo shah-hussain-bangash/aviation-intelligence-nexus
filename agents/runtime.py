@@ -8,7 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from rag import ollama
 from rag.service import validate_claims
 from agents import tools
-from agents.store import Conflict, sha
+from agents.store import Conflict, sha, now
+from agents.cancellation import StopRequested,finish_cancelled
 from agents.quality import assess_report, collect_claims, report_evidence
 
 RUN_LOCK=Lock()
@@ -68,6 +69,9 @@ class Investigator:
     def __init__(self,database,knowledge,store):
         self.database,self.knowledge,self.store=database,knowledge,store
 
+    def check_stop(self,result):
+        if self.store.stop_requested(result['run_id']):raise StopRequested()
+
     def run(self,user,key,request,queued_result=None):
         payload=request.model_dump()
         prior=self.store.lookup(user,key,payload) if queued_result is None else None
@@ -77,6 +81,7 @@ class Investigator:
         try:
             result=queued_result if queued_result is not None else self.store.begin(user,key,payload)
             deadline=time.monotonic()+120
+            self.check_stop(result)
             model_digest=ollama.models()[ollama.CHAT_MODEL]
             result['model']={'name':ollama.CHAT_MODEL,'digest':model_digest}
             result['bounds']={'max_tool_calls':3,'max_planner_calls':3,'max_summary_calls':2,'first_planner_timeout_seconds':45,'later_planner_timeout_seconds':20,'deadline_seconds':120,'operational_writes':False}
@@ -94,12 +99,14 @@ class Investigator:
                 {'role':'user','content':json.dumps(payload)}]
             used=set()
             for turn in range(3):
+                self.check_stop(result)
                 remaining=[d for d in tools.definitions(request.include_simulation, request.route is not None, request.include_model_evidence) if d['function']['name'] not in used]
                 if not remaining: break
                 budget=deadline-time.monotonic()
                 if budget<5: raise TimeoutError('Investigation deadline exceeded')
                 calls=select_tools(messages,remaining,min(45 if turn==0 else 20,budget))
                 result.setdefault('decisions',[]).append({'turn':turn+1,'tool_calls_received':len(calls)})
+                self.check_stop(result)
                 if not calls:
                     missing=sorted(set(request.required_tools)-used)
                     if missing and turn<2:
@@ -120,10 +127,12 @@ class Investigator:
                     validated.append({'type':'function','function':{'name':name,'arguments':arguments}})
                 messages.append({'role':'assistant','tool_calls':validated})
                 for call in validated:
+                    self.check_stop(result)
                     if time.monotonic()>=deadline: raise TimeoutError('Investigation deadline exceeded')
                     name=call['function']['name']; used.add(name)
                     step={'id':f'T{len(result["steps"])+1}','tool':name,'arguments':call['function']['arguments'],'state':'running'}
                     result['steps'].append(step); self.store.checkpoint(result)
+                    self.check_stop(result)
                     started=time.monotonic()
                     try:
                         observation=tools.execute(name,step['arguments'],request,self.database,self.knowledge)
@@ -132,6 +141,7 @@ class Investigator:
                         step.update(state='failed',error='Tool could not return verified evidence.',error_type=type(error).__name__)
                     step['elapsed_ms']=round((time.monotonic()-started)*1000,2)
                     self.store.checkpoint(result)
+                    self.check_stop(result)
                     # Send bounded, typed observations back to the planner; never execute model-supplied code.
                     planner_observation=step.get('observation',{'error':step.get('error')})
                     if name=='model_evidence' and step['state']=='completed':
@@ -139,6 +149,7 @@ class Investigator:
                         planner_observation={key:planner_observation[key] for key in ['data_kind','available','evidence_text']}
                     messages.append({'role':'tool','tool_name':name,'content':json.dumps(planner_observation)})
                 if len(used)>=3: break
+            self.check_stop(result)
             evidence=report_evidence(result)
             if not evidence:
                 result.update(state='failed',error='No tool returned sufficient evidence. No report was generated.')
@@ -146,7 +157,9 @@ class Investigator:
                 budget=deadline-time.monotonic()
                 if budget<5: raise TimeoutError('Investigation deadline exceeded')
                 model_note=(' For model_evidence include a quotation containing "Input reliance is not causality or an individual-flight explanation." Prefer May metrics and April-only input reliance for the remaining extracts; the full April table is retained separately.' if request.include_model_evidence else '')
+                self.check_stop(result)
                 raw=ollama.generate(payload['objective']+' Clearly distinguish historical measurements, project documents and synthetic simulation. Each statement must contain only facts and numbers in its own exact quotation. Omit dates unless they occur in that quotation.'+model_note,evidence,timeout=min(30,budget))
+                self.check_stop(result)
                 result['claims'],rejected=collect_claims(raw,evidence)
                 result['finding_style']='verbatim_source_extracts'
                 result['rejected_claims']=rejected
@@ -163,7 +176,9 @@ class Investigator:
                                 ' Return one short supported statement for EACH supplied source. Use only its exact quoted facts and numbers; omit dates unless the quotation includes them.')
                             if quality['model_limitations_uncited']:
                                 repair_question+=' For model_evidence return the exact source quote containing "Input reliance is not causality or an individual-flight explanation."'
+                            self.check_stop(result)
                             repair=ollama.generate(repair_question,targets,timeout=min(30,budget))
+                            self.check_stop(result)
                             extra,discarded=collect_claims(repair,targets)
                             result['claims'].extend(extra);result['rejected_claims']+=discarded
                             result['report_repair'].update(state='completed',accepted_claims=len(extra),rejected_claims=discarded)
@@ -176,6 +191,10 @@ class Investigator:
                     limitations=['Historical US research data and synthetic simulation are separate; no live airline feed.',
                         'Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.',
                         'Review records document a research review only; no airline action is authorized or applied.'])
+            self.store.checkpoint(result)
+            return result
+        except StopRequested:
+            finish_cancelled(result,now())
             self.store.checkpoint(result)
             return result
         except Exception as error:

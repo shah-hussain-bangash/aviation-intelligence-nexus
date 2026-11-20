@@ -129,7 +129,7 @@ test('queued investigation rendering offers no report approval claim',()=>{
   const run={state:'queued',execution:'local-background-queue-v1',research_only:true,operational_approval:false,steps:[],claims:[],reviews:[],request:{objective:'Fixture queued investigation',month:'2025-05',include_simulation:false},run_id:'fixture',actor:'fixture',updated_at:'2026-11-20',runtime:'bounded-ollama-tools-v2'};
   const html=renderInvestigation(run);
   assert.match(html,/Saved background job/);
-  assert.match(html,/running tools are not forcibly stopped/);
+  assert.match(html,/current call is not forcibly interrupted/);
   assert.doesNotMatch(html,/Coverage checks passed/);
 });
 
@@ -497,6 +497,21 @@ function qualityFixture(){
  const eligible=Object.fromEntries(r.months.map(m=>[m.period,m.cohorts.eligible_arrivals]));
  return {...r,integrity_verified:true,report_sha256:'a'.repeat(64),dataset_report_sha256:'b'.repeat(64),modelling_alignment:Object.fromEntries(Object.entries(d.period_groups).map(([key,periods])=>{const n=periods.reduce((n,p)=>n+eligible[p],0),frozen=d.splits[key].eligible_records;return [key,{audited_eligible:n,frozen_eligible:frozen,counts_match:n===frozen}];}))};
 }
+
+test('a running stop request is acknowledged without claiming immediate cancellation',()=>{
+ const run=modelAgentFixture();run.state='running';run.claims=[];delete run.report_sha256;delete run.quality;run.cancel_requested_at='2026-11-20T12:00:00Z';
+ const html=renderInvestigation(run);assert.match(html,/Stop requested/);assert.match(html,/current bounded call may finish/);assert.match(html,/running · research only/);assert.doesNotMatch(html,/Report SHA-256/);
+});
+
+test('a cancelled investigation retains completed evidence with no reviewable draft',()=>{
+ const run=modelAgentFixture();run.state='cancelled';run.claims=[];delete run.report_sha256;delete run.quality;run.cancel_requested_at='2026-11-20T12:00:00Z';
+ const html=renderInvestigation(run);assert.match(html,/Stop completed/);assert.match(html,/Completed tool evidence is retained/);assert.match(html,/241,732/);assert.doesNotMatch(html,/Report SHA-256/);
+});
+
+test('terminal interrupted stop requests do not claim completed cancellation',()=>{
+ const run=modelAgentFixture();run.state='interrupted';run.claims=[];delete run.report_sha256;delete run.quality;run.cancel_requested_at='2026-11-20T12:00:00Z';run.error='<script>untrusted</script>';
+ const html=renderInvestigation(run);assert.match(html,/request was recorded/);assert.doesNotMatch(html,/Stop completed|<script>/);assert.match(html,/&lt;script&gt;/);
+});
 test('data quality exposes full release counts, exclusion populations and recorded lineage',()=>{
  const data=qualityFixture(),html=renderQuality(data);assert.match(html,/2,835,101/);assert.match(html,/1,611,046/);assert.match(html,/597,574/);assert.match(html,/not reopen archive files/);assert.match(html,/Not a live database check/);
  assert.match(renderQuality(data,'2025-01'),/2025-01 · Structural checks/);assert.throws(()=>renderQuality(data,'2026-01'));

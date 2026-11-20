@@ -75,14 +75,16 @@ class JobTests(unittest.TestCase):
         self.add('C', 'other'); self.add('D', 'other'); self.add('E', 'admin')
         with self.assertRaises(QueueFull): self.add('F', 'admin')
 
-    def test_cancellation_is_owner_checked_and_never_stops_running_tools(self):
+    def test_cancellation_is_owner_checked_and_running_stop_is_requested_cooperatively(self):
         first = self.add()
         with self.assertRaises(KeyError): self.queue.cancel(self.users['other'], first['run_id'])
         self.assertEqual(self.queue.cancel(self.users['analyst'], first['run_id'])['state'], 'cancelled')
         self.assertEqual(self.queue.cancel(self.users['analyst'], first['run_id'])['state'], 'cancelled')
         second = self.add('B')
         self.queue.claim()
-        with self.assertRaises(Conflict): self.queue.cancel(self.users['admin'], second['run_id'])
+        stopped=self.queue.cancel(self.users['admin'],second['run_id'])
+        self.assertEqual(stopped['state'],'running');self.assertTrue(stopped['cancel_requested_at'])
+        self.assertEqual(self.queue.cancel(self.users['admin'],second['run_id'])['cancel_requested_at'],stopped['cancel_requested_at'])
 
     def test_restart_keeps_waiting_work_but_interrupts_claimed_work(self):
         first = self.add('A'); second = self.add('B')

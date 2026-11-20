@@ -23,6 +23,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 ## Included today
 
+- Cooperative running-investigation stop requests, preserved completed evidence and transaction-checked draft suppression. See [investigation stops](docs/COOPERATIVE_INVESTIGATION_STOP.md).
+
 - Local Python API with liveness/readiness checks, persistent SQLite schema and truthful record counts. See [backend setup](docs/BACKEND_SETUP.md).
 - Three-month BTS import (1,645,503 local records) and chronological training/validation/test dataset preparation. See [model dataset](docs/MODEL_DATASET.md).
 - Trained and evaluated logistic delay baseline, artifact integrity and measured suitability review. See [model results](docs/DELAY_BASELINE.md).

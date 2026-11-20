@@ -496,11 +496,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/research/agent-cancel')
     def cancel_investigation(job: CancelJob, request: Request):
         try:
-            return job_queue.cancel(request.state.user, str(job.run_id))
+            result=job_queue.cancel(request.state.user, str(job.run_id))
+            return JSONResponse(status_code=202,content=result) if result['state']=='running' else result
         except KeyError:
             return JSONResponse(status_code=404, content={'error': 'investigation_unavailable'})
+        except PermissionError:
+            return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
         except Conflict:
-            return JSONResponse(status_code=409, content={'error': 'investigation_not_waiting', 'message': 'Only queued work can be cancelled. Running tools finish within their existing bounds.'})
+            return JSONResponse(status_code=409, content={'error': 'investigation_not_active', 'message': 'The investigation is no longer queued or running. Refresh saved state; completed reports are unchanged.'})
         except (sqlite3.Error, ValueError):
             return JSONResponse(status_code=503, content={'error': 'investigation_queue_unavailable'})
 

@@ -6,6 +6,7 @@ import json
 import sqlite3
 from uuid import uuid4
 from agents.quality import assess_report
+from agents.cancellation import finish_cancelled
 
 
 def now():
@@ -50,6 +51,12 @@ class AgentStore:
                 (result['run_id'],user['id'],key,sha(payload),json.dumps(result),result['updated_at']))
         return result
 
+    def stop_requested(self,run_id):
+        with closing(self.connection()) as db:
+            row=db.execute("SELECT json_extract(result_json,'$.cancel_requested_at') FROM agent_runs WHERE id=?",(run_id,)).fetchone()
+        if not row:raise KeyError('Investigation unavailable')
+        return bool(row[0])
+
     def checkpoint(self,result):
         result['updated_at']=now()
         with closing(self.connection()) as db,db:
@@ -59,6 +66,10 @@ class AgentStore:
                 metadata=json.loads(saved['result_json'])
                 if 'submission_keys' in metadata:
                     result['submission_keys']=metadata['submission_keys']
+                for key in ['cancel_requested_at','cancel_requested_by']:
+                    if key in metadata:result[key]=metadata[key]
+                if metadata.get('cancel_requested_at') and result['state'] in ('awaiting_review','failed','queued'):
+                    finish_cancelled(result,now())
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',
                 (json.dumps(result),result['updated_at'],result['run_id']))
 

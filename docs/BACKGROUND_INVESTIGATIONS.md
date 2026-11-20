@@ -1,5 +1,7 @@
 # Saved background investigations
 
+Current update: running investigations now support cooperative stop requests between bounded calls. See [cooperative stops](COOPERATIVE_INVESTIGATION_STOP.md). The queued-only cancellation description below records the initial milestone; current calls are still not forcibly interrupted.
+
 The investigation desk now submits work to a SQLite-backed queue and returns HTTP 202 after saving it. The browser polls the saved run for progress; the AI workflow runs independently in one background thread attached to the local API. Acknowledgement means queued, not successful or approved. The existing tool restrictions, citation/coverage checks and report-bound human research review still apply.
 
 ## Use

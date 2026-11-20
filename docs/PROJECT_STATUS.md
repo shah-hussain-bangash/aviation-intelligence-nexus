@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Cooperative stop milestone: researchers/admins can request a running investigation to stop between bounded calls. Completed tool evidence and request metadata survive; accepted stops cannot publish a reviewable draft. One actual Qwen3 planner-stop/replay check and six isolated desktop/mobile control scenarios passed. Windows passes 265 tests (208 Python, 57 Node). Current calls are not forcibly interrupted; all production requirements remain open. See `COOPERATIVE_INVESTIGATION_STOP.md`.
+
 Data quality milestone: a read-only monthly audit examined all 2,835,101 official BTS rows in 16.089 seconds, detected zero issues in the specified structural/key checks and reconciled five import entries. Eligible counts align with the frozen modelling populations; this is not row-equality or source-truth proof. A pinned recorded-audit dashboard offers monthly lineage/exclusions and export, with four desktop/mobile/failure/session preview cases. An earlier grouped query hit temporary-storage limits and was replaced by monthly aggregation. Windows passes 254 tests (200 Python, 54 Node). See `DATA_QUALITY_LINEAGE.md`.
 
 Synthetic gate review milestone: newly saved proposals now have exact-content fingerprints and a 24-hour review window. Transactional researcher/admin decisions bind to the proposal, recheck feasibility/objective, replay identical retries and reject changed, expired or conflicting decisions. Legacy proposals remain readable without automatic review enrollment. Self-review remains allowed; no independent or operational approval is claimed. Seven desktop/mobile/retry/expiry/reset preview scenarios passed. Windows passes 244 tests (193 Python, 51 Node). See `GATE_PROPOSAL_REVIEW.md`.
