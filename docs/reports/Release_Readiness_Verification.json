@@ -1,0 +1,71 @@
+{
+  "milestone": "Read-only release-readiness assessment",
+  "date": "2026-11-20",
+  "scope": "Dated maintainer assessment and public evidence file checks; not independent production acceptance",
+  "requirements": 24,
+  "with_partial_local_evidence": 22,
+  "evidence_unavailable": 0,
+  "production_requirements_open": 24,
+  "production_requirements_accepted": 0,
+  "catalog_sha256": "0cf1991898d24815f6ae9230329732c482a06a9a1ac22747f74b4c651f164824",
+  "fingerprint_policy": "sha256-utf8-lf-v1",
+  "browser_checks": {
+    "existing_admin_session": true,
+    "search_P20_returns_one": true,
+    "planned_filter_returns_two": true,
+    "requirement_detail_remaining_work_visible": true,
+    "export_contains_all_24_and_production_false": true,
+    "historical_audit_banner_and_current_assessment_link": true,
+    "desktop_mobile_layout": true
+  },
+  "automated_tests": {
+    "windows_python": 111,
+    "node": 24,
+    "windows_total": 135,
+    "linux_windows_provider_skip": 1
+  },
+  "negative_checks": [
+    "anonymous access denied",
+    "invalid assessment returns 503 without claim",
+    "baseline change rejects assessment",
+    "missing evidence withheld",
+    "unsafe paths and evidence links rejected",
+    "fabricated acceptance rejected",
+    "Windows LF/CRLF comparison equivalent"
+  ],
+  "container_smoke": {
+    "scope": "Local container smoke and isolation checks, not production qualification",
+    "project": "ain-local-release",
+    "checks": {
+      "api_healthy": true,
+      "api_non_root": true,
+      "api_read_only_root": true,
+      "api_capabilities_dropped": true,
+      "api_not_privileged": true,
+      "api_no_privilege_escalation": true,
+      "api_port_scope": true,
+      "web_healthy": true,
+      "web_non_root": true,
+      "web_read_only_root": true,
+      "web_capabilities_dropped": true,
+      "web_not_privileged": true,
+      "web_no_privilege_escalation": true,
+      "web_port_scope": true,
+      "database_backed_readiness": true,
+      "unauthenticated_access_not_granted": true
+    },
+    "passed": true,
+    "images": {
+      "api": {
+        "image_id": "sha256:5d2c17aaf012281d50b20415fd5ca9a33bbde1e20650de34d602b2b3f4a657b0",
+        "source_revision": "readiness-working-tree"
+      },
+      "web": {
+        "image_id": "sha256:74359ec6902a5f039390b9b8c75d935c6b5d9f40c52cd876da061f890b6cc918",
+        "source_revision": "readiness-working-tree"
+      }
+    },
+    "production_ready": false
+  },
+  "production_ready": false
+}

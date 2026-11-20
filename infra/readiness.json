@@ -1,0 +1,520 @@
+{
+  "format": "ain-readiness-v1",
+  "assessed_at": "2026-11-20",
+  "scope": "Maintainer assessment of bounded local research progress; file integrity is not independent production acceptance",
+  "baseline_path": "docs/reports/AIN_Completion_Report.json",
+  "baseline_sha256": "ad1a5a04d8072716d6f170f52b41be90e6a3d26d26cdcd6b159a95e251088ff9",
+  "production_ready": false,
+  "requirements": [
+    {
+      "id": "P01",
+      "name": "Backend services",
+      "owner_role": "Backend engineering",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13"
+      ],
+      "local_progress": "Local authenticated research API, histories, solver, document Q&A and bounded investigation endpoints are implemented.",
+      "remaining": "Operational case/outcome services, durable jobs and reviewed deployed API acceptance remain outstanding.",
+      "acceptance": "Integrated deployed APIs pass success, failure and authorization tests.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/BACKEND_SETUP.md",
+          "sha256": "dbbbcdc08dadb172107f1cf814bab690ba613d95770b772345947bf47783a6ad"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "Persistent database",
+      "owner_role": "Backend engineering",
+      "dependencies": [],
+      "local_progress": "SQLite migrations, transactional histories, ownership and restart/restoration checks are implemented.",
+      "remaining": "Managed database deployment, capacity/availability targets and production concurrency/failover qualification remain outstanding.",
+      "acceptance": "Records survive service restarts; integrity, migration and concurrent-write tests pass.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_DEPLOYMENT_RECOVERY.md",
+          "sha256": "44aa17873aa9f9d0b8f12b73e1b19da8d43a1f218598aa072498cd97d870db67"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "Authorized datasets",
+      "owner_role": "Data governance",
+      "dependencies": [],
+      "local_progress": "Official BTS January\u2013May 2025 imports have source/hash provenance and 2,835,101 historical US flight records.",
+      "remaining": "UAE airline operational data, document permissions and purpose-specific source-rights review remain outstanding.",
+      "acceptance": "Reviewed licenses/permissions and reproducible source manifests.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/DATA_INGESTION.md",
+          "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+        },
+        {
+          "path": "docs/reports/BTS_2025_05_Import.json",
+          "sha256": "da760e350f76ddfe8b8325a4b7257d086de340932907b2de18db29c6515273ea"
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "name": "Data ingestion",
+      "owner_role": "Data engineering",
+      "dependencies": [
+        "P02",
+        "P03"
+      ],
+      "local_progress": "BTS batch ingestion validates schemas, reconciles counts and prevents duplicate archive imports.",
+      "remaining": "Scheduled incremental collectors, quarantine workflows, orchestration and operational replay remain outstanding.",
+      "acceptance": "Successful ingestion with reconciled counts and recoverable dependency failures.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/DATA_INGESTION.md",
+          "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "name": "Big-data processing",
+      "owner_role": "Data engineering",
+      "dependencies": [
+        "P04"
+      ],
+      "local_progress": "A local million-row SQLite dataset and chronological training pipeline are measured.",
+      "remaining": "Representative distributed processing, partitioning and bounded-query resource/load qualification remain outstanding.",
+      "acceptance": "Actual record counts, storage, runtime and resource measurements.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/MODEL_DATASET.md",
+          "sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084"
+        },
+        {
+          "path": "docs/reports/BTS_Jan_May_2025_Dataset_v2.json",
+          "sha256": "93899afd60771a9c1c17ad0411fefcd249b486b655b7c8ebf8c20800dee9c0a1"
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "name": "Data science models",
+      "owner_role": "Data science",
+      "dependencies": [
+        "P03",
+        "P04",
+        "P05"
+      ],
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol.",
+      "remaining": "Broader agreed regression/forecasting/sentiment/clustering/anomaly use cases and UAE operational validation remain outstanding.",
+      "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/DELAY_V2.md",
+          "sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826"
+        },
+        {
+          "path": "docs/reports/Delay_v2.json",
+          "sha256": "e58f44086ba8c271f2e00c1965a136911018f2dd82bc625cbf7fb2752fb0c3f9"
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "name": "Prediction deployment",
+      "owner_role": "ML engineering",
+      "dependencies": [
+        "P01",
+        "P06"
+      ],
+      "local_progress": "Historical scenario inference loads a verified v2 artifact, checks input scope and abstains on unsupported requests.",
+      "remaining": "Operational model monitoring, calibration, service objectives and demonstrated model rollback remain outstanding.",
+      "acceptance": "Inference, fallback, monitoring and model-rollback tests pass.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/RESEARCH_PREDICTION.md",
+          "sha256": "10ce68ccf44a571ef7f407085517ef0f54d27ee9fbd182fa69d5d6830f7e62fa"
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Generative AI",
+      "owner_role": "Knowledge engineering",
+      "dependencies": [
+        "P01",
+        "P03",
+        "P13"
+      ],
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks.",
+      "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
+      "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/KNOWLEDGE_STUDIO.md",
+          "sha256": "10f9b27745df69e243286b188d9f0d6c037275948b567939a4864b1b2985d6d3"
+        },
+        {
+          "path": "docs/reports/Knowledge_Demo.json",
+          "sha256": "932897f86d02b6a186872c34277e54effe5458ed64c8a032c8f96f23419c3ded"
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "name": "Agent execution",
+      "owner_role": "AI engineering",
+      "dependencies": [
+        "P01",
+        "P08",
+        "P13",
+        "P14"
+      ],
+      "local_progress": "A bounded single agent executes approved SQL, document and opt-in synthetic solver tools with saved checkpoints and research review.",
+      "remaining": "General task-completeness evaluation, durable workers, cancellation/resume qualification and multi-agent operational workflows remain outstanding.",
+      "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/AGENT_REPORT_QUALITY.md",
+          "sha256": "8d5c2c79fa76acba3664332e14b0014e63e180934f66625f45079c5ec7051f35"
+        },
+        {
+          "path": "docs/reports/Agent_Quality_Evaluation.json",
+          "sha256": "8351b21a99bc549d59792f20e33692284bbe17db0816af6d90ee29789cc45896"
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "Mathematical optimization",
+      "owner_role": "Operations research",
+      "dependencies": [
+        "P03",
+        "P04"
+      ],
+      "local_progress": "A synthetic gate-allocation mixed-integer solver has independent feasibility checks, comparisons and persisted proposals.",
+      "remaining": "Real authorized airline constraints/data, scale and operational acceptance remain outstanding.",
+      "acceptance": "Reproducible computed candidates, infeasibility cases and verifier evidence.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/GATE_OPTIMIZATION.md",
+          "sha256": "b6b243a273630a58fb934f7c955af57ccd796f8eced88247830781de171c47d2"
+        },
+        {
+          "path": "docs/reports/Gate_Optimization_Demo.json",
+          "sha256": "47a8c48bb9e3906d6eddf42771b461a26b43d4def782187f33ca23b8c0804fe0"
+        }
+      ]
+    },
+    {
+      "id": "P11",
+      "name": "Connected business workflows",
+      "owner_role": "Operations product",
+      "dependencies": [
+        "P01",
+        "P02",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P14",
+        "P17"
+      ],
+      "local_progress": "Research tools share a local identity/database; four browser-local operational journeys remain synthetic.",
+      "remaining": "Persistent cross-service incident-to-outcome journeys and real operational integrations remain outstanding.",
+      "acceptance": "Critical journeys pass across deployed services with shared persistent identifiers.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/INVESTIGATION_AGENT.md",
+          "sha256": "6f6d61c194fbfbf70e4f4972d4855ee2d7556c30f8ff3d0a5cdf87edc7ffb31f"
+        }
+      ]
+    },
+    {
+      "id": "P12",
+      "name": "Authentication",
+      "owner_role": "Identity engineering",
+      "dependencies": [],
+      "local_progress": "Local Argon2 password accounts, expiring sessions and revocation are implemented.",
+      "remaining": "Managed user/service identity, MFA, lifecycle ownership and HTTPS deployment remain outstanding.",
+      "acceptance": "Identity lifecycle, session expiry and revocation tests pass.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_IDENTITY.md",
+          "sha256": "6d0ee880a54ed96865e06a23bd784ab8935ad780cfd11cabcb2220ef4d14a0f7"
+        }
+      ]
+    },
+    {
+      "id": "P13",
+      "name": "Authorization",
+      "owner_role": "Security engineering",
+      "dependencies": [
+        "P12"
+      ],
+      "local_progress": "Server-enforced admin/researcher/viewer roles and owner-scoped research records have negative tests.",
+      "remaining": "Applicable tenant isolation, purpose policy and separation-of-duties acceptance remain outstanding.",
+      "acceptance": "Negative tests prove unauthorized requests and retrieval are denied.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_IDENTITY.md",
+          "sha256": "6d0ee880a54ed96865e06a23bd784ab8935ad780cfd11cabcb2220ef4d14a0f7"
+        }
+      ]
+    },
+    {
+      "id": "P14",
+      "name": "Human approval controls",
+      "owner_role": "Governance engineering",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13",
+        "P15"
+      ],
+      "local_progress": "Research report review is tied to the exact report hash and mechanical evidence coverage.",
+      "remaining": "Operational proposal expiry, transactional approval separation, changed-proposal controls and business authorization remain outstanding.",
+      "acceptance": "Changed/expired proposals and duplicate/conflicting decisions are rejected.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/AGENT_REPORT_QUALITY.md",
+          "sha256": "8d5c2c79fa76acba3664332e14b0014e63e180934f66625f45079c5ec7051f35"
+        }
+      ]
+    },
+    {
+      "id": "P15",
+      "name": "Protected audit",
+      "owner_role": "Governance engineering",
+      "dependencies": [
+        "P02",
+        "P12",
+        "P13"
+      ],
+      "local_progress": "Local research histories preserve selected inputs, outputs and actor ownership; they are mutable database records.",
+      "remaining": "Protected audit retention, correlation and independently reviewed tamper resistance remain outstanding.",
+      "acceptance": "Relevant actions can be reconstructed; unauthorized modification is prevented.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/RESEARCH_HISTORY.md",
+          "sha256": "27ef3747bd1c52162ea77127a2ef3bce1a0d43309773419b16107587ddee0c27"
+        }
+      ]
+    },
+    {
+      "id": "P16",
+      "name": "Security and privacy",
+      "owner_role": "Security engineering",
+      "dependencies": [
+        "P12",
+        "P13",
+        "P15"
+      ],
+      "local_progress": "Local authorization, CSRF/Origin checks, restricted tool routes and encrypted local recovery are implemented.",
+      "remaining": "Independent security/privacy review, protected secrets lifecycle, export/retention controls and vulnerability qualification remain outstanding.",
+      "acceptance": "Reviewed controls, security results and resolved material findings.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_IDENTITY.md",
+          "sha256": "6d0ee880a54ed96865e06a23bd784ab8935ad780cfd11cabcb2220ef4d14a0f7"
+        },
+        {
+          "path": "docs/ENCRYPTED_RECOVERY.md",
+          "sha256": "f0b011e79d9b7cdd3c197695a1cd69e22f629e179e9ef7b8cb99ebdd43b26817"
+        }
+      ]
+    },
+    {
+      "id": "P17",
+      "name": "Production deployment",
+      "owner_role": "Platform engineering",
+      "dependencies": [
+        "P01",
+        "P02",
+        "P12",
+        "P16"
+      ],
+      "local_progress": "A loopback Docker Desktop release runs non-root/read-only containers with measured health/isolation checks.",
+      "remaining": "Cloud environment, TLS, controlled production configuration and reviewed release acceptance remain outstanding.",
+      "acceptance": "Deployed environment has passing readiness/health checks and reviewed configuration.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_DEPLOYMENT_RECOVERY.md",
+          "sha256": "44aa17873aa9f9d0b8f12b73e1b19da8d43a1f218598aa072498cd97d870db67"
+        },
+        {
+          "path": "docs/reports/Local_Deployment_Recovery.json",
+          "sha256": "a7efa670bbb38557472eda89ff00ecad73dd4525011a265fc397c2e1aac8516d"
+        }
+      ]
+    },
+    {
+      "id": "P18",
+      "name": "Monitoring",
+      "owner_role": "Platform reliability",
+      "dependencies": [
+        "P17"
+      ],
+      "local_progress": "Admin monitoring shows bounded API response metrics and fresh/stale component checks with local snapshots.",
+      "remaining": "Independent uptime, centralized protected telemetry, AI/pipeline quality signals and owned external alerts remain outstanding.",
+      "acceptance": "Working measured dashboards, actionable alerts and response procedures.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_MONITORING.md",
+          "sha256": "0d678e2b76738b9f7d4fd4bc88a95dd1d2b7a89eaa4ad723991d5837c277cbf7"
+        },
+        {
+          "path": "docs/reports/Local_Monitoring.json",
+          "sha256": "eb5bb47098a97374fec91a0fad515cbed4f1f7dc3650acb033da111bf004e96d"
+        }
+      ]
+    },
+    {
+      "id": "P19",
+      "name": "Backup and recovery",
+      "owner_role": "Platform reliability",
+      "dependencies": [
+        "P02",
+        "P17",
+        "P18"
+      ],
+      "local_progress": "Plain and encrypted local drills restored 2,835,101 flights, accounts, model/index and exact prediction parity; restored sessions were revoked.",
+      "remaining": "Off-site storage, independent key recovery, agreed RPO/RTO targets and independent environment drills remain outstanding.",
+      "acceptance": "Successful drills measure recovery time and data loss against agreed targets.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/ENCRYPTED_RECOVERY.md",
+          "sha256": "f0b011e79d9b7cdd3c197695a1cd69e22f629e179e9ef7b8cb99ebdd43b26817"
+        },
+        {
+          "path": "docs/reports/Encrypted_Recovery.json",
+          "sha256": "441de17aa7052a60aeef593627d03e5256eb6109544496bd8bf251cb7ce5c906"
+        }
+      ]
+    },
+    {
+      "id": "P20",
+      "name": "Rollback",
+      "owner_role": "Platform engineering",
+      "dependencies": [
+        "P17",
+        "P19"
+      ],
+      "local_progress": "Rollback remains a design requirement; a container restart or data restoration does not demonstrate rollback.",
+      "remaining": "Demonstrate compatible application, schema, model and prompt rollback with measured integrity/availability.",
+      "acceptance": "Demonstrated rollback preserves acceptable integrity and availability.",
+      "production_accepted": false,
+      "evidence": []
+    },
+    {
+      "id": "P21",
+      "name": "Performance and accessibility",
+      "owner_role": "Quality engineering",
+      "dependencies": [
+        "P17"
+      ],
+      "local_progress": "Selected desktop/mobile research views have been inspected; a full accessibility or load audit is not claimed.",
+      "remaining": "Keyboard/screen-reader review, device matrix, representative load tests and agreed targets remain outstanding.",
+      "acceptance": "Reviewed results meet agreed targets and material accessibility defects are resolved.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/DEVELOPMENT.md",
+          "sha256": "974b3ab2d409fba6b914853e7e473bf4b03cff27570cab80537c2f52f3741011"
+        }
+      ]
+    },
+    {
+      "id": "P22",
+      "name": "Integrated acceptance testing",
+      "owner_role": "Quality engineering",
+      "dependencies": [
+        "P11",
+        "P16",
+        "P18",
+        "P19",
+        "P20"
+      ],
+      "local_progress": "Automated backend/proxy tests and recorded real-data model/AI/recovery checks cover the bounded local research scope.",
+      "remaining": "Reviewed deployed critical journeys, security/load results and resolution of material defects remain outstanding.",
+      "acceptance": "Reviewed real execution evidence with critical defects resolved.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/DEVELOPMENT.md",
+          "sha256": "974b3ab2d409fba6b914853e7e473bf4b03cff27570cab80537c2f52f3741011"
+        },
+        {
+          "path": "docs/reports/Encrypted_Recovery.json",
+          "sha256": "441de17aa7052a60aeef593627d03e5256eb6109544496bd8bf251cb7ce5c906"
+        }
+      ]
+    },
+    {
+      "id": "P23",
+      "name": "Operational documentation",
+      "owner_role": "Delivery engineering",
+      "dependencies": [
+        "P17",
+        "P18",
+        "P19",
+        "P20"
+      ],
+      "local_progress": "Local setup, data/model, AI, monitoring and recovery runbooks are maintained with explicit limitations.",
+      "remaining": "Independent operator walkthrough, production incident ownership and deployment/rollback runbooks remain outstanding.",
+      "acceptance": "A responsible engineer can deploy, operate, investigate and restore the implemented system.",
+      "production_accepted": false,
+      "evidence": [
+        {
+          "path": "docs/LOCAL_DEPLOYMENT_RECOVERY.md",
+          "sha256": "44aa17873aa9f9d0b8f12b73e1b19da8d43a1f218598aa072498cd97d870db67"
+        },
+        {
+          "path": "docs/LOCAL_MONITORING.md",
+          "sha256": "0d678e2b76738b9f7d4fd4bc88a95dd1d2b7a89eaa4ad723991d5837c277cbf7"
+        },
+        {
+          "path": "docs/ENCRYPTED_RECOVERY.md",
+          "sha256": "f0b011e79d9b7cdd3c197695a1cd69e22f629e179e9ef7b8cb99ebdd43b26817"
+        }
+      ]
+    },
+    {
+      "id": "P24",
+      "name": "Final scope acceptance",
+      "owner_role": "Product and engineering owners",
+      "dependencies": [
+        "P21",
+        "P22",
+        "P23"
+      ],
+      "local_progress": "A scope/evidence assessment is available; no independent production acceptance or airline sign-off exists.",
+      "remaining": "Product/engineering acceptance must confirm actual deployed scope, exclusions, limitations and unresolved defects.",
+      "acceptance": "Acceptance confirms claims match tested implemented behavior.",
+      "production_accepted": false,
+      "evidence": []
+    }
+  ],
+  "fingerprint_policy": "sha256-utf8-lf-v1"
+}

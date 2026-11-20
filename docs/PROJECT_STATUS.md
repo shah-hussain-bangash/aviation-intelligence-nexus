@@ -2,6 +2,9 @@
 
 ## Delivered
 
+Readiness milestone: a dated maintainer assessment maps all 24 baseline requirement IDs to current local progress, fingerprint-checked public evidence, remaining work and acceptance criteria. Twenty-two have some recorded local evidence; all 24 remain production-open. Search/filter/export and authenticated read-only access are implemented. Historic completion reports are explicitly labelled and global model/agent availability statements corrected. The full Windows suite passes 135 tests (111 Python, 24 Node); Linux skips the Windows DPAPI case. See `RELEASE_READINESS.md`.
+
+
 Encrypted recovery milestone: a trusted snapshot was sealed using the library streaming encryption recipe and a separate Windows DPAPI CurrentUser-protected key. A new local restore recovered 2,835,101 flights, account records, model and index, revoked restored sessions and reproduced native prediction exactly. Wrong keys, tampering, unsafe archives and existing targets fail closed. A separate dashboard drill receipt is implemented. Windows passes 128 tests (107 Python, 21 Node); Linux explicitly skips only the Windows key-provider case. Off-site storage, independent key escrow and computer-loss recovery remain unqualified. See `ENCRYPTED_RECOVERY.md`.
 
 

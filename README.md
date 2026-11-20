@@ -42,6 +42,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Authenticated encrypted local backups with a Windows user-protected key, safe fresh-target restoration and a measured full-data drill. See [encrypted recovery and key limitations](docs/ENCRYPTED_RECOVERY.md).
 
+- Dated release-readiness assessment for all 24 production requirements, with recorded local progress, evidence integrity, remaining work and read-only export. See [scope and acceptance boundaries](docs/RELEASE_READINESS.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

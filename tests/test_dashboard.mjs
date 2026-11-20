@@ -12,6 +12,42 @@ import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
 import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
+import fs from 'node:fs';
+import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
+
+function readinessFixture(){
+  const data=JSON.parse(fs.readFileSync(new URL('../infra/readiness.json',import.meta.url),'utf8'));
+  return {...data,total:24,production_accepted:0,production_open:24,source_revision:'main',checked_at:'2026-11-20T00:00:00Z',requirements:data.requirements.map(r=>({...r,assessment_state:r.evidence.length?'local_evidence':'planned',evidence:r.evidence.map(e=>({...e,integrity_verified:true,url:'https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/main/'+e.path}))}))};
+}
+
+test('readiness keeps all requirements open and filters progress without accepting production',()=>{
+  const data=readinessFixture();
+  assert.equal(filterReadiness(data,'','planned').length,2);
+  assert.equal(filterReadiness(data,'P20').length,1);
+  assert.equal(filterReadiness(data,'nothing matches this phrase').length,0);
+  const html=renderReadiness(data,'P20');
+  assert.match(html,/1 of 24 requirements shown/);
+  assert.match(html,/Production acceptance/);
+  assert.match(html,/<strong>Open<\/strong>/);
+  assert.doesNotMatch(html,/%/);
+  assert.throws(()=>renderReadiness({...data,production_ready:true}));
+  assert.throws(()=>renderReadiness({...data,requirements:data.requirements.slice(1)}));
+});
+
+test('readiness escapes content and refuses unapproved evidence destinations',()=>{
+  const data=readinessFixture();data.requirements[0].local_progress='<script>bad</script>';
+  assert.match(renderReadiness(data),/&lt;script&gt;/);
+  data.requirements[0].evidence[0].url='javascript:alert(1)';
+  assert.throws(()=>renderReadiness(data));
+});
+
+test('readiness proxy forwards only a read and scoped session',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/readiness');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"production_ready":false}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/readiness`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);
+});
 
 test('encrypted recovery evidence labels a separate local drill and rejects unsupported qualification',()=>{
   const data={production_ready:false,runtime:'local-container',recovery:{recorded:false,production_qualified:false},encrypted_backup_drill:{recorded:true,flight_records:100,checked_at:'<script>',independent_recovery_qualified:false,production_qualified:false}};

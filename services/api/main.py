@@ -28,6 +28,7 @@ from agents.store import AgentStore, Conflict
 from services.api.paths import STATE, SCHEMA_VERSION
 from infra.status import restore_status, encrypted_drill_status
 from services.api.monitoring import Monitor
+from infra.readiness import assessment
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -452,6 +453,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             'encrypted_backup_drill':encrypted_drill_status(database.parent),
             'production_ready':False,'limitations':['Local deployment and recorded recovery checks do not establish production qualification.',
                 'No managed TLS, cloud monitoring, protected backup storage or high-availability worker service is configured.']}
+
+    @app.get('/api/v1/research/readiness')
+    def release_readiness():
+        try:
+            return assessment()
+        except (OSError, ValueError, KeyError, TypeError):
+            return JSONResponse(status_code=503, content={'error': 'readiness_evidence_unavailable',
+                'message': 'The scope/evidence assessment could not be verified. No readiness claim is returned.'})
 
     return app
 

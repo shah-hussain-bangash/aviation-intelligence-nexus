@@ -5,6 +5,7 @@ import { mountKnowledge } from './knowledge-lab.mjs';
 import { mountInvestigation } from './investigation-lab.mjs';
 import { mountPlatformStatus } from './platform-status.mjs';
 import { mountMonitoring } from './monitoring-lab.mjs';
+import { mountReadiness } from './release-readiness.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Invalid numeric response');
@@ -59,6 +60,7 @@ if (typeof document !== 'undefined') {
     <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
+  const readinessUI = mountReadiness(section.querySelector('.research-inner'));
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
   const monitoringUI = mountMonitoring(section.querySelector('.research-inner'));
   const gateLab = mountGateLab(section.querySelector('.research-inner'));
@@ -100,6 +102,7 @@ if (typeof document !== 'undefined') {
     investigationLab.setSession(user);
     platformStatus.setSession(user);
     monitoringUI.setSession(user);
+    readinessUI.setSession(user);
     section.querySelector('details').hidden=!user;
     scenarioUI.setAvailable(false);
     scenarioUI.clearHistory();
