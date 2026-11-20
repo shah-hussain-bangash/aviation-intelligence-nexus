@@ -1,3 +1,4 @@
+import {renderExplanations,validateExplanations} from '../apps/web/model-explanations.mjs';
 import {renderDiagnostics,validateDiagnostics} from '../apps/web/model-diagnostics.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -403,6 +404,27 @@ test('model diagnostics proxy is authenticated, fixed and read-only',async t=>{
   const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/model-diagnostics');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
   const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
   const url=`http://127.0.0.1:${frontend}/api/v1/research/model-diagnostics`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+
+const explanationFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Delay_v2_Permutation.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'a'.repeat(64)});
+test('input reliance preserves exact measures, repeat variation and scope',()=>{
+  const data=explanationFixture(),html=renderExplanations(data);
+  assert.match(html,/Scheduled departure time/);assert.match(html,/\+0.02729/);assert.match(html,/not a confidence interval/);assert.match(html,/No May outcomes analyzed/);
+  assert.match(renderExplanations(data,'roc_auc_decrease'),/\+0.09506/);assert.match(renderExplanations(data,'brier_increase'),/\+0.00815/);
+  assert.throws(()=>renderExplanations(data,'individual_cause'));
+});
+test('input reliance rejects inconsistent evidence and supports negative signed measurements',()=>{
+  let data=explanationFixture();data.groups[0].mean.log_loss_increase=99;assert.throws(()=>validateExplanations(data));
+  data=explanationFixture();data.protocol.period='2025-05';assert.throws(()=>validateExplanations(data));
+  data=explanationFixture();const row=data.groups[0];row.repeats.forEach(v=>v.log_loss_increase=-.01);row.mean.log_loss_increase=-.01;row.repeat_std.log_loss_increase=0;data.limitations=['<script>bad()</script>'];
+  const html=renderExplanations(data);assert.match(html,/-0.01000/);assert.match(html,/explanation-negative/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('input reliance proxy forwards only fixed authenticated reads',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/model-explanations');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/model-explanations`;
   assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
   assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });

@@ -1,0 +1,64 @@
+{
+  "format": "ain-permutation-dashboard-v1",
+  "scope": "Recorded April-only experiment and isolated component preview; no real user browser session",
+  "reproduction": {
+    "identical_sample_fingerprint": true,
+    "identical_baseline_and_all_repeat_metrics": true,
+    "frozen_artifact_and_april_hashes_verified": true,
+    "may_outcomes_analyzed": false
+  },
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "initial_logloss": true,
+        "auc_measure": true,
+        "brier_measure": true,
+        "export_scope": true,
+        "full_repeats": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "initial_logloss": true,
+        "auc_measure": true,
+        "brier_measure": true,
+        "export_scope": true,
+        "full_repeats": true,
+        "no_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Failure",
+      "checks": {
+        "initial_logloss": true,
+        "auc_measure": true,
+        "brier_measure": true,
+        "export_scope": true,
+        "full_repeats": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session",
+      "checks": {
+        "initial_logloss": true,
+        "auc_measure": true,
+        "brier_measure": true,
+        "export_scope": true,
+        "full_repeats": true,
+        "session_clears": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

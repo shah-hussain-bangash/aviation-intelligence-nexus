@@ -112,7 +112,7 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim. A reproducible frozen-model April permutation experiment and read-only panel add grouped performance reliance with explicit non-causal scope.",
       "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
@@ -156,6 +156,18 @@
         {
           "path": "docs/reports/Model_Diagnostics_Dashboard.json",
           "sha256": "eebce9e8d2af76f8ddf10ffb063a35c6e94ce60392f44ca2a2ec90856b2c9eab"
+        },
+        {
+          "path": "docs/MODEL_INPUT_RELIANCE.md",
+          "sha256": "802b8b830acc68e3c01670587e58c2a5056fa5e9bc89ae4fb339d6a662b9e572"
+        },
+        {
+          "path": "docs/reports/Delay_v2_Permutation.json",
+          "sha256": "b8fc7102c0a7d36cb563279dccc0e64b30ff2f92ed9226c858ed4f48a9865677"
+        },
+        {
+          "path": "docs/reports/Permutation_Dashboard.json",
+          "sha256": "fcaad7f4ba29b8e6fc8047a18b1a5aad285670fe3cb975a6f0221351988d899b"
         }
       ]
     },
@@ -532,7 +544,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "4e23ffd9a66e455dfed184eb46386b60c17d6882f37a365baa330d0a2f0eaefb"
+          "sha256": "d85268c3cf312b246f19c9406bcb935086e012fb321dd47b4bd0516f5508d553"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

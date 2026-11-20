@@ -101,3 +101,5 @@ The dashboard's bundled operational records are synthetic. The separate local da
 AIN is not affiliated with Emirates, Etihad or any airline. It does not provide dispatch, air-traffic, maintenance-release or passenger-communication authority. Use a production description only after implementation and verified deployment, security, monitoring and recovery evidence.
 
 Recorded model quality: [Model diagnostics](docs/MODEL_DIAGNOSTICS.md) exposes calibration, errors and carrier slices without retraining.
+
+Model input reliance: [Grouped permutation evidence](docs/MODEL_INPUT_RELIANCE.md) provides a frozen April-only experiment and interactive metric exploration.

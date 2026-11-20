@@ -1,0 +1,227 @@
+{
+  "format": "ain-permutation-v1",
+  "checked_at": "2026-11-20T11:12:32.066716+00:00",
+  "model_version": "delay-v2",
+  "artifact_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+  "validation_sha256": "2dc8e38595d10b664ef19de6b6b73aa63f8b7a90893cedef4797e271d702c3c5",
+  "protocol": {
+    "experiment": "delay-v2-permutation-v1",
+    "period": "2025-04",
+    "split": "validation",
+    "sample_records": 10000,
+    "repeats": 3,
+    "seed": 20261120,
+    "groups": {
+      "carrier": [
+        "carrier"
+      ],
+      "origin": [
+        "origin"
+      ],
+      "destination": [
+        "destination"
+      ],
+      "departure_time": [
+        "scheduled_departure_hour",
+        "scheduled_departure_minute"
+      ],
+      "weekday": [
+        "day_of_week"
+      ]
+    },
+    "primary_measure": "permuted log loss minus baseline log loss",
+    "selection_policy": "Frozen model, April-only post-hoc diagnostic; no fitting or May access",
+    "research_only": true,
+    "production_ready": false
+  },
+  "protocol_sha256": "3b1b1da7d092a05007a77a2864e1ab4c52bf669db610cba83098e1cf7788d04c",
+  "validation_population": 577730,
+  "sample_records": 10000,
+  "sample_key_sha256": "4469b05f7b9eb7065036765ec3751729a300d72b60597aff31b4681077630152",
+  "baseline": {
+    "log_loss": 0.46579173831009113,
+    "roc_auc": 0.6494541538824028,
+    "brier_score": 0.14792229966131876
+  },
+  "groups": [
+    {
+      "group": "carrier",
+      "columns": [
+        "carrier"
+      ],
+      "repeats": [
+        {
+          "log_loss_increase": 0.0048415183871858836,
+          "roc_auc_decrease": 0.01716605305659824,
+          "brier_increase": 0.0015641705388987903
+        },
+        {
+          "log_loss_increase": 0.004665180071560693,
+          "roc_auc_decrease": 0.016251930614142984,
+          "brier_increase": 0.0014142213649358248
+        },
+        {
+          "log_loss_increase": 0.005815789903945823,
+          "roc_auc_decrease": 0.020872786799996712,
+          "brier_increase": 0.0018332655690812827
+        }
+      ],
+      "mean": {
+        "log_loss_increase": 0.005107496120897466,
+        "roc_auc_decrease": 0.01809692349024598,
+        "brier_increase": 0.0016038858243052994
+      },
+      "repeat_std": {
+        "log_loss_increase": 0.0006197046576540284,
+        "roc_auc_decrease": 0.002447032446814981,
+        "brier_increase": 0.00021232637419351695
+      }
+    },
+    {
+      "group": "origin",
+      "columns": [
+        "origin"
+      ],
+      "repeats": [
+        {
+          "log_loss_increase": 0.007034238038887142,
+          "roc_auc_decrease": 0.026709391451738784,
+          "brier_increase": 0.0022149157189158553
+        },
+        {
+          "log_loss_increase": 0.007384346626696292,
+          "roc_auc_decrease": 0.02580675149259315,
+          "brier_increase": 0.0024097831619155075
+        },
+        {
+          "log_loss_increase": 0.005337108216926012,
+          "roc_auc_decrease": 0.020713913344488133,
+          "brier_increase": 0.0016844562856792589
+        }
+      ],
+      "mean": {
+        "log_loss_increase": 0.006585230960836482,
+        "roc_auc_decrease": 0.024410018762940022,
+        "brier_increase": 0.002103051722170207
+      },
+      "repeat_std": {
+        "log_loss_increase": 0.0010949894034712755,
+        "roc_auc_decrease": 0.003232581966817496,
+        "brier_increase": 0.0003753797206477613
+      }
+    },
+    {
+      "group": "destination",
+      "columns": [
+        "destination"
+      ],
+      "repeats": [
+        {
+          "log_loss_increase": 0.003538465204391439,
+          "roc_auc_decrease": 0.013110660519148332,
+          "brier_increase": 0.0011184756465344725
+        },
+        {
+          "log_loss_increase": 0.005083506743639721,
+          "roc_auc_decrease": 0.017969924197445808,
+          "brier_increase": 0.0015486172725579506
+        },
+        {
+          "log_loss_increase": 0.0037731023639461236,
+          "roc_auc_decrease": 0.012940758689839571,
+          "brier_increase": 0.0012139364617290982
+        }
+      ],
+      "mean": {
+        "log_loss_increase": 0.004131691437325761,
+        "roc_auc_decrease": 0.014673781135477904,
+        "brier_increase": 0.0012936764602738404
+      },
+      "repeat_std": {
+        "log_loss_increase": 0.000832603106024188,
+        "roc_auc_decrease": 0.0028558074115072924,
+        "brier_increase": 0.00022588560187729325
+      }
+    },
+    {
+      "group": "departure_time",
+      "columns": [
+        "scheduled_departure_hour",
+        "scheduled_departure_minute"
+      ],
+      "repeats": [
+        {
+          "log_loss_increase": 0.025557782445836397,
+          "roc_auc_decrease": 0.08836818602193841,
+          "brier_increase": 0.007569015743560115
+        },
+        {
+          "log_loss_increase": 0.02901407388536259,
+          "roc_auc_decrease": 0.10147154835254257,
+          "brier_increase": 0.008750258361495677
+        },
+        {
+          "log_loss_increase": 0.027291178731175647,
+          "roc_auc_decrease": 0.09535365529611062,
+          "brier_increase": 0.008116703773122846
+        }
+      ],
+      "mean": {
+        "log_loss_increase": 0.027287678354124878,
+        "roc_auc_decrease": 0.09506446322353053,
+        "brier_increase": 0.00814532595939288
+      },
+      "repeat_std": {
+        "log_loss_increase": 0.001728148378529788,
+        "roc_auc_decrease": 0.0065564662839754165,
+        "brier_increase": 0.000591141229121242
+      }
+    },
+    {
+      "group": "weekday",
+      "columns": [
+        "day_of_week"
+      ],
+      "repeats": [
+        {
+          "log_loss_increase": 0.005539129305699664,
+          "roc_auc_decrease": 0.023710127887617394,
+          "brier_increase": 0.0016482476583979944
+        },
+        {
+          "log_loss_increase": 0.0034176652609685942,
+          "roc_auc_decrease": 0.012537639191051997,
+          "brier_increase": 0.001089416490491657
+        },
+        {
+          "log_loss_increase": 0.004439947237354913,
+          "roc_auc_decrease": 0.018918980635732607,
+          "brier_increase": 0.0013419513288920326
+        }
+      ],
+      "mean": {
+        "log_loss_increase": 0.004465580601341057,
+        "roc_auc_decrease": 0.018388915904800667,
+        "brier_increase": 0.001359871825927228
+      },
+      "repeat_std": {
+        "log_loss_increase": 0.0010609642902961495,
+        "roc_auc_decrease": 0.00560507380709245,
+        "brier_increase": 0.0002798462554982317
+      }
+    }
+  ],
+  "elapsed_seconds": 1.466,
+  "source_hashes_unchanged": true,
+  "research_only": true,
+  "production_ready": false,
+  "limitations": [
+    "Post-hoc April validation subset, not a new untouched holdout or full-population estimate.",
+    "Permutation measures this frozen model's performance reliance, not causality or a reason for one flight.",
+    "Correlated inputs can share or mask importance; independent shuffling can create implausible schedules/routes.",
+    "Departure hour and minute are shuffled together; derived cyclic pairs are recomputed by the frozen pipeline.",
+    "Three-repeat sample standard deviation measures shuffle variation only, not a confidence interval or sampling uncertainty.",
+    "Negative importance is possible. No model, feature, threshold or calibration selection is performed.",
+    "US domestic history only; no UAE validation or operational approval."
+  ]
+}

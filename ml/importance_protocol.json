@@ -1,0 +1,19 @@
+{
+  "experiment": "delay-v2-permutation-v1",
+  "period": "2025-04",
+  "split": "validation",
+  "sample_records": 10000,
+  "repeats": 3,
+  "seed": 20261120,
+  "groups": {
+    "carrier": ["carrier"],
+    "origin": ["origin"],
+    "destination": ["destination"],
+    "departure_time": ["scheduled_departure_hour", "scheduled_departure_minute"],
+    "weekday": ["day_of_week"]
+  },
+  "primary_measure": "permuted log loss minus baseline log loss",
+  "selection_policy": "Frozen model, April-only post-hoc diagnostic; no fitting or May access",
+  "research_only": true,
+  "production_ready": false
+}
