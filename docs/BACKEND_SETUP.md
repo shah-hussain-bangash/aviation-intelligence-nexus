@@ -4,7 +4,7 @@ Python 3.14 is the tested interpreter. From the repository root, use a separate 
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r services/api/requirements-lock.txt
+.\.venv\Scripts\python.exe -m pip install -r services/api/requirements-lock.txt -r infra/requirements-lock.txt
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m uvicorn services.api.main:app --host 127.0.0.1 --port 8002
 ```

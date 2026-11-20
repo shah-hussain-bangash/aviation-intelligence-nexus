@@ -1,0 +1,113 @@
+{
+  "milestone": "Authenticated encrypted local recovery",
+  "date": "2026-11-20",
+  "scope": "Separate Windows workstation drill, not a replacement of live state or independent disaster recovery",
+  "snapshot_id": "04691e0f-2e07-4668-8e9c-b87f0a523ab2",
+  "encrypted_bytes": 86642676,
+  "ciphertext_sha256": "1f23a1c28169cc29795c8fbbe0d36428ce60e7f05ca4585a94bce05c97bb6870",
+  "encryption": "Cobblestone-128 library streaming recipe",
+  "key_provider": "Windows DPAPI CurrentUser",
+  "key_stored_outside_checkout": true,
+  "raw_key_exported": false,
+  "restore": {
+    "format": "ain-restore-receipt-v1",
+    "snapshot_id": "04691e0f-2e07-4668-8e9c-b87f0a523ab2",
+    "restored_at": "2026-11-20T07:06:21.929916+00:00",
+    "schema_version": 7,
+    "checksums_verified": true,
+    "database_integrity_verified": true,
+    "row_counts_preserved": true,
+    "sessions_revoked": true,
+    "flight_records": 2835101,
+    "active_model_restored": true,
+    "knowledge_index_restored": true,
+    "elapsed_ms": 15207.07,
+    "production_qualified": false,
+    "encrypted_source_authenticated": true,
+    "encryption": "Cobblestone-128"
+  },
+  "restored_account_records_preserved": true,
+  "runtime_probe": {
+    "scope": "Operator smoke on restored local state; not user acceptance or production qualification",
+    "flight_records": 2835101,
+    "prediction_probability": 0.14414301173592028,
+    "artifact_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+    "checks": {
+      "database_integrity": true,
+      "flight_records_present": true,
+      "research_prediction": true
+    },
+    "production_ready": false,
+    "passed": true
+  },
+  "native_prediction_exact_match": true,
+  "timing_scope": "Receipt elapsed_ms covers underlying restore/file validation only, excluding ciphertext decryption; not full-system RTO",
+  "automated_tests": {
+    "windows_python": 107,
+    "node": 21,
+    "windows_total": 128,
+    "linux_dpapi_skips": 1
+  },
+  "test_failure_cases": [
+    "wrong key",
+    "modified ciphertext",
+    "truncated ciphertext",
+    "appended ciphertext",
+    "archive traversal",
+    "symlink entry",
+    "duplicate entry",
+    "invalid snapshot",
+    "existing output and target preserved",
+    "unsupported independent recovery claim rejected"
+  ],
+  "container_smoke": {
+    "scope": "Local container smoke and isolation checks, not production qualification",
+    "project": "ain-local-release",
+    "checks": {
+      "api_healthy": true,
+      "api_non_root": true,
+      "api_read_only_root": true,
+      "api_capabilities_dropped": true,
+      "api_not_privileged": true,
+      "api_no_privilege_escalation": true,
+      "api_port_scope": true,
+      "web_healthy": true,
+      "web_non_root": true,
+      "web_read_only_root": true,
+      "web_capabilities_dropped": true,
+      "web_not_privileged": true,
+      "web_no_privilege_escalation": true,
+      "web_port_scope": true,
+      "database_backed_readiness": true,
+      "unauthenticated_access_not_granted": true
+    },
+    "passed": true,
+    "images": {
+      "api": {
+        "image_id": "sha256:df2c7e000d2ab159d5e349c63fbe2b4d93b4dddade43087f2a4379f504185fd7",
+        "source_revision": "encrypted-recovery-working-tree"
+      },
+      "web": {
+        "image_id": "sha256:42a527edd4b93344fc2f7172ecc9153813ab6e901682abe0ceb544ab77a4d8de",
+        "source_revision": "encrypted-recovery-working-tree"
+      }
+    },
+    "production_ready": false
+  },
+  "browser_checks": {
+    "existing_admin_session_preserved": true,
+    "separate_drill_receipt_visible": true,
+    "current_instance_history_not_relabelled": true,
+    "desktop_layout": true,
+    "mobile_390px_layout": true
+  },
+  "limits": [
+    "Original plaintext data and snapshots retained",
+    "DPAPI depends on Windows profile/computer; independent key recovery not qualified",
+    "No off-site copy, key rotation, retention schedule or immutable audit",
+    "Temporary plaintext staging is not secure erasure or crash-cleanup qualification",
+    "No independent cryptographic security audit"
+  ],
+  "production_ready": false,
+  "different_windows_execution_identity_denied_key_access": true
+}

@@ -13,6 +13,16 @@ import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
 
+test('encrypted recovery evidence labels a separate local drill and rejects unsupported qualification',()=>{
+  const data={production_ready:false,runtime:'local-container',recovery:{recorded:false,production_qualified:false},encrypted_backup_drill:{recorded:true,flight_records:100,checked_at:'<script>',independent_recovery_qualified:false,production_qualified:false}};
+  const html=renderPlatform(data);
+  assert.match(html,/Separate encrypted local recovery drill passed/);
+  assert.match(html,/separate local drill/);
+  assert.match(html,/&lt;script&gt;/);
+  assert.match(html,/No independent key escrow/);
+  assert.throws(()=>renderPlatform({...data,encrypted_backup_drill:{...data.encrypted_backup_drill,independent_recovery_qualified:true}}));
+});
+
 test('monitoring renderer withholds stale component health and escapes transition text',()=>{
   const data={production_ready:false,external_alert_delivery:false,state:'unknown',request_counts:{'2xx':4,'5xx':1},latency:{p95_ms:25,sample_size:5},components:{database:true},transitions:[{at:'<script>',component:'database',state:'unavailable'}],recent_server_failures:[],persistence_ok:true};
   const html=renderMonitoring(data);

@@ -28,6 +28,8 @@ __pycache__/
 *.parquet
 *.gz
 *.zip
+*.ainseal
+*.dpapi
 *.pdf
 *.docx
 *.xlsx
