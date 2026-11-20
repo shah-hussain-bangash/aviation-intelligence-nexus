@@ -1,0 +1,19 @@
+{
+  "experiment": "route-segments-v1",
+  "source": "BTS_REPORTING_CARRIER",
+  "train": ["2025-01-01", "2025-04-01"],
+  "evaluation": ["2025-05-01", "2025-06-01"],
+  "minimum_train_completed": 200,
+  "minimum_evaluation_completed": 50,
+  "features": ["delay_15_rate", "delay_60_rate", "mean_positive_delay_capped_180", "cancellation_rate"],
+  "candidates": [2, 3, 4, 5, 6],
+  "seed": 42,
+  "n_init": 20,
+  "silhouette_sample_size": 2000,
+  "minimum_cluster_routes": 10,
+  "minimum_cluster_fraction": 0.01,
+  "stability_seeds": [0, 7, 21, 84],
+  "selection": "Highest sampled training silhouette among candidates meeting training support constraints; lower k breaks ties",
+  "evaluation_use": "Frozen scaler/model assign retrospective May route outcomes; no May tuning or refit",
+  "operational_approval": false
+}

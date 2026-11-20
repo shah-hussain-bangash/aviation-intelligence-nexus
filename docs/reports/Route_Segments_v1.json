@@ -1,0 +1,280 @@
+{
+  "experiment": "route-segments-v1",
+  "checked_at": "2026-11-20T08:36:58.047024+00:00",
+  "scope": "Retrospective US domestic directional-route segmentation; routes combine carriers; no operational approval",
+  "protocol": {
+    "experiment": "route-segments-v1",
+    "source": "BTS_REPORTING_CARRIER",
+    "train": [
+      "2025-01-01",
+      "2025-04-01"
+    ],
+    "evaluation": [
+      "2025-05-01",
+      "2025-06-01"
+    ],
+    "minimum_train_completed": 200,
+    "minimum_evaluation_completed": 50,
+    "features": [
+      "delay_15_rate",
+      "delay_60_rate",
+      "mean_positive_delay_capped_180",
+      "cancellation_rate"
+    ],
+    "candidates": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "seed": 42,
+    "n_init": 20,
+    "silhouette_sample_size": 2000,
+    "minimum_cluster_routes": 10,
+    "minimum_cluster_fraction": 0.01,
+    "stability_seeds": [
+      0,
+      7,
+      21,
+      84
+    ],
+    "selection": "Highest sampled training silhouette among candidates meeting training support constraints; lower k breaks ties",
+    "evaluation_use": "Frozen scaler/model assign retrospective May route outcomes; no May tuning or refit",
+    "operational_approval": false
+  },
+  "protocol_sha256": "d01519802b488be5fa94a13da5ac24e38ce7f3b180da43eeb37dc3861d588774",
+  "source_records": 2835101,
+  "source_imports": [
+    {
+      "period": "2025-01",
+      "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+      "rows_inserted": 539747
+    },
+    {
+      "period": "2025-02",
+      "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+      "rows_inserted": 504884
+    },
+    {
+      "period": "2025-03",
+      "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+      "rows_inserted": 600872
+    },
+    {
+      "period": "2025-04",
+      "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+      "rows_inserted": 583950
+    },
+    {
+      "period": "2025-05",
+      "sha256": "17c3419d7169b313b2bc8ddd3fd57e1e2d4d959c35f2da17f6a5610d4bac7d63",
+      "rows_inserted": 605648
+    }
+  ],
+  "coverage": {
+    "train": {
+      "routes_observed": 5914,
+      "routes_supported": 2488,
+      "flights_observed": 1645503,
+      "flights_on_supported_routes": 1357273,
+      "completed_observed_arrivals": 1611046,
+      "aggregate_sha256": "0b28ff609a5cccde450c6709c72720177658fcd25b0a2a59d4317328bab34440"
+    },
+    "evaluation": {
+      "routes_observed": 5928,
+      "routes_supported": 3357,
+      "flights_observed": 605648,
+      "flights_on_supported_routes": 552262,
+      "completed_observed_arrivals": 597574,
+      "aggregate_sha256": "cea976e7035693baea8ef9643b4da4e00a775976b48d9d5db52509e9dc1a3f02"
+    }
+  },
+  "selected_k": 2,
+  "candidates": [
+    {
+      "k": 2,
+      "training_routes_per_cluster": [
+        783,
+        1705
+      ],
+      "training_silhouette": 0.452883254470681,
+      "support_passed": true,
+      "inertia": 5269.257775228993
+    },
+    {
+      "k": 3,
+      "training_routes_per_cluster": [
+        993,
+        1271,
+        224
+      ],
+      "training_silhouette": 0.367440235323338,
+      "support_passed": true,
+      "inertia": 3849.8478653107804
+    },
+    {
+      "k": 4,
+      "training_routes_per_cluster": [
+        517,
+        839,
+        1061,
+        71
+      ],
+      "training_silhouette": 0.317212417463587,
+      "support_passed": true,
+      "inertia": 3064.3557825396324
+    },
+    {
+      "k": 5,
+      "training_routes_per_cluster": [
+        857,
+        953,
+        288,
+        63,
+        327
+      ],
+      "training_silhouette": 0.3275531580666352,
+      "support_passed": true,
+      "inertia": 2539.369086420197
+    },
+    {
+      "k": 6,
+      "training_routes_per_cluster": [
+        255,
+        605,
+        62,
+        433,
+        885,
+        248
+      ],
+      "training_silhouette": 0.2904331810061392,
+      "support_passed": true,
+      "inertia": 2157.8878923335947
+    }
+  ],
+  "training_seed_stability": [
+    {
+      "seed": 0,
+      "training_adjusted_rand_index": 1.0
+    },
+    {
+      "seed": 7,
+      "training_adjusted_rand_index": 1.0
+    },
+    {
+      "seed": 21,
+      "training_adjusted_rand_index": 1.0
+    },
+    {
+      "seed": 84,
+      "training_adjusted_rand_index": 1.0
+    }
+  ],
+  "training_scaler_mean": [
+    0.19668924385191905,
+    0.06985549755702208,
+    12.923961277618645,
+    0.020198352573781223
+  ],
+  "training_scaler_scale": [
+    0.0592589654321547,
+    0.03192271347959638,
+    4.728477775704727,
+    0.019666647534145706
+  ],
+  "profiles": {
+    "train": [
+      {
+        "cluster": 0,
+        "routes": 1705,
+        "flights": 938255,
+        "completed_with_observed_arrival": 923492,
+        "unweighted_mean_route_features": {
+          "delay_15_rate": 0.1671712510644011,
+          "delay_60_rate": 0.05351390213953507,
+          "mean_positive_delay_capped_180": 10.44733073760108,
+          "cancellation_rate": 0.014641221512523762
+        }
+      },
+      {
+        "cluster": 1,
+        "routes": 783,
+        "flights": 419018,
+        "completed_with_observed_arrival": 405748,
+        "unweighted_mean_route_features": {
+          "delay_15_rate": 0.26096533287199325,
+          "delay_60_rate": 0.10543968681221409,
+          "mean_positive_delay_capped_180": 18.31687963104131,
+          "cancellation_rate": 0.0322991296611937
+        }
+      }
+    ],
+    "evaluation": [
+      {
+        "cluster": 0,
+        "routes": 1734,
+        "flights": 266005,
+        "completed_with_observed_arrival": 264399,
+        "unweighted_mean_route_features": {
+          "delay_15_rate": 0.16627858010575614,
+          "delay_60_rate": 0.0482041443648246,
+          "mean_positive_delay_capped_180": 9.966934208255223,
+          "cancellation_rate": 0.0043388034200646025
+        }
+      },
+      {
+        "cluster": 1,
+        "routes": 1623,
+        "flights": 286257,
+        "completed_with_observed_arrival": 280488,
+        "unweighted_mean_route_features": {
+          "delay_15_rate": 0.2972457942247373,
+          "delay_60_rate": 0.12544012392874898,
+          "mean_positive_delay_capped_180": 21.318464251890134,
+          "cancellation_rate": 0.0183047369769698
+        }
+      }
+    ]
+  },
+  "later_period": {
+    "overlapping_supported_routes": 2447,
+    "evaluation_supported_routes_unseen_in_training": 910,
+    "changed_cluster_fraction_on_overlap": 0.35758071107478545,
+    "transition_counts_training_rows_evaluation_columns": [
+      [
+        1006,
+        684
+      ],
+      [
+        191,
+        566
+      ]
+    ],
+    "mean_feature_shift_in_training_standard_deviations": {
+      "delay_15_rate": 0.5553203991697447,
+      "delay_60_rate": 0.4914909135839756,
+      "mean_positive_delay_capped_180": 0.5352816610211847,
+      "cancellation_rate": -0.4630924416414781
+    }
+  },
+  "artifact_sha256": "d8a7760807c56603824b91299e45e361f54e269cdedf1d04cc49ca15d3b874bd",
+  "elapsed_seconds": 43.696,
+  "environment": {
+    "python": "3.14.8",
+    "sklearn": "1.9.1",
+    "pandas": "3.1.1",
+    "numpy": "2.5.5"
+  },
+  "research_only": true,
+  "production_ready": false,
+  "limitations": [
+    "Descriptive segments use observed arrival/cancellation outcomes, not pre-departure features or future predictions.",
+    "KMeans assumes Euclidean approximately convex groups; standardized correlated features affect geometry.",
+    "Silhouette is a training selection diagnostic, not label accuracy or business value; no semantic ground truth.",
+    "Seed agreement is not bootstrap stability; minimum support excludes sparse routes.",
+    "Later outcomes were previously available for other experiments; this is a fixed temporal comparison, not a newly untouched holdout.",
+    "US domestic January-March/May 2025 only; no UAE data, full-season validation or causal/cost benefit.",
+    "All routes have equal fitting weight; flight-weighted business outcomes and airline-specific differences are not validated."
+  ]
+}

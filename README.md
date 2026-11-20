@@ -52,6 +52,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Disposable authenticated native HTTP drill with concurrent real-model predictions, owner isolation, duplicate-race checks and session revocation. See [workflow evidence and limits](docs/AUTHENTICATED_RESEARCH_WORKLOAD.md).
 
+- Offline route delay-pattern clustering with frozen train-only selection, seed-agreement checks and later-period route transitions. See [real-data results and limits](docs/ROUTE_SEGMENTATION.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

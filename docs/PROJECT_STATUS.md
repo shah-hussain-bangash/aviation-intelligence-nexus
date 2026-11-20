@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Route segmentation milestone: an offline SQL/Pandas/NumPy/Scikit-learn pipeline fit 2,488 supported January-March routes and compared 3,357 supported May routes. Frozen training selection chose k=2 with sampled silhouette 0.452883; four alternate seeds reproduced training assignments, while 35.758% of 2,447 shared routes changed assignment in May. This is retrospective outcome clustering, not forecasting or operational validation. Private artifacts and aggregate public evidence are preserved. The Windows suite now has 169 tests (142 Python, 27 Node). See `ROUTE_SEGMENTATION.md`.
+
 Authenticated workflow milestone: a fresh native loopback API with disposable accounts/database and a copied trained model passed concurrent prediction, saved-history, duplicate-race, CSRF/role/owner and session-revocation checks. Twelve measured predictions had zero failures; all fourteen expected research rows were reconciled before temporary state removal. This does not measure Docker, full-flight SQL or AI-agent capacity. The Windows suite now has 164 tests (137 Python, 27 Node). See `AUTHENTICATED_RESEARCH_WORKLOAD.md`.
 
 HTTP measurement milestone: a bounded loopback client recorded 90 valid anonymous responses across dashboard HTML, backend readiness and signed-out session endpoints, with p50/p95/max and error-inclusive counts. The container CI job repeats the check on fresh empty state. This is a short local HTTP sample, not a capacity, browser or authenticated AI workflow qualification. The Windows suite now has 161 tests (134 Python, 27 Node). See `LOCAL_HTTP_PERFORMANCE.md`.
