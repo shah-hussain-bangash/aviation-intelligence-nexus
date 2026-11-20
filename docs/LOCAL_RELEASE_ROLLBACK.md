@@ -54,3 +54,5 @@ Afterward clear task-specific environment overrides before ordinary main-project
 Measured results are recorded separately in [the drill report](reports/Local_Release_Rollback.json). The complete Windows suite has **156 tests: 129 Python and 27 Node**; Linux explicitly skips the Windows DPAPI provider case. Tests cover immutable IDs, compatibility gates, unsafe volume rejection, state mismatch, failed-target candidate recovery, receipt sanitization and UI qualification boundaries.
 
 The isolated worker is disabled, so this drill does not establish worker recovery under load. The same model/index stay in place; model and prompt rollback remain unimplemented. Cloud deployment, managed TLS/identity, off-site/key recovery, independent observability, operational approval and full production release acceptance remain incomplete.
+
+Later scoped-route agent changes alter protected runtime contracts. Older captured manifests may now be rejected by compatibility checks; this historical drill does not qualify rollback of that newer release. Review and re-drill the exact intended pair before claiming compatibility.

@@ -88,7 +88,7 @@
       "dependencies": [
         "P04"
       ],
-      "local_progress": "A local million-row SQLite dataset and chronological training pipeline are measured.",
+      "local_progress": "A local million-row SQLite dataset and chronological training pipeline are measured. A derived route index and verified query plan reduce the measured bounded route lookup under local-model workload; this is not distributed processing.",
       "remaining": "Representative distributed processing, partitioning and bounded-query resource/load qualification remain outstanding.",
       "acceptance": "Actual record counts, storage, runtime and resource measurements.",
       "production_accepted": false,
@@ -143,7 +143,7 @@
         },
         {
           "path": "docs/HISTORICAL_ROUTE_LOOKUP.md",
-          "sha256": "f8805d04187737c11b6e88d6a6a2f372ccd00b5276a9793b34bb3bee95fcf6b1"
+          "sha256": "138ee58d015803d1951893b0a61a3bebc946bf0c40982bad3b0ac7ec8f70fb22"
         },
         {
           "path": "docs/reports/Route_History_Lookup.json",
@@ -204,14 +204,14 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained.",
       "remaining": "External worker isolation, distributed leases/failover, running-tool cancellation, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/AGENT_REPORT_QUALITY.md",
-          "sha256": "8d5c2c79fa76acba3664332e14b0014e63e180934f66625f45079c5ec7051f35"
+          "sha256": "c0f1177970b5ae90fd6a6635643a2a22fd77f7adbd63e6bb987d7b376b3314f5"
         },
         {
           "path": "docs/reports/Agent_Quality_Evaluation.json",
@@ -224,6 +224,14 @@
         {
           "path": "docs/reports/Background_Investigations.json",
           "sha256": "ac57dc249662fc23d6b953d554049c400fed1a28094343e1650efaa72ff23f17"
+        },
+        {
+          "path": "docs/ROUTE_AGENT_INTEGRATION.md",
+          "sha256": "9800810c9109861146ed5353505115686fcc93e7776d9fd5620c79805622d046"
+        },
+        {
+          "path": "docs/reports/Route_Agent_Integration.json",
+          "sha256": "fe2f61f9a7511028e022c47a3a5d4afd9724d4fb9e425d957bb80eb50e30b6b9"
         }
       ]
     },
@@ -271,7 +279,7 @@
       "evidence": [
         {
           "path": "docs/INVESTIGATION_AGENT.md",
-          "sha256": "93d179d627f2d55ffaa5db5512c7b104fb81ecb5480bbc6b9e8cd51ceee4627e"
+          "sha256": "912e229dfe8c3745560d9c9b4af56b314b2031255f2217a3a15af22a5c6b3d61"
         }
       ]
     },
@@ -326,7 +334,7 @@
       "evidence": [
         {
           "path": "docs/AGENT_REPORT_QUALITY.md",
-          "sha256": "8d5c2c79fa76acba3664332e14b0014e63e180934f66625f45079c5ec7051f35"
+          "sha256": "c0f1177970b5ae90fd6a6635643a2a22fd77f7adbd63e6bb987d7b376b3314f5"
         }
       ]
     },
@@ -454,13 +462,13 @@
         "P19"
       ],
       "local_progress": "A pinned application-image rollback and return-to-candidate drill passed on a separate restored volume, with health, row-count, account, artifact and prediction checks.",
-      "remaining": "Database downgrade, model/prompt rollback, independent production release/failover and zero-downtime compatibility qualification remain outstanding.",
+      "remaining": "Database downgrade, model/prompt rollback, independent production release/failover and zero-downtime compatibility qualification remain outstanding. New scoped-route runtime contracts require fresh compatibility review; the earlier drill is historical.",
       "acceptance": "Demonstrated rollback preserves acceptable integrity and availability.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/LOCAL_RELEASE_ROLLBACK.md",
-          "sha256": "ba76e93ac0d9c883b2a33f6bb8fd2a4a1ff62e99149abf971f3b2d9c8d0148aa"
+          "sha256": "7a836802b2248f9a14d31d965bcfa31ea234a78d9e289d4acbc569f2f98aada3"
         },
         {
           "path": "docs/reports/Local_Release_Rollback.json",
@@ -516,7 +524,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "9e0fdee15e6e681749b04196081b4555c806ea2b410c7efccec525d35f9cc321"
+          "sha256": "367d305fc4961aff73ddf7fcef30392ba0ea14f83cd2b5cd9f81089be66f7446"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

@@ -1,0 +1,627 @@
+{
+  "format": "ain-route-agent-engineering-v1",
+  "scope": "Actual local Qwen3 planning/generation with real read-only historical route data and separate engineering checkpoint database; direct runtime demo, not a real-user authenticated browser run",
+  "elapsed_ms": 13068.93,
+  "checks": {
+    "route_tool_completed": true,
+    "max_three_tools": true,
+    "route_profile_valid": true,
+    "mechanical_coverage_passed": true,
+    "retry_replayed": true,
+    "operational_approval_false": true
+  },
+  "run": {
+    "run_id": "6f571ec3-dd70-45ab-99b3-275bb1af8bd9",
+    "actor": "engineering-route-agent",
+    "request": {
+      "objective": "Compare the explicitly selected JFK to LAX route across January-March and May 2025. Include observed cohort counts, delay rates, nominal Wilson intervals and their limitations. Use route history evidence; do not substitute monthly totals or simulation.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "route_history"
+      ],
+      "route": {
+        "origin": "JFK",
+        "destination": "LAX"
+      },
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "route_history",
+        "arguments": {
+          "origin": "JFK",
+          "destination": "LAX"
+        },
+        "state": "completed",
+        "observation": {
+          "data_kind": "historical_route",
+          "available": true,
+          "scope": {
+            "origin": "JFK",
+            "destination": "LAX"
+          },
+          "profile": {
+            "format": "ain-route-history-v1",
+            "source": "BTS_REPORTING_CARRIER",
+            "route": {
+              "origin": "JFK",
+              "destination": "LAX"
+            },
+            "checked_at": "2026-11-20T10:30:17.500644+00:00",
+            "periods": [
+              {
+                "id": "train",
+                "flights": 2325,
+                "completed": 2303,
+                "delayed_15": 384,
+                "delayed_60": 120,
+                "cancelled": 15,
+                "diverted": 7,
+                "missing_arrival": 0,
+                "available": true,
+                "support_threshold": 200,
+                "meets_support": true,
+                "delay_15": {
+                  "events": 384,
+                  "observations": 2303,
+                  "rate": 0.16673903603994789,
+                  "wilson_95": [
+                    0.1520732058473971,
+                    0.1825147892960904
+                  ]
+                },
+                "delay_60": {
+                  "events": 120,
+                  "observations": 2303,
+                  "rate": 0.052105948762483714,
+                  "wilson_95": [
+                    0.043752113888784396,
+                    0.06195149131057378
+                  ]
+                },
+                "cancellation": {
+                  "events": 15,
+                  "observations": 2325,
+                  "rate": 0.0064516129032258064,
+                  "wilson_95": [
+                    0.003913690510873287,
+                    0.01061776618941715
+                  ]
+                },
+                "mean_positive_delay_capped_180": 10.528006947459835
+              },
+              {
+                "id": "evaluation",
+                "flights": 874,
+                "completed": 872,
+                "delayed_15": 164,
+                "delayed_60": 49,
+                "cancelled": 0,
+                "diverted": 2,
+                "missing_arrival": 0,
+                "available": true,
+                "support_threshold": 50,
+                "meets_support": true,
+                "delay_15": {
+                  "events": 164,
+                  "observations": 872,
+                  "rate": 0.18807339449541285,
+                  "wilson_95": [
+                    0.1635257827084958,
+                    0.21535723941689336
+                  ]
+                },
+                "delay_60": {
+                  "events": 49,
+                  "observations": 872,
+                  "rate": 0.05619266055045872,
+                  "wilson_95": [
+                    0.04276384338481175,
+                    0.07351457412447349
+                  ]
+                },
+                "cancellation": {
+                  "events": 0,
+                  "observations": 874,
+                  "rate": 0.0,
+                  "wilson_95": [
+                    0.0,
+                    0.004376028019746072
+                  ]
+                },
+                "mean_positive_delay_capped_180": 11.005733944954128
+              }
+            ],
+            "comparison_support_met": true,
+            "delay_15_change_percentage_points": 2.133435845546497,
+            "group_assignment": null,
+            "elapsed_ms": 4512.945,
+            "interval_method": "95% Wilson score, independent-binomial descriptive model",
+            "research_only": true,
+            "production_ready": false,
+            "limitations": [
+              "Currently imported historical US domestic rows; carriers combined; April excluded.",
+              "Intervals treat observations as independent binomial trials; shared weather/operations can violate that assumption.",
+              "No correction for repeated route searches or causal/significance claim; displayed difference is descriptive.",
+              "No cluster assignment, forecast, operational recommendation or UAE validation."
+            ]
+          },
+          "query_version": "route-history-v1",
+          "evidence_text": "Historical US route JFK to LAX; reporting carriers are combined.\nJanuary-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%.\nMay 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%.\nWilson intervals assume independent binomial observations; shared weather and operations can violate this assumption.\nThese are descriptive historical counts and rates, not forecasts, cluster assignments, significance tests, causal findings or UAE validation."
+        },
+        "elapsed_ms": 4513.15
+      }
+    ],
+    "claims": [
+      {
+        "text": "January-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%.",
+        "citation": "T1",
+        "quote": "January-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%."
+      },
+      {
+        "text": "May 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%.",
+        "citation": "T1",
+        "quote": "May 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%."
+      },
+      {
+        "text": "Wilson intervals assume independent binomial observations; shared weather and operations can violate this assumption.",
+        "citation": "T1",
+        "quote": "Wilson intervals assume independent binomial observations; shared weather and operations can violate this assumption."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-20T10:30:12.289918+00:00",
+    "updated_at": "2026-11-20T10:30:25.342677+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "model": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+    },
+    "bounds": {
+      "max_tool_calls": 3,
+      "max_planner_calls": 3,
+      "max_summary_calls": 2,
+      "first_planner_timeout_seconds": 45,
+      "later_planner_timeout_seconds": 20,
+      "deadline_seconds": 120,
+      "operational_writes": false
+    },
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      },
+      {
+        "turn": 2,
+        "tool_calls_received": 0
+      }
+    ],
+    "finding_style": "verbatim_source_extracts",
+    "rejected_claims": 0,
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "route_history"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "uncited_tools": [],
+    "report_sha256": "f6aa687f16cfdb0188d8bac4a7910cf62a1fb0c18fd45ea79b8a851fc4815ab0",
+    "report_status": "coverage_passed",
+    "limitations": [
+      "Historical US research data and synthetic simulation are separate; no live airline feed.",
+      "Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.",
+      "Review records document a research review only; no airline action is authorized or applied."
+    ]
+  },
+  "production_ready": false,
+  "development_attempts": [
+    {
+      "scope": "Development attempt before the final tool schema; not a held-out benchmark",
+      "elapsed_ms": 20315.54,
+      "state": "failed",
+      "error_type": "TimeoutError",
+      "tool_steps": 0
+    },
+    {
+      "scope": "Development attempt before the final tool schema; not a held-out benchmark",
+      "elapsed_ms": 11668.52,
+      "state": "failed",
+      "error_type": "ValidationError",
+      "tool_steps": 0
+    },
+    {
+      "scope": "Development attempt before the final tool schema; not a held-out benchmark",
+      "elapsed_ms": 722.26,
+      "state": "failed",
+      "error_type": "ValidationError",
+      "tool_steps": 0
+    },
+    {
+      "scope": "Repeat of current scoped schema before adding the route index; not a held-out benchmark",
+      "elapsed_ms": 18159.77,
+      "state": "failed",
+      "error_type": "RuntimeError",
+      "tool_steps": [
+        {
+          "tool": "route_history",
+          "state": "failed",
+          "error_type": "LookupUnavailable",
+          "elapsed_ms": 5000.65
+        },
+        {
+          "tool": "knowledge_search",
+          "state": "completed",
+          "error_type": null,
+          "elapsed_ms": 2355.6
+        }
+      ]
+    }
+  ],
+  "manual_source_inspection": "The final two cohort extracts match the structured counts/rates/intervals; the third preserves the independence caveat. Structured evidence also preserves method/operational limits. Human research review remains pending; no airline acceptance is claimed.",
+  "indexed_cli_reproduction": {
+    "format": "ain-route-agent-engineering-v1",
+    "scope": "Actual local-model engineering run with read-only historical source and separate checkpoints; direct runtime, not a real-user authenticated browser run",
+    "elapsed_ms": 11299.02,
+    "checks": {
+      "route_tool_completed": true,
+      "max_three_tools": true,
+      "route_profile_valid": true,
+      "mechanical_coverage_passed": true,
+      "retry_replayed": true,
+      "operational_approval_false": true
+    },
+    "run": {
+      "run_id": "0f2c83cc-aae5-4aa8-a3c7-d3c4f8c21ca9",
+      "actor": "engineering-route-agent",
+      "request": {
+        "objective": "Compare the explicitly selected JFK to LAX route across January-March and May 2025. Include observed cohort counts, delay rates, nominal Wilson intervals and their limitations. Use route history evidence; do not substitute monthly totals or simulation.",
+        "month": "2025-05",
+        "include_simulation": false,
+        "required_tools": [
+          "route_history"
+        ],
+        "route": {
+          "origin": "JFK",
+          "destination": "LAX"
+        },
+        "document_scope": null
+      },
+      "state": "awaiting_review",
+      "steps": [
+        {
+          "id": "T1",
+          "tool": "route_history",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "LAX"
+          },
+          "state": "completed",
+          "observation": {
+            "data_kind": "historical_route",
+            "available": true,
+            "scope": {
+              "origin": "JFK",
+              "destination": "LAX"
+            },
+            "profile": {
+              "format": "ain-route-history-v1",
+              "source": "BTS_REPORTING_CARRIER",
+              "route": {
+                "origin": "JFK",
+                "destination": "LAX"
+              },
+              "checked_at": "2026-11-20T10:41:41.451993+00:00",
+              "periods": [
+                {
+                  "id": "train",
+                  "flights": 2325,
+                  "completed": 2303,
+                  "delayed_15": 384,
+                  "delayed_60": 120,
+                  "cancelled": 15,
+                  "diverted": 7,
+                  "missing_arrival": 0,
+                  "available": true,
+                  "support_threshold": 200,
+                  "meets_support": true,
+                  "delay_15": {
+                    "events": 384,
+                    "observations": 2303,
+                    "rate": 0.16673903603994789,
+                    "wilson_95": [
+                      0.1520732058473971,
+                      0.1825147892960904
+                    ]
+                  },
+                  "delay_60": {
+                    "events": 120,
+                    "observations": 2303,
+                    "rate": 0.052105948762483714,
+                    "wilson_95": [
+                      0.043752113888784396,
+                      0.06195149131057378
+                    ]
+                  },
+                  "cancellation": {
+                    "events": 15,
+                    "observations": 2325,
+                    "rate": 0.0064516129032258064,
+                    "wilson_95": [
+                      0.003913690510873287,
+                      0.01061776618941715
+                    ]
+                  },
+                  "mean_positive_delay_capped_180": 10.528006947459835
+                },
+                {
+                  "id": "evaluation",
+                  "flights": 874,
+                  "completed": 872,
+                  "delayed_15": 164,
+                  "delayed_60": 49,
+                  "cancelled": 0,
+                  "diverted": 2,
+                  "missing_arrival": 0,
+                  "available": true,
+                  "support_threshold": 50,
+                  "meets_support": true,
+                  "delay_15": {
+                    "events": 164,
+                    "observations": 872,
+                    "rate": 0.18807339449541285,
+                    "wilson_95": [
+                      0.1635257827084958,
+                      0.21535723941689336
+                    ]
+                  },
+                  "delay_60": {
+                    "events": 49,
+                    "observations": 872,
+                    "rate": 0.05619266055045872,
+                    "wilson_95": [
+                      0.04276384338481175,
+                      0.07351457412447349
+                    ]
+                  },
+                  "cancellation": {
+                    "events": 0,
+                    "observations": 874,
+                    "rate": 0.0,
+                    "wilson_95": [
+                      0.0,
+                      0.004376028019746072
+                    ]
+                  },
+                  "mean_positive_delay_capped_180": 11.005733944954128
+                }
+              ],
+              "comparison_support_met": true,
+              "delay_15_change_percentage_points": 2.133435845546497,
+              "group_assignment": null,
+              "elapsed_ms": 21.209,
+              "interval_method": "95% Wilson score, independent-binomial descriptive model",
+              "research_only": true,
+              "production_ready": false,
+              "limitations": [
+                "Currently imported historical US domestic rows; carriers combined; April excluded.",
+                "Intervals treat observations as independent binomial trials; shared weather/operations can violate that assumption.",
+                "No correction for repeated route searches or causal/significance claim; displayed difference is descriptive.",
+                "No cluster assignment, forecast, operational recommendation or UAE validation."
+              ]
+            },
+            "query_version": "route-history-v1",
+            "evidence_text": "Historical US route JFK to LAX; reporting carriers are combined.\nJanuary-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%.\nMay 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%.\nWilson intervals assume independent binomial observations; shared weather and operations can violate this assumption.\nThese are descriptive historical counts and rates, not forecasts, cluster assignments, significance tests, causal findings or UAE validation."
+          },
+          "elapsed_ms": 21.47
+        }
+      ],
+      "claims": [
+        {
+          "text": "January-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%.",
+          "citation": "T1",
+          "quote": "January-March 2025: 2325 source flights, 2303 completed observed arrivals, 384 arrival delays of at least 15 minutes; observed delay rate 16.6739%, nominal 95% Wilson interval 15.2073% to 18.2515%."
+        },
+        {
+          "text": "May 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%.",
+          "citation": "T1",
+          "quote": "May 2025: 874 source flights, 872 completed observed arrivals, 164 arrival delays of at least 15 minutes; observed delay rate 18.8073%, nominal 95% Wilson interval 16.3526% to 21.5357%."
+        },
+        {
+          "text": "Wilson intervals assume independent binomial observations; shared weather and operations can violate this assumption.",
+          "citation": "T1",
+          "quote": "Wilson intervals assume independent binomial observations; shared weather and operations can violate this assumption."
+        }
+      ],
+      "reviews": [],
+      "created_at": "2026-11-20T10:41:37.742242+00:00",
+      "updated_at": "2026-11-20T10:41:49.018006+00:00",
+      "research_only": true,
+      "operational_approval": false,
+      "runtime": "bounded-ollama-tools-v2",
+      "replayed": false,
+      "model": {
+        "name": "qwen3:8b",
+        "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+      },
+      "bounds": {
+        "max_tool_calls": 3,
+        "max_planner_calls": 3,
+        "max_summary_calls": 2,
+        "first_planner_timeout_seconds": 45,
+        "later_planner_timeout_seconds": 20,
+        "deadline_seconds": 120,
+        "operational_writes": false
+      },
+      "decisions": [
+        {
+          "turn": 1,
+          "tool_calls_received": 1
+        },
+        {
+          "turn": 2,
+          "tool_calls_received": 0
+        }
+      ],
+      "finding_style": "verbatim_source_extracts",
+      "rejected_claims": 0,
+      "quality": {
+        "version": "research-coverage-v1",
+        "passed": true,
+        "required_tools": [
+          "route_history"
+        ],
+        "missing_tools": [],
+        "failed_steps": [],
+        "unavailable_steps": [],
+        "uncited_tools": [],
+        "invalid_claims": [],
+        "covered_sources": 1,
+        "available_sources": 1,
+        "document_scope": null,
+        "document_scope_mismatches": [],
+        "route_scope_mismatches": [],
+        "finding_style": "verbatim_source_extracts",
+        "semantic_entailment_verified": false,
+        "all_objective_parts_verified": false,
+        "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+      },
+      "uncited_tools": [],
+      "report_sha256": "829db94ee523bbfeaf8207160f25829d86faf9c350c6f413144cb46752165459",
+      "report_status": "coverage_passed",
+      "limitations": [
+        "Historical US research data and synthetic simulation are separate; no live airline feed.",
+        "Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.",
+        "Review records document a research review only; no airline action is authorized or applied."
+      ]
+    },
+    "passed": true,
+    "production_ready": false
+  },
+  "index_setup": {
+    "index": "flights_route_history_v1",
+    "created": true,
+    "columns": [
+      "source",
+      "origin",
+      "destination",
+      "flight_date"
+    ],
+    "flight_records": 2835101,
+    "query_plan": [
+      "MULTI-INDEX OR",
+      "INDEX 1",
+      "SEARCH flights USING INDEX flights_route_history_v1 (source=? AND origin=? AND destination=? AND flight_date>? AND flight_date<?)",
+      "INDEX 2",
+      "SEARCH flights USING INDEX flights_route_history_v1 (source=? AND origin=? AND destination=? AND flight_date>? AND flight_date<?)",
+      "USE TEMP B-TREE FOR GROUP BY"
+    ],
+    "elapsed_seconds": 4.378,
+    "scope": "Derived access path only; flight/account rows and application migration version 7 are unchanged. SQLite internal DDL metadata may change.",
+    "production_ready": false
+  },
+  "browser_checks": {
+    "scope": "Isolated real agent component; actual engineering report and synthetic queue transport; no real user session",
+    "results": [
+      {
+        "scenario": "Desktop",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "structured_counts_and_intervals": true,
+          "review_separate": true,
+          "export_scoped": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Mobile_390",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "structured_counts_and_intervals": true,
+          "review_separate": true,
+          "export_scoped": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 390
+      },
+      {
+        "scenario": "Tool_Bound",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "no_submission_for_four_requirements": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Synthetic_Reset",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "synthetic_clears_route": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Viewer",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "viewer_cannot_submit": true,
+          "viewer_can_inspect_saved_fixture": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Input_Clear",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "structured_counts_and_intervals": true,
+          "review_separate": true,
+          "export_scoped": true,
+          "input_clears_report": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Session_Clear",
+        "checks": {
+          "example_scope": true,
+          "late_readiness_preserves_example": true,
+          "session_clears_output": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      }
+    ],
+    "production_ready": false
+  }
+}

@@ -424,7 +424,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             available = False
         return {'available':available,'model':ollama.CHAT_MODEL,'max_tool_calls':3,
             'background_worker':job_worker.status(),
-            'tools':['flight_metrics','knowledge_search','gate_simulation (opt-in synthetic only)'],
+            'tools':['flight_metrics','knowledge_search','route_history (explicit route scope required)','gate_simulation (opt-in synthetic only)'],
             'research_only':True,'operational_writes':False}
 
     @app.post('/api/v1/research/agent-run')

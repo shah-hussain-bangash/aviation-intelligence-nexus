@@ -11,6 +11,25 @@ import time
 SOURCE = 'BTS_REPORTING_CARRIER'
 _SLOT = BoundedSemaphore(1)
 QUERY_SECONDS = 5
+INTERVAL_METHOD = '95% Wilson score, independent-binomial descriptive model'
+LOOKUP_SQL = '''
+                SELECT CASE WHEN flight_date<'2025-04-01' THEN 'train' ELSE 'evaluation' END AS period,
+                  COUNT(*) AS flights,
+                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NOT NULL THEN 1 ELSE 0 END) AS completed,
+                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes>=15 THEN 1 ELSE 0 END) AS delayed_15,
+                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes>=60 THEN 1 ELSE 0 END) AS delayed_60,
+                  SUM(CASE WHEN cancelled=1 THEN 1 ELSE 0 END) AS cancelled,
+                  SUM(CASE WHEN diverted=1 THEN 1 ELSE 0 END) AS diverted,
+                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NULL THEN 1 ELSE 0 END) AS missing_arrival,
+                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NOT NULL
+                      THEN MAX(0,MIN(arrival_delay_minutes,180)) ELSE 0 END) AS positive_delay_sum,
+                  SUM(CASE WHEN cancelled NOT IN (0,1) OR cancelled IS NULL OR diverted NOT IN (0,1) OR diverted IS NULL THEN 1 ELSE 0 END) AS invalid_flags
+                FROM flights WHERE source=? AND origin=? AND destination=?
+                  AND ((flight_date>='2025-01-01' AND flight_date<'2025-04-01')
+                    OR (flight_date>='2025-05-01' AND flight_date<'2025-06-01'))
+                GROUP BY period
+                '''
+
 
 
 class LookupBusy(RuntimeError):
@@ -23,6 +42,64 @@ class LookupUnavailable(RuntimeError):
 
 class RouteNotObserved(LookupError):
     pass
+
+
+def valid_saved_profile(profile, scope):
+    """Recompute stored arithmetic/scope before research review; no claim of protected audit."""
+    try:
+        if (not isinstance(scope, dict) or set(scope) != {'origin', 'destination'}
+                or not all(re.fullmatch('[A-Z]{3}', scope[key]) for key in scope)
+                or scope['origin'] == scope['destination']):
+            return False
+        if (profile['format'] != 'ain-route-history-v1' or profile['route'] != scope
+                or profile['source'] != SOURCE or profile['research_only'] is not True
+                or profile['production_ready'] is not False or profile['group_assignment'] is not None
+                or profile['interval_method'] != INTERVAL_METHOD):
+            return False
+        datetime.fromisoformat(profile['checked_at'])
+        if len(profile['periods']) != 2:
+            return False
+        for index, row in enumerate(profile['periods']):
+            if row['id'] != ['train', 'evaluation'][index] or row['support_threshold'] != [200, 50][index]:
+                return False
+            if any(type(row[key]) is not int or row[key] < 0 for key in
+                   ['flights', 'completed', 'delayed_15', 'delayed_60', 'cancelled', 'diverted', 'missing_arrival']):
+                return False
+            if (any(row[key] > row['flights'] for key in ['completed', 'cancelled', 'diverted', 'missing_arrival'])
+                    or not row['delayed_60'] <= row['delayed_15'] <= row['completed']
+                    or row['available'] is not (row['flights'] > 0)
+                    or row['meets_support'] is not (row['completed'] >= row['support_threshold'])):
+                return False
+            for name, events, total in [('delay_15', row['delayed_15'], row['completed']),
+                                         ('delay_60', row['delayed_60'], row['completed']),
+                                         ('cancellation', row['cancelled'], row['flights'])]:
+                saved, expected = row[name], proportion(events, total)
+                if type(saved['events']) is not int or type(saved['observations']) is not int or saved['events'] != events or saved['observations'] != total:
+                    return False
+                if not total:
+                    if saved['rate'] is not None or saved['wilson_95'] is not None:
+                        return False
+                elif (type(saved['rate']) not in (int, float) or not math.isclose(saved['rate'], expected['rate'], abs_tol=1e-12)
+                      or len(saved['wilson_95']) != 2 or any(type(value) not in (int, float)
+                          or not math.isclose(value, reference, abs_tol=1e-12)
+                          for value, reference in zip(saved['wilson_95'], expected['wilson_95']))):
+                    return False
+            mean = row['mean_positive_delay_capped_180']
+            if row['completed']:
+                if type(mean) not in (int, float) or not math.isfinite(mean) or not 0 <= mean <= 180:
+                    return False
+            elif mean is not None:
+                return False
+        supported = all(row['meets_support'] for row in profile['periods'])
+        if profile['comparison_support_met'] is not supported:
+            return False
+        change = profile['delay_15_change_percentage_points']
+        if not supported:
+            return change is None
+        expected = (profile['periods'][1]['delay_15']['rate'] - profile['periods'][0]['delay_15']['rate']) * 100
+        return type(change) in (int, float) and math.isclose(change, expected, abs_tol=1e-10)
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False
 
 
 def proportion(events, observations):
@@ -53,23 +130,7 @@ def lookup(database, origin, destination):
             connection.execute('BEGIN')
             deadline = started + QUERY_SECONDS
             connection.set_progress_handler(lambda: int(time.monotonic() > deadline), 1000)
-            rows = connection.execute('''
-                SELECT CASE WHEN flight_date<'2025-04-01' THEN 'train' ELSE 'evaluation' END AS period,
-                  COUNT(*) AS flights,
-                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NOT NULL THEN 1 ELSE 0 END) AS completed,
-                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes>=15 THEN 1 ELSE 0 END) AS delayed_15,
-                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes>=60 THEN 1 ELSE 0 END) AS delayed_60,
-                  SUM(CASE WHEN cancelled=1 THEN 1 ELSE 0 END) AS cancelled,
-                  SUM(CASE WHEN diverted=1 THEN 1 ELSE 0 END) AS diverted,
-                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NULL THEN 1 ELSE 0 END) AS missing_arrival,
-                  SUM(CASE WHEN cancelled=0 AND diverted=0 AND arrival_delay_minutes IS NOT NULL
-                      THEN MAX(0,MIN(arrival_delay_minutes,180)) ELSE 0 END) AS positive_delay_sum,
-                  SUM(CASE WHEN cancelled NOT IN (0,1) OR cancelled IS NULL OR diverted NOT IN (0,1) OR diverted IS NULL THEN 1 ELSE 0 END) AS invalid_flags
-                FROM flights WHERE source=? AND origin=? AND destination=?
-                  AND ((flight_date>='2025-01-01' AND flight_date<'2025-04-01')
-                    OR (flight_date>='2025-05-01' AND flight_date<'2025-06-01'))
-                GROUP BY period
-                ''', (SOURCE, origin, destination)).fetchall()
+            rows = connection.execute(LOOKUP_SQL, (SOURCE, origin, destination)).fetchall()
             if time.monotonic() > deadline:
                 raise LookupUnavailable('Route query exceeded its local deadline')
         if not rows:
@@ -98,7 +159,7 @@ def lookup(database, origin, destination):
             'checked_at': datetime.now(timezone.utc).isoformat(), 'periods': periods,
             'comparison_support_met': supported, 'delay_15_change_percentage_points': change,
             'group_assignment': None, 'elapsed_ms': round((time.monotonic() - started) * 1000, 3),
-            'interval_method': '95% Wilson score, independent-binomial descriptive model',
+            'interval_method': INTERVAL_METHOD,
             'research_only': True, 'production_ready': False,
             'limitations': ['Currently imported historical US domestic rows; carriers combined; April excluded.',
                 'Intervals treat observations as independent binomial trials; shared weather/operations can violate that assumption.',

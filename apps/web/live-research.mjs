@@ -59,7 +59,7 @@ if (typeof document !== 'undefined') {
   section.className = 'live-research';
   section.setAttribute('aria-label', 'Connected historical research data');
   section.innerHTML = `<details open><summary><span>Connected research data</span><span id="researchConnection" role="status" aria-live="polite">Connecting…</span></summary>
-    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#route-patterns">Explore route patterns</a><a class="btn sm" href="#route-history">Look up a route</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
+    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#route-patterns">Explore route patterns</a><a class="btn sm" href="#route-history">Look up a route</a><a class="btn sm" href="#investigation-desk">Investigate a route</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
   const readinessUI = mountReadiness(section.querySelector('.research-inner'));

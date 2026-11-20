@@ -1,6 +1,7 @@
 """Deterministic research-report coverage gate, not semantic truth verification."""
 from rag.service import validate_claims
 from rag.index import SOURCES
+from services.api.route_history import valid_saved_profile
 
 
 def document_scope(request):
@@ -54,16 +55,22 @@ def assess_report(run):
             cited.add(claim['citation'])
         except (RuntimeError,TypeError,KeyError): invalid.append(index+1)
     missing=sorted(set(run['request'].get('required_tools',[]))-selected)
+    if run['request'].get('route') is not None and 'route_history' not in selected and 'route_history' not in missing:
+        missing.append('route_history')
     failed=[s['id'] for s in run['steps'] if s['state']!='completed']
     unavailable=[s['id'] for s in run['steps'] if s['state']=='completed' and not s.get('observation',{}).get('available')]
     uncited=[item['id'] for item in evidence if item['id'] not in cited]
     scope=document_scope(run['request'])
     mismatches=[s['id'] for s in run['steps'] if s['tool']=='knowledge_search' and scope is not None
         and any(row['source']!=scope for row in s.get('observation',{}).get('evidence',[]))]
-    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches)
+    route_mismatches=[s['id'] for s in run['steps'] if s['tool']=='route_history' and s['state']=='completed'
+        and s.get('observation',{}).get('available') and (s.get('arguments')!=run['request'].get('route') or s['observation'].get('scope')!=run['request'].get('route')
+            or not valid_saved_profile(s['observation'].get('profile'),run['request'].get('route')))]
+    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches or route_mismatches)
     return {'version':'research-coverage-v1','passed':passed,'required_tools':run['request'].get('required_tools',[]),
         'missing_tools':missing,'failed_steps':failed,'unavailable_steps':unavailable,'uncited_tools':uncited,
         'invalid_claims':invalid,'covered_sources':len(available&cited),'available_sources':len(available),
         'document_scope':scope,'document_scope_mismatches':mismatches,
+        'route_scope_mismatches':route_mismatches,
         'finding_style':'verbatim_source_extracts','semantic_entailment_verified':False,'all_objective_parts_verified':False,
         'meaning':'Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required.'}

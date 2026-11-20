@@ -8,7 +8,7 @@ import { renderPrediction } from '../apps/web/research-scenario.mjs';
 import { renderHistory } from '../apps/web/research-history.mjs';
 import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
-import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
+import { renderInvestigation, investigationPayload } from '../apps/web/investigation-lab.mjs';
 import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
@@ -18,6 +18,26 @@ import {renderPatterns,validatePatterns} from '../apps/web/route-patterns.mjs';
 import {renderRouteHistory,validateRouteHistory} from '../apps/web/route-history.mjs';
 
 const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_History_Lookup.json',import.meta.url),'utf8')).example;
+const routeAgentFixture=()=>({research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'Compare the explicit historical route.',month:'2025-05',include_simulation:false,route:{origin:'JFK',destination:'LAX'}},steps:[{id:'T1',tool:'route_history',state:'completed',arguments:{origin:'JFK',destination:'LAX'},observation:{available:true,data_kind:'historical_route',evidence_text:'Recorded historical US route evidence for JFK to LAX.',profile:routeHistoryFixture()}}],claims:[],reviews:[],run_id:'fixture',actor:'fixture',updated_at:'2026-11-20',runtime:'fixture'});
+test('agent route payload is explicit, scoped and still limited to three required tools',()=>{
+  const input={objective:'Compare historical research evidence.',month:'2025-05',simulation:false,requireFlights:true,requireKnowledge:false,requireSimulation:false,documentScope:'',routeEnabled:false,routeOrigin:'jfk',routeDestination:'lax'};
+  assert.ok(!Object.hasOwn(investigationPayload(input),'route'));
+  const payload=investigationPayload({...input,routeEnabled:true});
+  assert.deepEqual(payload.route,{origin:'JFK',destination:'LAX'});assert.ok(payload.required_tools.includes('route_history'));
+  assert.throws(()=>investigationPayload({...input,routeEnabled:true,simulation:true,requireFlights:true,requireKnowledge:true,requireSimulation:true}));
+  assert.throws(()=>investigationPayload({...input,routeEnabled:true,routeDestination:'JFK'}));
+});
+test('saved agent report retains structured route counts and intervals without generated claims',()=>{
+  const run=routeAgentFixture(),html=renderInvestigation(run);
+  assert.match(html,/Structured route evidence/);assert.match(html,/2,325/);assert.match(html,/95% Wilson/);assert.match(html,/independent of the generated/);
+  run.steps[0].observation.profile.route.origin='SFO';
+  assert.match(renderInvestigation(run),/Route evidence could not be verified and has been withheld/);
+  assert.doesNotMatch(renderInvestigation(run),/2,325/);
+});
+test('agent quality shows route scope mismatch and escapes its source identifier',()=>{
+  const run=routeAgentFixture();run.quality={passed:false,missing_tools:[],failed_steps:[],unavailable_steps:[],document_scope_mismatches:[],invalid_claims:[],route_scope_mismatches:['<script>'],covered_sources:0,available_sources:1};
+  const html=renderInvestigation(run);assert.match(html,/Route scope or arithmetic mismatch/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
 test('route history presents source counts, nominal uncertainty and descriptive change',()=>{
   const data=routeHistoryFixture(),html=renderRouteHistory(data);
   assert.match(html,/JFK to LAX/);assert.match(html,/2,325/);assert.match(html,/\+2\.1 pp/);

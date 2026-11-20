@@ -54,10 +54,12 @@ Manual inspection also found an unresolved semantic limitation: in broad-corpus 
 
 Historical run content and decisions are not rewritten. History responses derive current quality checks for old reports. Previously incomplete awaiting-review reports can no longer be accepted through the new review endpoint. Old reviewed decisions remain historical records, not retroactive certification. Retry keys remain compatible when new optional requirements are empty and document scope is absent; adding an actual requirement or scope changes the input contract and cannot reuse that key.
 
-The automated suite contains 81 Python and 14 Node tests. New checks cover bounded repair, failed repair, required-tool omissions, unavailable evidence, cached-quality tampering, legacy history/retry behavior, verbatim findings, metadata rejection, document scope, blocked API acceptance and escaped UI warnings. Actual Ollama execution is recorded separately; hosted tests use isolated databases and mocked model responses.
+That milestone contained 81 Python and 14 Node tests. New checks cover bounded repair, failed repair, required-tool omissions, unavailable evidence, cached-quality tampering, legacy history/retry behavior, verbatim findings, metadata rejection, document scope, blocked API acceptance and escaped UI warnings. Actual Ollama execution is recorded separately; hosted tests use isolated databases and mocked model responses.
 
 The UI also keeps service-status requests separate from editing state, so loading an example before readiness completes does not leave the Run button stuck. Saved investigations include UTC timestamps and short run IDs to distinguish similar objectives.
 
 Browser checks on 20 November 2026 used the existing signed-in administrator account. They verified that an older 2/3-source report disables acceptance, the scoped example shows 3/3 coverage with a v2 model-limitations extract, the review control remains separate from the gate, and exported JSON retains quality metadata. Loading the example before readiness finished no longer blocked Run. Desktop (1365 pixels) and mobile (390 pixels) views were checked; the mobile page had no horizontal overflow. These are UI observations, not production acceptance tests.
 
 Existing local account credentials, the 64 workspaces and the no-operational-write boundary are preserved. Managed deployment, monitoring, durable workers, protected auditing and recovery qualification remain incomplete.
+
+Scoped route integration now adds request/argument/profile binding and arithmetic/interval checks, plus structured evidence that remains visible independently of generated extract selection. See ROUTE_AGENT_INTEGRATION.md for actual-model results, retained failures and the current test count.

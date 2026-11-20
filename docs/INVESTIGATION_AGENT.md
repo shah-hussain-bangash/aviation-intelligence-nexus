@@ -1,6 +1,6 @@
 # Bounded aviation research investigation agent
 
-Current report-policy update: [agent report quality](AGENT_REPORT_QUALITY.md) adds explicit evidence requirements, scoped document retrieval, one repair call, verbatim findings and server-blocked acceptance of mechanical gaps. The original three-tool demo below remains historical baseline evidence; the current complete test count is 95.
+Current report-policy update: [agent report quality](AGENT_REPORT_QUALITY.md) adds explicit evidence requirements, scoped document retrieval, one repair call, verbatim findings and server-blocked acceptance of mechanical gaps. The original three-tool demo below remains historical baseline evidence; that milestone contained 95 tests. Current route integration and limits are documented in ROUTE_AGENT_INTEGRATION.md.
 
 The connected dashboard now includes an Investigation Desk. An actual local Qwen3 model selects tools through Ollama's native tool-calling interface, receives the tool observations and produces a cited research draft. The backend validates and executes each selection; a model cannot supply executable SQL, shell commands, file paths or destination URLs.
 
@@ -12,6 +12,7 @@ This is one bounded tool-calling agent implemented as a small custom runtime. It
 |---|---|---|
 | `flight_metrics` | Parameterized, read-only SQLite query for imported counts, cancellations, diversions, eligible completed flights and observed arrival-delay rate | One user-selected January–May 2025 month; historical US BTS records only |
 | `knowledge_search` | Existing local embedding/TF-IDF retrieval with source passages and index identity | Six public project documents; no arbitrary upload or web browsing |
+| `route_history` | Read-only route cohorts, observed rates, nominal Wilson intervals and structured saved evidence | Explicit human-selected airports; fixed January-March/May comparison; exact argument echo required |
 | `gate_simulation` | Actual mixed-integer gate optimizer with independent feasibility checking | Optional fixed five-flight synthetic example; never allocated to historical flights |
 
 Aircraft gates, airline policies and UAE operational data do not exist in the BTS data. The simulation is explicitly separate. Its tool is not offered without the user's simulation opt-in, and server checks reject an attempted call even if a model invents it. Flight metrics accept only the selected month; the server rejects a different month. SQL text and additional arguments are forbidden. Unknown tools and duplicate selections are rejected before execution.
@@ -20,7 +21,7 @@ The SQL denominator is completed, non-diverted flights with observed arrival del
 
 ## Execution, checkpoints and review
 
-The runtime permits at most three planner calls and three tool executions, each tool at most once. Planner calls are bounded to 20 seconds, report generation to 30 seconds, and elapsed budget is checked between steps against a 120-second run budget. Individual blocking tool calls may finish after the budget boundary; this is not hard real-time cancellation. One investigation runs per API process; a busy run is rejected rather than queued. There is no distributed queue or worker lease.
+The runtime permits at most three planner calls and three tool executions, each tool at most once. The first planner call allows up to 45 seconds and later calls up to 20; report generation allows up to 30 seconds, and elapsed budget is checked between steps against a 120-second run budget. Individual blocking tool calls may finish after the budget boundary; this is not hard real-time cancellation. One investigation executes per API process; the current dashboard uses the bounded saved queue described below. There is no distributed queue or worker lease.
 
 SQLite migration 7 adds owner-scoped run records. Checkpoints are saved at creation, before and after each tool and at the terminal state. The trace records validated arguments, observed results, tool timing, model identity and bounded decision counts. It does not expose or store model chain-of-thought. Missing models, invalid decisions, failed tools, incomplete output and exhausted budgets remain visible as failures. Successful tools can remain useful when another tool fails; inspect each step rather than relying only on the report state.
 

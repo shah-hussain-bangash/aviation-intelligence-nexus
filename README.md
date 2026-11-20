@@ -58,6 +58,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Read-only directional-route lookup with real historical counts, Wilson uncertainty intervals, bounded queries and aggregate export. See [route lookup behavior and measured example](docs/HISTORICAL_ROUTE_LOOKUP.md).
 
+- Explicitly scoped route investigations with actual local-model tool selection, structured counts/intervals, review guards and an indexed source-CLI check. See [route agent evidence and limits](docs/ROUTE_AGENT_INTEGRATION.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

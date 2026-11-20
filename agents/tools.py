@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from rag.service import Question
 from optimization.gates import GateScenario, optimize
 from agents.quality import document_scope
+from services.api.route_history import lookup as lookup_route, RouteNotObserved
 
 
 class EmptyArgs(BaseModel):
@@ -24,15 +25,22 @@ class MonthArgs(EmptyArgs):
     month: Literal['2025-01','2025-02','2025-03','2025-04','2025-05'] | None = None
 
 
-ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs}
+class RouteArgs(EmptyArgs):
+    origin: str = Field(pattern=r'^[A-Z]{3}$')
+    destination: str = Field(pattern=r'^[A-Z]{3}$')
 
 
-def definitions(simulation):
+ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs}
+
+
+def definitions(simulation, route=False):
     descriptions = [
         ('flight_metrics','Read actual historical BTS counts and arrival-delay frequency. Month must equal the user-selected month. Never live or UAE data.',MonthArgs),
         ('knowledge_search','Retrieve cited public project evidence about models, data and optimization. No generated answer in this tool.',SearchArgs)]
     if simulation:
         descriptions.append(('gate_simulation','Compute an independently checked five-flight SYNTHETIC gate proposal, separate from the historical flight data.',EmptyArgs))
+    if route:
+        descriptions.append(('route_history','Read the explicitly user-scoped route: January-March versus May 2025 counts, observed delay/cancellation rates and nominal 95% Wilson intervals. Echo the user route origin and destination exactly; changing airports is forbidden. Not a forecast, cluster assignment or significance test.',RouteArgs))
     return [{'type':'function','function':{'name':name,'description':description,'parameters':model.model_json_schema()}}
             for name,description,model in descriptions]
 
@@ -76,6 +84,28 @@ def gate_sample():
 
 
 def execute(name, arguments, request, database, knowledge):
+    if name == 'route_history':
+        if request.route is None: raise ValueError('Route scope was not explicitly permitted')
+        scope=request.route.model_dump()
+        if RouteArgs.model_validate(arguments).model_dump()!=scope: raise ValueError('Tool airports differ from the explicit user route')
+        try:
+            profile=lookup_route(database,scope['origin'],scope['destination'])
+        except RouteNotObserved:
+            return {'data_kind':'historical_route','available':False,'scope':scope,
+                'evidence_text':f'No imported official route observations were found for {scope["origin"]} to {scope["destination"]} in January-March or May 2025; no rates or intervals are available.'}
+        lines=[f'Historical US route {scope["origin"]} to {scope["destination"]}; reporting carriers are combined.']
+        for row in profile['periods']:
+            label='January-March 2025' if row['id']=='train' else 'May 2025'
+            delay=row['delay_15']
+            if delay['rate'] is None:
+                lines.append(f'{label}: {row["flights"]} source flights; no completed observed-arrival population, so no arrival-delay rate or interval.')
+            else:
+                low,high=delay['wilson_95']
+                lines.append(f'{label}: {row["flights"]} source flights, {row["completed"]} completed observed arrivals, {row["delayed_15"]} arrival delays of at least 15 minutes; observed delay rate {delay["rate"]:.4%}, nominal 95% Wilson interval {low:.4%} to {high:.4%}.')
+        lines.extend(['Wilson intervals assume independent binomial observations; shared weather and operations can violate this assumption.',
+            'These are descriptive historical counts and rates, not forecasts, cluster assignments, significance tests, causal findings or UAE validation.'])
+        return {'data_kind':'historical_route','available':True,'scope':scope,'profile':profile,
+            'query_version':'route-history-v1','evidence_text':'\n'.join(lines)}
     if name == 'knowledge_search':
         args = SearchArgs.model_validate(arguments)
         scope=document_scope(request.model_dump())
