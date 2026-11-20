@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Local RAG milestone: six public project documents are ingested into 31 passages with 768-dimensional embeddings and source-line provenance. Hybrid retrieval, optional actual Ollama/Qwen3 generation, citation/quotation/number checks, abstention, owner-scoped history and JSON export are implemented. Eight curated retrieval/abstention checks passed and two questions produced locally generated answers inspected against their sources. The complete suite now passes 71 automated tests locally. This is bounded project-research Q&A, not airline-manual coverage, production qualification or an agent runtime. See `KNOWLEDGE_STUDIO.md`.
+
 Operations Research milestone: Gate Allocation Lab computes synthetic proposals with a mixed-integer solver, independently checks conflicts and aircraft compatibility, compares a greedy baseline and persists owner-scoped results. The exact five-flight sample assigns 5/5 versus the greedy baseline's 4/5 with the default settings. All 62 current automated tests pass locally. This is a bounded research demonstration, not real airline allocation or production readiness. See `GATE_OPTIMIZATION.md`.
 
 Sign-in UX update: the app now opens on a dedicated sign-in screen and reveals its existing 64 workspaces after a verified session. Sign-out or expiry returns to sign-in. This display gate does not replace backend authorization.
@@ -28,10 +30,10 @@ The current frontend preserves 64 workspaces, 256 specified functions, 72 accept
 
 ## Not yet delivered
 
-Current outstanding work includes provider-backed generation, agent execution, operational-scale optimization and validation, managed identity, cloud deployment, monitoring and measured backup restoration. The implemented local research capabilities above do not complete these production requirements.
+Current outstanding work includes broader authorized aviation document ingestion and generation evaluation, agent execution, operational-scale optimization and validation, managed identity, cloud deployment, monitoring and measured backup restoration. The implemented local research capabilities above do not complete these production requirements.
 
 The production audit records **20 areas not implemented, 3 partially evidenced and 1 unverified**. No production requirement is independently verified complete and no production service is connected.
 
-The original production audit predates the local inference, solver and authorization milestones above. Its counts describe that baseline and must not be presented as a current acceptance assessment. No provider-backed generation, agent tool runtime, cloud monitoring or measured production backup restoration is claimed.
+The original production audit predates the local inference, solver, authorization and RAG milestones above. Its counts describe that baseline and must not be presented as a current acceptance assessment. No agent tool runtime, cloud monitoring or measured production backup restoration is claimed.
 
 See `reports/AIN_Completion_Report.json` for the full baseline and `ROADMAP.md` for implementation order. Update this document with verified evidence as capabilities are built; local review labels cannot change implementation facts.

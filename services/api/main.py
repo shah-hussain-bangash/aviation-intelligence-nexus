@@ -19,6 +19,8 @@ from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
 from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
+from rag.service import Knowledge, Question
+from rag.history import EvidenceHistory
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -43,7 +45,7 @@ def initialize(database: Path):
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
         version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > 5:
+        if version > 6:
             raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
@@ -92,6 +94,10 @@ def initialize(database: Path):
                 "scenario_hash TEXT NOT NULL,result_json TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(owner_id,request_key))")
             connection.execute("CREATE INDEX gate_runs_owner ON gate_runs(owner_id,created_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (5)")
+        if version < 6:
+            connection.execute("CREATE TABLE knowledge_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,result_json TEXT NOT NULL,created_at TEXT NOT NULL)")
+            connection.execute("CREATE INDEX knowledge_runs_owner ON knowledge_runs(owner_id,created_at)")
+            connection.execute("INSERT INTO schema_migrations(version) VALUES (6)")
 
 
 def read_model_report(directory: Path):
@@ -107,7 +113,7 @@ def read_model_report(directory: Path):
 
 
 def create_app(database: Path | None = None, model_directory: Path | None = None,
-               research_model_directory: Path | None = None):
+               research_model_directory: Path | None = None, knowledge_index: Path | None = None):
     database = Path(database) if database is not None else Path(
         os.environ.get("AIN_DB_PATH", str(ROOT / ".local" / "ain.sqlite3")))
     model_directory = model_directory if model_directory is not None else ROOT / ".local/models/delay-baseline-v1"
@@ -115,6 +121,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     predictor = ResearchPredictor(research_model_directory)
     history = ResearchHistory(database)
     gate_history = GateRunStore(database)
+    knowledge = Knowledge() if knowledge_index is None else Knowledge(knowledge_index)
+    knowledge_history = EvidenceHistory(database)
     auth = AuthStore(database)
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
                for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
@@ -149,7 +157,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -320,6 +328,25 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             return {"runs":gate_history.recent(request.state.user),"research_only":True}
         except (sqlite3.Error,ValueError):
             return JSONResponse(status_code=503,content={"error":"optimization_history_unavailable"})
+
+    @app.get('/api/v1/research/knowledge-status')
+    def knowledge_status():
+        return knowledge.status()
+
+    @app.post('/api/v1/research/knowledge-query')
+    def knowledge_query(question: Question, request: Request):
+        try:
+            return knowledge_history.save(request.state.user, knowledge.query(question))
+        except (OSError, ValueError, KeyError, TypeError, RuntimeError, sqlite3.Error):
+            return JSONResponse(status_code=503, content={'error': 'knowledge_unavailable',
+                'message': 'No saved result returned. Check the index, local models and database.'})
+
+    @app.get('/api/v1/research/knowledge-history')
+    def knowledge_runs(request: Request):
+        try:
+            return {'runs': knowledge_history.recent(request.state.user), 'research_only': True}
+        except (sqlite3.Error, ValueError):
+            return JSONResponse(status_code=503, content={'error': 'knowledge_history_unavailable'})
 
     return app
 

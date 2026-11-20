@@ -7,6 +7,18 @@ import { proxyResearchRequest } from '../scripts/api-proxy.mjs';
 import { renderPrediction } from '../apps/web/research-scenario.mjs';
 import { renderHistory } from '../apps/web/research-history.mjs';
 import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
+import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
+
+test('knowledge renderer escapes evidence and rejects invented citations',()=>{
+  const result={research_only:true,operational_approval:false,mode:'generated',question:'<script>question</script>',
+    generation:{status:'completed',model:'local'},claims:[{text:'<img>claim',citation:'c1',quote:'A source quotation with enough text.'}],
+    evidence:[{id:'c1',text:'A source quotation with enough text. <script>bad</script>',source:'docs/TEST.md',heading:'Test',start_line:1,end_line:2,source_sha256:'hash',source_url:'javascript:alert(1)'}]};
+  const html=renderKnowledge(result);
+  assert.ok(html.includes('&lt;script&gt;'));
+  assert.ok(!html.includes('<script>'));
+  assert.ok(!html.includes('javascript:'));
+  result.claims[0].citation='invented';assert.throws(()=>renderKnowledge(result));
+});
 
 function fixture() {
   return { generated_at: '2025-06-01T12:00:00Z', source_scope: '<unsafe>',
