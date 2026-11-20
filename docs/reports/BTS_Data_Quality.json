@@ -1,0 +1,202 @@
+{
+  "format": "ain-data-quality-v1",
+  "checked_at": "2026-11-20T12:37:19.093372+00:00",
+  "source": "BTS_REPORTING_CARRIER",
+  "audited_periods": [
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05"
+  ],
+  "source_records": 2835101,
+  "profiled_records": 2835101,
+  "other_source_records": 0,
+  "unprofiled_source_records": 0,
+  "invalid_dates_all_source": 0,
+  "invalid_manifest_entries": 0,
+  "field_issue_occurrences": 0,
+  "months": [
+    {
+      "period": "2025-01",
+      "records": 539747,
+      "duplicate_keys": 0,
+      "field_issues": {
+        "date": 0,
+        "carrier": 0,
+        "origin": 0,
+        "destination": 0,
+        "flight_number": 0,
+        "scheduled_departure": 0,
+        "flags": 0,
+        "arrival_delay": 0,
+        "departure_delay": 0,
+        "record_key": 0
+      },
+      "cohorts": {
+        "eligible_arrivals": 522269,
+        "excluded_cancelled": 16312,
+        "excluded_diverted": 1166,
+        "excluded_missing_or_invalid": 0
+      },
+      "manifests": [
+        {
+          "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+          "rows_read": 539747,
+          "rows_inserted": 539747,
+          "duplicate_rows": 0
+        }
+      ],
+      "manifest_rows_inserted": 539747,
+      "import_reconciliation": "matched"
+    },
+    {
+      "period": "2025-02",
+      "records": 504884,
+      "duplicate_keys": 0,
+      "field_issues": {
+        "date": 0,
+        "carrier": 0,
+        "origin": 0,
+        "destination": 0,
+        "flight_number": 0,
+        "scheduled_departure": 0,
+        "flags": 0,
+        "arrival_delay": 0,
+        "departure_delay": 0,
+        "record_key": 0
+      },
+      "cohorts": {
+        "eligible_arrivals": 496476,
+        "excluded_cancelled": 7405,
+        "excluded_diverted": 1003,
+        "excluded_missing_or_invalid": 0
+      },
+      "manifests": [
+        {
+          "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+          "rows_read": 504884,
+          "rows_inserted": 504884,
+          "duplicate_rows": 0
+        }
+      ],
+      "manifest_rows_inserted": 504884,
+      "import_reconciliation": "matched"
+    },
+    {
+      "period": "2025-03",
+      "records": 600872,
+      "duplicate_keys": 0,
+      "field_issues": {
+        "date": 0,
+        "carrier": 0,
+        "origin": 0,
+        "destination": 0,
+        "flight_number": 0,
+        "scheduled_departure": 0,
+        "flags": 0,
+        "arrival_delay": 0,
+        "departure_delay": 0,
+        "record_key": 0
+      },
+      "cohorts": {
+        "eligible_arrivals": 592301,
+        "excluded_cancelled": 6923,
+        "excluded_diverted": 1648,
+        "excluded_missing_or_invalid": 0
+      },
+      "manifests": [
+        {
+          "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+          "rows_read": 600872,
+          "rows_inserted": 600872,
+          "duplicate_rows": 0
+        }
+      ],
+      "manifest_rows_inserted": 600872,
+      "import_reconciliation": "matched"
+    },
+    {
+      "period": "2025-04",
+      "records": 583950,
+      "duplicate_keys": 0,
+      "field_issues": {
+        "date": 0,
+        "carrier": 0,
+        "origin": 0,
+        "destination": 0,
+        "flight_number": 0,
+        "scheduled_departure": 0,
+        "flags": 0,
+        "arrival_delay": 0,
+        "departure_delay": 0,
+        "record_key": 0
+      },
+      "cohorts": {
+        "eligible_arrivals": 577730,
+        "excluded_cancelled": 4914,
+        "excluded_diverted": 1306,
+        "excluded_missing_or_invalid": 0
+      },
+      "manifests": [
+        {
+          "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+          "rows_read": 583950,
+          "rows_inserted": 583950,
+          "duplicate_rows": 0
+        }
+      ],
+      "manifest_rows_inserted": 583950,
+      "import_reconciliation": "matched"
+    },
+    {
+      "period": "2025-05",
+      "records": 605648,
+      "duplicate_keys": 0,
+      "field_issues": {
+        "date": 0,
+        "carrier": 0,
+        "origin": 0,
+        "destination": 0,
+        "flight_number": 0,
+        "scheduled_departure": 0,
+        "flags": 0,
+        "arrival_delay": 0,
+        "departure_delay": 0,
+        "record_key": 0
+      },
+      "cohorts": {
+        "eligible_arrivals": 597574,
+        "excluded_cancelled": 6344,
+        "excluded_diverted": 1730,
+        "excluded_missing_or_invalid": 0
+      },
+      "manifests": [
+        {
+          "sha256": "17c3419d7169b313b2bc8ddd3fd57e1e2d4d959c35f2da17f6a5610d4bac7d63",
+          "rows_read": 605648,
+          "rows_inserted": 605648,
+          "duplicate_rows": 0
+        }
+      ],
+      "manifest_rows_inserted": 605648,
+      "import_reconciliation": "matched"
+    }
+  ],
+  "checks_passed": true,
+  "elapsed_seconds": 16.089,
+  "sqlite_version": "3.46.1",
+  "query_sha256": "c2b21e5ac33690991a3559f6f9a7d9dcf1c6046f6aae685863d8681146bf6310",
+  "research_only": true,
+  "production_ready": false,
+  "limitations": [
+    "Recorded structural audit, not a current database health check or verification that source values are true.",
+    "Import hashes are recorded lineage metadata; archive files are not re-read or re-hashed by this audit.",
+    "Field issue counts can overlap on a record. Modelling cohorts are mutually exclusive and follow the existing dataset-builder exclusion priority.",
+    "Missing arrival delay is allowed in storage; cancellation/diversion/missing-target rows are excluded from the modelling population.",
+    "Five historical US domestic months only; no UAE transfer, live-feed freshness or production data-governance approval."
+  ],
+  "development_notes": [
+    "An initial all-period GROUP BY/distinct query exceeded the container temporary-storage limit and produced no audit report. The final implementation aggregates one month at a time inside the same read transaction. No source data was written."
+  ]
+}

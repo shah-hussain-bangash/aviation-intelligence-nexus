@@ -1,3 +1,4 @@
+import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
 import {validateModelSnapshot,renderModelSnapshot} from '../apps/web/agent-model-evidence.mjs';
@@ -489,4 +490,23 @@ test('gate review proxy forwards bounded Unicode notes, session and CSRF only to
   const url=`http://127.0.0.1:${frontend}/api/v1/research/gate-review`;
   assert.equal((await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Cookie':'ain_session=fixture; unrelated=secret','X-CSRF-Token':'fixture-csrf'},body})).status,200);
   assert.equal((await fetch(url)).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+
+function qualityFixture(){
+ const r=JSON.parse(fs.readFileSync(new URL('../docs/reports/BTS_Data_Quality.json',import.meta.url),'utf8')),d=JSON.parse(fs.readFileSync(new URL('../docs/reports/BTS_Jan_May_2025_Dataset_v2.json',import.meta.url),'utf8'));
+ const eligible=Object.fromEntries(r.months.map(m=>[m.period,m.cohorts.eligible_arrivals]));
+ return {...r,integrity_verified:true,report_sha256:'a'.repeat(64),dataset_report_sha256:'b'.repeat(64),modelling_alignment:Object.fromEntries(Object.entries(d.period_groups).map(([key,periods])=>{const n=periods.reduce((n,p)=>n+eligible[p],0),frozen=d.splits[key].eligible_records;return [key,{audited_eligible:n,frozen_eligible:frozen,counts_match:n===frozen}];}))};
+}
+test('data quality exposes full release counts, exclusion populations and recorded lineage',()=>{
+ const data=qualityFixture(),html=renderQuality(data);assert.match(html,/2,835,101/);assert.match(html,/1,611,046/);assert.match(html,/597,574/);assert.match(html,/not reopen archive files/);assert.match(html,/Not a live database check/);
+ assert.match(renderQuality(data,'2025-01'),/2025-01 · Structural checks/);assert.throws(()=>renderQuality(data,'2026-01'));
+});
+test('data quality rejects inconsistent cohorts and false pass claims and escapes limitations',()=>{
+ let data=qualityFixture();data.months[0].cohorts.eligible_arrivals=0;assert.throws(()=>validateQuality(data));data=qualityFixture();data.checks_passed=false;assert.throws(()=>validateQuality(data));
+ data=qualityFixture();data.months[0].import_reconciliation='mismatched';assert.throws(()=>validateQuality(data));data=qualityFixture();data.limitations=['<script>bad()</script>'];const html=renderQuality(data);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('data quality proxy is fixed read-only and forwards only the session cookie',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/data-quality');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});const url=`http://127.0.0.1:${frontend}/api/v1/research/data-quality`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });

@@ -33,6 +33,7 @@ from services.api.agent_operations import snapshot as agent_operations_snapshot,
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from services.api.segments import load_segments
+from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
@@ -538,6 +539,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError):
             return JSONResponse(status_code=503, content={'error': 'readiness_evidence_unavailable',
                 'message': 'The scope/evidence assessment could not be verified. No readiness claim is returned.'})
+
+    @app.get('/api/v1/research/data-quality')
+    def data_quality():
+        try:
+            return load_quality()
+        except (OSError,ValueError,KeyError,TypeError):
+            return JSONResponse(status_code=503,content={'error':'data_quality_evidence_unavailable',
+                'message':'The recorded data audit could not be verified. Audit results are withheld.'})
 
     @app.get('/api/v1/research/model-explanations')
     def model_explanations():

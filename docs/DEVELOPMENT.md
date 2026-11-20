@@ -18,7 +18,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 51 Node dashboard/proxy/startup tests and 193 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 54 Node dashboard/proxy/startup tests and 200 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -70,3 +70,5 @@ Recorded model investigations are opt-in and use a fixed public snapshot, not li
 Administrator queue observation is read-only and separate from worker execution. See AGENT_OPERATIONS.md for privacy, bounds and interpretation.
 
 Synthetic gate review adds a proposal-bound, expiring research decision. Use unittest discovery for the full suite; some older tests import helpers from the tests directory. See GATE_PROPOSAL_REVIEW.md.
+
+The offline BTS structural audit and recorded lineage panel are documented in DATA_QUALITY_LINEAGE.md. Refreshing the UI verifies a pinned report; it does not rerun database scans.

@@ -1,0 +1,51 @@
+{
+  "format": "ain-data-quality-dashboard-evidence-v1",
+  "scope": "Actual recorded BTS audit and isolated component preview; no real-user authenticated browser or production workload claim",
+  "audit_report_sha256": "f81ec38046dfcf2da7e9cfa173cb4cd6a99d324f04292314fe08812a8f01b424",
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "actual_counts": true,
+        "month_selection": true,
+        "export_scope": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "actual_counts": true,
+        "month_selection": true,
+        "export_scope": true,
+        "no_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Failure",
+      "checks": {
+        "actual_counts": true,
+        "month_selection": true,
+        "export_scope": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session",
+      "checks": {
+        "actual_counts": true,
+        "month_selection": true,
+        "export_scope": true,
+        "session_clears": true,
+        "no_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

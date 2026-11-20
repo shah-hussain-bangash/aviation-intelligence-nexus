@@ -70,7 +70,7 @@
         "P02",
         "P03"
       ],
-      "local_progress": "BTS batch ingestion validates schemas, reconciles counts and prevents duplicate archive imports.",
+      "local_progress": "BTS batch ingestion validates schemas, reconciles counts and prevents duplicate archive imports. A full-release read-only structural audit and recorded dashboard add field/key, exclusion and import-count reconciliation with explicit snapshot limits.",
       "remaining": "Scheduled incremental collectors, quarantine workflows, orchestration and operational replay remain outstanding.",
       "acceptance": "Successful ingestion with reconciled counts and recoverable dependency failures.",
       "production_accepted": false,
@@ -78,6 +78,18 @@
         {
           "path": "docs/DATA_INGESTION.md",
           "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+        },
+        {
+          "path": "docs/DATA_QUALITY_LINEAGE.md",
+          "sha256": "7355b9331239fc02fb05c5b9988daab9a5a0b22293c021efa1c4b502e8bedaf8"
+        },
+        {
+          "path": "docs/reports/BTS_Data_Quality.json",
+          "sha256": "f81ec38046dfcf2da7e9cfa173cb4cd6a99d324f04292314fe08812a8f01b424"
+        },
+        {
+          "path": "docs/reports/Data_Quality_Dashboard.json",
+          "sha256": "32b6ae71edadc9f40bb08fcbb7e53aaf93aedbb6923d55d5c4bee80d3dad714c"
         }
       ]
     },
@@ -88,7 +100,7 @@
       "dependencies": [
         "P04"
       ],
-      "local_progress": "A local million-row SQLite dataset and chronological training pipeline are measured. A derived route index and verified query plan reduce the measured bounded route lookup under local-model workload; this is not distributed processing.",
+      "local_progress": "A local million-row SQLite dataset and chronological training pipeline are measured. A derived route index and verified query plan reduce the measured bounded route lookup under local-model workload; this is not distributed processing. A monthly SQL audit of all 2,835,101 official records completed in 16.089 seconds after an all-period query exceeded local temporary storage; this is single-machine processing.",
       "remaining": "Representative distributed processing, partitioning and bounded-query resource/load qualification remain outstanding.",
       "acceptance": "Actual record counts, storage, runtime and resource measurements.",
       "production_accepted": false,
@@ -568,7 +580,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "e0976cf28407a87e0ead4901119704c943af222d2d47c784174d38e7fe97dcc2"
+          "sha256": "4dc6ff0b24314ccfa2b4f43c0976485e2b03abadcd4bf5d546f5f4e48f0233ab"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
