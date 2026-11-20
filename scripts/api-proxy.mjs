@@ -1,5 +1,7 @@
 // Fixed local research routes; never forward arbitrary destinations or browser credentials.
-export async function proxyResearchRequest(req, res, pathname, apiPort) {
+import {routing} from './runtime-config.mjs';
+export async function proxyResearchRequest(req, res, pathname, apiPort,config={}) {
+  const {apiHost,sessionCookie:cookieName}=routing(config);
   const prediction = pathname === '/api/v1/research/predict';
   const optimization = pathname === '/api/v1/research/optimize-gates';
   const knowledge = pathname === '/api/v1/research/knowledge-query';
@@ -7,7 +9,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
   const agentReview = pathname === '/api/v1/research/agent-review';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
   const write = prediction || optimization || knowledge || agent || agentReview || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history'].includes(pathname) && !write) return false;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status'].includes(pathname) && !write) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
@@ -28,8 +30,8 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
     requestBody = Buffer.concat(chunks).toString('utf8');
   }
   try {
-    const sessionCookie = (req.headers.cookie || '').split(';').map(value=>value.trim()).find(value=>/^ain_session=[A-Za-z0-9_-]{1,128}$/.test(value));
-    const response = await fetch(`http://127.0.0.1:${apiPort}${pathname}`, {
+    const sessionCookie = (req.headers.cookie || '').split(';').map(value=>value.trim()).find(value=>new RegExp('^'+cookieName+'=[A-Za-z0-9_-]{1,128}$').test(value));
+    const response = await fetch(`http://${apiHost}:${apiPort}${pathname}`, {
       method: write ? 'POST' : 'GET', body: requestBody,
       headers: { Accept: 'application/json', ...(sessionCookie ? {Cookie:sessionCookie}:{}),
         ...(req.headers.origin ? {Origin:req.headers.origin}:{}),
@@ -41,7 +43,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
     const body = await response.text();
     if (body.length > 1024 * 1024) throw new Error('Unexpected response size');
     JSON.parse(body);
-    const cookies = response.headers.getSetCookie().filter(value=>value.startsWith('ain_session='));
+    const cookies = response.headers.getSetCookie().filter(value=>value.startsWith(cookieName+'='));
     res.writeHead(response.status, { 'Content-Type': 'application/json; charset=utf-8', ...(cookies.length ? {'Set-Cookie':cookies}:{}),
       'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
     res.end(body);

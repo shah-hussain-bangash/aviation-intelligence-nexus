@@ -6,9 +6,10 @@ import subprocess
 from datetime import datetime, timezone
 import numpy as np
 from rag import ollama
+from services.api.paths import STATE
 
 ROOT = Path(__file__).resolve().parents[1]
-INDEX = ROOT / '.local/knowledge/index.json'
+INDEX = STATE / 'knowledge/index.json'
 SOURCES = ('docs/DELAY_V2.md', 'docs/DELAY_BASELINE.md', 'docs/DATA_INGESTION.md',
            'docs/MODEL_DATASET.md', 'docs/GATE_OPTIMIZATION.md', 'docs/LOCAL_IDENTITY.md')
 

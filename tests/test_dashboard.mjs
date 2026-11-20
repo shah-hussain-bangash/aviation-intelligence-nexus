@@ -9,6 +9,38 @@ import { renderHistory } from '../apps/web/research-history.mjs';
 import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
 import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
+import {renderPlatform} from '../apps/web/platform-status.mjs';
+import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
+
+test('release configuration restricts backend hosts, binding and cookie namespaces',()=>{
+  assert.equal(runtimeConfig({}).bindHost,'127.0.0.1');
+  assert.throws(()=>runtimeConfig({AIN_BIND_HOST:'0.0.0.0'}));
+  assert.equal(runtimeConfig({AIN_CONTAINER:'1',AIN_BIND_HOST:'0.0.0.0',AIN_API_HOST:'api',AIN_SESSION_COOKIE:'ain_release_session'}).apiHost,'api');
+  assert.throws(()=>routing({apiHost:'example.com'}));assert.throws(()=>routing({sessionCookie:'unrelated_session'}));
+});
+
+test('platform rendering never invents restore evidence or production qualification',()=>{
+  const state={production_ready:false,runtime:'local-native',database_ready:true,active_model_verified:false,ai_models_present:false,release_revision:'<unsafe>',schema_version:7,recovery:{recorded:false,production_qualified:false}};
+  const html=renderPlatform(state);assert.ok(html.includes('No verified restore receipt'));assert.ok(html.includes('&lt;unsafe&gt;'));assert.ok(!html.includes('Recorded restore checks passed'));
+  assert.throws(()=>renderPlatform({...state,production_ready:true}));
+});
+
+test('release proxy forwards only the isolated release cookie',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.headers.cookie,'ain_release_session=release_fixture');res.setHeader('Set-Cookie',['ain_release_session=new_fixture; HttpOnly; SameSite=Strict','ain_session=do_not_forward']);res.end('{}');});
+  const frontend=await serve(t,async(req,res)=>{await proxyResearchRequest(req,res,req.url,backend,{sessionCookie:'ain_release_session'});});
+  const response=await fetch(`http://127.0.0.1:${frontend}/api/v1/auth/session`,{headers:{Cookie:'ain_session=native_fixture; ain_release_session=release_fixture; unrelated=private_fixture'}});
+  assert.equal(response.status,200);assert.equal(response.headers.getSetCookie().length,1);assert.ok(response.headers.getSetCookie()[0].startsWith('ain_release_session='));
+});
+
+test('dashboard readiness reports backend outage separately from liveness',async t=>{
+  let failed=false;
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/health/ready');assert.equal(req.headers.cookie,undefined);res.writeHead(failed?503:200,{'Content-Type':'application/json'});res.end(JSON.stringify({status:failed?'not_ready':'ready'}));});
+  const reservation=http.createServer();await new Promise(resolve=>reservation.listen(0,'127.0.0.1',resolve));const port=reservation.address().port;await new Promise(resolve=>reservation.close(resolve));
+  const child=spawn(process.execPath,['scripts/dev.mjs'],{cwd:process.cwd(),env:{...process.env,PORT:String(port),AIN_API_PORT:String(backend)},windowsHide:true,stdio:['ignore','pipe','pipe']});t.after(()=>child.kill());
+  await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Dashboard did not start')),5000);child.once('error',reject);child.stdout.on('data',chunk=>{if(chunk.toString().includes('AIN dashboard:')){clearTimeout(timer);resolve();}});});
+  assert.equal((await fetch(`http://127.0.0.1:${port}/__ain/ready`)).status,200);failed=true;
+  assert.equal((await fetch(`http://127.0.0.1:${port}/__ain/ready`)).status,503);assert.equal((await fetch(`http://127.0.0.1:${port}/__ain/health`)).status,200);
+});
 
 test('quality-blocked reports show only source extracts and escape missing-tool labels',()=>{
   const run={research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'Research report',month:'2025-05',include_simulation:false},finding_style:'verbatim_source_extracts',steps:[{id:'T1',tool:'flight_metrics',state:'completed',arguments:{},observation:{data_kind:'historical_bts',evidence_text:'An exact source quotation for the report.'}}],claims:[{text:'UNSUPPORTED INTERPRETATION',citation:'T1',quote:'An exact source quotation for the report.'}],reviews:[],runtime:'fixture',quality:{passed:false,covered_sources:1,available_sources:1,missing_tools:['<unsafe>'],failed_steps:[],unavailable_steps:[]}};

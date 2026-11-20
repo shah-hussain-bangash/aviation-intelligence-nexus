@@ -1,20 +1,29 @@
 """Fixed loopback Ollama client; no remote URL or tools accepted from requests."""
 import json
 import re
+import os
 from threading import Lock
-from urllib.request import Request, build_opener, ProxyHandler
+from urllib.request import Request, build_opener, ProxyHandler, HTTPRedirectHandler
 
 EMBED_MODEL = 'embeddinggemma:300m'
 CHAT_MODEL = 'qwen3:8b'
 CHAT_LOCK = Lock()
 
 
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self,*args,**kwargs):
+        raise RuntimeError('Model-service redirects are not permitted')
+
+
 def call(route, payload=None, timeout=15):
-    request = Request('http://127.0.0.1:11434/api/' + route,
+    host=os.environ.get('AIN_OLLAMA_HOST','127.0.0.1')
+    if host not in ('127.0.0.1','ollama','host.docker.internal'): raise RuntimeError('Unapproved model-service host')
+    if host!='127.0.0.1' and os.environ.get('AIN_CONTAINER')!='1':raise RuntimeError('Container model routing requires explicit container configuration')
+    request = Request('http://'+host+':11434/api/' + route,
         data=json.dumps(payload).encode() if payload is not None else None,
         headers={'Content-Type': 'application/json'})
     # Never forward local documents through an environment-configured proxy.
-    with build_opener(ProxyHandler({})).open(request, timeout=timeout) as response:
+    with build_opener(ProxyHandler({}),NoRedirect()).open(request, timeout=timeout) as response:
         body = response.read(8_000_001)
     if len(body) > 8_000_000:
         raise RuntimeError('Oversized model response')

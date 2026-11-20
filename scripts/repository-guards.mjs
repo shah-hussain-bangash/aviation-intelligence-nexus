@@ -17,7 +17,7 @@ export function candidateFiles() {
   return [...new Set(result.stdout.split('\0').filter(Boolean))];
 }
 const allowedRoots = new Set(['apps','services','pipelines','ml','rag','agents','optimization','contracts','db','infra','tests','scripts','docs','.github','.vscode']);
-const allowedRootFiles = new Set(['README.md','AGENTS.md','CHANGELOG.md','LICENSE','LICENSE.md','package.json','package-lock.json','pyproject.toml','uv.lock','requirements.txt','Makefile','Dockerfile','compose.yaml','compose.yml','.gitignore','.gitattributes','.env.example']);
+const allowedRootFiles = new Set(['README.md','AGENTS.md','CHANGELOG.md','LICENSE','LICENSE.md','package.json','package-lock.json','pyproject.toml','uv.lock','requirements.txt','Makefile','Dockerfile','compose.yaml','compose.yml','.dockerignore','.gitignore','.gitattributes','.env.example']);
 const allowedExtensions = new Set(['.js','.mjs','.cjs','.ts','.tsx','.jsx','.html','.css','.json','.md','.yml','.yaml','.toml','.sql','.py','.txt','.ps1','.sh','.lock','.jpg','.jpeg','.png','.webp','.svg']);
 const secretRules = [
   ['github-token', /gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}/],

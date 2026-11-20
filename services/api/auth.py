@@ -9,12 +9,15 @@ import secrets
 import sqlite3
 from threading import Lock
 import time
+import os
 from uuid import uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError, InvalidHashError
 
-COOKIE = "ain_session"
+COOKIE = os.environ.get('AIN_SESSION_COOKIE','ain_session')
+if COOKIE not in ('ain_session','ain_release_session'):
+    raise RuntimeError('Unsupported session cookie namespace')
 SESSION_SECONDS = 8 * 60 * 60
 HASHER = PasswordHasher(time_cost=3, memory_cost=65536, parallelism=2)
 DUMMY_HASH = HASHER.hash(secrets.token_urlsafe(32))

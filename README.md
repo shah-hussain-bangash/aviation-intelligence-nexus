@@ -2,7 +2,7 @@
 
 An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
 
-**Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. Managed production identity and production deployment are not implemented.**
+**Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. A local Docker release and measured restoration are implemented; managed production identity and cloud deployment remain incomplete.**
 
 ![Aviation dashboard prototype](docs/images/dashboard.jpg)
 
@@ -35,6 +35,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 - Local aviation research Q&A with neural embeddings, hybrid retrieval, actual Ollama generation, checked citation/quotation references and saved/exportable results across six public project documents. See [evidence studio setup and limits](docs/KNOWLEDGE_STUDIO.md).
 - Local investigation agent with actual model-selected tools, read-only SQL metrics, document retrieval, optional synthetic optimization, persisted execution checkpoints and report-bound research review. See [agent evidence and limits](docs/INVESTIGATION_AGENT.md).
 - Agent report quality checks with explicit evidence requirements, document scope, one bounded repair, verified source extracts and server-blocked acceptance of mechanically incomplete reports. See [measured checks and remaining semantic limits](docs/AGENT_REPORT_QUALITY.md).
+
+- Local Docker release with loopback-only dashboard, non-root/read-only containers, trusted snapshot verification, measured restoration and controlled API outage/restart checks. See [deployment and recovery](docs/LOCAL_DEPLOYMENT_RECOVERY.md).
 
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.

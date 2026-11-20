@@ -2,7 +2,10 @@
 
 ## Delivered
 
-Agent quality milestone: explicit tool-evidence requirements, approved document scoping, one bounded repair call and verified source-extract findings are implemented. The server recomputes coverage before accepting research review and blocks mechanically incomplete reports. All seven curated development cases now pass their defined checks; manual inspection still found a broad-corpus relevance gap, so this is not a general accuracy or full task-completeness claim. Current suite: 95 automated tests. See `AGENT_REPORT_QUALITY.md`.
+Deployment/recovery milestone: a separate Docker Desktop instance restores 2,835,101 flights, the active model and knowledge index while preserving account credentials and revoking restored sessions. Sixteen container smoke/isolation checks and a controlled API outage/restart passed. The restored prediction matches native exactly; scoped retrieval and the known three-tool agent regression pass. An alternate objective failed closed on invalid generated arguments. The complete suite passes 108 tests. This is local evidence, not production recovery qualification. See `LOCAL_DEPLOYMENT_RECOVERY.md`.
+
+
+Agent quality milestone: explicit tool-evidence requirements, approved document scoping, one bounded repair call and verified source-extract findings are implemented. The server recomputes coverage before accepting research review and blocks mechanically incomplete reports. All seven curated development cases now pass their defined checks; manual inspection still found a broad-corpus relevance gap, so this is not a general accuracy or full task-completeness claim. That milestone passed 95 automated tests; the deployment milestone supersedes this count. See `AGENT_REPORT_QUALITY.md`.
 
 Agent milestone: a local Qwen3 tool-calling investigation runtime selects and executes up to three restricted tools: historical BTS SQL metrics, project-document retrieval and opt-in synthetic gate optimization. Execution checkpoints, scoped retry replay, interruption records, cited drafts, saved/exportable reports and hash-bound research review are implemented. A real three-tool run was observed, and browser QA recorded `needs_changes` because its summary omitted retrieved model limitations. This is a bounded single-agent research workflow, not an operational or multi-agent platform. The original milestone passed 83 tests; the quality update above supersedes that count. See `INVESTIGATION_AGENT.md`.
 
@@ -34,7 +37,7 @@ The current frontend preserves 64 workspaces, 256 specified functions, 72 accept
 
 ## Not yet delivered
 
-Current outstanding work includes broader authorized aviation document ingestion, report completeness and agent evaluation, durable worker orchestration, operational-scale optimization and validation, managed identity, cloud deployment, monitoring and measured backup restoration. The implemented local research capabilities above do not complete these production requirements.
+Current outstanding work includes broader authorized aviation document ingestion, report completeness and agent evaluation, durable worker orchestration, operational-scale optimization and validation, managed identity, cloud deployment, monitoring and independent production backup restoration. The implemented local research capabilities above do not complete these production requirements.
 
 The production audit records **20 areas not implemented, 3 partially evidenced and 1 unverified**. No production requirement is independently verified complete and no production service is connected.
 

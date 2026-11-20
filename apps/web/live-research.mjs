@@ -3,6 +3,7 @@ import { apiFetch, canCalculate, mountAuth } from './research-auth.mjs';
 import { mountGateLab } from './gate-lab.mjs';
 import { mountKnowledge } from './knowledge-lab.mjs';
 import { mountInvestigation } from './investigation-lab.mjs';
+import { mountPlatformStatus } from './platform-status.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Invalid numeric response');
@@ -61,6 +62,7 @@ if (typeof document !== 'undefined') {
   const gateLab = mountGateLab(section.querySelector('.research-inner'));
   const knowledgeLab = mountKnowledge(section.querySelector('.research-inner'));
   const investigationLab = mountInvestigation(section.querySelector('.research-inner'));
+  const platformStatus = mountPlatformStatus(section.querySelector('.research-inner'));
   const body = document.getElementById('researchBody');
   const status = document.getElementById('researchConnection');
   const refresh = document.getElementById('refreshResearch');
@@ -94,6 +96,7 @@ if (typeof document !== 'undefined') {
     gateLab.setSession(user);
     knowledgeLab.setSession(user);
     investigationLab.setSession(user);
+    platformStatus.setSession(user);
     section.querySelector('details').hidden=!user;
     scenarioUI.setAvailable(false);
     scenarioUI.clearHistory();

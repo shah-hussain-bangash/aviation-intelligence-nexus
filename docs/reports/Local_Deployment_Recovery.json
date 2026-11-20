@@ -1,0 +1,164 @@
+{
+  "milestone": "Local deployment and recovery foundation",
+  "date": "2026-11-20",
+  "scope": "Windows Docker Desktop research release; not production qualification",
+  "snapshot": {
+    "id": "04691e0f-2e07-4668-8e9c-b87f0a523ab2",
+    "created_at": "2026-11-20T06:12:22.043480+00:00",
+    "files": 4,
+    "flight_records": 2835101,
+    "encrypted": false,
+    "signed": false,
+    "off_site": false
+  },
+  "native_restore": {
+    "format": "ain-restore-receipt-v1",
+    "snapshot_id": "04691e0f-2e07-4668-8e9c-b87f0a523ab2",
+    "restored_at": "2026-11-20T06:12:43.433064+00:00",
+    "schema_version": 7,
+    "checksums_verified": true,
+    "database_integrity_verified": true,
+    "row_counts_preserved": true,
+    "sessions_revoked": true,
+    "flight_records": 2835101,
+    "active_model_restored": true,
+    "knowledge_index_restored": true,
+    "elapsed_ms": 14290.33,
+    "production_qualified": false
+  },
+  "container_restore": {
+    "format": "ain-restore-receipt-v1",
+    "snapshot_id": "04691e0f-2e07-4668-8e9c-b87f0a523ab2",
+    "restored_at": "2026-11-20T06:27:35.437019+00:00",
+    "schema_version": 7,
+    "checksums_verified": true,
+    "database_integrity_verified": true,
+    "row_counts_preserved": true,
+    "sessions_revoked": true,
+    "flight_records": 2835101,
+    "active_model_restored": true,
+    "knowledge_index_restored": true,
+    "elapsed_ms": 74095.3,
+    "production_qualified": false
+  },
+  "runtime_probe": {
+    "scope": "Operator smoke on restored local state; not user acceptance or production qualification",
+    "flight_records": 2835101,
+    "prediction_probability": 0.14414301173592028,
+    "artifact_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+    "checks": {
+      "database_integrity": true,
+      "flight_records_present": true,
+      "research_prediction": true,
+      "scoped_local_embedding_retrieval": true,
+      "agent_tools_completed": true,
+      "agent_coverage_gate": true
+    },
+    "production_ready": false,
+    "agent": {
+      "state": "awaiting_review",
+      "error_type": null,
+      "tools": [
+        "flight_metrics",
+        "knowledge_search",
+        "gate_simulation"
+      ],
+      "quality": {
+        "version": "research-coverage-v1",
+        "passed": true,
+        "required_tools": [
+          "flight_metrics",
+          "knowledge_search",
+          "gate_simulation"
+        ],
+        "missing_tools": [],
+        "failed_steps": [],
+        "unavailable_steps": [],
+        "uncited_tools": [],
+        "invalid_claims": [],
+        "covered_sources": 3,
+        "available_sources": 3,
+        "document_scope": "docs/DELAY_V2.md",
+        "document_scope_mismatches": [],
+        "finding_style": "verbatim_source_extracts",
+        "semantic_entailment_verified": false,
+        "all_objective_parts_verified": false,
+        "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+      },
+      "repair": null,
+      "research_only": true,
+      "operational_approval": false
+    },
+    "passed": true
+  },
+  "container_smoke": {
+    "scope": "Local container smoke and isolation checks, not production qualification",
+    "project": "ain-local-release",
+    "checks": {
+      "api_healthy": true,
+      "api_non_root": true,
+      "api_read_only_root": true,
+      "api_capabilities_dropped": true,
+      "api_not_privileged": true,
+      "api_no_privilege_escalation": true,
+      "api_port_scope": true,
+      "web_healthy": true,
+      "web_non_root": true,
+      "web_read_only_root": true,
+      "web_capabilities_dropped": true,
+      "web_not_privileged": true,
+      "web_no_privilege_escalation": true,
+      "web_port_scope": true,
+      "database_backed_readiness": true,
+      "unauthenticated_access_not_granted": true
+    },
+    "passed": true,
+    "images": {
+      "api": {
+        "image_id": "sha256:94f525071e30f889cf1dfff76e8504b435f591e23538f1f64c8573bd884584f4",
+        "source_revision": "working-tree"
+      },
+      "web": {
+        "image_id": "sha256:495a1f07d64c9480291c9e43ef7f4839551b1c1db9097d8c0bca32811607fe9e",
+        "source_revision": "working-tree"
+      }
+    },
+    "production_ready": false
+  },
+  "outage_drill": {
+    "scope": "Controlled local API stop/start on this AIN release only; not an infrastructure disaster simulation",
+    "readiness_returned_503": true,
+    "frontend_liveness_preserved": true,
+    "row_counts_preserved": true,
+    "services_healthy_after_restart": true,
+    "flight_records_after_restart": 2835101,
+    "passed": true,
+    "production_ready": false
+  },
+  "native_prediction_exact_match": true,
+  "initial_alternate_objective_probe": {
+    "passed": false,
+    "state": "failed",
+    "error_type": "ValidationError",
+    "tools_executed": 0,
+    "meaning": "Invalid model-generated tool arguments rejected before execution; general agent reliability remains unqualified."
+  },
+  "timing_scope": "Restore file/validation steps only, not full-system RTO",
+  "automated_tests": {
+    "python": 90,
+    "node": 18,
+    "total": 108
+  },
+  "browser_acceptance": {
+    "restored_existing_admin_sign_in": true,
+    "full_dataset_summary": true,
+    "platform_status_card": true,
+    "desktop_mobile_layout": true
+  },
+  "production_ready": false,
+  "temporary_storage_regression": {
+    "initial_error": "SQLite temporary sort exhausted 64 MiB container tmpfs",
+    "fix": "API tmpfs bounded at 256 MiB",
+    "full_monthly_aggregation_retested": true
+  }
+}

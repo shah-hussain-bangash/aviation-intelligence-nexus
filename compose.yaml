@@ -1,0 +1,67 @@
+name: ain-local-release
+services:
+  api:
+    image: ain-api:${AIN_RELEASE_TAG:-local}
+    build:
+      context: .
+      target: api
+      args:
+        RELEASE_REVISION: ${AIN_RELEASE_REVISION:-working-tree}
+    environment:
+      AIN_CONTAINER: "1"
+      AIN_STATE_ROOT: /app/.local/active
+      AIN_DB_PATH: /app/.local/active/ain.sqlite3
+      AIN_SESSION_COOKIE: ain_release_session
+      AIN_OLLAMA_HOST: host.docker.internal
+      PORT: ${AIN_WEB_PORT:-8090}
+      AIN_API_PORT: "8002"
+    volumes:
+      - state:/app/.local
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -m, infra.health]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+  web:
+    image: ain-web:${AIN_RELEASE_TAG:-local}
+    build:
+      context: .
+      target: web
+      args:
+        RELEASE_REVISION: ${AIN_RELEASE_REVISION:-working-tree}
+    environment:
+      AIN_CONTAINER: "1"
+      AIN_BIND_HOST: 0.0.0.0
+      AIN_API_HOST: api
+      AIN_API_PORT: "8002"
+      AIN_SESSION_COOKIE: ain_release_session
+      PORT: "8080"
+    ports:
+      - "127.0.0.1:${AIN_WEB_PORT:-8090}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, node, --input-type=module, -e, "const r=await fetch('http://127.0.0.1:8080/__ain/ready');if(!r.ok)process.exit(1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+volumes:
+  state:

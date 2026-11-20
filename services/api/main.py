@@ -24,6 +24,8 @@ from rag.history import EvidenceHistory
 from rag import ollama
 from agents.runtime import Investigation, Investigator, Review
 from agents.store import AgentStore, Conflict
+from services.api.paths import STATE, SCHEMA_VERSION
+from infra.status import restore_status
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -51,7 +53,7 @@ def initialize(database: Path):
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
         version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > 7:
+        if version > SCHEMA_VERSION:
             raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
@@ -125,9 +127,9 @@ def read_model_report(directory: Path):
 def create_app(database: Path | None = None, model_directory: Path | None = None,
                research_model_directory: Path | None = None, knowledge_index: Path | None = None):
     database = Path(database) if database is not None else Path(
-        os.environ.get("AIN_DB_PATH", str(ROOT / ".local" / "ain.sqlite3")))
-    model_directory = model_directory if model_directory is not None else ROOT / ".local/models/delay-baseline-v1"
-    research_model_directory = research_model_directory if research_model_directory is not None else ROOT / ".local/models/delay-v2"
+        os.environ.get("AIN_DB_PATH", str(STATE / "ain.sqlite3")))
+    model_directory = model_directory if model_directory is not None else STATE / "models/delay-baseline-v1"
+    research_model_directory = research_model_directory if research_model_directory is not None else STATE / "models/delay-v2"
     predictor = ResearchPredictor(research_model_directory)
     history = ResearchHistory(database)
     gate_history = GateRunStore(database)
@@ -391,6 +393,25 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except KeyError: return JSONResponse(status_code=404,content={'error':'investigation_unavailable'})
         except Conflict as error: return JSONResponse(status_code=409,content={'error':'review_blocked','message':str(error)})
         except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'review_not_saved'})
+
+    @app.get('/api/v1/research/platform-status')
+    def platform_status():
+        try:
+            with closing(connect(database)) as db:
+                schema=db.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0]
+            database_ready=schema==SCHEMA_VERSION
+        except sqlite3.Error:
+            database_ready=False
+        try:
+            installed=ollama.models();ai_models_present=ollama.EMBED_MODEL in installed and ollama.CHAT_MODEL in installed
+        except (OSError,ValueError,KeyError,TypeError,RuntimeError):ai_models_present=False
+        return {'runtime':'local-container' if os.environ.get('AIN_CONTAINER')=='1' else 'local-native',
+            'release_revision':os.environ.get('AIN_RELEASE_REVISION','development-working-tree'),
+            'database_ready':database_ready,'schema_version':SCHEMA_VERSION if database_ready else None,
+            'active_model_verified':read_model_report(research_model_directory) is not None,
+            'ai_models_present':ai_models_present,'recovery':restore_status(database.parent),
+            'production_ready':False,'limitations':['Local deployment and recorded recovery checks do not establish production qualification.',
+                'No managed TLS, cloud monitoring, protected backup storage or high-availability worker service is configured.']}
 
     return app
 

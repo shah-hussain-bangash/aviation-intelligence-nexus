@@ -8,6 +8,7 @@ import sqlite3
 
 from services.api.auth import AuthStore
 from services.api.main import ROOT, initialize
+from services.api.paths import STATE
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
     parser.add_argument("--username", required=True)
     parser.add_argument("--role", choices=["admin", "researcher", "viewer"])
     args = parser.parse_args()
-    database = Path(os.environ.get("AIN_DB_PATH", str(ROOT / ".local/ain.sqlite3")))
+    database = Path(os.environ.get("AIN_DB_PATH", str(STATE / "ain.sqlite3")))
     initialize(database)
     auth = AuthStore(database)
     try:
