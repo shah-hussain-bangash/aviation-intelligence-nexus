@@ -2,6 +2,9 @@
 
 ## Delivered
 
+Background investigation milestone: saved SQLite queue submission returns promptly while one local API worker executes the existing bounded agent. Progress polling, owner-scoped retrieval, request/active-input deduplication, waiting limits, permission recheck and queued-only cancellation are implemented. Normal restart preserves waiting work but never replays interrupted runs; restoration cancels waiting work in the restored copy. The schema/account credentials remain unchanged. Windows passes 147 tests (121 Python, 26 Node); Linux skips the Windows DPAPI provider test. External worker orchestration and production failover remain incomplete. See `BACKGROUND_INVESTIGATIONS.md`.
+
+
 Readiness milestone: a dated maintainer assessment maps all 24 baseline requirement IDs to current local progress, fingerprint-checked public evidence, remaining work and acceptance criteria. Twenty-two have some recorded local evidence; all 24 remain production-open. Search/filter/export and authenticated read-only access are implemented. Historic completion reports are explicitly labelled and global model/agent availability statements corrected. The full Windows suite passes 135 tests (111 Python, 24 Node); Linux skips the Windows DPAPI case. See `RELEASE_READINESS.md`.
 
 

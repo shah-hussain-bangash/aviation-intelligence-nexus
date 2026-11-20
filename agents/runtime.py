@@ -53,14 +53,14 @@ class Investigator:
     def __init__(self,database,knowledge,store):
         self.database,self.knowledge,self.store=database,knowledge,store
 
-    def run(self,user,key,request):
+    def run(self,user,key,request,queued_result=None):
         payload=request.model_dump()
-        prior=self.store.lookup(user,key,payload)
+        prior=self.store.lookup(user,key,payload) if queued_result is None else None
         if prior: return prior
         if not RUN_LOCK.acquire(blocking=False): raise Conflict('Another investigation is running; try later')
         result=None
         try:
-            result=self.store.begin(user,key,payload)
+            result=queued_result if queued_result is not None else self.store.begin(user,key,payload)
             deadline=time.monotonic()+120
             model_digest=ollama.models()[ollama.CHAT_MODEL]
             result['model']={'name':ollama.CHAT_MODEL,'digest':model_digest}

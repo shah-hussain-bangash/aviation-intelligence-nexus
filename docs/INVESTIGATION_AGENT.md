@@ -60,3 +60,5 @@ The full automated suite includes 70 Python and 13 Node tests. Agent checks cove
 Future work includes larger evaluation sets, report completeness checks, framework integration if useful, more authorized aviation sources, durable background workers, production identity, monitoring and deployment/recovery qualification. There are no flight write, booking, messaging, maintenance approval or operational recovery tools.
 
 Provider reference: [Ollama native tool calling](https://docs.ollama.com/capabilities/tool-calling).
+
+Background execution update: the dashboard now submits saved jobs and polls progress. Queued-only cancellation, owner limits, request deduplication and restart/restore rules are implemented without a schema change. The synchronous API description above is the earlier milestone; it is disabled when the background worker is enabled. See [background investigations](BACKGROUND_INVESTIGATIONS.md) for the current 147-test suite and single-process limitations.

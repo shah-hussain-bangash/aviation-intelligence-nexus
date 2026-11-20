@@ -180,8 +180,8 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded single agent executes approved SQL, document and opt-in synthetic solver tools with saved checkpoints and research review.",
-      "remaining": "General task-completeness evaluation, durable workers, cancellation/resume qualification and multi-agent operational workflows remain outstanding.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints.",
+      "remaining": "External worker isolation, distributed leases/failover, running-tool cancellation, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
       "evidence": [
@@ -192,6 +192,14 @@
         {
           "path": "docs/reports/Agent_Quality_Evaluation.json",
           "sha256": "8351b21a99bc549d59792f20e33692284bbe17db0816af6d90ee29789cc45896"
+        },
+        {
+          "path": "docs/BACKGROUND_INVESTIGATIONS.md",
+          "sha256": "f4cac035996271d3e97205eedc74e2a49fe8120309bd0c237af4123bddeb26a3"
+        },
+        {
+          "path": "docs/reports/Background_Investigations.json",
+          "sha256": "ac57dc249662fc23d6b953d554049c400fed1a28094343e1650efaa72ff23f17"
         }
       ]
     },
@@ -239,7 +247,7 @@
       "evidence": [
         {
           "path": "docs/INVESTIGATION_AGENT.md",
-          "sha256": "6f6d61c194fbfbf70e4f4972d4855ee2d7556c30f8ff3d0a5cdf87edc7ffb31f"
+          "sha256": "93d179d627f2d55ffaa5db5512c7b104fb81ecb5480bbc6b9e8cd51ceee4627e"
         }
       ]
     },
@@ -441,7 +449,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "974b3ab2d409fba6b914853e7e473bf4b03cff27570cab80537c2f52f3741011"
+          "sha256": "5840fc9960a2fef67b9467e341b83d2f4b9e1f3080ea06a564152a90b42a8fc7"
         }
       ]
     },
@@ -463,7 +471,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "974b3ab2d409fba6b914853e7e473bf4b03cff27570cab80537c2f52f3741011"
+          "sha256": "5840fc9960a2fef67b9467e341b83d2f4b9e1f3080ea06a564152a90b42a8fc7"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

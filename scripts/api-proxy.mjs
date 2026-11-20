@@ -6,10 +6,13 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const optimization = pathname === '/api/v1/research/optimize-gates';
   const knowledge = pathname === '/api/v1/research/knowledge-query';
   const agent = pathname === '/api/v1/research/agent-run';
+  const jobSubmit = pathname === '/api/v1/research/agent-jobs';
+  const jobRead = /^\/api\/v1\/research\/agent-jobs\/[0-9a-fA-F-]{36}$/.test(pathname);
+  const jobCancel = pathname === '/api/v1/research/agent-cancel';
   const agentReview = pathname === '/api/v1/research/agent-review';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
-  const write = prediction || optimization || knowledge || agent || agentReview || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring'].includes(pathname) && !write) return false;
+  const write = jobSubmit || jobCancel || prediction || optimization || knowledge || agent || agentReview || authWrite;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring'].includes(pathname) && !write && !jobRead) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }

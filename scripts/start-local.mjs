@@ -45,7 +45,7 @@ async function start() {
   process.on('SIGINT', () => stop()); process.on('SIGTERM', () => stop());
   function launch(command, args, name) {
     const child = spawn(command, args, {cwd:root,stdio:'inherit',windowsHide:true,
-      env:{...process.env,PORT:String(webPort),AIN_API_PORT:String(apiPort)}});
+      env:{...process.env,AIN_AGENT_JOBS:process.env.AIN_AGENT_JOBS??'1',PORT:String(webPort),AIN_API_PORT:String(apiPort)}});
     children.push(child);
     child.once('error', () => { console.error(`${name} could not start. Check its environment and dependencies.`); stop(1); });
     child.once('exit', code => { if (!stopping) { console.error(`${name} stopped (exit ${code}).`); stop(1); } });

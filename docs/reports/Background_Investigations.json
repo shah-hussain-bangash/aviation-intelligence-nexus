@@ -1,0 +1,124 @@
+{
+  "milestone": "Saved background investigations",
+  "date": "2026-11-20",
+  "scope": "Bounded single-process local worker; not external worker orchestration or production failover",
+  "actual_local_model_runs": [
+    {
+      "run_id": "8be321cd-cbcc-47e7-a610-53b3d4b57565",
+      "state": "awaiting_review",
+      "execution": "local-background-queue-v1",
+      "tools": [
+        "flight_metrics",
+        "knowledge_search",
+        "gate_simulation"
+      ],
+      "quality_passed": true,
+      "report_sha256": "491944ea692f637ed784506eed49f7facea689cbd4f51772bab4e4bb435fc6b9",
+      "created_at": "2026-11-20T07:39:42.424052+00:00",
+      "updated_at": "2026-11-20T07:39:53.204792+00:00",
+      "operational_approval": false
+    },
+    {
+      "run_id": "aa201be1-c67c-40ec-90c4-ffd077f6df35",
+      "state": "cancelled",
+      "execution": "local-background-queue-v1",
+      "tools": [],
+      "quality_passed": null,
+      "report_sha256": null,
+      "created_at": "2026-11-20T07:39:52.675880+00:00",
+      "updated_at": "2026-11-20T07:39:53.029525+00:00",
+      "operational_approval": false
+    },
+    {
+      "run_id": "db3c57da-1444-44d4-a7a2-cdd5471fa484",
+      "state": "awaiting_review",
+      "execution": "local-background-queue-v1",
+      "tools": [
+        "flight_metrics",
+        "knowledge_search",
+        "gate_simulation"
+      ],
+      "quality_passed": true,
+      "report_sha256": "f3cc2fea42025a3de94a7162a6253380057aa98d6c561b62176f9da756245444",
+      "created_at": "2026-11-20T07:40:55.670381+00:00",
+      "updated_at": "2026-11-20T07:41:02.904198+00:00",
+      "operational_approval": false
+    }
+  ],
+  "browser_checks": {
+    "existing_admin_session_preserved": true,
+    "queued_acknowledgement_visible": true,
+    "automatic_progress_reads_for_first_run": 5,
+    "queued_job_cancelled_before_any_tool": true,
+    "page_reloaded_while_second_run_queued": true,
+    "same_second_run_reopened_after_completion": true,
+    "desktop_mobile_result_layout": true,
+    "human_review_not_submitted": true
+  },
+  "queue_limits": {
+    "running": 1,
+    "waiting_global": 5,
+    "waiting_owner": 2
+  },
+  "automated_tests": {
+    "windows_python": 121,
+    "node": 26,
+    "windows_total": 147,
+    "linux_dpapi_provider_skips": 1
+  },
+  "tested_fixture_behaviors": [
+    "atomic competing claims",
+    "idempotent retry and active-input deduplication",
+    "queue waiting caps",
+    "owner checks",
+    "permission recheck at claim",
+    "queued-only cancellation",
+    "restart interrupts running work without replay",
+    "restore cancels queued work in restored copy",
+    "runtime reuses queued run ID",
+    "worker failure sanitized and not retried",
+    "active duplicate retry keys survive stale worker checkpoint and terminal completion"
+  ],
+  "container_smoke": {
+    "scope": "Local container smoke and isolation checks, not production qualification",
+    "project": "ain-local-release",
+    "checks": {
+      "api_healthy": true,
+      "api_non_root": true,
+      "api_read_only_root": true,
+      "api_capabilities_dropped": true,
+      "api_not_privileged": true,
+      "api_no_privilege_escalation": true,
+      "api_port_scope": true,
+      "web_healthy": true,
+      "web_non_root": true,
+      "web_read_only_root": true,
+      "web_capabilities_dropped": true,
+      "web_not_privileged": true,
+      "web_no_privilege_escalation": true,
+      "web_port_scope": true,
+      "database_backed_readiness": true,
+      "unauthenticated_access_not_granted": true
+    },
+    "passed": true,
+    "images": {
+      "api": {
+        "image_id": "sha256:0123e461ffb1e8d43981a7acde5d5f49681880640345e29dd522877637bfd2c7",
+        "source_revision": "background-jobs-working-tree"
+      },
+      "web": {
+        "image_id": "sha256:8c4515973c572967076aeab510f3e7f74d98f99947990fbe3f1516661605cd74",
+        "source_revision": "background-jobs-working-tree"
+      }
+    },
+    "production_ready": false
+  },
+  "limits": [
+    "One API process only; no lease-based multi-replica failover",
+    "No automatic retry of failed/interrupted runs",
+    "No forced cancellation of running tools",
+    "Deadline uses bounded calls and cooperative checks",
+    "Mechanical coverage is not human semantic acceptance"
+  ],
+  "production_ready": false
+}

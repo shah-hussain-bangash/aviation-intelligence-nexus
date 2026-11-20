@@ -53,6 +53,12 @@ class AgentStore:
     def checkpoint(self,result):
         result['updated_at']=now()
         with closing(self.connection()) as db,db:
+            db.execute('BEGIN IMMEDIATE')
+            saved=db.execute('SELECT result_json FROM agent_runs WHERE id=?',(result['run_id'],)).fetchone()
+            if saved:
+                metadata=json.loads(saved['result_json'])
+                if 'submission_keys' in metadata:
+                    result['submission_keys']=metadata['submission_keys']
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',
                 (json.dumps(result),result['updated_at'],result['run_id']))
 
@@ -63,10 +69,13 @@ class AgentStore:
             results=[json.loads(row[0]) for row in db.execute(query+' ORDER BY updated_at DESC,rowid DESC LIMIT 10',params)]
             return [{**result,**({'quality':assess_report(result)} if result.get('report_sha256') else {})} for result in results]
 
-    def recover(self):
+    def recover(self,restoring=False):
         with closing(self.connection()) as db,db:
             for row in db.execute('SELECT id,result_json FROM agent_runs').fetchall():
                 result=json.loads(row['result_json'])
+                if restoring and result['state']=='queued':
+                    result.update(state='cancelled',updated_at=now(),error='Restored queued work is not automatically replayed. Start a new investigation after checking restored state.')
+                    db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',(json.dumps(result),result['updated_at'],row['id']))
                 if result['state']=='running':
                     for step in result['steps']:
                         if step['state']=='running': step.update(state='interrupted',error='Service restarted during this tool.')

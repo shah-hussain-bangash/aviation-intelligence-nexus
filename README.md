@@ -44,6 +44,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Dated release-readiness assessment for all 24 production requirements, with recorded local progress, evidence integrity, remaining work and read-only export. See [scope and acceptance boundaries](docs/RELEASE_READINESS.md).
 
+- Saved background investigations with bounded waiting queues, owner permissions, live checkpoints, safe retry handling and queued-only cancellation. See [execution and recovery limits](docs/BACKGROUND_INVESTIGATIONS.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

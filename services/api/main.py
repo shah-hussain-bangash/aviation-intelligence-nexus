@@ -29,6 +29,7 @@ from services.api.paths import STATE, SCHEMA_VERSION
 from infra.status import restore_status, encrypted_drill_status
 from services.api.monitoring import Monitor
 from infra.readiness import assessment
+from agents.jobs import JobQueue, JobWorker, QueueFull
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -37,6 +38,11 @@ class LoginInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     username: str = Field(pattern=r"^[a-zA-Z0-9_.-]{3,32}$")
     password: str = Field(min_length=1, max_length=128)
+
+
+class CancelJob(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    run_id: UUID
 
 
 def connect(database: Path):
@@ -140,6 +146,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     knowledge_history = EvidenceHistory(database)
     agent_store = AgentStore(database)
     investigator = Investigator(database,knowledge,agent_store)
+    job_queue = JobQueue(agent_store)
+    job_worker = JobWorker(job_queue, investigator, enabled=os.environ.get('AIN_AGENT_JOBS') == '1')
     auth = AuthStore(database)
     def database_probe():
         with closing(connect(database)) as connection:
@@ -162,9 +170,11 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         initialize(database)
         agent_store.recover()
         monitor.start()
+        job_worker.start()
         try:
             yield
         finally:
+            await job_worker.stop()
             await monitor.stop()
 
     app = FastAPI(
@@ -175,6 +185,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     )
     app.state.auth_store = auth
     app.state.monitor = monitor
+    app.state.job_worker = job_worker
 
     @app.middleware("http")
     async def require_session(request: Request, call_next):
@@ -193,7 +204,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -410,11 +421,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError):
             available = False
         return {'available':available,'model':ollama.CHAT_MODEL,'max_tool_calls':3,
+            'background_worker':job_worker.status(),
             'tools':['flight_metrics','knowledge_search','gate_simulation (opt-in synthetic only)'],
             'research_only':True,'operational_writes':False}
 
     @app.post('/api/v1/research/agent-run')
     def agent_run(investigation: Investigation,request: Request,idempotency_key: UUID = Header()):
+        if job_worker.enabled:
+            return JSONResponse(status_code=409, content={'error': 'background_jobs_required', 'message': 'Submit this investigation to the saved background queue.'})
         try:
             return investigator.run(request.state.user,str(idempotency_key),investigation)
         except Conflict:
@@ -426,6 +440,39 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     def agent_history(request: Request):
         try: return {'runs':agent_store.recent(request.state.user),'research_only':True}
         except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'agent_history_unavailable'})
+
+    @app.post('/api/v1/research/agent-jobs', status_code=202)
+    def enqueue_investigation(investigation: Investigation, request: Request, idempotency_key: UUID = Header()):
+        if not job_worker.enabled or not job_worker.task or job_worker.task.done() or job_worker.last_error:
+            return JSONResponse(status_code=503, content={'error': 'background_worker_unavailable'})
+        try:
+            return job_queue.enqueue(request.state.user, str(idempotency_key), investigation)
+        except QueueFull:
+            return JSONResponse(status_code=429, content={'error': 'investigation_queue_full', 'message': 'Waiting queue is full. Wait for existing jobs; retry the same request key.'})
+        except Conflict:
+            return JSONResponse(status_code=409, content={'error': 'request_key_conflict'})
+        except (sqlite3.Error, OSError, ValueError):
+            return JSONResponse(status_code=503, content={'error': 'investigation_queue_unavailable'})
+
+    @app.get('/api/v1/research/agent-jobs/{run_id}')
+    def investigation_job(run_id: UUID, request: Request):
+        try:
+            return job_queue.get(request.state.user, str(run_id))
+        except KeyError:
+            return JSONResponse(status_code=404, content={'error': 'investigation_unavailable'})
+        except (sqlite3.Error, ValueError):
+            return JSONResponse(status_code=503, content={'error': 'investigation_queue_unavailable'})
+
+    @app.post('/api/v1/research/agent-cancel')
+    def cancel_investigation(job: CancelJob, request: Request):
+        try:
+            return job_queue.cancel(request.state.user, str(job.run_id))
+        except KeyError:
+            return JSONResponse(status_code=404, content={'error': 'investigation_unavailable'})
+        except Conflict:
+            return JSONResponse(status_code=409, content={'error': 'investigation_not_waiting', 'message': 'Only queued work can be cancelled. Running tools finish within their existing bounds.'})
+        except (sqlite3.Error, ValueError):
+            return JSONResponse(status_code=503, content={'error': 'investigation_queue_unavailable'})
 
     @app.post('/api/v1/research/agent-review')
     def agent_review(review: Review,request: Request):

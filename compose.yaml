@@ -10,6 +10,7 @@ services:
     environment:
       AIN_CONTAINER: "1"
       AIN_MONITOR_ENABLED: "1"
+      AIN_AGENT_JOBS: "1"
       AIN_STATE_ROOT: /app/.local/active
       AIN_DB_PATH: /app/.local/active/ain.sqlite3
       AIN_SESSION_COOKIE: ain_release_session

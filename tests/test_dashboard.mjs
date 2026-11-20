@@ -15,6 +15,24 @@ import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
 import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
 
+test('background job proxy acknowledges submission and permits only fixed UUID reads',async t=>{
+  const backend=await serve(t,(req,res)=>{res.setHeader('Content-Type','application/json');if(req.method==='POST'){assert.equal(req.headers['idempotency-key'],'fixture-job-key');res.writeHead(202);res.end('{"state":"queued"}');}else{assert.equal(req.url,'/api/v1/research/agent-jobs/11111111-1111-4111-8111-111111111111');res.end('{"state":"running"}');}});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const base=`http://127.0.0.1:${frontend}/api/v1/research/agent-jobs`;
+  assert.equal((await fetch(base,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':'fixture-job-key'},body:'{}'})).status,202);
+  assert.equal((await fetch(base+'/11111111-1111-4111-8111-111111111111')).status,200);
+  assert.equal((await fetch(base+'/arbitrary-destination')).status,404);
+  assert.equal((await fetch(base+'/11111111-1111-4111-8111-111111111111',{method:'POST'})).status,405);
+});
+
+test('queued investigation rendering offers no report approval claim',()=>{
+  const run={state:'queued',execution:'local-background-queue-v1',research_only:true,operational_approval:false,steps:[],claims:[],reviews:[],request:{objective:'Fixture queued investigation',month:'2025-05',include_simulation:false},run_id:'fixture',actor:'fixture',updated_at:'2026-11-20',runtime:'bounded-ollama-tools-v2'};
+  const html=renderInvestigation(run);
+  assert.match(html,/Saved background job/);
+  assert.match(html,/running tools are not forcibly stopped/);
+  assert.doesNotMatch(html,/Coverage checks passed/);
+});
+
 function readinessFixture(){
   const data=JSON.parse(fs.readFileSync(new URL('../infra/readiness.json',import.meta.url),'utf8'));
   return {...data,total:24,production_accepted:0,production_open:24,source_revision:'main',checked_at:'2026-11-20T00:00:00Z',requirements:data.requirements.map(r=>({...r,assessment_state:r.evidence.length?'local_evidence':'planned',evidence:r.evidence.map(e=>({...e,integrity_verified:true,url:'https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/main/'+e.path}))}))};

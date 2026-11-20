@@ -95,7 +95,7 @@ def restore(backup_directory,destination):
     original=database_facts(destination/'ain.sqlite3')
     with closing(sqlite3.connect(destination/'ain.sqlite3')) as db,db:
         db.execute('DELETE FROM auth_sessions')
-    AgentStore(destination/'ain.sqlite3').recover()
+    AgentStore(destination/'ain.sqlite3').recover(restoring=True)
     restored=database_facts(destination/'ain.sqlite3')
     expected={**original['row_counts'],'auth_sessions':0}
     if restored['row_counts']!=expected:raise ValueError('Restored row counts differ from the snapshot')

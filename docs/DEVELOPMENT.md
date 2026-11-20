@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 24 Node dashboard/proxy/startup tests and 111 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 26 Node dashboard/proxy/startup tests and 121 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -44,3 +44,5 @@ The Docker API enables local monitoring. Native developers can set `AIN_MONITOR_
 Encrypted backups use a separate operator dependency snapshot and Windows key provider; the dashboard containers do not receive the key. See [encrypted recovery](ENCRYPTED_RECOVERY.md).
 
 Readiness evidence fingerprints normalize UTF-8 text to LF line endings. When changing a referenced document/report, review its scope and update the readiness catalog deliberately; missing/changed evidence is withheld. See RELEASE_READINESS.md.
+
+The combined launcher enables the local investigation worker by default for newly started APIs. Existing services must be restarted to load code/configuration changes. See BACKGROUND_INVESTIGATIONS.md for queue limits, cancellation and recovery semantics.
