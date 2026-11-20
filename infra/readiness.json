@@ -112,7 +112,7 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling.",
       "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
@@ -127,7 +127,7 @@
         },
         {
           "path": "docs/ROUTE_SEGMENTATION.md",
-          "sha256": "e3f48a1041e21c2c5ebb3e8c27cb544db7cb93a53bffc36e5d6380da26fbb839"
+          "sha256": "cf938795edaea5d849737313ff14bcefb9d218439598d414305d01cb1587d1f5"
         },
         {
           "path": "docs/reports/Route_Segments_v1.json",
@@ -135,11 +135,19 @@
         },
         {
           "path": "docs/ROUTE_PATTERNS_DASHBOARD.md",
-          "sha256": "06ab882fc742eec92b36985d717237fa1c363b7f73ae0ab1c5d4ad1f07f4185e"
+          "sha256": "c5acadf6abc7ab13e6a1b431ef1f53f5a9f0f3aa7d5c5a92ac79efe1c99ed46d"
         },
         {
           "path": "docs/reports/Route_Patterns_Dashboard.json",
           "sha256": "544ff7dd357e1b0184151c389eb0f966f4f00f54023933e09c666b9ecef12b93"
+        },
+        {
+          "path": "docs/HISTORICAL_ROUTE_LOOKUP.md",
+          "sha256": "f8805d04187737c11b6e88d6a6a2f372ccd00b5276a9793b34bb3bee95fcf6b1"
+        },
+        {
+          "path": "docs/reports/Route_History_Lookup.json",
+          "sha256": "30af22480720920c6441224e308e7ed097a52cea5f70201322252fd29b2acf39"
         }
       ]
     },
@@ -508,7 +516,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "e055979d04c66d5e12f56d74e7e613bdbfe8b52fa5778379dfdd6ced946d1861"
+          "sha256": "9e0fdee15e6e681749b04196081b4555c806ea2b410c7efccec525d35f9cc321"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

@@ -15,6 +15,39 @@ import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
 import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
 import {renderPatterns,validatePatterns} from '../apps/web/route-patterns.mjs';
+import {renderRouteHistory,validateRouteHistory} from '../apps/web/route-history.mjs';
+
+const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_History_Lookup.json',import.meta.url),'utf8')).example;
+test('route history presents source counts, nominal uncertainty and descriptive change',()=>{
+  const data=routeHistoryFixture(),html=renderRouteHistory(data);
+  assert.match(html,/JFK to LAX/);assert.match(html,/2,325/);assert.match(html,/\+2\.1 pp/);
+  assert.match(html,/95% Wilson interval/);assert.match(html,/does not assign a cluster/);
+  assert.match(html,/not a significance or causal finding/);
+});
+test('route history rejects false claims, missing intervals and unsafe route content',()=>{
+  const data=routeHistoryFixture();
+  assert.throws(()=>validateRouteHistory({...data,production_ready:true}));
+  assert.throws(()=>validateRouteHistory({...data,group_assignment:1}));
+  assert.throws(()=>validateRouteHistory({...data,delay_15_change_percentage_points:99}));
+  const missing=structuredClone(data);missing.periods[1].delay_15.wilson_95=null;assert.throws(()=>renderRouteHistory(missing));
+  data.route.origin='<script>';assert.throws(()=>renderRouteHistory(data));
+  const absent=routeHistoryFixture(),row=absent.periods[1];
+  for(const key of ['flights','completed','delayed_15','delayed_60','cancelled','diverted','missing_arrival'])row[key]=0;
+  row.available=false;row.meets_support=false;row.mean_positive_delay_capped_180=null;
+  for(const key of ['delay_15','delay_60','cancellation'])row[key]={events:0,observations:0,rate:null,wilson_95:null};
+  absent.comparison_support_met=false;absent.delay_15_change_percentage_points=null;
+  assert.match(renderRouteHistory(absent),/Rates are unavailable/);assert.match(renderRouteHistory(absent),/Insufficient support/);
+});
+test('route history proxy forwards only bounded canonical airport parameters',async t=>{
+  let calls=0;
+  const backend=await serve(t,(req,res)=>{calls++;assert.equal(req.url,'/api/v1/research/route-profile?origin=JFK&destination=LAX');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"research_only":true}');});
+  const frontend=await serve(t,async(req,res)=>{const pathname=new URL(req.url,'http://127.0.0.1').pathname;if(!await proxyResearchRequest(req,res,pathname,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/route-profile`;
+  assert.equal((await fetch(url+'?destination=LAX&origin=JFK',{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  for(const suffix of ['','?origin=JFK','?origin=JFK&destination=JFK','?origin=jfk&destination=LAX','?origin=JFK&destination=LAX&limit=100','?origin=JFK&origin=AAA&destination=LAX'])assert.equal((await fetch(url+suffix)).status,422);
+  assert.equal((await fetch(url+'?origin=JFK&destination=LAX',{method:'POST'})).status,405);
+  assert.equal(calls,1);
+});
 
 function patternsFixture(){
   const r=JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_Segments_v1.json',import.meta.url),'utf8'));

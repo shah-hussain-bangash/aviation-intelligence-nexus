@@ -1,0 +1,250 @@
+{
+  "format": "ain-route-history-evidence-v1",
+  "checked_at": "2026-11-20",
+  "scope": "Native read-only lookup of real imported official BTS rows; aggregate example, not forecasting or production qualification",
+  "database_source_records_at_check": 2835101,
+  "example": {
+    "format": "ain-route-history-v1",
+    "source": "BTS_REPORTING_CARRIER",
+    "route": {
+      "origin": "JFK",
+      "destination": "LAX"
+    },
+    "checked_at": "2026-11-20T10:01:07.392790+00:00",
+    "periods": [
+      {
+        "id": "train",
+        "flights": 2325,
+        "completed": 2303,
+        "delayed_15": 384,
+        "delayed_60": 120,
+        "cancelled": 15,
+        "diverted": 7,
+        "missing_arrival": 0,
+        "available": true,
+        "support_threshold": 200,
+        "meets_support": true,
+        "delay_15": {
+          "events": 384,
+          "observations": 2303,
+          "rate": 0.16673903603994789,
+          "wilson_95": [
+            0.1520732058473971,
+            0.1825147892960904
+          ]
+        },
+        "delay_60": {
+          "events": 120,
+          "observations": 2303,
+          "rate": 0.052105948762483714,
+          "wilson_95": [
+            0.043752113888784396,
+            0.06195149131057378
+          ]
+        },
+        "cancellation": {
+          "events": 15,
+          "observations": 2325,
+          "rate": 0.0064516129032258064,
+          "wilson_95": [
+            0.003913690510873287,
+            0.01061776618941715
+          ]
+        },
+        "mean_positive_delay_capped_180": 10.528006947459835
+      },
+      {
+        "id": "evaluation",
+        "flights": 874,
+        "completed": 872,
+        "delayed_15": 164,
+        "delayed_60": 49,
+        "cancelled": 0,
+        "diverted": 2,
+        "missing_arrival": 0,
+        "available": true,
+        "support_threshold": 50,
+        "meets_support": true,
+        "delay_15": {
+          "events": 164,
+          "observations": 872,
+          "rate": 0.18807339449541285,
+          "wilson_95": [
+            0.1635257827084958,
+            0.21535723941689336
+          ]
+        },
+        "delay_60": {
+          "events": 49,
+          "observations": 872,
+          "rate": 0.05619266055045872,
+          "wilson_95": [
+            0.04276384338481175,
+            0.07351457412447349
+          ]
+        },
+        "cancellation": {
+          "events": 0,
+          "observations": 874,
+          "rate": 0.0,
+          "wilson_95": [
+            0.0,
+            0.004376028019746072
+          ]
+        },
+        "mean_positive_delay_capped_180": 11.005733944954128
+      }
+    ],
+    "comparison_support_met": true,
+    "delay_15_change_percentage_points": 2.133435845546497,
+    "group_assignment": null,
+    "elapsed_ms": 2839.186,
+    "interval_method": "95% Wilson score, independent-binomial descriptive model",
+    "research_only": true,
+    "production_ready": false,
+    "limitations": [
+      "Currently imported historical US domestic rows; carriers combined; April excluded.",
+      "Intervals treat observations as independent binomial trials; shared weather/operations can violate that assumption.",
+      "No correction for repeated route searches or causal/significance claim; displayed difference is descriptive.",
+      "No cluster assignment, forecast, operational recommendation or UAE validation."
+    ]
+  },
+  "production_ready": false,
+  "query_controls": {
+    "readonly": true,
+    "maximum_concurrent_per_process": 1,
+    "cooperative_sql_seconds": 5,
+    "sqlite_connection_timeout_seconds": 0.5,
+    "fixed_periods": [
+      "January-March 2025",
+      "May 2025"
+    ]
+  },
+  "browser_checks": {
+    "scope": "Isolated real-component preview; real aggregate example and synthetic failures; no user session",
+    "results": [
+      {
+        "scenario": "Desktop",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Mobile_390",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 390
+      },
+      {
+        "scenario": "Input_Change",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "input_clears_result": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Missing_Route",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "failure_clears_result": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Busy",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "failure_clears_result": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Unavailable",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "failure_clears_result": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Wrong_Route",
+        "checks": {
+          "normalized_route": true,
+          "actual_example": true,
+          "export_valid": true,
+          "failure_clears_result": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Cancelled_Response",
+        "checks": {
+          "late_response_withheld": true,
+          "state_correct": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      },
+      {
+        "scenario": "Session_Clear",
+        "checks": {
+          "late_response_withheld": true,
+          "state_correct": true,
+          "no_horizontal_overflow": true
+        },
+        "viewport": 1280
+      }
+    ],
+    "production_ready": false
+  },
+  "verification_scope": "Real native data read plus isolated-account API regressions and public-example component preview; no real account used for browser QA",
+  "source_imports": [
+    {
+      "period": "2025-01",
+      "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+      "rows_inserted": 539747
+    },
+    {
+      "period": "2025-02",
+      "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+      "rows_inserted": 504884
+    },
+    {
+      "period": "2025-03",
+      "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+      "rows_inserted": 600872
+    },
+    {
+      "period": "2025-04",
+      "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+      "rows_inserted": 583950
+    },
+    {
+      "period": "2025-05",
+      "sha256": "17c3419d7169b313b2bc8ddd3fd57e1e2d4d959c35f2da17f6a5610d4bac7d63",
+      "rows_inserted": 605648
+    }
+  ]
+}

@@ -56,6 +56,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Authenticated route-pattern dashboard with period switching, aggregate group profiles, transition/coverage views and evidence export. See [dashboard behavior and validation](docs/ROUTE_PATTERNS_DASHBOARD.md).
 
+- Read-only directional-route lookup with real historical counts, Wilson uncertainty intervals, bounded queries and aggregate export. See [route lookup behavior and measured example](docs/HISTORICAL_ROUTE_LOOKUP.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

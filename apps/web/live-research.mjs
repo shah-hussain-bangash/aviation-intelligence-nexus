@@ -7,6 +7,7 @@ import { mountPlatformStatus } from './platform-status.mjs';
 import { mountMonitoring } from './monitoring-lab.mjs';
 import { mountReadiness } from './release-readiness.mjs';
 import { mountPatterns } from './route-patterns.mjs';
+import { mountRouteHistory } from './route-history.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Invalid numeric response');
@@ -58,12 +59,13 @@ if (typeof document !== 'undefined') {
   section.className = 'live-research';
   section.setAttribute('aria-label', 'Connected historical research data');
   section.innerHTML = `<details open><summary><span>Connected research data</span><span id="researchConnection" role="status" aria-live="polite">Connecting…</span></summary>
-    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#route-patterns">Explore route patterns</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
+    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#route-patterns">Explore route patterns</a><a class="btn sm" href="#route-history">Look up a route</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
   const readinessUI = mountReadiness(section.querySelector('.research-inner'));
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
   const routePatterns = mountPatterns(section.querySelector('.research-inner'));
+  const routeHistory = mountRouteHistory(section.querySelector('.research-inner'));
   const monitoringUI = mountMonitoring(section.querySelector('.research-inner'));
   const gateLab = mountGateLab(section.querySelector('.research-inner'));
   const knowledgeLab = mountKnowledge(section.querySelector('.research-inner'));
@@ -106,6 +108,7 @@ if (typeof document !== 'undefined') {
     monitoringUI.setSession(user);
     readinessUI.setSession(user);
     routePatterns.setSession(user);
+    routeHistory.setSession(user);
     section.querySelector('details').hidden=!user;
     scenarioUI.setAvailable(false);
     scenarioUI.clearHistory();

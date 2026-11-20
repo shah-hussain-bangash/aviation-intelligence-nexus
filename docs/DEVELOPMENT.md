@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 30 Node dashboard/proxy/startup tests and 146 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 33 Node dashboard/proxy/startup tests and 152 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -56,3 +56,5 @@ The disposable authenticated native HTTP workflow drill uses a copied trusted mo
 Offline route segmentation uses read-only SQL aggregates and a fixed train-only selection protocol; no API/model deployment is replaced. See ROUTE_SEGMENTATION.md for reproduction, coverage and temporal limitations.
 
 The authenticated route-pattern panel reads a pinned public experiment summary. See ROUTE_PATTERNS_DASHBOARD.md for browser preview checks, failure/session behavior and the distinction from live model execution.
+
+The route-history endpoint is a bounded read-only current-database lookup; it does not rerun clustering. See HISTORICAL_ROUTE_LOOKUP.md for query parameters, concurrency/deadline behavior, statistical scope and local verification.

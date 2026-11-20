@@ -28,4 +28,4 @@ These browser checks used an isolated component preview, not a real user's signe
 
 Aggregate check evidence is in [Route_Patterns_Dashboard.json](reports/Route_Patterns_Dashboard.json). The underlying model experiment and limitations are documented in [ROUTE_SEGMENTATION.md](ROUTE_SEGMENTATION.md).
 
-This is retrospective US domestic research. Individual route browsing, live segment refresh, UAE validation, full device/accessibility qualification, forecasting, operational actions and production acceptance remain incomplete. Existing passwords and model-serving behavior are unchanged.
+This is retrospective US domestic research. A separate observed-route history lookup is now implemented; see HISTORICAL_ROUTE_LOOKUP.md. Frozen individual cluster-assignment browsing, live segment refresh, UAE validation, full device/accessibility qualification, forecasting, operational actions and production acceptance remain incomplete. Existing passwords and model-serving behavior are unchanged.

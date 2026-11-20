@@ -31,6 +31,7 @@ from services.api.monitoring import Monitor
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from services.api.segments import load_segments
+from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -518,6 +519,22 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError, StopIteration, ZeroDivisionError):
             return JSONResponse(status_code=503, content={'error': 'segmentation_evidence_unavailable',
                 'message': 'The recorded route experiment could not be verified. No groups are returned.'})
+
+    @app.get('/api/v1/research/route-profile')
+    def route_profile(request: Request):
+        items = list(request.query_params.multi_items())
+        if len(items) != 2 or {key for key, _ in items} != {'origin', 'destination'}:
+            return JSONResponse(status_code=422, content={'error': 'invalid_route_query'})
+        try:
+            return lookup_route(database, request.query_params['origin'], request.query_params['destination'])
+        except ValueError:
+            return JSONResponse(status_code=422, content={'error': 'invalid_route_query'})
+        except RouteNotObserved:
+            return JSONResponse(status_code=404, content={'error': 'route_not_observed'})
+        except LookupBusy:
+            return JSONResponse(status_code=429, content={'error': 'route_lookup_busy'}, headers={'Retry-After': '2'})
+        except LookupUnavailable:
+            return JSONResponse(status_code=503, content={'error': 'route_history_unavailable'}, headers={'Retry-After': '2'})
 
     return app
 
