@@ -29,7 +29,7 @@ def embed(texts):
     return call('embed', {'model': EMBED_MODEL, 'input': texts, 'truncate': False}, timeout=30)['embeddings']
 
 
-def generate(question, evidence):
+def generate(question, evidence, timeout=60):
     if not CHAT_LOCK.acquire(blocking=False):
         raise RuntimeError('Local generator busy')
     try:
@@ -56,7 +56,7 @@ def generate(question, evidence):
                     'Each quote must be a complete, exact 20-400 character source line or sentence; preserve table separators. '
                     'If evidence cannot answer the question, return {"claims":[]}. Do not invent facts or citations.'},
                 {'role': 'user', 'content': json.dumps({'question': question, 'evidence': evidence})}]}
-        response = call('chat', payload, timeout=60)
+        response = call('chat', payload, timeout=timeout)
         if response.get('done') is not True or response.get('done_reason') != 'stop':
             raise RuntimeError('Incomplete model output')
         return json.loads(response['message']['content'])

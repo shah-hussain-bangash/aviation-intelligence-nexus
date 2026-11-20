@@ -1,0 +1,301 @@
+{
+  "scope": "Single curated local agent demonstration, not an airline operational benchmark",
+  "runtime": "bounded-ollama-tools-v1",
+  "model": {
+    "name": "qwen3:8b",
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+  },
+  "bounds": {
+    "max_tool_calls": 3,
+    "max_planner_calls": 3,
+    "deadline_seconds": 120,
+    "operational_writes": false
+  },
+  "request": {
+    "objective": "For May 2025, report actual imported flight counts and observed arrival-delay rate, retrieve evidence about delay model limitations, and run the separate synthetic gate allocation demonstration.",
+    "month": "2025-05",
+    "include_simulation": true
+  },
+  "state": "awaiting_review",
+  "steps": [
+    {
+      "id": "T1",
+      "tool": "flight_metrics",
+      "arguments": {
+        "month": "2025-05"
+      },
+      "state": "completed",
+      "observation": {
+        "records": 605648,
+        "cancelled": 6344,
+        "diverted": 1730,
+        "eligible": 597574,
+        "delayed_15": 141038,
+        "month": "2025-05",
+        "available": true,
+        "data_kind": "historical_bts",
+        "arrival_delay_rate": 0.23601763128917924,
+        "query_version": "bts-month-v1",
+        "evidence_text": "Historical US BTS data for 2025-05 contains 605648 imported flights.\nThere are 6344 cancelled flights and 1730 diverted flights.\nThe completed, non-diverted observed-delay population contains 597574 flights; 141038 arrived at least 15 minutes late.\nThe observed arrival-delay rate is 23.6018%.\nThese are historical US measurements, not predictions, current operations or UAE airline results."
+      },
+      "elapsed_ms": 2623.76
+    },
+    {
+      "id": "T2",
+      "tool": "knowledge_search",
+      "arguments": {
+        "question": "What are the limitations of delay models in aviation?"
+      },
+      "state": "completed",
+      "observation": {
+        "data_kind": "project_documents",
+        "available": true,
+        "evidence": [
+          {
+            "id": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "heading": "Delay baseline v1: measured research result",
+            "start_line": 1,
+            "end_line": 4,
+            "text": "# Delay baseline v1: measured research result\n\nStatus: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.\n",
+            "score": 0.3998,
+            "source_sha256": "2f1e64baf6f3207c3b7f1ed4b172e6d620dceecbbb5a13afb7f4a6806bb84114",
+            "source_url": "https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/66dbd462cc0554459429591e1f65ab6c374c76b3/docs/DELAY_BASELINE.md#L1"
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "heading": "Fixed experiment contract",
+            "start_line": 18,
+            "end_line": 29,
+            "text": "## Fixed experiment contract\n\n| Split | Period | Purpose |\n|---|---|---|\n| Train | January 2025 | Fit preprocessing and model parameters |\n| Validation | February 2025 | Choose model settings and decision threshold |\n| Test | March 2025 | Evaluate the frozen candidate once |\n\nThe binary target is arrival delay of at least 15 minutes, conditional on a non-cancelled, non-diverted flight with an observed arrival delay. Exclusions are applied in that order, then missing/invalid required fields. Missing target values are never converted to on-time labels. These filters define the evaluation population; this model will not predict cancellations or disruption risk for all scheduled flights.\n\nThe explicit feature allowlist consists of carrier, origin, destination, flight number, calendar month, day of month, ISO weekday, scheduled departure hour and minute. BTS scheduled time `2400` stays hour 24, minute 0. Actual departure delay, actual arrival delay, cancellation and diversion indicators are not model inputs. `record_key` and `flight_date` are audit metadata, not features. Future training code must select only the declared features and fit encoders/imputers on training data alone, handling unseen categories explicitly.\n",
+            "score": 0.3304,
+            "source_sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084",
+            "source_url": "https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/66dbd462cc0554459429591e1f65ab6c374c76b3/docs/MODEL_DATASET.md#L18"
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "heading": "Design",
+            "start_line": 9,
+            "end_line": 20,
+            "text": "## Design\n\n- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.\n- Validation: April 2025, used for model selection and the demonstration threshold.\n- Test: May 2025, read for evaluation after model selection is frozen.\n- Target and inclusion policy: arrival delay at least 15 minutes among completed, non-diverted flights with observed arrival delay.\n- Candidates: categorical histogram gradient boosting with 15 or 31 leaves, 120 iterations, learning rate 0.08, minimum leaf size 200, L2 penalty 10, seed 42.\n- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.\n- Category vocabulary: fit on training only, capped at 200 codes per categorical feature; unseen values use the missing-value code. No target encoding.\n- Selection: lowest April log loss. No random early-stopping partition and no refit after selection.\n- Threshold: best April F1 on 0.10\u20130.60 grid, step 0.01. This is not an airline cost or resource-capacity decision rule.\n",
+            "score": 0.3144,
+            "source_sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826",
+            "source_url": "https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/66dbd462cc0554459429591e1f65ab6c374c76b3/docs/DELAY_V2.md#L9"
+          }
+        ],
+        "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+        "evidence_text": "# Delay baseline v1: measured research result\n\nStatus: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.\n\n\n## Fixed experiment contract\n\n| Split | Period | Purpose |\n|---|---|---|\n| Train | January 2025 | Fit preprocessing and model parameters |\n| Validation | February 2025 | Choose model settings and decision threshold |\n| Test | March 2025 | Evaluate the frozen candidate once |\n\nThe binary target is arrival delay of at least 15 minutes, conditional on a non-cancelled, non-diverted flight with an observed arrival delay. Exclusions are applied in that order, then missing/invalid required fields. Missing target values are never converted to on-time labels. These filters define the evaluation population; this model will not predict cancellations or disruption risk for all scheduled flights.\n\nThe explicit feature allowlist consists of carrier, origin, destination, flight number, calendar month, day of month, ISO weekday, scheduled departure hour and minute. BTS scheduled time `2400` stays hour 24, minute 0. Actual departure delay, actual arrival delay, cancellation and diversion indicators are not model inputs. `record_key` and `flight_date` are audit metadata, not features. Future training code must select only the declared features and fit encoders/imputers on training data alone, handling unseen categories explicitly.\n\n\n## Design\n\n- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.\n- Validation: April 2025, used for model selection and the demonstration threshold.\n- Test: May 2025, read for evaluation after model selection is frozen.\n- Target and inclusion policy: arrival delay at least 15 minutes among completed, non-diverted flights with observed arrival delay.\n- Candidates: categorical histogram gradient boosting with 15 or 31 leaves, 120 iterations, learning rate 0.08, minimum leaf size 200, L2 penalty 10, seed 42.\n- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.\n- Category vocabulary: fit on training only, capped at 200 codes per categorical feature; unseen values use the missing-value code. No target encoding.\n- Selection: lowest April log loss. No random early-stopping partition and no refit after selection.\n- Threshold: best April F1 on 0.10\u20130.60 grid, step 0.01. This is not an airline cost or resource-capacity decision rule.\n"
+      },
+      "elapsed_ms": 89.17
+    },
+    {
+      "id": "T3",
+      "tool": "gate_simulation",
+      "arguments": {},
+      "state": "completed",
+      "observation": {
+        "data_kind": "synthetic",
+        "available": true,
+        "result": {
+          "engine": "scipy-highs-milp",
+          "formulation_version": "gate-v1",
+          "scenario_sha256": "9a757b8b41b2e9744c7e21390fe95652850aed9efeb83d291513b67ca5ac90f6",
+          "implementation_sha256": "e985d83edf458b8b3c9dbc5085b721338957718bcde41079105fc02c27d1715e",
+          "scenario": {
+            "data_kind": "synthetic",
+            "buffer_minutes": 10,
+            "gates": [
+              {
+                "id": "N1",
+                "capacity": "narrow"
+              },
+              {
+                "id": "W1",
+                "capacity": "wide"
+              }
+            ],
+            "flights": [
+              {
+                "id": "SIM-101",
+                "aircraft": "narrow",
+                "arrival": 480,
+                "departure": 600,
+                "costs": {
+                  "N1": 6,
+                  "W1": 1
+                }
+              },
+              {
+                "id": "SIM-202",
+                "aircraft": "wide",
+                "arrival": 500,
+                "departure": 590,
+                "costs": {
+                  "N1": 20,
+                  "W1": 3
+                }
+              },
+              {
+                "id": "SIM-303",
+                "aircraft": "narrow",
+                "arrival": 605,
+                "departure": 680,
+                "costs": {
+                  "N1": 2,
+                  "W1": 2
+                }
+              },
+              {
+                "id": "SIM-404",
+                "aircraft": "narrow",
+                "arrival": 700,
+                "departure": 760,
+                "costs": {
+                  "N1": 1,
+                  "W1": 4
+                }
+              },
+              {
+                "id": "SIM-505",
+                "aircraft": "wide",
+                "arrival": 780,
+                "departure": 840,
+                "costs": {
+                  "N1": 20,
+                  "W1": 2
+                }
+              }
+            ]
+          },
+          "candidate": {
+            "assignments": [
+              {
+                "flight": "SIM-101",
+                "gate": "N1"
+              },
+              {
+                "flight": "SIM-202",
+                "gate": "W1"
+              },
+              {
+                "flight": "SIM-303",
+                "gate": "W1"
+              },
+              {
+                "flight": "SIM-404",
+                "gate": "N1"
+              },
+              {
+                "flight": "SIM-505",
+                "gate": "W1"
+              }
+            ],
+            "unassigned": [],
+            "verification": {
+              "feasible": true,
+              "errors": [],
+              "assigned": 5,
+              "unassigned": 0,
+              "assignment_cost": 14
+            }
+          },
+          "baseline": {
+            "assignments": [
+              {
+                "flight": "SIM-101",
+                "gate": "W1"
+              },
+              {
+                "flight": "SIM-303",
+                "gate": "N1"
+              },
+              {
+                "flight": "SIM-404",
+                "gate": "N1"
+              },
+              {
+                "flight": "SIM-505",
+                "gate": "W1"
+              }
+            ],
+            "unassigned": [
+              "SIM-202"
+            ],
+            "verification": {
+              "feasible": true,
+              "errors": [],
+              "assigned": 4,
+              "unassigned": 1,
+              "assignment_cost": 6
+            }
+          },
+          "solver_status": "optimal",
+          "objective": 14.0,
+          "unassigned_penalty": 101,
+          "mip_gap": 0.0,
+          "elapsed_ms": 4.01,
+          "research_only": true,
+          "operational_approval": false,
+          "limitations": [
+            "Synthetic schedules only; no live airline systems",
+            "Only time overlap, aircraft size and assignment costs are represented",
+            "No real stand geometry, passenger/crew flows, airline policies or safety qualification",
+            "No allocation is applied to an operational system"
+          ]
+        },
+        "evidence_text": "Synthetic gate demonstration: optimized coverage is 5 of 5 flights; greedy coverage is 4 of 5 flights.\nThe independently verified assignment cost is 14 synthetic units.\nThis simulation is independent of the historical BTS data and cannot establish an operational recovery recommendation."
+      },
+      "elapsed_ms": 4.15
+    }
+  ],
+  "claims": [
+    {
+      "text": "Historical US BTS data for 2025-05 contains 605648 imported flights.",
+      "citation": "T1",
+      "quote": "Historical US BTS data for 2025-05 contains 605648 imported flights."
+    },
+    {
+      "text": "The observed arrival-delay rate is 23.6018%.",
+      "citation": "T1",
+      "quote": "The observed arrival-delay rate is 23.6018%."
+    },
+    {
+      "text": "Synthetic gate demonstration: optimized coverage is 5 of 5 flights; greedy coverage is 4 of 5 flights.",
+      "citation": "T3",
+      "quote": "Synthetic gate demonstration: optimized coverage is 5 of 5 flights; greedy coverage is 4 of 5 flights."
+    }
+  ],
+  "rejected_claims": 0,
+  "report_sha256": "f8c964e3bc4d40be778e282a0387f1ecf85ea2fcea48c2eddbcfa1a70c525699",
+  "semantic_review": "Manually compared the retained three statements with the SQL measurement and independently checked synthetic gate results. The document search ran but the summary did not cover all retrieved limitations. No general accuracy or completeness claim.",
+  "additional_no_simulation_check": {
+    "state": "awaiting_review",
+    "tools": [
+      "flight_metrics"
+    ],
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      },
+      {
+        "turn": 2,
+        "tool_calls_received": 0
+      }
+    ],
+    "claims": [
+      {
+        "text": "The May 2025 imported flight count is 605648.",
+        "citation": "T1",
+        "quote": "Historical US BTS data for 2025-05 contains 605648 imported flights."
+      }
+    ],
+    "rejected_claims": 1
+  },
+  "uncited_tools": [
+    "T2"
+  ],
+  "report_status": "coverage_incomplete"
+}

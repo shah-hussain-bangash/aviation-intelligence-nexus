@@ -3,9 +3,11 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
   const prediction = pathname === '/api/v1/research/predict';
   const optimization = pathname === '/api/v1/research/optimize-gates';
   const knowledge = pathname === '/api/v1/research/knowledge-query';
+  const agent = pathname === '/api/v1/research/agent-run';
+  const agentReview = pathname === '/api/v1/research/agent-review';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
-  const write = prediction || optimization || knowledge || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history'].includes(pathname) && !write) return false;
+  const write = prediction || optimization || knowledge || agent || agentReview || authWrite;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history'].includes(pathname) && !write) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
@@ -34,7 +36,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort) {
         ...(req.headers['x-csrf-token'] ? {'X-CSRF-Token':req.headers['x-csrf-token']}:{}),
         ...(write ? { 'Content-Type': 'application/json',
         ...(req.headers['idempotency-key'] ? { 'Idempotency-Key': req.headers['idempotency-key'] } : {}) } : {}) },
-      redirect: 'error', signal: AbortSignal.timeout(knowledge ? 100000 : 8000)
+      redirect: 'error', signal: AbortSignal.timeout(agent ? 150000 : knowledge ? 100000 : 8000)
     });
     const body = await response.text();
     if (body.length > 1024 * 1024) throw new Error('Unexpected response size');

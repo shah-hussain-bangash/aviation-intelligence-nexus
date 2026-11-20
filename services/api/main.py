@@ -21,6 +21,9 @@ from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
 from rag.service import Knowledge, Question
 from rag.history import EvidenceHistory
+from rag import ollama
+from agents.runtime import Investigation, Investigator, Review
+from agents.store import AgentStore, Conflict
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -40,12 +43,15 @@ def connect(database: Path):
 def initialize(database: Path):
     database.parent.mkdir(parents=True, exist_ok=True)
     with closing(connect(database)) as connection, connection:
+        # Local WAL permits checkpoint writes while the dashboard holds a historical read snapshot.
+        if connection.execute('PRAGMA journal_mode=WAL').fetchone()[0] != 'wal':
+            raise RuntimeError('Local database could not enable concurrent read/checkpoint storage')
         connection.execute("BEGIN IMMEDIATE")
         connection.execute("CREATE TABLE IF NOT EXISTS schema_migrations "
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
         version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > 6:
+        if version > 7:
             raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
@@ -98,6 +104,10 @@ def initialize(database: Path):
             connection.execute("CREATE TABLE knowledge_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,result_json TEXT NOT NULL,created_at TEXT NOT NULL)")
             connection.execute("CREATE INDEX knowledge_runs_owner ON knowledge_runs(owner_id,created_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (6)")
+        if version < 7:
+            connection.execute("CREATE TABLE agent_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,request_key TEXT NOT NULL,input_hash TEXT NOT NULL,result_json TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(owner_id,request_key))")
+            connection.execute("CREATE INDEX agent_runs_owner ON agent_runs(owner_id,updated_at)")
+            connection.execute("INSERT INTO schema_migrations(version) VALUES (7)")
 
 
 def read_model_report(directory: Path):
@@ -123,6 +133,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     gate_history = GateRunStore(database)
     knowledge = Knowledge() if knowledge_index is None else Knowledge(knowledge_index)
     knowledge_history = EvidenceHistory(database)
+    agent_store = AgentStore(database)
+    investigator = Investigator(database,knowledge,agent_store)
     auth = AuthStore(database)
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
                for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
@@ -130,6 +142,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @asynccontextmanager
     async def lifespan(app):
         initialize(database)
+        agent_store.recover()
         yield
 
     app = FastAPI(
@@ -157,7 +170,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -347,6 +360,37 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             return {'runs': knowledge_history.recent(request.state.user), 'research_only': True}
         except (sqlite3.Error, ValueError):
             return JSONResponse(status_code=503, content={'error': 'knowledge_history_unavailable'})
+
+    @app.get('/api/v1/research/agent-status')
+    def agent_status():
+        try:
+            available = ollama.CHAT_MODEL in ollama.models()
+        except (OSError, ValueError, KeyError, TypeError):
+            available = False
+        return {'available':available,'model':ollama.CHAT_MODEL,'max_tool_calls':3,
+            'tools':['flight_metrics','knowledge_search','gate_simulation (opt-in synthetic only)'],
+            'research_only':True,'operational_writes':False}
+
+    @app.post('/api/v1/research/agent-run')
+    def agent_run(investigation: Investigation,request: Request,idempotency_key: UUID = Header()):
+        try:
+            return investigator.run(request.state.user,str(idempotency_key),investigation)
+        except Conflict:
+            return JSONResponse(status_code=409,content={'error':'request_conflict_or_busy','message':'Refresh saved investigations before retrying; use a new request key only for a new request.'})
+        except (OSError,ValueError,KeyError,TypeError,RuntimeError,sqlite3.Error):
+            return JSONResponse(status_code=503,content={'error':'agent_unavailable','message':'No completed investigation could be confirmed. Refresh saved investigations.'})
+
+    @app.get('/api/v1/research/agent-history')
+    def agent_history(request: Request):
+        try: return {'runs':agent_store.recent(request.state.user),'research_only':True}
+        except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'agent_history_unavailable'})
+
+    @app.post('/api/v1/research/agent-review')
+    def agent_review(review: Review,request: Request):
+        try: return agent_store.review(request.state.user,str(review.run_id),review.report_sha256,review.decision,review.note)
+        except KeyError: return JSONResponse(status_code=404,content={'error':'investigation_unavailable'})
+        except Conflict: return JSONResponse(status_code=409,content={'error':'report_changed_or_reviewed'})
+        except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'review_not_saved'})
 
     return app
 

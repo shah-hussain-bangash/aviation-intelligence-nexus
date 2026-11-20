@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 12 Node dashboard/proxy/startup tests and 59 Python backend/data/model/history/optimization/knowledge tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 13 Node dashboard/proxy/startup tests and 70 Python backend/data/model/history/optimization/knowledge/agent tests. It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv

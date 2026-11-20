@@ -8,6 +8,13 @@ import { renderPrediction } from '../apps/web/research-scenario.mjs';
 import { renderHistory } from '../apps/web/research-history.mjs';
 import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
+import { renderInvestigation } from '../apps/web/investigation-lab.mjs';
+
+test('investigation rendering escapes trace content and rejects unsupported claims',()=>{
+  const run={research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'<unsafe>',month:'2025-05',include_simulation:false},steps:[{id:'T1',tool:'flight_metrics',state:'completed',arguments:{},observation:{data_kind:'historical_bts',evidence_text:'An exact source quotation for the report.'}}],claims:[{text:'<script>bad</script>',citation:'T1',quote:'An exact source quotation for the report.'}],reviews:[],runtime:'fixture'};
+  const html=renderInvestigation(run);assert.ok(html.includes('&lt;script&gt;'));assert.ok(!html.includes('<script>'));
+  run.claims[0].citation='invented';assert.throws(()=>renderInvestigation(run));
+});
 
 test('knowledge renderer escapes evidence and rejects invented citations',()=>{
   const result={research_only:true,operational_approval:false,mode:'generated',question:'<script>question</script>',
