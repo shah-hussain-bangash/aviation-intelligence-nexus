@@ -112,7 +112,7 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export.",
       "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
@@ -127,11 +127,19 @@
         },
         {
           "path": "docs/ROUTE_SEGMENTATION.md",
-          "sha256": "00ef9319656096e2f8639bcd9c4577afa815d6ffbff40f6dcf4f7745c6f293c4"
+          "sha256": "e3f48a1041e21c2c5ebb3e8c27cb544db7cb93a53bffc36e5d6380da26fbb839"
         },
         {
           "path": "docs/reports/Route_Segments_v1.json",
           "sha256": "280e6fed4d8b2de0566b0d95e3ca5f07f5e40cafb262201024520ab4ffad88e6"
+        },
+        {
+          "path": "docs/ROUTE_PATTERNS_DASHBOARD.md",
+          "sha256": "06ab882fc742eec92b36985d717237fa1c363b7f73ae0ab1c5d4ad1f07f4185e"
+        },
+        {
+          "path": "docs/reports/Route_Patterns_Dashboard.json",
+          "sha256": "544ff7dd357e1b0184151c389eb0f966f4f00f54023933e09c666b9ecef12b93"
         }
       ]
     },
@@ -500,7 +508,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "f8c44b8247c7611cbf81ca6744f2b734e16d7aad8b0e2548922d1f5379b5e0dd"
+          "sha256": "e055979d04c66d5e12f56d74e7e613bdbfe8b52fa5778379dfdd6ced946d1861"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

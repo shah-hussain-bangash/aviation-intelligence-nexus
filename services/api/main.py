@@ -30,6 +30,7 @@ from infra.status import restore_status, encrypted_drill_status, rollback_drill_
 from services.api.monitoring import Monitor
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
+from services.api.segments import load_segments
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -509,6 +510,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError):
             return JSONResponse(status_code=503, content={'error': 'readiness_evidence_unavailable',
                 'message': 'The scope/evidence assessment could not be verified. No readiness claim is returned.'})
+
+    @app.get('/api/v1/research/route-segments')
+    def route_segments():
+        try:
+            return load_segments()
+        except (OSError, ValueError, KeyError, TypeError, StopIteration, ZeroDivisionError):
+            return JSONResponse(status_code=503, content={'error': 'segmentation_evidence_unavailable',
+                'message': 'The recorded route experiment could not be verified. No groups are returned.'})
 
     return app
 

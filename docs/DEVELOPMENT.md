@@ -18,7 +18,7 @@ VS Code: **Terminal → Run Task → AIN: Start API and dashboard** provides the
 npm.cmd test
 ```
 
-This runs source validation, 27 Node dashboard/proxy/startup tests and 142 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 30 Node dashboard/proxy/startup tests and 146 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -54,3 +54,5 @@ Bounded anonymous HTTP measurements can be repeated with `python -m infra.load_c
 The disposable authenticated native HTTP workflow drill uses a copied trusted model and temporary state. See AUTHENTICATED_RESEARCH_WORKLOAD.md; it never targets the running dashboard or requires your credentials.
 
 Offline route segmentation uses read-only SQL aggregates and a fixed train-only selection protocol; no API/model deployment is replaced. See ROUTE_SEGMENTATION.md for reproduction, coverage and temporal limitations.
+
+The authenticated route-pattern panel reads a pinned public experiment summary. See ROUTE_PATTERNS_DASHBOARD.md for browser preview checks, failure/session behavior and the distinction from live model execution.

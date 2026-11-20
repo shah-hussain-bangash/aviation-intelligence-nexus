@@ -14,6 +14,38 @@ import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
 import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
+import {renderPatterns,validatePatterns} from '../apps/web/route-patterns.mjs';
+
+function patternsFixture(){
+  const r=JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_Segments_v1.json',import.meta.url),'utf8'));
+  return {format:'ain-route-patterns-v1',integrity_verified:true,research_only:true,production_ready:false,selected_k:r.selected_k,recorded_at:r.checked_at,report_sha256:'0'.repeat(64),training_silhouette:r.candidates[0].training_silhouette,minimum_training_seed_ari:1,coverage:r.coverage,profiles:r.profiles,overlapping_routes:2447,changed_routes:875,transition_counts:[[1006,684],[191,566]],evaluation_routes_outside_training_support:910};
+}
+test('route pattern periods show reconciled recorded evidence and explicit temporal limits',()=>{
+  const data=patternsFixture();
+  assert.match(renderPatterns(data),/35.8% changed groups/);
+  assert.match(renderPatterns(data),/1,705 routes/);
+  assert.match(renderPatterns(data,'evaluation'),/1,734 routes/);
+  assert.match(renderPatterns(data,'evaluation'),/May 2025/);
+  assert.match(renderPatterns(data),/not accuracy/);
+  assert.match(renderPatterns(data),/not live recalculation/);
+  assert.throws(()=>renderPatterns(data,'unexpected'));
+});
+test('route patterns fail closed on false claims, inconsistent totals and unsafe numeric content',()=>{
+  const data=patternsFixture();
+  assert.throws(()=>validatePatterns({...data,production_ready:true}));
+  assert.throws(()=>validatePatterns({...data,integrity_verified:false}));
+  assert.throws(()=>validatePatterns({...data,changed_routes:1}));
+  data.profiles.train[0].unweighted_mean_route_features.delay_15_rate='<script>';
+  assert.throws(()=>renderPatterns(data));
+});
+test('route segmentation proxy is a fixed authenticated read-only route',async t=>{
+  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/route-segments');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"research_only":true}');});
+  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});
+  const url=`http://127.0.0.1:${frontend}/api/v1/research/route-segments`;
+  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+  assert.equal((await fetch(url,{method:'POST'})).status,405);
+  assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
 
 test('rollback receipt stays separate from live release qualification and escapes revisions',()=>{
   const data={production_ready:false,recovery:{recorded:false,production_qualified:false},rollback_drill:{recorded:true,production_qualified:false,flight_records:100,checked_at:'2026-11-20',candidate_revision:'<script>',rollback_revision:'previous'}};

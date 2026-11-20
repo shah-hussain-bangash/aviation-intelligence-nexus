@@ -1,0 +1,77 @@
+{
+  "format": "ain-route-patterns-dashboard-v1",
+  "checked_at": "2026-11-20",
+  "scope": "Authenticated read-only recorded-summary API plus isolated public-data component preview; not production qualification",
+  "source_report_sha256": "280e6fed4d8b2de0566b0d95e3ca5f07f5e40cafb262201024520ab4ffad88e6",
+  "browser_checks": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "export_valid": true,
+        "expected_period": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1264
+    },
+    {
+      "scenario": "Mobile_May",
+      "checks": {
+        "may_switch": true,
+        "export_valid": true,
+        "expected_period": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 500
+    },
+    {
+      "scenario": "Failure",
+      "checks": {
+        "stale_groups_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1264
+    },
+    {
+      "scenario": "Recovery",
+      "checks": {
+        "recovered": true,
+        "export_valid": true,
+        "expected_period": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1264
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_clear": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1264
+    }
+  ],
+  "exact_mobile_viewport": {
+    "viewport": 390,
+    "width": 390,
+    "component": 354,
+    "checks": {
+      "checks": {
+        "may_switch": true,
+        "export_valid": true,
+        "expected_period": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    }
+  },
+  "visual_inspection": [
+    "Desktop training group cards, figures, controls and transition table inspected",
+    "Exact 390-pixel May view inspected; text/controls/table fit without horizontal overflow"
+  ],
+  "validation_limits": [
+    "Browser preview used no real user session; authentication exercised by temporary-account API tests",
+    "Earlier narrow CLI capture reported viewport 500; exact 390 viewport was separately verified with device metrics emulation",
+    "No manual screen-reader or broad hardware/device acceptance audit"
+  ],
+  "production_ready": false
+}

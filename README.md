@@ -54,6 +54,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 - Offline route delay-pattern clustering with frozen train-only selection, seed-agreement checks and later-period route transitions. See [real-data results and limits](docs/ROUTE_SEGMENTATION.md).
 
+- Authenticated route-pattern dashboard with period switching, aggregate group profiles, transition/coverage views and evidence export. See [dashboard behavior and validation](docs/ROUTE_PATTERNS_DASHBOARD.md).
+
 - All 64 original aviation workspaces across eight departments.
 - 256 function specifications and 72 acceptance requirements.
 - Four connected **browser-local** case journeys with evidence notes, human review, revision history and export.

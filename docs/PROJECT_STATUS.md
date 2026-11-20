@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Route patterns dashboard milestone: authenticated read-only access now verifies the fixed experiment report and supplies recorded aggregate group/coverage/transition evidence. The panel switches periods and exports evidence, clearing stale groups on failures/session changes. Public-data component browser checks include desktop and exact 390-pixel layouts, export construction, outage/recovery and session clearing; no real user session was used in preview QA. Windows passes 176 tests (146 Python, 30 Node); production acceptance remains open. See `ROUTE_PATTERNS_DASHBOARD.md`.
+
 Route segmentation milestone: an offline SQL/Pandas/NumPy/Scikit-learn pipeline fit 2,488 supported January-March routes and compared 3,357 supported May routes. Frozen training selection chose k=2 with sampled silhouette 0.452883; four alternate seeds reproduced training assignments, while 35.758% of 2,447 shared routes changed assignment in May. This is retrospective outcome clustering, not forecasting or operational validation. Private artifacts and aggregate public evidence are preserved. The Windows suite now has 169 tests (142 Python, 27 Node). See `ROUTE_SEGMENTATION.md`.
 
 Authenticated workflow milestone: a fresh native loopback API with disposable accounts/database and a copied trained model passed concurrent prediction, saved-history, duplicate-race, CSRF/role/owner and session-revocation checks. Twelve measured predictions had zero failures; all fourteen expected research rows were reconciled before temporary state removal. This does not measure Docker, full-flight SQL or AI-agent capacity. The Windows suite now has 164 tests (137 Python, 27 Node). See `AUTHENTICATED_RESEARCH_WORKLOAD.md`.
