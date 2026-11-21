@@ -1,0 +1,35 @@
+# Model Decision Trade-off Lab
+
+On the signed-in dashboard, select **Explore decision trade-offs**. Adjust the probability threshold, hypothetical false-alert/missed-delay costs and assumed review limit. The panel compares the selected threshold with the frozen 17% demonstration threshold and never-alert/always-alert baselines. It shows exact false alerts, missed delays, precision, recall, historical alert share and hypothetical cost per 1,000 flights, with a threshold chart, all 101 confusion matrices and a reproducible scenario JSON export.
+
+The lab demonstrates Python, Pandas, NumPy, frozen Scikit-learn inference, classification evaluation, cost-sensitive decision analysis, capacity assumptions and an authenticated dashboard integration. It is a descriptive data science capability. A review-capacity comparison is not a resource-allocation solver, and this milestone does not add another LLM, agent or operational policy.
+
+## Data and calculation
+
+The offline `ml.thresholds` command scores all **577,730 eligible April 2025 validation records**, including **113,604 arrival delays of at least 15 minutes**. These are completed, non-diverted historical US flights with observed arrival outcomes. It uses the existing frozen delay-v2 pipeline and exactly matched April CSV/artifact bytes from the private, previously verified input copies. Raw rows, probabilities, models and private state stay outside Git. The probability-vector fingerprint is recorded without publishing the vector.
+
+The protocol `ml/threshold_protocol.json` was written and hash-frozen before this diagnostic's scoring run. It fixes the full April population, thresholds 0–100% in 1-point steps and the positive rule `probability >= threshold`; equal scores are alerts. It does not choose an optimal threshold. April had already selected this model and its original threshold in the earlier experiment, so these are post-hoc validation results, not a new untouched holdout or an unbiased estimate of a newly chosen policy.
+
+The implementation checks the pinned public frozen-model evaluation and trusted artifact hash before model deserialization. It opens only `validation.csv`, verifies its original byte hash/count/period/eligibility, and never opens training or May CSVs. The existing public report containing recorded April/May aggregate results is read for identity and April consistency checks; May outcomes are not rescored or used for threshold comparison. The original model, threshold, experiment and May evaluation are preserved. The pipeline fits no model and changes no calibration or serving configuration. Failed/started outputs are retained, and output directories cannot be replaced.
+
+For each threshold, it computes TN, FP, FN and TP. At 17%, the original April confusion matrix was reproduced exactly: **220,725 TN, 243,401 FP, 31,539 FN and 82,065 TP**. At 50%, the recorded counts are **463,483 TN, 643 FP, 113,098 FN and 506 TP**. The latter has fewer false alerts and substantially more missed delays; it is not a recommended operating point. The first full-population source run completed in 2.323 seconds; the second took 2.295 seconds and reproduced the exact probability fingerprint and every confusion matrix. These local timings are not capacity qualification. Source hashes remained unchanged.
+
+The browser calculates `cost = FP × assumed false-alert cost + FN × assumed missed-delay cost`, then divides by the historical population and multiplies by 1,000. Correct classifications have zero cost in this simplified scenario; intervention benefits, true-alert handling costs, cancellations, diversions and all other costs are excluded. Defaults of 1 and 5 are illustrative assumptions, not airline estimates. Inputs allow 0–1,000 cost units and 0–100% review share. Zero-cost scenarios and undefined precision when no alerts exist are handled explicitly. An alert rate below the assumed limit does not prove feasibility, staffing sufficiency or future queue performance. No financial savings or causal business impact is measured.
+
+Threshold changes alter decisions while leaving model scores unchanged, consistent with the distinction explained in [Scikit-learn's decision-threshold documentation](https://scikit-learn.org/stable/modules/classification_threshold.html). A future policy would require separately agreed costs, operational capacity, prospective validation and authority. No May retuning, UAE transfer, statistical significance or operational approval is established here.
+
+## API, UI and verification
+
+`GET /api/v1/research/threshold-tradeoffs` allows signed-in viewers, researchers and admins. It reads only fixed, size-bounded public evidence, verifies report/protocol fingerprints and reconciles every threshold's populations/monotonic counts and the original April matrix. The web proxy permits only that fixed read route, strips unrelated cookies and rejects query overrides. The API performs no model loading, inference or flight SQL. Missing/altered evidence returns a sanitized 503. Anonymous access receives 401. File integrity is not independent acceptance or current model health.
+
+All assumption changes are browser-local. The live research prediction service keeps its original threshold. Refresh clears old evidence before loading; failure or invalid assumptions clears the displayed scenario and disables export. Session changes abort pending requests and invalidate late responses. The slider supports keyboard input, chart curves use both color and dash patterns, exact tables accompany the chart and tables scroll within narrow screens. This is not a complete accessibility audit. Export includes the evidence, assumptions, derived comparisons and explicit `model_changed: false`/research-only scope; it is not a stored policy or approval record.
+
+Seven new Python tests cover equality/endpoints, invalid inputs, frozen-source guards, population/count integrity, cross-platform fingerprints, authenticated fixed reads/sanitized failure and a disposable frozen-model pipeline fixture that asserts validation-only access. Three Node tests check cost/capacity/baseline arithmetic, escaped limitations/invalid scope and the fixed proxy. Seven isolated browser scenarios cover desktop, 390px mobile, changed assumptions without a new API call, zero costs, invalid input/recovery, outage/recovery, JSON construction and session invalidation. See `reports/Threshold_Tradeoffs_Browser.json`; browser transport is simulated with recorded real aggregate evidence, and no real user account is used. The complete Windows suite has 335 tests: 257 Python and 78 Node.
+
+To reproduce with the private verified source copies available:
+
+```powershell
+.\.venv\Scripts\python.exe -m ml.thresholds --dataset .local/permutation-verified-input --model .local/permutation-verified-input --output .local/experiments/new-april-tradeoff-check
+```
+
+The output directory must be new. Only the sanitized aggregate `reports/April_Threshold_Tradeoffs.json` is public. The lab retains limited probability calibration and already-used April validation. All 24 production requirements remain open.

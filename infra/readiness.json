@@ -124,7 +124,7 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim. A reproducible frozen-model April permutation experiment and read-only panel add grouped performance reliance with explicit non-causal scope.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim. A reproducible frozen-model April permutation experiment and read-only panel add grouped performance reliance with explicit non-causal scope. A full-April fixed-threshold diagnostic and authenticated interactive lab add exact confusion-count reproduction, hypothetical error costs and review-share comparisons; April is already-used validation and the serving threshold is unchanged.",
       "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
@@ -180,6 +180,18 @@
         {
           "path": "docs/reports/Permutation_Dashboard.json",
           "sha256": "fcaad7f4ba29b8e6fc8047a18b1a5aad285670fe3cb975a6f0221351988d899b"
+        },
+        {
+          "path": "docs/MODEL_DECISION_TRADEOFFS.md",
+          "sha256": "78d6dc1a4adc5caaa5b5e86467bc90252620e60ed1b617c5daea1a6ed1fd18e4"
+        },
+        {
+          "path": "docs/reports/April_Threshold_Tradeoffs.json",
+          "sha256": "922e4216dc175d70b1310d95a9baeb307689f432d9c6441d52f63c8d23b9e275"
+        },
+        {
+          "path": "docs/reports/Threshold_Tradeoffs_Browser.json",
+          "sha256": "7d8e5c57975fa0e9f2236f3a26fefe3ee2ba6e82267821c43742369841506a3f"
         }
       ]
     },
@@ -660,7 +672,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "3d6f6a0f8403e5110e7b7ebc77bd0b39a99d0193e185e91a0fe2dea1d16d7caf"
+          "sha256": "bb45b5a004e5ce172afcfaa0225a2710eb0f529adfcdd053b78a87987406e789"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

@@ -23,6 +23,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 ## Included today
 
+- Full-April Model Decision Trade-off Lab: thresholds, false alerts/missed delays, hypothetical error costs, assumed review limits and scenario export. See [decision analysis](docs/MODEL_DECISION_TRADEOFFS.md).
+
 - Optional second-account research review with explicit pending-report sharing, a reviewer inbox and transactional author/role/session checks. See [second-account review](docs/SECOND_ACCOUNT_REVIEW.md).
 - Authors/admins can withdraw pending peer sharing while retaining report evidence, with exact retries and transactional review conflicts. See [sharing withdrawal](docs/SHARING_WITHDRAWAL.md).
 

@@ -1,0 +1,101 @@
+{
+  "scope": "Isolated decision trade-off component with recorded April aggregates and simulated read-only transport; no model/threshold changes",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Assumptions",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "changed_counts": true,
+        "no_rescore_or_write": true,
+        "capacity_check": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Zero_Cost",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "zero_cost_and_all_alerts": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Invalid_Input",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "invalid_clears": true,
+        "valid_recovers": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "full_population": true,
+        "initial_threshold": true,
+        "refresh_clears_immediately": true,
+        "failure_clears": true,
+        "recovery": true,
+        "export_scope": true,
+        "export_assumptions": true,
+        "keyboard_controls": true,
+        "exact_table": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_late_response_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

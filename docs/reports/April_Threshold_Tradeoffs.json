@@ -1,0 +1,751 @@
+{
+  "format": "ain-threshold-tradeoffs-v1",
+  "checked_at": "2026-11-21T07:01:23.658963+00:00",
+  "protocol": {
+    "format": "ain-threshold-protocol-v1",
+    "model_version": "delay-v2",
+    "split": "validation",
+    "period": "2025-04",
+    "population": "Full eligible April validation CSV, matched to frozen byte hash and count",
+    "threshold_percent": {
+      "start": 0,
+      "stop": 100,
+      "step": 1
+    },
+    "positive_rule": "probability >= threshold",
+    "cost_formula": "false_alerts * hypothetical_false_alert_cost + missed_delays * hypothetical_missed_delay_cost",
+    "policy": "Post-hoc descriptive exploration only; April already selected the model and demonstration threshold. No fitting, automatic threshold selection, calibration or May file access. Do not overwrite the frozen model or serving threshold.",
+    "production_ready": false
+  },
+  "protocol_sha256": "db5cef69999a445491cda6b34ad7eddfafa68a69ff9e949b068cc086060ab77d",
+  "model_version": "delay-v2",
+  "period": "2025-04",
+  "records": 577730,
+  "positives": 113604,
+  "frozen_threshold_percent": 17,
+  "artifact_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+  "validation_sha256": "2dc8e38595d10b664ef19de6b6b73aa63f8b7a90893cedef4797e271d702c3c5",
+  "probabilities_sha256": "11a622b299c2a150d08b9b11dba80dfe91dba7c9f06482f32b0fd56653160fd3",
+  "rows": [
+    {
+      "threshold_percent": 0,
+      "tn": 0,
+      "fp": 464126,
+      "fn": 0,
+      "tp": 113604
+    },
+    {
+      "threshold_percent": 1,
+      "tn": 0,
+      "fp": 464126,
+      "fn": 0,
+      "tp": 113604
+    },
+    {
+      "threshold_percent": 2,
+      "tn": 0,
+      "fp": 464126,
+      "fn": 0,
+      "tp": 113604
+    },
+    {
+      "threshold_percent": 3,
+      "tn": 167,
+      "fp": 463959,
+      "fn": 1,
+      "tp": 113603
+    },
+    {
+      "threshold_percent": 4,
+      "tn": 636,
+      "fp": 463490,
+      "fn": 12,
+      "tp": 113592
+    },
+    {
+      "threshold_percent": 5,
+      "tn": 3143,
+      "fp": 460983,
+      "fn": 116,
+      "tp": 113488
+    },
+    {
+      "threshold_percent": 6,
+      "tn": 8345,
+      "fp": 455781,
+      "fn": 373,
+      "tp": 113231
+    },
+    {
+      "threshold_percent": 7,
+      "tn": 16872,
+      "fp": 447254,
+      "fn": 877,
+      "tp": 112727
+    },
+    {
+      "threshold_percent": 8,
+      "tn": 28148,
+      "fp": 435978,
+      "fn": 1728,
+      "tp": 111876
+    },
+    {
+      "threshold_percent": 9,
+      "tn": 42153,
+      "fp": 421973,
+      "fn": 3082,
+      "tp": 110522
+    },
+    {
+      "threshold_percent": 10,
+      "tn": 59833,
+      "fp": 404293,
+      "fn": 4981,
+      "tp": 108623
+    },
+    {
+      "threshold_percent": 11,
+      "tn": 78902,
+      "fp": 385224,
+      "fn": 7269,
+      "tp": 106335
+    },
+    {
+      "threshold_percent": 12,
+      "tn": 99579,
+      "fp": 364547,
+      "fn": 10021,
+      "tp": 103583
+    },
+    {
+      "threshold_percent": 13,
+      "tn": 122620,
+      "fp": 341506,
+      "fn": 13297,
+      "tp": 100307
+    },
+    {
+      "threshold_percent": 14,
+      "tn": 147080,
+      "fp": 317046,
+      "fn": 17320,
+      "tp": 96284
+    },
+    {
+      "threshold_percent": 15,
+      "tn": 171855,
+      "fp": 292271,
+      "fn": 21674,
+      "tp": 91930
+    },
+    {
+      "threshold_percent": 16,
+      "tn": 196352,
+      "fp": 267774,
+      "fn": 26445,
+      "tp": 87159
+    },
+    {
+      "threshold_percent": 17,
+      "tn": 220725,
+      "fp": 243401,
+      "fn": 31539,
+      "tp": 82065
+    },
+    {
+      "threshold_percent": 18,
+      "tn": 243753,
+      "fp": 220373,
+      "fn": 36846,
+      "tp": 76758
+    },
+    {
+      "threshold_percent": 19,
+      "tn": 266643,
+      "fp": 197483,
+      "fn": 42475,
+      "tp": 71129
+    },
+    {
+      "threshold_percent": 20,
+      "tn": 287585,
+      "fp": 176541,
+      "fn": 48151,
+      "tp": 65453
+    },
+    {
+      "threshold_percent": 21,
+      "tn": 307551,
+      "fp": 156575,
+      "fn": 53993,
+      "tp": 59611
+    },
+    {
+      "threshold_percent": 22,
+      "tn": 326126,
+      "fp": 138000,
+      "fn": 59679,
+      "tp": 53925
+    },
+    {
+      "threshold_percent": 23,
+      "tn": 343001,
+      "fp": 121125,
+      "fn": 65081,
+      "tp": 48523
+    },
+    {
+      "threshold_percent": 24,
+      "tn": 358450,
+      "fp": 105676,
+      "fn": 70394,
+      "tp": 43210
+    },
+    {
+      "threshold_percent": 25,
+      "tn": 372490,
+      "fp": 91636,
+      "fn": 75384,
+      "tp": 38220
+    },
+    {
+      "threshold_percent": 26,
+      "tn": 385369,
+      "fp": 78757,
+      "fn": 80016,
+      "tp": 33588
+    },
+    {
+      "threshold_percent": 27,
+      "tn": 396375,
+      "fp": 67751,
+      "fn": 84092,
+      "tp": 29512
+    },
+    {
+      "threshold_percent": 28,
+      "tn": 406629,
+      "fp": 57497,
+      "fn": 87971,
+      "tp": 25633
+    },
+    {
+      "threshold_percent": 29,
+      "tn": 415231,
+      "fp": 48895,
+      "fn": 91405,
+      "tp": 22199
+    },
+    {
+      "threshold_percent": 30,
+      "tn": 422364,
+      "fp": 41762,
+      "fn": 94384,
+      "tp": 19220
+    },
+    {
+      "threshold_percent": 31,
+      "tn": 428959,
+      "fp": 35167,
+      "fn": 97229,
+      "tp": 16375
+    },
+    {
+      "threshold_percent": 32,
+      "tn": 434591,
+      "fp": 29535,
+      "fn": 99584,
+      "tp": 14020
+    },
+    {
+      "threshold_percent": 33,
+      "tn": 439480,
+      "fp": 24646,
+      "fn": 101692,
+      "tp": 11912
+    },
+    {
+      "threshold_percent": 34,
+      "tn": 443356,
+      "fp": 20770,
+      "fn": 103512,
+      "tp": 10092
+    },
+    {
+      "threshold_percent": 35,
+      "tn": 446694,
+      "fp": 17432,
+      "fn": 105031,
+      "tp": 8573
+    },
+    {
+      "threshold_percent": 36,
+      "tn": 449638,
+      "fp": 14488,
+      "fn": 106329,
+      "tp": 7275
+    },
+    {
+      "threshold_percent": 37,
+      "tn": 451968,
+      "fp": 12158,
+      "fn": 107344,
+      "tp": 6260
+    },
+    {
+      "threshold_percent": 38,
+      "tn": 454234,
+      "fp": 9892,
+      "fn": 108395,
+      "tp": 5209
+    },
+    {
+      "threshold_percent": 39,
+      "tn": 456140,
+      "fp": 7986,
+      "fn": 109227,
+      "tp": 4377
+    },
+    {
+      "threshold_percent": 40,
+      "tn": 457582,
+      "fp": 6544,
+      "fn": 109920,
+      "tp": 3684
+    },
+    {
+      "threshold_percent": 41,
+      "tn": 458909,
+      "fp": 5217,
+      "fn": 110616,
+      "tp": 2988
+    },
+    {
+      "threshold_percent": 42,
+      "tn": 459928,
+      "fp": 4198,
+      "fn": 111144,
+      "tp": 2460
+    },
+    {
+      "threshold_percent": 43,
+      "tn": 460849,
+      "fp": 3277,
+      "fn": 111599,
+      "tp": 2005
+    },
+    {
+      "threshold_percent": 44,
+      "tn": 461515,
+      "fp": 2611,
+      "fn": 111935,
+      "tp": 1669
+    },
+    {
+      "threshold_percent": 45,
+      "tn": 462057,
+      "fp": 2069,
+      "fn": 112271,
+      "tp": 1333
+    },
+    {
+      "threshold_percent": 46,
+      "tn": 462522,
+      "fp": 1604,
+      "fn": 112527,
+      "tp": 1077
+    },
+    {
+      "threshold_percent": 47,
+      "tn": 462835,
+      "fp": 1291,
+      "fn": 112703,
+      "tp": 901
+    },
+    {
+      "threshold_percent": 48,
+      "tn": 463098,
+      "fp": 1028,
+      "fn": 112866,
+      "tp": 738
+    },
+    {
+      "threshold_percent": 49,
+      "tn": 463331,
+      "fp": 795,
+      "fn": 112990,
+      "tp": 614
+    },
+    {
+      "threshold_percent": 50,
+      "tn": 463483,
+      "fp": 643,
+      "fn": 113098,
+      "tp": 506
+    },
+    {
+      "threshold_percent": 51,
+      "tn": 463590,
+      "fp": 536,
+      "fn": 113181,
+      "tp": 423
+    },
+    {
+      "threshold_percent": 52,
+      "tn": 463717,
+      "fp": 409,
+      "fn": 113245,
+      "tp": 359
+    },
+    {
+      "threshold_percent": 53,
+      "tn": 463813,
+      "fp": 313,
+      "fn": 113313,
+      "tp": 291
+    },
+    {
+      "threshold_percent": 54,
+      "tn": 463898,
+      "fp": 228,
+      "fn": 113364,
+      "tp": 240
+    },
+    {
+      "threshold_percent": 55,
+      "tn": 463957,
+      "fp": 169,
+      "fn": 113419,
+      "tp": 185
+    },
+    {
+      "threshold_percent": 56,
+      "tn": 464003,
+      "fp": 123,
+      "fn": 113471,
+      "tp": 133
+    },
+    {
+      "threshold_percent": 57,
+      "tn": 464040,
+      "fp": 86,
+      "fn": 113492,
+      "tp": 112
+    },
+    {
+      "threshold_percent": 58,
+      "tn": 464061,
+      "fp": 65,
+      "fn": 113514,
+      "tp": 90
+    },
+    {
+      "threshold_percent": 59,
+      "tn": 464087,
+      "fp": 39,
+      "fn": 113554,
+      "tp": 50
+    },
+    {
+      "threshold_percent": 60,
+      "tn": 464097,
+      "fp": 29,
+      "fn": 113571,
+      "tp": 33
+    },
+    {
+      "threshold_percent": 61,
+      "tn": 464108,
+      "fp": 18,
+      "fn": 113583,
+      "tp": 21
+    },
+    {
+      "threshold_percent": 62,
+      "tn": 464115,
+      "fp": 11,
+      "fn": 113592,
+      "tp": 12
+    },
+    {
+      "threshold_percent": 63,
+      "tn": 464123,
+      "fp": 3,
+      "fn": 113600,
+      "tp": 4
+    },
+    {
+      "threshold_percent": 64,
+      "tn": 464124,
+      "fp": 2,
+      "fn": 113602,
+      "tp": 2
+    },
+    {
+      "threshold_percent": 65,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 66,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 67,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 68,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 69,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 70,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 71,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 72,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 73,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 74,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 75,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 76,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 77,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 78,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 79,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 80,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 81,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 82,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 83,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 84,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 85,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 86,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 87,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 88,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 89,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 90,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 91,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 92,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 93,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 94,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 95,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 96,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 97,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 98,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 99,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    },
+    {
+      "threshold_percent": 100,
+      "tn": 464126,
+      "fp": 0,
+      "fn": 113604,
+      "tp": 0
+    }
+  ],
+  "elapsed_seconds": 2.323,
+  "source_hashes_unchanged": true,
+  "frozen_counts_reproduced": true,
+  "research_only": true,
+  "production_ready": false,
+  "limitations": [
+    "April already selected the model and demonstration threshold; this is post-hoc validation exploration, not a new holdout estimate.",
+    "No May outcomes are read, no model is fitted and no deployed threshold changes.",
+    "Hypothetical error costs are user assumptions, not measured airline money, savings or operational benefit; all other costs are excluded.",
+    "Review capacity is a proportion of this historical population, not a staffed queue, staffing estimate or future workload forecast.",
+    "Alerts at nearby thresholds are dependent; no confidence intervals, significance tests, prospective validation or UAE transfer is established.",
+    "Probabilities have limited calibration. This tool neither calibrates them nor recommends an operational threshold."
+  ]
+}

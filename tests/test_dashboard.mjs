@@ -1,5 +1,6 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
+import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
@@ -629,3 +630,20 @@ test('sharing withdrawal proxy forwards bounded writes and only the session cook
  assert.equal((await fetch(url,{method:'POST',headers,body:'x'.repeat(4097)})).status,413);assert.equal((await fetch(url+'/arbitrary')).status,404);assert.equal(writes,1);
 });
 
+const thresholdFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/April_Threshold_Tradeoffs.json',import.meta.url),'utf8')),report_sha256:'a'.repeat(64),integrity_verified:true});
+test('threshold scenarios reconcile costs, capacity, baselines and undefined precision',()=>{
+ const r=thresholdFixture(),s=tradeoffScenario(r,{threshold:17,falseAlertCost:1,missedDelayCost:5,capacityPercent:25});
+ assert.equal(s.selected.fp,243401);assert.equal(s.selected.fn,31539);assert.equal(s.selected.cost_per_1000,1000*(243401+31539*5)/577730);assert.equal(s.selected.within_capacity,false);assert.equal(s.no_alerts.precision,null);assert.equal(s.no_alerts.alerts,0);
+ const zero=tradeoffScenario(r,{threshold:0,falseAlertCost:0,missedDelayCost:0,capacityPercent:100});assert.equal(zero.selected.cost_per_1000,0);assert.equal(zero.selected.within_capacity,true);assert.equal(zero.selected.alerts,r.records);
+ assert.equal(tradeoffScenario(r,{threshold:100}).selected.alerts,0);assert.match(renderTradeoffs(r),/243,401/);assert.match(renderTradeoffs(r),/Not defined/);
+});
+test('threshold evidence rejects inconsistent populations and invalid assumptions and escapes limitations',()=>{
+ for(const assumptions of [{threshold:17.5},{falseAlertCost:NaN},{missedDelayCost:-1},{capacityPercent:101},{falseAlertCost:'1'}])assert.throws(()=>tradeoffScenario(thresholdFixture(),assumptions));
+ let r=thresholdFixture();r.rows[1].tp++;assert.throws(()=>validateTradeoffs(r));r=thresholdFixture();r.period='2025-05';assert.throws(()=>validateTradeoffs(r));r=thresholdFixture();r.rows.reverse();assert.throws(()=>validateTradeoffs(r));
+ r=thresholdFixture();r.limitations[0]='<script>bad()</script>';const html=renderTradeoffs(r);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.match(html,/No automatic threshold selection/);
+});
+test('threshold evidence proxy is fixed read-only, rejects query overrides and strips unrelated cookies',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/threshold-tradeoffs');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/threshold-tradeoffs`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'?period=2025-05')).status,422);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});

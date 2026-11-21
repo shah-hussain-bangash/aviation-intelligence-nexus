@@ -1,0 +1,12 @@
+{
+  "format": "ain-threshold-protocol-v1",
+  "model_version": "delay-v2",
+  "split": "validation",
+  "period": "2025-04",
+  "population": "Full eligible April validation CSV, matched to frozen byte hash and count",
+  "threshold_percent": {"start": 0, "stop": 100, "step": 1},
+  "positive_rule": "probability >= threshold",
+  "cost_formula": "false_alerts * hypothetical_false_alert_cost + missed_delays * hypothetical_missed_delay_cost",
+  "policy": "Post-hoc descriptive exploration only; April already selected the model and demonstration threshold. No fitting, automatic threshold selection, calibration or May file access. Do not overwrite the frozen model or serving threshold.",
+  "production_ready": false
+}
