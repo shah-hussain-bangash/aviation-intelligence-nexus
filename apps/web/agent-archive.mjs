@@ -27,8 +27,8 @@ export function mountArchive(parent,onOpen,onClear){
  reset.addEventListener('click',()=>{if(user)newest();});
  section.addEventListener('click',async event=>{
   const index=event.target.closest('[data-archive-open]')?.dataset.archiveOpen;if(index===undefined||!data?.runs[Number(index)]||!user)return;
-  const id=data.runs[Number(index)].run_id,current=++epoch;controller?.abort();controller=new AbortController();const active=controller,timer=setTimeout(()=>active.abort(),8000);onClear();status.textContent='Opening saved investigation…';
-  try{const response=await apiFetch('/api/v1/research/agent-jobs/'+encodeURIComponent(id),{signal:active.signal});if(!response.ok)throw new Error();const run=await response.json();if(current!==epoch)return;if(run.run_id!==id||run.research_only!==true||run.operational_approval!==false)throw new Error();onOpen(run);status.textContent='Saved investigation opened above. Its evidence and export retain their original scope.';}
+  const id=data.runs[Number(index)].run_id,current=++epoch;controller?.abort();controller=new AbortController();const active=controller,timer=setTimeout(()=>active.abort(),8000);const selection=onClear();status.textContent='Opening saved investigation…';
+  try{const response=await apiFetch('/api/v1/research/agent-jobs/'+encodeURIComponent(id),{signal:active.signal});if(!response.ok)throw new Error();const run=await response.json();if(current!==epoch)return;if(run.run_id!==id||run.research_only!==true||run.operational_approval!==false)throw new Error();if(onOpen(run,selection)===false){status.textContent='Another report or input was selected. Reopen this entry if needed.';return;}status.textContent='Saved investigation opened above. Its evidence and export retain their original scope.';}
   catch{if(current===epoch)status.textContent='Saved investigation could not be opened. Retry or reload the archive.';}
   finally{clearTimeout(timer);}
  });

@@ -82,6 +82,22 @@
         "no_horizontal_overflow": true
       },
       "viewport": 1280
+    },
+    {
+      "scenario": "Late_Peer_Selection",
+      "checks": {
+        "latest_selection_preserved": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Late_Archive_Selection",
+      "checks": {
+        "latest_archive_selection_preserved": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
     }
   ],
   "production_ready": false,
