@@ -248,7 +248,7 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded. A read-only owner-scoped archive adds literal objective/state search and insertion-bounded pagination; selected records reopen existing checked evidence/review controls.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded. A read-only owner-scoped archive adds literal objective/state search and insertion-bounded pagination; selected records reopen existing checked evidence/review controls. An explicitly permitted recorded-distribution tool retains canonical metric snapshots and requires a retrospective/non-causal/CSV-identity quote before research acceptance; an actual Qwen3 run and isolated browser checks are recorded.",
       "remaining": "External worker isolation, distributed leases/failover, forced interruption of running calls, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
@@ -300,6 +300,18 @@
         {
           "path": "docs/reports/Investigation_Archive_Browser.json",
           "sha256": "7efc92c83834b8ce8a45ce5e07873de541b4adbb6be2bb94f68e03ad2d740534"
+        },
+        {
+          "path": "docs/DISTRIBUTION_AGENT_INTEGRATION.md",
+          "sha256": "ef3bdd634de9d009798c0f2cad89a45f9cc4ebc6ad5bfa32f36f933a2ffc0411"
+        },
+        {
+          "path": "docs/reports/Distribution_Agent_Integration.json",
+          "sha256": "655e63a3165008a825cf927e3bf7b9e50183635a691ab8ce94e06e236f653740"
+        },
+        {
+          "path": "docs/reports/Distribution_Agent_Browser.json",
+          "sha256": "15a525dc61efa143db7972d14ed97f34a195fc34f4c949a2c817ce5583adce10"
         }
       ]
     },
@@ -624,7 +636,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "1fa7988551bae39634ae66817dc651546eaf943aab38ac8da037ec8d1e7d9fa7"
+          "sha256": "d4eb6ff8dd9a392a9e475ddc1b692e16c0bad99ea5f40bbca16eac1121707d92"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

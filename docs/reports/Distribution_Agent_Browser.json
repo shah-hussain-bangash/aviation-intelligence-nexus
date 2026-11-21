@@ -1,0 +1,89 @@
+{
+  "scope": "Isolated distribution-agent component with actual engineering evidence and simulated queue transport; no real user session",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "figures": true,
+        "human_review": true,
+        "export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "figures": true,
+        "human_review": true,
+        "export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Tool_Bound",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "no_submission": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Example_Reset",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "model_clears_permission": true,
+        "route_clears_permission": true,
+        "example_clears_permission": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "viewer_cannot_submit": true,
+        "viewer_can_inspect": true,
+        "viewer_review_hidden": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Input_Clear",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "figures": true,
+        "human_review": true,
+        "export": true,
+        "input_clears": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "example": true,
+        "late_readiness_preserves_permission": true,
+        "session_clears": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false,
+  "checked_on": "2026-11-21",
+  "passed": true
+}

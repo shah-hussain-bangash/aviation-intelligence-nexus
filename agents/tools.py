@@ -10,6 +10,7 @@ from rag.service import Question
 from optimization.gates import GateScenario, optimize
 from agents.quality import document_scope
 from agents.model_evidence import observation as model_observation
+from agents.distribution_evidence import observation as distribution_observation
 from services.api.route_history import lookup as lookup_route, RouteNotObserved
 
 
@@ -31,10 +32,10 @@ class RouteArgs(EmptyArgs):
     destination: str = Field(pattern=r'^[A-Z]{3}$')
 
 
-ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs,'model_evidence':EmptyArgs}
+ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs,'model_evidence':EmptyArgs,'distribution_evidence':EmptyArgs}
 
 
-def definitions(simulation, route=False, model=False):
+def definitions(simulation, route=False, model=False, distributions=False):
     descriptions = [
         ('flight_metrics','Read actual historical BTS counts and arrival-delay frequency. Month must equal the user-selected month. Never live or UAE data.',MonthArgs),
         ('knowledge_search','Retrieve cited public project evidence about models, data and optimization. No generated answer in this tool.',SearchArgs)]
@@ -44,6 +45,8 @@ def definitions(simulation, route=False, model=False):
         descriptions.append(('route_history','Read the explicitly user-scoped route: January-March versus May 2025 counts, observed delay/cancellation rates and nominal 95% Wilson intervals. Echo the user route origin and destination exactly; changing airports is forbidden. Not a forecast, cluster assignment or significance test.',RouteArgs))
     if model:
         descriptions.append(('model_evidence','Read fixed delay-v2 April/May errors and calibration plus April-only global permutation reliance. Empty arguments only. Not live scoring, causality, individual-flight explanation or operational approval.',EmptyArgs))
+    if distributions:
+        descriptions.append(('distribution_evidence','Read fixed January-March versus May 2025 marginal input counts, TV and base-2 JS divergence. Empty arguments only. Not live monitoring, a significance test or proof of model degradation/causality/CSV identity.',EmptyArgs))
     return [{'type':'function','function':{'name':name,'description':description,'parameters':model.model_json_schema()}}
             for name,description,model in descriptions]
 
@@ -87,6 +90,10 @@ def gate_sample():
 
 
 def execute(name, arguments, request, database, knowledge):
+    if name=='distribution_evidence':
+        if not request.include_distribution_evidence:raise ValueError('Distribution evidence requires explicit permission')
+        EmptyArgs.model_validate(arguments)
+        return distribution_observation()
     if name == 'model_evidence':
         if not request.include_model_evidence: raise ValueError('Model evidence was not explicitly permitted')
         EmptyArgs.model_validate(arguments)

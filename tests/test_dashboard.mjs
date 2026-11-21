@@ -2,6 +2,7 @@ import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
+import {validateDistributionSnapshot} from '../apps/web/agent-distribution-evidence.mjs';
 import {renderArchive} from '../apps/web/agent-archive.mjs';
 import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
@@ -31,6 +32,20 @@ const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/report
 const archiveFixture=()=>({runs:[{run_id:'00000000-0000-4000-8000-000000000001',actor:'fixture-owner',objective:'Review saved <script> evidence.',state:'cancelled',created_at:'2026-11-21T00:00:00Z',updated_at:'2026-11-21T00:00:00Z'}],through:'9223372036854775807',next_before:null,page_size:10,order:'newest_created_first',search_scope:'objective_literal_ascii_case_insensitive',research_only:true,operational_approval:false});
 const securityFixture=()=>({active_sessions:3,other_active_sessions:2,checked_at:'2026-11-21T10:00:00Z',current_expires_at:'2026-11-21T18:00:00Z',scope:'current_account_local_sessions',production_ready:false});
 const distributionFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Input_Distributions.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'a'.repeat(64)});
+const distributionAgentFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Distribution_Agent_Integration.json',import.meta.url),'utf8')).run;
+test('agent distribution permission is explicit, excluded when false and counts against the same three slots',()=>{
+ const input={objective:'Review recorded input distributions.',month:'2025-05',simulation:false,requireFlights:true,requireKnowledge:true,includeDistributionEvidence:false};assert.ok(!Object.hasOwn(investigationPayload(input),'include_distribution_evidence'));
+ input.includeDistributionEvidence=true;assert.equal(investigationPayload(input).required_tools.length,3);assert.equal(investigationPayload(input).include_distribution_evidence,true);input.includeModelEvidence=true;assert.throws(()=>investigationPayload(input));
+});
+test('saved distribution snapshots retain all five inputs and limitations beyond generated extracts',()=>{
+ const run=distributionAgentFixture();run.claims=[];const html=renderInvestigation(run);assert.match(html,/1,611,046/);assert.match(html,/597,574/);assert.match(html,/0.046677/);assert.match(html,/No live drift alert/);assert.match(html,/Three largest absolute share changes/);
+ run.request.include_distribution_evidence=false;assert.match(renderInvestigation(run),/distribution evidence could not be verified/);
+});
+test('distribution snapshot display rejects bad arithmetic and cached mismatch and escapes evidence text',()=>{
+ let run=distributionAgentFixture();run.steps[0].observation.snapshot.features.origin.comparison_unseen_records=999999;assert.throws(()=>validateDistributionSnapshot(run.steps[0].observation));assert.match(renderInvestigation(run),/has been withheld/);
+ run=distributionAgentFixture();run.quality.distribution_evidence_mismatches=['T1'];assert.match(renderInvestigation(run),/has been withheld/);
+ run=distributionAgentFixture();run.steps[0].observation.snapshot.limitations=['<script>bad()</script>'];assert.match(renderInvestigation(run),/&lt;script&gt;/);assert.doesNotMatch(renderInvestigation(run),/<script>/);
+});
 test('distribution comparisons retain measured populations, all five inputs and explicit descriptive limits',()=>{
  const data=distributionFixture(),html=renderDistributions(data,'origin');assert.match(html,/1,611,046/);assert.match(html,/597,574/);assert.match(html,/Jensen–Shannon/);assert.match(html,/No significance test/);assert.match(html,/No live alert/);assert.match(renderDistributions(data,'origin',true),/Signed change/);assert.throws(()=>renderDistributions(data,'unknown'));
 });
@@ -501,6 +516,7 @@ const operationsFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/
 test('operations distinguishes retained totals, recent tool time and saved coverage flags',()=>{
   const data=operationsFixture(),html=renderOperations(data,Date.parse(data.checked_at)+1000);
   assert.equal(data.total_background_runs,7);assert.match(html,/Local worker: active/);assert.match(html,/2.0 minutes/);assert.match(html,/p95 30.00 ms/);assert.match(html,/does not recompute them or measure semantic accuracy/);assert.match(html,/exclude queue waiting, model planning/);assert.match(html,/Synchronous engineering runs are excluded/);
+  assert.match(html,/Not reported by this snapshot/);data.recent_window.tools.distribution_evidence={attempted:0,completed:0,failed_or_unfinished:0};assert.match(renderOperations(data,Date.parse(data.checked_at)+1000),/Recorded input distributions/);
 });
 test('operations hides stale observations and rejects inconsistent counters or timings',()=>{
   let data=operationsFixture();const html=renderOperations(data,Date.parse(data.checked_at)+91000);assert.match(html,/snapshot is stale/);assert.doesNotMatch(html,/Local worker: active/);
