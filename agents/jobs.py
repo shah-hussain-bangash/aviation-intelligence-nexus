@@ -7,6 +7,7 @@ from uuid import uuid4
 from agents.store import Conflict, now, sha
 from agents.runtime import Investigation
 from agents.quality import assess_report
+from agents.review_access import can_read,view as review_view
 
 
 class QueueFull(Conflict):
@@ -50,10 +51,11 @@ class JobQueue:
     def get(self, user, run_id):
         with closing(self.store.connection()) as db:
             row = db.execute('SELECT owner_id,result_json FROM agent_runs WHERE id=?', (run_id,)).fetchone()
-            if not row or row['owner_id'] != user['id'] and user['role'] != 'admin':
+            if not row:
                 raise KeyError('Investigation unavailable')
             result = json.loads(row['result_json'])
-            return {**result, **({'quality': assess_report(result)} if result.get('report_sha256') else {})}
+            if not can_read(user,row['owner_id'],result):raise KeyError('Investigation unavailable')
+            return review_view({**result, **({'quality': assess_report(result)} if result.get('report_sha256') else {})},user,row['owner_id'])
 
     def cancel(self, user, run_id):
         if user['role'] not in ('admin','researcher'):raise PermissionError('Researcher access required')

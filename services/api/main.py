@@ -34,6 +34,7 @@ from services.api.agent_operations import snapshot as agent_operations_snapshot,
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from agents.archive import ArchiveQuery, page as archive_page
+from agents.review_inbox import inbox as review_inbox
 from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
@@ -510,6 +511,13 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (sqlite3.Error,ValueError,OSError,TimeoutError,TypeError):
             return JSONResponse(status_code=503,content={'error':'agent_archive_unavailable'})
 
+    @app.get('/api/v1/research/agent-review-inbox')
+    def agent_review_inbox(request: Request):
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'unexpected_review_query'})
+        try:return review_inbox(database,request.state.user)
+        except PermissionError:return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
+        except (sqlite3.Error,OSError,ValueError,TypeError,TimeoutError):return JSONResponse(status_code=503,content={'error':'review_inbox_unavailable'})
+
     @app.post('/api/v1/research/agent-jobs', status_code=202)
     def enqueue_investigation(investigation: Investigation, request: Request, idempotency_key: UUID = Header()):
         if not job_worker.enabled or not job_worker.task or job_worker.task.done() or job_worker.last_error:
@@ -548,7 +556,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
 
     @app.post('/api/v1/research/agent-review')
     def agent_review(review: Review,request: Request):
-        try: return agent_store.review(request.state.user,str(review.run_id),review.report_sha256,review.decision,review.note)
+        try: return agent_store.review(request.state.user,str(review.run_id),review.report_sha256,review.decision,review.note,session_token=request.cookies.get(COOKIE,''))
+        except PermissionError:return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
         except KeyError: return JSONResponse(status_code=404,content={'error':'investigation_unavailable'})
         except Conflict as error: return JSONResponse(status_code=409,content={'error':'review_blocked','message':str(error)})
         except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'review_not_saved'})

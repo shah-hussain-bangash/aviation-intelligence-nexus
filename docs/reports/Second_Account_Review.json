@@ -1,0 +1,884 @@
+{
+  "format": "ain-second-account-review-check-v1",
+  "checked_at": "2026-11-21T06:15:39.123450+00:00",
+  "scope": "Authenticated in-process HTTP with disposable accounts and a seeded recorded-evidence fixture; no new provider call, real-user review or operational approval",
+  "checks": {
+    "author_admin_self_review_blocked": true,
+    "viewer_inbox_denied": true,
+    "viewer_shared_report_hidden": true,
+    "pending_shared_listed": true,
+    "different_account_can_review": true,
+    "csrf_required": true,
+    "peer_review_saved": true,
+    "closed_removed_from_inbox": true,
+    "closed_peer_read_hidden": true,
+    "author_sees_decision_no_operational_approval": true
+  },
+  "passed": true,
+  "pending": {
+    "run_id": "1dd140a5-42fd-4da0-a16f-b9198d86d7f7",
+    "actor": "fixture-author",
+    "request": {
+      "objective": "Use distribution_evidence to review the recorded January-March versus May input comparison. Include cohort counts, the largest total-variation input, and the complete retrospective/non-causal/CSV-identity limitation. Only distribution evidence is needed; do not query monthly SQL, documents or simulation. Keep all five input metrics as structured evidence.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "include_distribution_evidence": true,
+      "require_peer_review": true,
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "distribution_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_input_distributions",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-distributions-v1",
+            "report_sha256": "d2e8ea875e1a0e1f385f19332a8687a17c4fec55e6ec97c5a5f65c40366bdfcd",
+            "protocol_sha256": "f023328d1fa72843732c93c0e5c3b4770e552347eb041f18555838c563465549",
+            "reference_records": 1611046,
+            "comparison_records": 597574,
+            "periods": {
+              "train": [
+                "2025-01",
+                "2025-02",
+                "2025-03"
+              ],
+              "test": [
+                "2025-05"
+              ]
+            },
+            "features": {
+              "carrier": {
+                "category_count": 14,
+                "total_variation": 0.01885082156113915,
+                "jensen_shannon_divergence_bits": 0.0004411076283907118,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "DL",
+                    "reference_count": 228943,
+                    "comparison_count": 89472,
+                    "reference_share": 0.14210829485936466,
+                    "comparison_share": 0.14972538965885396,
+                    "change_percentage_points": 0.7617094799489299
+                  },
+                  {
+                    "category": "YX",
+                    "reference_count": 79637,
+                    "comparison_count": 27269,
+                    "reference_share": 0.04943185979792011,
+                    "comparison_share": 0.04563284212499205,
+                    "change_percentage_points": -0.37990176729280556
+                  },
+                  {
+                    "category": "F9",
+                    "reference_count": 48752,
+                    "comparison_count": 15836,
+                    "reference_share": 0.030261085034195175,
+                    "comparison_share": 0.026500483622112072,
+                    "change_percentage_points": -0.3760601412083103
+                  }
+                ]
+              },
+              "origin": {
+                "category_count": 341,
+                "total_variation": 0.043310119482277365,
+                "jensen_shannon_divergence_bits": 0.004270224840151574,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65155,
+                    "comparison_count": 27724,
+                    "reference_share": 0.04044266892441308,
+                    "comparison_share": 0.04639425410074736,
+                    "change_percentage_points": 0.5951585176334275
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29700,
+                    "comparison_count": 8601,
+                    "reference_share": 0.018435227796102658,
+                    "comparison_share": 0.014393196491145866,
+                    "change_percentage_points": -0.40420313049567924
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23635,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014670592894305936,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32427195263213854
+                  }
+                ]
+              },
+              "destination": {
+                "category_count": 341,
+                "total_variation": 0.04384677742647321,
+                "jensen_shannon_divergence_bits": 0.0043039265109021865,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65121,
+                    "comparison_count": 27765,
+                    "reference_share": 0.04042156462323236,
+                    "comparison_share": 0.04646286485021102,
+                    "change_percentage_points": 0.6041300226978658
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29696,
+                    "comparison_count": 8562,
+                    "reference_share": 0.018432744937140217,
+                    "comparison_share": 0.014327932607509697,
+                    "change_percentage_points": -0.410481232963052
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23637,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014671834323787155,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32439609558026045
+                  }
+                ]
+              },
+              "departure_hour": {
+                "category_count": 24,
+                "total_variation": 0.013379719375945906,
+                "jensen_shannon_divergence_bits": 0.0002702662872765241,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "07",
+                    "reference_count": 113420,
+                    "comparison_count": 44265,
+                    "reference_share": 0.07040146587993143,
+                    "comparison_share": 0.07407450792705171,
+                    "change_percentage_points": 0.3673042047120281
+                  },
+                  {
+                    "category": "19",
+                    "reference_count": 86406,
+                    "comparison_count": 33817,
+                    "reference_share": 0.05363347787710593,
+                    "comparison_share": 0.056590480844213434,
+                    "change_percentage_points": 0.29570029671075054
+                  },
+                  {
+                    "category": "08",
+                    "reference_count": 113405,
+                    "comparison_count": 40616,
+                    "reference_share": 0.07039215515882229,
+                    "comparison_share": 0.06796815122478556,
+                    "change_percentage_points": -0.2424003934036731
+                  }
+                ]
+              },
+              "weekday": {
+                "category_count": 7,
+                "total_variation": 0.04667716518564095,
+                "jensen_shannon_divergence_bits": 0.0017538007317905635,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "4",
+                    "reference_count": 245848,
+                    "comparison_count": 101970,
+                    "reference_share": 0.15260147754936854,
+                    "comparison_share": 0.1706399542148755,
+                    "change_percentage_points": 1.8038476665506953
+                  },
+                  {
+                    "category": "7",
+                    "reference_count": 241952,
+                    "comparison_count": 79376,
+                    "reference_share": 0.15018317291995387,
+                    "comparison_share": 0.13283041096165496,
+                    "change_percentage_points": -1.7352761958298908
+                  },
+                  {
+                    "category": "5",
+                    "reference_count": 246270,
+                    "comparison_count": 101099,
+                    "reference_share": 0.15286341916990576,
+                    "comparison_share": 0.16918239414700104,
+                    "change_percentage_points": 1.631897497709528
+                  }
+                ]
+              }
+            },
+            "csv_identity_verified": false,
+            "alert_threshold": null,
+            "research_only": true,
+            "production_ready": false,
+            "limitations": [
+              "Recorded January-March versus May 2025 eligible US cohorts, not current traffic or UAE operations.",
+              "Source is the restored database; matching cohort counts do not prove frozen CSV byte identity or identical record membership.",
+              "Eligibility conditions on completed non-diverted flights with observed arrival delay; this is not the full flight population.",
+              "These are marginal distributions. Hour bins discard minute detail; joint dependence and model preprocessing are not compared.",
+              "Descriptive distances have no confidence intervals, significance test or alert threshold here.",
+              "A changed input distribution does not establish degraded prediction, causality or a reason for individual errors.",
+              "May has already been evaluated; this is a retrospective diagnostic, not a new untouched test or tuning opportunity."
+            ]
+          },
+          "evidence_text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.\ncarrier: total variation 0.018851; base-2 Jensen-Shannon divergence 0.000441 bits; 0 May records have a category absent from the reference.\norigin: total variation 0.043310; base-2 Jensen-Shannon divergence 0.004270 bits; 241 May records have a category absent from the reference.\ndestination: total variation 0.043847; base-2 Jensen-Shannon divergence 0.004304 bits; 241 May records have a category absent from the reference.\ndeparture_hour: total variation 0.013380; base-2 Jensen-Shannon divergence 0.000270 bits; 0 May records have a category absent from the reference.\nweekday: total variation 0.046677; base-2 Jensen-Shannon divergence 0.001754 bits; 0 May records have a category absent from the reference.\nAmong these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.\nRetrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.\nEligibility conditions on completed, non-diverted flights with observed arrival delay; the full-flight population is not compared.\nNo confidence interval, significance test, model fitting or threshold selection is performed. May was already evaluated in earlier experiments."
+        },
+        "elapsed_ms": 28.83
+      }
+    ],
+    "claims": [
+      {
+        "text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.",
+        "citation": "T1",
+        "quote": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights."
+      },
+      {
+        "text": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.",
+        "citation": "T1",
+        "quote": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677."
+      },
+      {
+        "text": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.",
+        "citation": "T1",
+        "quote": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-21T06:15:38.614645+00:00",
+    "updated_at": "2026-11-21T06:15:38.627077+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "evidence_origin": "Recorded public evidence fixture; no provider execution in this workflow check",
+    "finding_style": "verbatim_source_extracts",
+    "report_sha256": "f4cd128b4955601cc8ac682e57f28f3f1f90256001175f3574d5164642456361",
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "distribution_evidence_mismatches": [],
+      "distribution_limitations_uncited": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "review_access": {
+      "second_account_required": true,
+      "is_author": true,
+      "can_review": false,
+      "scope": "Different local account, not proof of a different person or operational authority"
+    }
+  },
+  "peer_view": {
+    "run_id": "1dd140a5-42fd-4da0-a16f-b9198d86d7f7",
+    "actor": "fixture-author",
+    "request": {
+      "objective": "Use distribution_evidence to review the recorded January-March versus May input comparison. Include cohort counts, the largest total-variation input, and the complete retrospective/non-causal/CSV-identity limitation. Only distribution evidence is needed; do not query monthly SQL, documents or simulation. Keep all five input metrics as structured evidence.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "include_distribution_evidence": true,
+      "require_peer_review": true,
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "distribution_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_input_distributions",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-distributions-v1",
+            "report_sha256": "d2e8ea875e1a0e1f385f19332a8687a17c4fec55e6ec97c5a5f65c40366bdfcd",
+            "protocol_sha256": "f023328d1fa72843732c93c0e5c3b4770e552347eb041f18555838c563465549",
+            "reference_records": 1611046,
+            "comparison_records": 597574,
+            "periods": {
+              "train": [
+                "2025-01",
+                "2025-02",
+                "2025-03"
+              ],
+              "test": [
+                "2025-05"
+              ]
+            },
+            "features": {
+              "carrier": {
+                "category_count": 14,
+                "total_variation": 0.01885082156113915,
+                "jensen_shannon_divergence_bits": 0.0004411076283907118,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "DL",
+                    "reference_count": 228943,
+                    "comparison_count": 89472,
+                    "reference_share": 0.14210829485936466,
+                    "comparison_share": 0.14972538965885396,
+                    "change_percentage_points": 0.7617094799489299
+                  },
+                  {
+                    "category": "YX",
+                    "reference_count": 79637,
+                    "comparison_count": 27269,
+                    "reference_share": 0.04943185979792011,
+                    "comparison_share": 0.04563284212499205,
+                    "change_percentage_points": -0.37990176729280556
+                  },
+                  {
+                    "category": "F9",
+                    "reference_count": 48752,
+                    "comparison_count": 15836,
+                    "reference_share": 0.030261085034195175,
+                    "comparison_share": 0.026500483622112072,
+                    "change_percentage_points": -0.3760601412083103
+                  }
+                ]
+              },
+              "origin": {
+                "category_count": 341,
+                "total_variation": 0.043310119482277365,
+                "jensen_shannon_divergence_bits": 0.004270224840151574,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65155,
+                    "comparison_count": 27724,
+                    "reference_share": 0.04044266892441308,
+                    "comparison_share": 0.04639425410074736,
+                    "change_percentage_points": 0.5951585176334275
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29700,
+                    "comparison_count": 8601,
+                    "reference_share": 0.018435227796102658,
+                    "comparison_share": 0.014393196491145866,
+                    "change_percentage_points": -0.40420313049567924
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23635,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014670592894305936,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32427195263213854
+                  }
+                ]
+              },
+              "destination": {
+                "category_count": 341,
+                "total_variation": 0.04384677742647321,
+                "jensen_shannon_divergence_bits": 0.0043039265109021865,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65121,
+                    "comparison_count": 27765,
+                    "reference_share": 0.04042156462323236,
+                    "comparison_share": 0.04646286485021102,
+                    "change_percentage_points": 0.6041300226978658
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29696,
+                    "comparison_count": 8562,
+                    "reference_share": 0.018432744937140217,
+                    "comparison_share": 0.014327932607509697,
+                    "change_percentage_points": -0.410481232963052
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23637,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014671834323787155,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32439609558026045
+                  }
+                ]
+              },
+              "departure_hour": {
+                "category_count": 24,
+                "total_variation": 0.013379719375945906,
+                "jensen_shannon_divergence_bits": 0.0002702662872765241,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "07",
+                    "reference_count": 113420,
+                    "comparison_count": 44265,
+                    "reference_share": 0.07040146587993143,
+                    "comparison_share": 0.07407450792705171,
+                    "change_percentage_points": 0.3673042047120281
+                  },
+                  {
+                    "category": "19",
+                    "reference_count": 86406,
+                    "comparison_count": 33817,
+                    "reference_share": 0.05363347787710593,
+                    "comparison_share": 0.056590480844213434,
+                    "change_percentage_points": 0.29570029671075054
+                  },
+                  {
+                    "category": "08",
+                    "reference_count": 113405,
+                    "comparison_count": 40616,
+                    "reference_share": 0.07039215515882229,
+                    "comparison_share": 0.06796815122478556,
+                    "change_percentage_points": -0.2424003934036731
+                  }
+                ]
+              },
+              "weekday": {
+                "category_count": 7,
+                "total_variation": 0.04667716518564095,
+                "jensen_shannon_divergence_bits": 0.0017538007317905635,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "4",
+                    "reference_count": 245848,
+                    "comparison_count": 101970,
+                    "reference_share": 0.15260147754936854,
+                    "comparison_share": 0.1706399542148755,
+                    "change_percentage_points": 1.8038476665506953
+                  },
+                  {
+                    "category": "7",
+                    "reference_count": 241952,
+                    "comparison_count": 79376,
+                    "reference_share": 0.15018317291995387,
+                    "comparison_share": 0.13283041096165496,
+                    "change_percentage_points": -1.7352761958298908
+                  },
+                  {
+                    "category": "5",
+                    "reference_count": 246270,
+                    "comparison_count": 101099,
+                    "reference_share": 0.15286341916990576,
+                    "comparison_share": 0.16918239414700104,
+                    "change_percentage_points": 1.631897497709528
+                  }
+                ]
+              }
+            },
+            "csv_identity_verified": false,
+            "alert_threshold": null,
+            "research_only": true,
+            "production_ready": false,
+            "limitations": [
+              "Recorded January-March versus May 2025 eligible US cohorts, not current traffic or UAE operations.",
+              "Source is the restored database; matching cohort counts do not prove frozen CSV byte identity or identical record membership.",
+              "Eligibility conditions on completed non-diverted flights with observed arrival delay; this is not the full flight population.",
+              "These are marginal distributions. Hour bins discard minute detail; joint dependence and model preprocessing are not compared.",
+              "Descriptive distances have no confidence intervals, significance test or alert threshold here.",
+              "A changed input distribution does not establish degraded prediction, causality or a reason for individual errors.",
+              "May has already been evaluated; this is a retrospective diagnostic, not a new untouched test or tuning opportunity."
+            ]
+          },
+          "evidence_text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.\ncarrier: total variation 0.018851; base-2 Jensen-Shannon divergence 0.000441 bits; 0 May records have a category absent from the reference.\norigin: total variation 0.043310; base-2 Jensen-Shannon divergence 0.004270 bits; 241 May records have a category absent from the reference.\ndestination: total variation 0.043847; base-2 Jensen-Shannon divergence 0.004304 bits; 241 May records have a category absent from the reference.\ndeparture_hour: total variation 0.013380; base-2 Jensen-Shannon divergence 0.000270 bits; 0 May records have a category absent from the reference.\nweekday: total variation 0.046677; base-2 Jensen-Shannon divergence 0.001754 bits; 0 May records have a category absent from the reference.\nAmong these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.\nRetrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.\nEligibility conditions on completed, non-diverted flights with observed arrival delay; the full-flight population is not compared.\nNo confidence interval, significance test, model fitting or threshold selection is performed. May was already evaluated in earlier experiments."
+        },
+        "elapsed_ms": 28.83
+      }
+    ],
+    "claims": [
+      {
+        "text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.",
+        "citation": "T1",
+        "quote": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights."
+      },
+      {
+        "text": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.",
+        "citation": "T1",
+        "quote": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677."
+      },
+      {
+        "text": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.",
+        "citation": "T1",
+        "quote": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-21T06:15:38.614645+00:00",
+    "updated_at": "2026-11-21T06:15:38.627077+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "evidence_origin": "Recorded public evidence fixture; no provider execution in this workflow check",
+    "finding_style": "verbatim_source_extracts",
+    "report_sha256": "f4cd128b4955601cc8ac682e57f28f3f1f90256001175f3574d5164642456361",
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "distribution_evidence_mismatches": [],
+      "distribution_limitations_uncited": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "review_access": {
+      "second_account_required": true,
+      "is_author": false,
+      "can_review": true,
+      "scope": "Different local account, not proof of a different person or operational authority"
+    }
+  },
+  "reviewed": {
+    "run_id": "1dd140a5-42fd-4da0-a16f-b9198d86d7f7",
+    "actor": "fixture-author",
+    "request": {
+      "objective": "Use distribution_evidence to review the recorded January-March versus May input comparison. Include cohort counts, the largest total-variation input, and the complete retrospective/non-causal/CSV-identity limitation. Only distribution evidence is needed; do not query monthly SQL, documents or simulation. Keep all five input metrics as structured evidence.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "include_distribution_evidence": true,
+      "require_peer_review": true,
+      "document_scope": null
+    },
+    "state": "reviewed",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "distribution_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_input_distributions",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-distributions-v1",
+            "report_sha256": "d2e8ea875e1a0e1f385f19332a8687a17c4fec55e6ec97c5a5f65c40366bdfcd",
+            "protocol_sha256": "f023328d1fa72843732c93c0e5c3b4770e552347eb041f18555838c563465549",
+            "reference_records": 1611046,
+            "comparison_records": 597574,
+            "periods": {
+              "train": [
+                "2025-01",
+                "2025-02",
+                "2025-03"
+              ],
+              "test": [
+                "2025-05"
+              ]
+            },
+            "features": {
+              "carrier": {
+                "category_count": 14,
+                "total_variation": 0.01885082156113915,
+                "jensen_shannon_divergence_bits": 0.0004411076283907118,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "DL",
+                    "reference_count": 228943,
+                    "comparison_count": 89472,
+                    "reference_share": 0.14210829485936466,
+                    "comparison_share": 0.14972538965885396,
+                    "change_percentage_points": 0.7617094799489299
+                  },
+                  {
+                    "category": "YX",
+                    "reference_count": 79637,
+                    "comparison_count": 27269,
+                    "reference_share": 0.04943185979792011,
+                    "comparison_share": 0.04563284212499205,
+                    "change_percentage_points": -0.37990176729280556
+                  },
+                  {
+                    "category": "F9",
+                    "reference_count": 48752,
+                    "comparison_count": 15836,
+                    "reference_share": 0.030261085034195175,
+                    "comparison_share": 0.026500483622112072,
+                    "change_percentage_points": -0.3760601412083103
+                  }
+                ]
+              },
+              "origin": {
+                "category_count": 341,
+                "total_variation": 0.043310119482277365,
+                "jensen_shannon_divergence_bits": 0.004270224840151574,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65155,
+                    "comparison_count": 27724,
+                    "reference_share": 0.04044266892441308,
+                    "comparison_share": 0.04639425410074736,
+                    "change_percentage_points": 0.5951585176334275
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29700,
+                    "comparison_count": 8601,
+                    "reference_share": 0.018435227796102658,
+                    "comparison_share": 0.014393196491145866,
+                    "change_percentage_points": -0.40420313049567924
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23635,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014670592894305936,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32427195263213854
+                  }
+                ]
+              },
+              "destination": {
+                "category_count": 341,
+                "total_variation": 0.04384677742647321,
+                "jensen_shannon_divergence_bits": 0.0043039265109021865,
+                "comparison_unseen_records": 241,
+                "comparison_mass_unseen_in_reference": 0.0004032973322132489,
+                "largest_changes": [
+                  {
+                    "category": "ORD",
+                    "reference_count": 65121,
+                    "comparison_count": 27765,
+                    "reference_share": 0.04042156462323236,
+                    "comparison_share": 0.04646286485021102,
+                    "change_percentage_points": 0.6041300226978658
+                  },
+                  {
+                    "category": "EWR",
+                    "reference_count": 29696,
+                    "comparison_count": 8562,
+                    "reference_share": 0.018432744937140217,
+                    "comparison_share": 0.014327932607509697,
+                    "change_percentage_points": -0.410481232963052
+                  },
+                  {
+                    "category": "FLL",
+                    "reference_count": 23637,
+                    "comparison_count": 6829,
+                    "reference_share": 0.014671834323787155,
+                    "comparison_share": 0.01142787336798455,
+                    "change_percentage_points": -0.32439609558026045
+                  }
+                ]
+              },
+              "departure_hour": {
+                "category_count": 24,
+                "total_variation": 0.013379719375945906,
+                "jensen_shannon_divergence_bits": 0.0002702662872765241,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "07",
+                    "reference_count": 113420,
+                    "comparison_count": 44265,
+                    "reference_share": 0.07040146587993143,
+                    "comparison_share": 0.07407450792705171,
+                    "change_percentage_points": 0.3673042047120281
+                  },
+                  {
+                    "category": "19",
+                    "reference_count": 86406,
+                    "comparison_count": 33817,
+                    "reference_share": 0.05363347787710593,
+                    "comparison_share": 0.056590480844213434,
+                    "change_percentage_points": 0.29570029671075054
+                  },
+                  {
+                    "category": "08",
+                    "reference_count": 113405,
+                    "comparison_count": 40616,
+                    "reference_share": 0.07039215515882229,
+                    "comparison_share": 0.06796815122478556,
+                    "change_percentage_points": -0.2424003934036731
+                  }
+                ]
+              },
+              "weekday": {
+                "category_count": 7,
+                "total_variation": 0.04667716518564095,
+                "jensen_shannon_divergence_bits": 0.0017538007317905635,
+                "comparison_unseen_records": 0,
+                "comparison_mass_unseen_in_reference": 0.0,
+                "largest_changes": [
+                  {
+                    "category": "4",
+                    "reference_count": 245848,
+                    "comparison_count": 101970,
+                    "reference_share": 0.15260147754936854,
+                    "comparison_share": 0.1706399542148755,
+                    "change_percentage_points": 1.8038476665506953
+                  },
+                  {
+                    "category": "7",
+                    "reference_count": 241952,
+                    "comparison_count": 79376,
+                    "reference_share": 0.15018317291995387,
+                    "comparison_share": 0.13283041096165496,
+                    "change_percentage_points": -1.7352761958298908
+                  },
+                  {
+                    "category": "5",
+                    "reference_count": 246270,
+                    "comparison_count": 101099,
+                    "reference_share": 0.15286341916990576,
+                    "comparison_share": 0.16918239414700104,
+                    "change_percentage_points": 1.631897497709528
+                  }
+                ]
+              }
+            },
+            "csv_identity_verified": false,
+            "alert_threshold": null,
+            "research_only": true,
+            "production_ready": false,
+            "limitations": [
+              "Recorded January-March versus May 2025 eligible US cohorts, not current traffic or UAE operations.",
+              "Source is the restored database; matching cohort counts do not prove frozen CSV byte identity or identical record membership.",
+              "Eligibility conditions on completed non-diverted flights with observed arrival delay; this is not the full flight population.",
+              "These are marginal distributions. Hour bins discard minute detail; joint dependence and model preprocessing are not compared.",
+              "Descriptive distances have no confidence intervals, significance test or alert threshold here.",
+              "A changed input distribution does not establish degraded prediction, causality or a reason for individual errors.",
+              "May has already been evaluated; this is a retrospective diagnostic, not a new untouched test or tuning opportunity."
+            ]
+          },
+          "evidence_text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.\ncarrier: total variation 0.018851; base-2 Jensen-Shannon divergence 0.000441 bits; 0 May records have a category absent from the reference.\norigin: total variation 0.043310; base-2 Jensen-Shannon divergence 0.004270 bits; 241 May records have a category absent from the reference.\ndestination: total variation 0.043847; base-2 Jensen-Shannon divergence 0.004304 bits; 241 May records have a category absent from the reference.\ndeparture_hour: total variation 0.013380; base-2 Jensen-Shannon divergence 0.000270 bits; 0 May records have a category absent from the reference.\nweekday: total variation 0.046677; base-2 Jensen-Shannon divergence 0.001754 bits; 0 May records have a category absent from the reference.\nAmong these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.\nRetrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.\nEligibility conditions on completed, non-diverted flights with observed arrival delay; the full-flight population is not compared.\nNo confidence interval, significance test, model fitting or threshold selection is performed. May was already evaluated in earlier experiments."
+        },
+        "elapsed_ms": 28.83
+      }
+    ],
+    "claims": [
+      {
+        "text": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights.",
+        "citation": "T1",
+        "quote": "Recorded January-March 2025 reference contains 1611046 eligible US flights; May 2025 comparison contains 597574 eligible US flights."
+      },
+      {
+        "text": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677.",
+        "citation": "T1",
+        "quote": "Among these five recorded marginal comparisons, weekday has the largest total variation, 0.046677."
+      },
+      {
+        "text": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available.",
+        "citation": "T1",
+        "quote": "Retrospective marginal differences do not prove model degradation or causality, and matching counts do not verify frozen CSV identity; no live drift alert is available."
+      }
+    ],
+    "reviews": [
+      {
+        "actor": "fixture-reviewer",
+        "decision": "reviewed",
+        "note": "Checked recorded counts, source limitations and research scope.",
+        "report_sha256": "f4cd128b4955601cc8ac682e57f28f3f1f90256001175f3574d5164642456361",
+        "at": "2026-11-21T06:15:38.986932+00:00",
+        "second_account_review": true,
+        "reviewer_id": "247030d3-e3fd-4467-b514-19d939d92404"
+      }
+    ],
+    "created_at": "2026-11-21T06:15:38.614645+00:00",
+    "updated_at": "2026-11-21T06:15:38.986942+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "evidence_origin": "Recorded public evidence fixture; no provider execution in this workflow check",
+    "finding_style": "verbatim_source_extracts",
+    "report_sha256": "f4cd128b4955601cc8ac682e57f28f3f1f90256001175f3574d5164642456361",
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "distribution_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "distribution_evidence_mismatches": [],
+      "distribution_limitations_uncited": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "review_access": {
+      "second_account_required": true,
+      "is_author": false,
+      "can_review": false,
+      "scope": "Different local account, not proof of a different person or operational authority"
+    }
+  },
+  "production_ready": false
+}

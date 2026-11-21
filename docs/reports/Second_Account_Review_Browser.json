@@ -1,0 +1,90 @@
+{
+  "scope": "Isolated second-account review component with disposable recorded-evidence fixture and simulated transport; no real user review",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "metadata_visible": true,
+        "peer_can_review": true,
+        "decision_saved": true,
+        "removed_from_inbox": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "metadata_visible": true,
+        "peer_can_review": true,
+        "decision_saved": true,
+        "removed_from_inbox": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Author_Admin",
+      "checks": {
+        "author_form_hidden": true,
+        "author_cannot_submit": true,
+        "own_not_in_inbox": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "viewer_inbox_hidden": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Consent",
+      "checks": {
+        "default_unshared": true,
+        "explicit_payload": true,
+        "model_resets_sharing": true,
+        "distribution_resets_sharing": true,
+        "route_resets_sharing": true,
+        "example_resets_sharing": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Stale_Open",
+      "checks": {
+        "metadata_visible": true,
+        "stale_clears": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "metadata_visible": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false,
+  "checked_on": "2026-11-21",
+  "passed": true
+}

@@ -59,3 +59,5 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 @media(max-width:600px){.distribution-bars{grid-template-columns:1fr}}
 
 .agent-distribution-evidence{border:1px solid var(--line);border-left:3px solid #95743f;border-radius:5px;padding:16px;margin:18px 0}
+
+.agent-peer-inbox{border-top:1px solid var(--line);padding-top:20px;margin-top:24px}.agent-peer-inbox .gate-history-buttons button{white-space:normal;text-align:left;overflow-wrap:anywhere}

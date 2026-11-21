@@ -35,6 +35,7 @@ class Investigation(BaseModel):
     required_tools: list[Literal['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence']]=Field(default_factory=list,max_length=3)
     include_model_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     include_distribution_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
+    require_peer_review: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     route: RouteScope | None=Field(default=None,exclude_if=lambda value: value is None)
     document_scope: Literal['docs/DELAY_V2.md','docs/DELAY_BASELINE.md','docs/DATA_INGESTION.md','docs/MODEL_DATASET.md','docs/GATE_OPTIMIZATION.md','docs/LOCAL_IDENTITY.md'] | None = None
 
@@ -97,6 +98,7 @@ class Investigator:
                 + ('route_history reads ONLY the explicit user route, comparing fixed January-March and May cohorts with nominal Wilson intervals. Echo its origin and destination exactly in the tool arguments; never substitute airports. ' if request.route is not None else '')
                 + ('model_evidence reads fixed recorded model errors, calibration and April-only input reliance; it is not live inference, causal analysis or an individual-flight explanation. This planning stage only selects tools; never write a report here. Once the required evidence is collected, return the short text "Evidence collected" with no tool calls. A separate stage writes the report. ' if request.include_model_evidence else '')
                 + ('distribution_evidence reads a fixed recorded marginal comparison, independent of the monthly selector. It cannot diagnose model degradation or cause. This stage only selects tools. Once required evidence is collected, return "Evidence collected" without tool calls; another stage writes the report. ' if request.include_distribution_evidence else '')
+                + ('Second-account review is a later human stage; it is not a tool to select. ' if request.require_peer_review else '')
                 + 'knowledge_search retrieves project evidence. gate_simulation is a separate SYNTHETIC demonstration, never historical gate allocation. '
                 'Do not invent live airline data, causal explanations, policies, credentials or operational actions. '
                 'No shell, URL fetch, SQL text, file path or write tools exist. Stop selecting tools when sufficient evidence is collected.'},

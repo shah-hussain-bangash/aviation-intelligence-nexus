@@ -19,7 +19,8 @@ import { renderPrediction } from '../apps/web/research-scenario.mjs';
 import { renderHistory } from '../apps/web/research-history.mjs';
 import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
-import { renderInvestigation, investigationPayload } from '../apps/web/investigation-lab.mjs';
+import { renderInvestigation, investigationPayload,canReviewInvestigation } from '../apps/web/investigation-lab.mjs';
+import {renderInbox,validateInbox} from '../apps/web/review-inbox.mjs';
 import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
@@ -33,6 +34,21 @@ const archiveFixture=()=>({runs:[{run_id:'00000000-0000-4000-8000-000000000001',
 const securityFixture=()=>({active_sessions:3,other_active_sessions:2,checked_at:'2026-11-21T10:00:00Z',current_expires_at:'2026-11-21T18:00:00Z',scope:'current_account_local_sessions',production_ready:false});
 const distributionFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Input_Distributions.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'a'.repeat(64)});
 const distributionAgentFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Distribution_Agent_Integration.json',import.meta.url),'utf8')).run;
+const peerFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Second_Account_Review.json',import.meta.url),'utf8'));
+test('second-account review is explicit and author access is fail-closed while old reports retain behavior',()=>{
+ const f=peerFixture();assert.equal(canReviewInvestigation(f.pending,{role:'admin'}),false);assert.equal(canReviewInvestigation(f.peer_view,{role:'researcher'}),true);assert.equal(canReviewInvestigation(f.peer_view,{role:'viewer'}),false);assert.equal(canReviewInvestigation({...f.peer_view,review_access:undefined},{role:'admin'}),false);assert.equal(canReviewInvestigation(distributionAgentFixture(),{role:'researcher'}),true);
+ assert.match(renderInvestigation(f.reviewed),/research review recorded/);assert.doesNotMatch(renderInvestigation(f.reviewed),/human review required/);
+ const input={objective:'Review recorded research evidence.',month:'2025-05',simulation:false,requirePeerReview:false};assert.ok(!Object.hasOwn(investigationPayload(input),'require_peer_review'));input.requirePeerReview=true;assert.equal(investigationPayload(input).require_peer_review,true);assert.match(renderInvestigation(f.pending),/Different accounts do not prove different people/);
+});
+test('review inbox metadata is bounded, escaped and rejects unexpected scope',()=>{
+ const run=peerFixture().peer_view,data={runs:[{run_id:run.run_id,author:'<script>',objective:'Review <img> evidence.',updated_at:run.updated_at}],limit:20,has_more:false,checked_at:run.updated_at,scope:'explicit_pending_second_account_reports',research_only:true,operational_approval:false};
+ const html=renderInbox(data);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.throws(()=>validateInbox({...data,operational_approval:true}));assert.throws(()=>validateInbox({...data,runs:[...data.runs,...data.runs]}));assert.match(renderInbox({...data,runs:[]}),/No pending reports/);
+});
+test('review inbox proxy permits only a fixed read and filters unrelated cookies',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/agent-review-inbox');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,backend)){res.writeHead(404);res.end();}});const url=`http://127.0.0.1:${frontend}/api/v1/research/agent-review-inbox`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url+'?account=other')).status,422);assert.equal((await fetch(url,{method:'POST'})).status,405);
+});
 test('agent distribution permission is explicit, excluded when false and counts against the same three slots',()=>{
  const input={objective:'Review recorded input distributions.',month:'2025-05',simulation:false,requireFlights:true,requireKnowledge:true,includeDistributionEvidence:false};assert.ok(!Object.hasOwn(investigationPayload(input),'include_distribution_evidence'));
  input.includeDistributionEvidence=true;assert.equal(investigationPayload(input).required_tools.length,3);assert.equal(investigationPayload(input).include_distribution_evidence,true);input.includeModelEvidence=true;assert.throws(()=>investigationPayload(input));

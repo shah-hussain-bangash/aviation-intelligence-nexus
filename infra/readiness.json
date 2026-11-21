@@ -423,8 +423,8 @@
         "P13",
         "P15"
       ],
-      "local_progress": "Research report review is tied to the exact report hash and mechanical evidence coverage. Synthetic gate proposals now have content-bound, expiring research reviews with independent feasibility rechecks, transactional conflict rejection and identical retry replay; self-review is still permitted.",
-      "remaining": "Operational proposal expiry, transactional approval separation, changed-proposal controls and business authorization remain outstanding.",
+      "local_progress": "Research report review is tied to the exact report hash and mechanical evidence coverage. Synthetic gate proposals now have content-bound, expiring research reviews with independent feasibility rechecks, transactional conflict rejection and identical retry replay; self-review is still permitted. Newly opted-in agent reports support a different-local-account review policy, pending-only researcher/admin sharing and transactional reviewer role/session/ownership checks; this does not establish different people or operational authority.",
+      "remaining": "Operational reviewer assignment, expiry/retention, independently governed identity/separation and business authorization remain outstanding.",
       "acceptance": "Changed/expired proposals and duplicate/conflicting decisions are rejected.",
       "production_accepted": false,
       "evidence": [
@@ -439,6 +439,18 @@
         {
           "path": "docs/reports/Gate_Proposal_Review.json",
           "sha256": "2a090e0adb741d0ebf5a5804a58258f79b078f21fbe7e9ce507f85b4ad5d618b"
+        },
+        {
+          "path": "docs/SECOND_ACCOUNT_REVIEW.md",
+          "sha256": "fbdf4df6da505ff99bf7a6a6ef96bd3a96354f9608eea9028e8c09107aaaf9e2"
+        },
+        {
+          "path": "docs/reports/Second_Account_Review.json",
+          "sha256": "77e4e18ca477506520936dd21b8f6d42368d1d363b59939d8e6900b5843320ad"
+        },
+        {
+          "path": "docs/reports/Second_Account_Review_Browser.json",
+          "sha256": "97cfe0692286ca11cd1b23e905be988d4a3fa6f64ad9c937e963b4f56f0e2b72"
         }
       ]
     },
@@ -636,7 +648,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "d4eb6ff8dd9a392a9e475ddc1b692e16c0bad99ea5f40bbca16eac1121707d92"
+          "sha256": "42a0bb728c97958e00a558b5b124240235919c87eadb15b299f3933eeb5319b2"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
