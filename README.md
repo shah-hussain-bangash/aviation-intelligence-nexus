@@ -23,6 +23,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 ## Included today
 
+- Recorded historical input distributions with TV/JS divergence, category shares and export across 2,208,620 eligible records. See [input comparison](docs/INPUT_DISTRIBUTIONS.md).
+
 - Account security with private session counts/expiry and explicit self-service sign-out of other sessions. See [account security](docs/ACCOUNT_SECURITY.md).
 
 - Searchable owner-scoped investigation archive with state filters, older pages and saved-evidence reopening. See [investigation archive](docs/INVESTIGATION_ARCHIVE.md).

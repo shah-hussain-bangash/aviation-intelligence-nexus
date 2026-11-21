@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Input-distribution milestone: read-only historical aggregation compared 1,611,046 January–March and 597,574 May eligible records across five raw inputs in 13.552 seconds. TV, base-2 Jensen–Shannon divergence, unseen-category mass, paired bars, full category tables and export are implemented with report/arithmetic checks. Weekday had the largest measured TV (0.046677); no alert, degradation or causal attribution is inferred. Counts align with the frozen model populations, but CSV/row identity is not verified. Five isolated browser scenarios passed. Windows passes 295 tests (229 Python, 66 Node). See `INPUT_DISTRIBUTIONS.md`.
+
 Account security milestone: all signed-in roles can observe their own active session count/expiry and explicitly revoke other active sessions. Transactions recheck the current session and preserve its expiry, credentials and foreign accounts. Fresh write receipts, strict acknowledgment, role/CSRF/privacy and contention/rollback behavior are tested; eight isolated browser scenarios passed. Windows passes 285 tests (222 Python, 63 Node). No real user session was revoked for testing; production acceptance remains open. See `ACCOUNT_SECURITY.md`.
 
 Investigation archive milestone: an authenticated read-only metadata archive now searches literal objectives, filters states and pages beyond the latest ten records with owner checks and insertion boundaries. Older records reopen existing evidence/export/review controls. Seven new Python tests, three Node tests and six isolated desktop/mobile scenarios cover query, ownership, cursor, failure and session behavior. Windows passes 275 tests (215 Python, 60 Node). No production acceptance is claimed. See `INVESTIGATION_ARCHIVE.md`.

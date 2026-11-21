@@ -37,6 +37,7 @@ from agents.archive import ArchiveQuery, page as archive_page
 from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
+from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 
@@ -254,6 +255,11 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         if request.state.user['role'] != 'admin':
             return JSONResponse(status_code=403, content={'error': 'admin_role_required'})
         return monitor.snapshot()
+
+    @app.get('/api/v1/research/input-distributions')
+    def input_distributions(request: Request):
+        try:return load_distributions()
+        except (OSError,ValueError,KeyError,TypeError):return JSONResponse(status_code=503,content={'error':'recorded_input_distributions_unavailable'})
 
     @app.get("/api/v1/auth/session")
     def auth_session(request: Request):

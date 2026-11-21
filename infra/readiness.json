@@ -191,7 +191,7 @@
         "P01",
         "P06"
       ],
-      "local_progress": "Historical scenario inference loads a verified v2 artifact, checks input scope and abstains on unsupported requests.",
+      "local_progress": "Historical scenario inference loads a verified v2 artifact, checks input scope and abstains on unsupported requests. A pinned retrospective marginal input comparison adds TV/JS divergence and absent-category mass for restored January-March/May eligible cohorts; it does not implement live drift alerts or attribute model errors.",
       "remaining": "Operational model monitoring, calibration, service objectives and demonstrated model rollback remain outstanding.",
       "acceptance": "Inference, fallback, monitoring and model-rollback tests pass.",
       "production_accepted": false,
@@ -199,6 +199,18 @@
         {
           "path": "docs/RESEARCH_PREDICTION.md",
           "sha256": "10ce68ccf44a571ef7f407085517ef0f54d27ee9fbd182fa69d5d6830f7e62fa"
+        },
+        {
+          "path": "docs/INPUT_DISTRIBUTIONS.md",
+          "sha256": "1a37cd01b0b9e8c8db95984282813487635eaf3193ceb01be0a2013f00e7ac06"
+        },
+        {
+          "path": "docs/reports/Input_Distributions.json",
+          "sha256": "d2e8ea875e1a0e1f385f19332a8687a17c4fec55e6ec97c5a5f65c40366bdfcd"
+        },
+        {
+          "path": "docs/reports/Input_Distributions_Browser.json",
+          "sha256": "fa51e12a00c2163e362d5a223beb1fc58250068f03973acb0e901f745a2b0523"
         }
       ]
     },
@@ -612,7 +624,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "25cba7428204817e432ddbe9c67bb66ef1f3aa528895ac26751379748647674a"
+          "sha256": "1fa7988551bae39634ae66817dc651546eaf943aab38ac8da037ec8d1e7d9fa7"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

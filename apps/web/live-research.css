@@ -49,3 +49,11 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 .account-security form button{justify-self:start}
 .security-receipt{padding:12px;border-left:3px solid #95743f;background:var(--card2,#f8f7f4)}
 @media(max-width:550px){.account-security .research-kpis{grid-template-columns:1fr}}
+.distribution-bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.distribution-bars article{padding:12px;border:1px solid var(--line);border-radius:5px;min-width:0}
+.distribution-bars span{font-size:13px;display:block}.distribution-bars i{display:block;height:8px;margin:4px 0 10px;border-radius:3px}
+.distribution-bars .reference{background:#95743f}.distribution-bars .comparison{background:#c8102e}
+.distribution-table{max-height:430px}.distribution-table thead{position:sticky;top:0;background:var(--card2)}
+.input-distributions .pattern-controls .knowledge-generation{display:flex;align-items:center;gap:10px}
+.input-distributions .pattern-controls input[type=checkbox]{width:auto;flex:0 0 auto;margin:0}
+@media(max-width:600px){.distribution-bars{grid-template-columns:1fr}}

@@ -1,0 +1,64 @@
+{
+  "scope": "Recorded database comparison through simulated component transport; no real user session",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "real_counts": true,
+        "scope": true,
+        "origin_selection": true,
+        "top_twelve": true,
+        "all_categories": true,
+        "export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "real_counts": true,
+        "scope": true,
+        "origin_selection": true,
+        "top_twelve": true,
+        "all_categories": true,
+        "export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "real_counts": true,
+        "scope": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Invalid_Recovery",
+      "checks": {
+        "real_counts": true,
+        "scope": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false,
+  "checked_on": "2026-11-21",
+  "passed": true
+}

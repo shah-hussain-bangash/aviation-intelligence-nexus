@@ -1,6 +1,7 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
+import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
 import {renderArchive} from '../apps/web/agent-archive.mjs';
 import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
@@ -29,6 +30,18 @@ import {renderRouteHistory,validateRouteHistory} from '../apps/web/route-history
 const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_History_Lookup.json',import.meta.url),'utf8')).example;
 const archiveFixture=()=>({runs:[{run_id:'00000000-0000-4000-8000-000000000001',actor:'fixture-owner',objective:'Review saved <script> evidence.',state:'cancelled',created_at:'2026-11-21T00:00:00Z',updated_at:'2026-11-21T00:00:00Z'}],through:'9223372036854775807',next_before:null,page_size:10,order:'newest_created_first',search_scope:'objective_literal_ascii_case_insensitive',research_only:true,operational_approval:false});
 const securityFixture=()=>({active_sessions:3,other_active_sessions:2,checked_at:'2026-11-21T10:00:00Z',current_expires_at:'2026-11-21T18:00:00Z',scope:'current_account_local_sessions',production_ready:false});
+const distributionFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Input_Distributions.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'a'.repeat(64)});
+test('distribution comparisons retain measured populations, all five inputs and explicit descriptive limits',()=>{
+ const data=distributionFixture(),html=renderDistributions(data,'origin');assert.match(html,/1,611,046/);assert.match(html,/597,574/);assert.match(html,/Jensen–Shannon/);assert.match(html,/No significance test/);assert.match(html,/No live alert/);assert.match(renderDistributions(data,'origin',true),/Signed change/);assert.throws(()=>renderDistributions(data,'unknown'));
+});
+test('distribution arithmetic rejects fabricated alerts, counts and distances and escapes source text',()=>{
+ let data=distributionFixture();data.features.carrier.total_variation=1;assert.throws(()=>validateDistributions(data));data=distributionFixture();data.features.origin.categories[0].comparison_count++;assert.throws(()=>validateDistributions(data));data=distributionFixture();data.alert_threshold=.1;assert.throws(()=>validateDistributions(data));data=distributionFixture();data.limitations=['<script>unsafe</script>'];const html=renderDistributions(data);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('distribution proxy is a fixed authenticated read without a profiling request',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/input-distributions');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});const url=`http://127.0.0.1:${frontend}/api/v1/research/input-distributions`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
 test('security counts and receipts preserve current-session scope and require fresh consistent observations',()=>{
  const data=securityFixture(),now=Date.parse(data.checked_at);assert.match(renderSecurity(data,now),/Other active sessions/);assert.throws(()=>validateSecurity({...data,other_active_sessions:3},now));assert.throws(()=>validateSecurity(data,now+90001));assert.throws(()=>validateSecurity(data,now-5001));assert.throws(()=>validateSecurity({...data,current_expires_at:data.checked_at},now));
  const receipt={...data,active_sessions:1,other_active_sessions:0,revoked_other_sessions:2,current_session_preserved:true};assert.match(renderSecurity(receipt,now),/2 other active sessions signed out/);assert.throws(()=>validateSecurity({...receipt,current_session_preserved:false},now));assert.throws(()=>validateSecurity(data,now,true));
