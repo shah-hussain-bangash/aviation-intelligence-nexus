@@ -1,6 +1,6 @@
 {
   "format": "ain-readiness-v1",
-  "assessed_at": "2026-11-20",
+  "assessed_at": "2026-11-21",
   "scope": "Maintainer assessment of bounded local research progress; file integrity is not independent production acceptance",
   "baseline_path": "docs/reports/AIN_Completion_Report.json",
   "baseline_sha256": "ad1a5a04d8072716d6f170f52b41be90e6a3d26d26cdcd6b159a95e251088ff9",
@@ -236,7 +236,7 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded. A read-only owner-scoped archive adds literal objective/state search and insertion-bounded pagination; selected records reopen existing checked evidence/review controls.",
       "remaining": "External worker isolation, distributed leases/failover, forced interruption of running calls, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
@@ -280,6 +280,14 @@
         {
           "path": "docs/reports/Cooperative_Stop.json",
           "sha256": "b99d2d46c06bc670ef4221989571e649ee07d97ec4604484def4e837a1206afb"
+        },
+        {
+          "path": "docs/INVESTIGATION_ARCHIVE.md",
+          "sha256": "8fc51603eec5667d69777bc4858fe98cc7b69dc459d855745206a269147ebafc"
+        },
+        {
+          "path": "docs/reports/Investigation_Archive_Browser.json",
+          "sha256": "7efc92c83834b8ce8a45ce5e07873de541b4adbb6be2bb94f68e03ad2d740534"
         }
       ]
     },
@@ -588,7 +596,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "d882bd3bdc01ac44efb151f3bdf46ec6e8aac0fb628bceb49475e2c6a1d51899"
+          "sha256": "2da120da55feb8cc4d6830147b2a09db47eecd3ea968db842478aaa882cc47a0"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

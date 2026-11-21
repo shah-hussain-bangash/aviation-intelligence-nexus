@@ -1,5 +1,6 @@
 // Fixed local research routes; never forward arbitrary destinations or browser credentials.
 import {routing} from './runtime-config.mjs';
+import {archiveQuery} from '../apps/web/agent-archive-contract.mjs';
 export async function proxyResearchRequest(req, res, pathname, apiPort,config={}) {
   const {apiHost,sessionCookie:cookieName}=routing(config);
   const prediction = pathname === '/api/v1/research/predict';
@@ -11,14 +12,16 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const jobRead = /^\/api\/v1\/research\/agent-jobs\/[0-9a-fA-F-]{36}$/.test(pathname);
   const jobCancel = pathname === '/api/v1/research/agent-cancel';
   const routeProfile = pathname === '/api/v1/research/route-profile';
+  const archiveRead = pathname === '/api/v1/research/agent-archive';
   const agentReview = pathname === '/api/v1/research/agent-review';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname);
   const write = gateReview || jobSubmit || jobCancel || prediction || optimization || knowledge || agent || agentReview || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations','/api/v1/research/data-quality'].includes(pathname) && !write && !jobRead && !routeProfile) return false;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations','/api/v1/research/data-quality'].includes(pathname) && !write && !jobRead && !routeProfile && !archiveRead) return false;
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
   let targetPath = pathname;
+  if(archiveRead){try{targetPath+='?'+archiveQuery(new URL(req.url,'http://127.0.0.1').searchParams);}catch{res.writeHead(422,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({error:'invalid_archive_query'}));return true;}}
   if (routeProfile) {
     const parameters = new URL(req.url, 'http://127.0.0.1').searchParams;
     if ([...parameters].length !== 2 || [...parameters.keys()].sort().join(',') !== 'destination,origin' || !/^[A-Z]{3}$/.test(parameters.get('origin') || '') || !/^[A-Z]{3}$/.test(parameters.get('destination') || '') || parameters.get('origin') === parameters.get('destination')) {

@@ -1,0 +1,76 @@
+{
+  "scope": "Isolated archive with synthetic metadata and simulated transport; no real user session",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "first_page": true,
+        "older_page": true,
+        "last_page": true,
+        "previous_page": true,
+        "open_saved": true,
+        "export_saved": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "first_page": true,
+        "older_page": true,
+        "last_page": true,
+        "previous_page": true,
+        "open_saved": true,
+        "export_saved": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Search_State_Empty",
+      "checks": {
+        "first_page": true,
+        "search_state": true,
+        "empty_state": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "first_page": true,
+        "older_page": true,
+        "last_page": true,
+        "previous_page": true,
+        "open_saved": true,
+        "export_saved": true,
+        "viewer_submission_disabled": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "first_page": true,
+        "failure_clears": true,
+        "recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false,
+  "checked_on": "2026-11-21",
+  "passed": true
+}

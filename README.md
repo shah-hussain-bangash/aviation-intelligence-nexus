@@ -23,6 +23,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 ## Included today
 
+- Searchable owner-scoped investigation archive with state filters, older pages and saved-evidence reopening. See [investigation archive](docs/INVESTIGATION_ARCHIVE.md).
+
 - Cooperative running-investigation stop requests, preserved completed evidence and transaction-checked draft suppression. See [investigation stops](docs/COOPERATIVE_INVESTIGATION_STOP.md).
 
 - Local Python API with liveness/readiness checks, persistent SQLite schema and truthful record counts. See [backend setup](docs/BACKEND_SETUP.md).

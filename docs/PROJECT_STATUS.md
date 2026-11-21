@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Investigation archive milestone: an authenticated read-only metadata archive now searches literal objectives, filters states and pages beyond the latest ten records with owner checks and insertion boundaries. Older records reopen existing evidence/export/review controls. Seven new Python tests, three Node tests and six isolated desktop/mobile scenarios cover query, ownership, cursor, failure and session behavior. Windows passes 275 tests (215 Python, 60 Node). No production acceptance is claimed. See `INVESTIGATION_ARCHIVE.md`.
+
 Cooperative stop milestone: researchers/admins can request a running investigation to stop between bounded calls. Completed tool evidence and request metadata survive; accepted stops cannot publish a reviewable draft. One actual Qwen3 planner-stop/replay check and six isolated desktop/mobile control scenarios passed. Windows passes 265 tests (208 Python, 57 Node). Current calls are not forcibly interrupted; all production requirements remain open. See `COOPERATIVE_INVESTIGATION_STOP.md`.
 
 Data quality milestone: a read-only monthly audit examined all 2,835,101 official BTS rows in 16.089 seconds, detected zero issues in the specified structural/key checks and reconciled five import entries. Eligible counts align with the frozen modelling populations; this is not row-equality or source-truth proof. A pinned recorded-audit dashboard offers monthly lineage/exclusions and export, with four desktop/mobile/failure/session preview cases. An earlier grouped query hit temporary-storage limits and was replaced by monthly aggregation. Windows passes 254 tests (200 Python, 54 Node). See `DATA_QUALITY_LINEAGE.md`.

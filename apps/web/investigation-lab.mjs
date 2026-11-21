@@ -1,4 +1,5 @@
 import {renderModelSnapshot} from './agent-model-evidence.mjs';
+import {mountArchive} from './agent-archive.mjs';
 import {apiFetch} from './research-auth.mjs';
 import {renderRouteHistory} from './route-history.mjs';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -105,8 +106,9 @@ export function mountInvestigation(parent){
     try{const response=await apiFetch('/api/v1/research/agent-review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({run_id:shown.run_id,report_sha256:shown.report_sha256,decision:review.elements.decision.value,note:review.elements.note.value}),signal:AbortSignal.timeout(10000)});const result=await response.json();if(current!==epoch)return;if(!response.ok)throw new Error();show(result);refresh();}
     catch{if(current===epoch){status.textContent='Review was not confirmed. Refresh saved investigations before retrying.';}}
     finally{button.disabled=false;}});
+  const archive=mountArchive(section,run=>{clear();show(run);if(['queued','running'].includes(run.state))poll(run.run_id,epoch);},clear);
   section.querySelector('[data-agent-refresh]').addEventListener('click',refresh);
   section.addEventListener('click',event=>{const key=event.target.closest('[data-agent-run]')?.dataset.agentRun;if(key!==undefined&&runs[Number(key)]){clear();show(runs[Number(key)]);if(['queued','running'].includes(shown.state))poll(shown.run_id,epoch);}});
   exportButton.addEventListener('click',()=>{if(!shown)return;const url=URL.createObjectURL(new Blob([JSON.stringify(shown,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='AIN_investigation.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
-  return {setSession(value){refreshEpoch++;submission=null;user=value;ready=false;form.reset();routeInputs();form.elements.requireSimulation.disabled=true;clear();history.replaceChildren();runs=[];section.querySelector('.agent-access').textContent=allowed()?'Background jobs and checkpoints are saved locally. Closing the page stops display updates, not saved work. Simulation runs only when you permit it.':'Viewer access: review your saved investigations; new runs and reviews require researcher or admin access.';if(user)refresh();}};
+  return {setSession(value){refreshEpoch++;submission=null;user=value;ready=false;form.reset();routeInputs();form.elements.requireSimulation.disabled=true;clear();history.replaceChildren();runs=[];archive.setSession(value);section.querySelector('.agent-access').textContent=allowed()?'Background jobs and checkpoints are saved locally. Closing the page stops display updates, not saved work. Simulation runs only when you permit it.':'Viewer access: review your saved investigations; new runs and reviews require researcher or admin access.';if(user)refresh();}};
 }

@@ -1,4 +1,6 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
+import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
+import {renderArchive} from '../apps/web/agent-archive.mjs';
 import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
 import {validateModelSnapshot,renderModelSnapshot} from '../apps/web/agent-model-evidence.mjs';
@@ -24,6 +26,20 @@ import {renderPatterns,validatePatterns} from '../apps/web/route-patterns.mjs';
 import {renderRouteHistory,validateRouteHistory} from '../apps/web/route-history.mjs';
 
 const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_History_Lookup.json',import.meta.url),'utf8')).example;
+const archiveFixture=()=>({runs:[{run_id:'00000000-0000-4000-8000-000000000001',actor:'fixture-owner',objective:'Review saved <script> evidence.',state:'cancelled',created_at:'2026-11-21T00:00:00Z',updated_at:'2026-11-21T00:00:00Z'}],through:'9223372036854775807',next_before:null,page_size:10,order:'newest_created_first',search_scope:'objective_literal_ascii_case_insensitive',research_only:true,operational_approval:false});
+test('archive canonical queries preserve literal search and exact 64-bit cursor strings',()=>{
+ const q=archiveQuery(new URLSearchParams({q:' %_ 航空 ',state:'failed',before:'9223372036854775806',through:'9223372036854775807'}));assert.equal(q.get('q'),'%_ 航空');assert.equal(q.get('before'),'9223372036854775806');
+ for(const query of ['q=a&q=b','before=1','through=9223372036854775808','state=approved','url=private','q='+('x'.repeat(121))])assert.throws(()=>archiveQuery(new URLSearchParams(query)));
+});
+test('archive metadata is escaped and invalid scope or pagination is withheld',()=>{
+ const data=archiveFixture();assert.match(renderArchive(data),/&lt;script&gt;/);assert.doesNotMatch(renderArchive(data),/<script>/);assert.throws(()=>validateArchive({...data,operational_approval:true}));assert.throws(()=>validateArchive({...data,next_before:'2'}));assert.throws(()=>validateArchive({...data,runs:[...data.runs,...data.runs]}));
+ assert.match(renderArchive({...data,runs:[]}),/No saved investigations match/);
+});
+test('archive proxy validates fixed read queries and strips unrelated cookies',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/agent-archive?q=%25_&state=failed');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,backend)){res.writeHead(404);res.end();}});const url=`http://127.0.0.1:${frontend}/api/v1/research/agent-archive`;
+ assert.equal((await fetch(url+'?q=%25_&state=failed',{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url+'?q=a&q=b')).status,422);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
 const routeAgentFixture=()=>({research_only:true,operational_approval:false,state:'awaiting_review',request:{objective:'Compare the explicit historical route.',month:'2025-05',include_simulation:false,route:{origin:'JFK',destination:'LAX'}},steps:[{id:'T1',tool:'route_history',state:'completed',arguments:{origin:'JFK',destination:'LAX'},observation:{available:true,data_kind:'historical_route',evidence_text:'Recorded historical US route evidence for JFK to LAX.',profile:routeHistoryFixture()}}],claims:[],reviews:[],run_id:'fixture',actor:'fixture',updated_at:'2026-11-20',runtime:'fixture'});
 test('agent route payload is explicit, scoped and still limited to three required tools',()=>{
   const input={objective:'Compare historical research evidence.',month:'2025-05',simulation:false,requireFlights:true,requireKnowledge:false,requireSimulation:false,documentScope:'',routeEnabled:false,routeOrigin:'jfk',routeDestination:'lax'};

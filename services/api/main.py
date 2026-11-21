@@ -32,6 +32,7 @@ from services.api.monitoring import Monitor
 from services.api.agent_operations import snapshot as agent_operations_snapshot, OperationsUnavailable
 from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
+from agents.archive import ArchiveQuery, page as archive_page
 from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
@@ -470,6 +471,18 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     def agent_history(request: Request):
         try: return {'runs':agent_store.recent(request.state.user),'research_only':True}
         except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'agent_history_unavailable'})
+
+    @app.get('/api/v1/research/agent-archive')
+    def agent_archive(request: Request):
+        try:
+            pairs=list(request.query_params.multi_items())
+            if len(pairs)!=len(dict(pairs)):raise ValueError('Repeated parameters')
+            query=ArchiveQuery.model_validate(dict(pairs))
+        except ValueError:
+            return JSONResponse(status_code=422,content={'error':'invalid_archive_query'})
+        try:return archive_page(database,request.state.user,query)
+        except (sqlite3.Error,ValueError,OSError,TimeoutError,TypeError):
+            return JSONResponse(status_code=503,content={'error':'agent_archive_unavailable'})
 
     @app.post('/api/v1/research/agent-jobs', status_code=202)
     def enqueue_investigation(investigation: Investigation, request: Request, idempotency_key: UUID = Header()):
