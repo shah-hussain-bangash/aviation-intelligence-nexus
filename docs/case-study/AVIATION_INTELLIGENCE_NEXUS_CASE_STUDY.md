@@ -24,6 +24,12 @@
 
 [Business context](#1-business-context-and-objectives) · [Architecture](#3-solution-architecture) · [Models](#4-temporal-model-evaluation-and-decision-trade-offs) · [Agent](#7-bounded-agentic-research-and-human-review) · [Recovery](#9-deployment-recovery-and-build-bound-rollback) · [Verification](#10-engineering-evidence-and-reproducibility) · [Demonstration](#12-technical-demonstration-and-next-delivery-gates)
 
+## My contribution
+
+- **Project scope.** I lead the independent Aviation Intelligence Nexus project. Its main areas are flight-data lineage, delay evaluation, and synthetic gate-proposal review.
+- **Engineering trade-off.** The recorded audit moved to monthly processing in one consistent read transaction after the all-period query exceeded temporary storage.
+- **Verification.** The case study links to pinned experiment evidence and GitHub checks and separates recorded results from proposed work. An independent fresh-checkout walkthrough is a next milestone.
+
 ## 1. Business context and objectives
 
 Aviation research combines large historical datasets, uncertain predictions, operational constraints and decisions with different levels of authority. A model can discriminate delayed flights better than a constant baseline while still creating too many alerts. An optimization result can be feasible for a five-flight example without representing an airport. An AI report can quote a real source while omitting the limitation that matters most.
