@@ -272,7 +272,7 @@
         "P13",
         "P14"
       ],
-      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded. A read-only owner-scoped archive adds literal objective/state search and insertion-bounded pagination; selected records reopen existing checked evidence/review controls. An explicitly permitted recorded-distribution tool retains canonical metric snapshots and requires a retrospective/non-causal/CSV-identity quote before research acceptance; an actual Qwen3 run and isolated browser checks are recorded.",
+      "local_progress": "A bounded agent runs through a saved single-process SQLite queue with owner checks, progress polling, waiting cancellation, deduplication and persisted checkpoints. An explicit scoped route tool, stored profile/interval checks and actual local-model engineering runs are also evidenced; failed development attempts are retained. An opt-in recorded-model tool preserves immutable evidence snapshots and checks a specific non-causal quotation; general task completeness remains unverified. Cooperative running stops retain completed tool evidence and transactionally suppress drafts when the stop commits first; one actual planner-stop/replay execution and isolated race/UI tests are recorded. A read-only owner-scoped archive adds literal objective/state search and insertion-bounded pagination; selected records reopen existing checked evidence/review controls. An explicitly permitted recorded-distribution tool retains canonical metric snapshots and requires a retrospective/non-causal/CSV-identity quote before research acceptance; an actual Qwen3 run and isolated browser checks are recorded. An opt-in frozen-duration tool retains the failed regression evaluation, requires exact May-baseline/severe-error/negative-scope quotations and rechecks canonical snapshots before research review; an actual local Qwen3 run, retry replay and isolated browser checks are recorded. No refitting, duration inference or causal finding is added.",
       "remaining": "External worker isolation, distributed leases/failover, forced interruption of running calls, broader task-completeness evaluation and operational acceptance remain outstanding.",
       "acceptance": "Actual authorized tool runs, failures, resume behavior and human checkpoints are tested.",
       "production_accepted": false,
@@ -336,6 +336,18 @@
         {
           "path": "docs/reports/Distribution_Agent_Browser.json",
           "sha256": "15a525dc61efa143db7972d14ed97f34a195fc34f4c949a2c817ce5583adce10"
+        },
+        {
+          "path": "docs/DURATION_AGENT_REVIEW.md",
+          "sha256": "addb71f16b3bf40aef52268e9e97eb9182c2a4fe4061d42ac806fc75fce8a7ed"
+        },
+        {
+          "path": "docs/reports/Duration_Agent_Integration.json",
+          "sha256": "57b9dfa640ec862993cd66f2c1ba631bbe35f615761163c51d40f2ae929b8fe9"
+        },
+        {
+          "path": "docs/reports/Duration_Agent_Browser.json",
+          "sha256": "078edc232275dca51278e12e401b0358c54d1d14f602697a0e873bfc29aa5885"
         }
       ]
     },
@@ -684,7 +696,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "0e97abfe949e5d84911061f2b6ed5c35472dfd92962a571c4458ccb12789e7d1"
+          "sha256": "97c91d918309933cd4c57308833195bb192d20d06db34a76da07b046d74d161f"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

@@ -1,0 +1,427 @@
+{
+  "format": "ain-duration-agent-engineering-v1",
+  "scope": "Actual local Qwen3 direct runtime with separate engineering checkpoints; not an authenticated real-user browser execution or held-out evaluation",
+  "elapsed_ms": 8408.83,
+  "checks": {
+    "required_tool_completed": true,
+    "canonical_snapshot_retained": true,
+    "negative_result_preserved": true,
+    "mandatory_quotes_present": true,
+    "coverage_passed": true,
+    "within_tool_budget": true,
+    "awaiting_human_review": true,
+    "retry_replayed": true,
+    "operational_approval_false": true
+  },
+  "passed": true,
+  "run": {
+    "run_id": "7236899b-c108-4220-8ba0-addec9728007",
+    "actor": "engineering-duration",
+    "request": {
+      "objective": "Use duration_evidence to review the frozen negative duration-regression experiment. Include May RMSE/MAE versus the mean/median baselines, severe-delay errors, and the entire failed-check/non-deployment/already-inspected-release limitation. Use only recorded duration evidence; do not query SQL, documents or simulation, refit a model, invent causes or recommend operational action. Keep full April/May metrics as structured evidence.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "duration_evidence"
+      ],
+      "include_duration_evidence": true,
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "duration_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_duration_regression",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-duration-v1",
+            "evaluation": {
+              "format": "ain-duration-regression-v1",
+              "experiment": "positive-delay-duration-v1",
+              "checked_at": "2026-11-21T07:20:51.347716+00:00",
+              "protocol": {
+                "experiment": "positive-delay-duration-v1",
+                "source": "BTS_REPORTING_CARRIER",
+                "periods": {
+                  "train": [
+                    "2025-01-01",
+                    "2025-04-01"
+                  ],
+                  "validation": [
+                    "2025-04-01",
+                    "2025-05-01"
+                  ],
+                  "test": [
+                    "2025-05-01",
+                    "2025-06-01"
+                  ]
+                },
+                "expected_records": {
+                  "train": 1611046,
+                  "validation": 577730,
+                  "test": 597574
+                },
+                "target": "max(0, arrival_delay_minutes), without upper clipping; completed non-diverted flights with observed arrival outcomes only",
+                "features": [
+                  "carrier",
+                  "origin",
+                  "destination",
+                  "scheduled_departure_hour",
+                  "scheduled_departure_minute",
+                  "day_of_week"
+                ],
+                "excluded_inputs": [
+                  "arrival_delay_minutes",
+                  "departure_delay_minutes",
+                  "cancelled",
+                  "diverted",
+                  "flight_number",
+                  "flight_date",
+                  "month",
+                  "day_of_month"
+                ],
+                "model": {
+                  "loss": "squared_error",
+                  "max_leaf_nodes": 15,
+                  "max_iter": 80,
+                  "learning_rate": 0.08,
+                  "min_samples_leaf": 200,
+                  "l2_regularization": 10.0,
+                  "early_stopping": false,
+                  "random_state": 42
+                },
+                "preprocessing": "Train-only ordinal categories capped at 200; unknown categories -1; departure-time and weekday sine/cosine; nonnegative prediction clipping",
+                "baselines": [
+                  "constant training mean",
+                  "constant training median"
+                ],
+                "research_check": "Model RMSE <= 0.99 * training-mean baseline RMSE in both April and May; MAE versus median reported separately; no operational acceptance",
+                "policy": "One prespecified model, no hyperparameter search. Freeze artifact, baselines and April evaluation before loading May rows. Evaluate May once; preserve failures and do not retune. Earlier project experiments already inspected this five-month release: this is a new model-specific temporal benchmark, not a globally untouched holdout. No deployment of duration inference.",
+                "production_ready": false
+              },
+              "protocol_sha256": "814b217e92070cb990f9239804fdca39c768e6a1849f5653fac74c1c36b473f7",
+              "artifact_sha256": "c59abe52bcdf3fdf342d478557919dc67c47b672187953ae38bf545e342cbbea",
+              "freeze_sha256": "313dd69daaf73911746b3fe7cb47a638bb254228e490057f9281c3fba96ad31b",
+              "datasets": {
+                "train": {
+                  "records": 1611046,
+                  "sha256": "9b7b98cb50d20c25abe1907295cccb4a2b0802378261db7460d84382af1eb445"
+                },
+                "validation": {
+                  "records": 577730,
+                  "sha256": "e7ca62dae31e6b7aced3a6a159c3e10579edef82431f3cbe9f668a0231899536"
+                },
+                "test": {
+                  "records": 597574,
+                  "sha256": "f9a25ea7402874e91454970b68b29280554128eea35c2fe210c1a1ed50b8e452"
+                }
+              },
+              "baselines": {
+                "mean": 15.041354498878368,
+                "median": 0.0
+              },
+              "validation": {
+                "target_summary": {
+                  "records": 577730,
+                  "mean": 14.563043290118221,
+                  "median": 0.0,
+                  "max": 2575.0,
+                  "zero_records": 375157,
+                  "sum_squared_deviation": 1442284208.3372874
+                },
+                "model": {
+                  "records": 577730,
+                  "mae": 21.08368699700144,
+                  "rmse": 49.73239750828722,
+                  "r2": 0.00927558877549084,
+                  "mean_error": 0.24633051843699147,
+                  "p50_absolute_error": 12.568464037269942,
+                  "p90_absolute_error": 33.07144160685949,
+                  "p95_absolute_error": 61.0506448344758,
+                  "sum_absolute_error": 12180678.488777641,
+                  "sum_squared_error": 1428906173.1233664,
+                  "sum_error": 142312.53041660308
+                },
+                "training_mean_baseline": {
+                  "records": 577730,
+                  "mae": 21.708884228349305,
+                  "rmse": 49.96695257959282,
+                  "r2": -9.164213279366784e-05,
+                  "mean_error": 0.47831120876014627,
+                  "p50_absolute_error": 15.041354498878368,
+                  "p90_absolute_error": 24.95864550112163,
+                  "p95_absolute_error": 62.95864550112163,
+                  "sum_absolute_error": 12541873.685244244,
+                  "sum_squared_error": 1442416382.338234,
+                  "sum_error": 276334.7346369993
+                },
+                "training_median_baseline": {
+                  "records": 577730,
+                  "mae": 14.563043290118221,
+                  "rmse": 52.04372967369566,
+                  "r2": -0.0849529281083683,
+                  "mean_error": -14.563043290118221,
+                  "p50_absolute_error": 0.0,
+                  "p90_absolute_error": 40.0,
+                  "p95_absolute_error": 78.0,
+                  "sum_absolute_error": 8413507.0,
+                  "sum_squared_error": 1564810475.0,
+                  "sum_error": -8413507.0
+                },
+                "residual_histogram": {
+                  "sign": "actual minus predicted; positive means underprediction",
+                  "labels": [
+                    "below -60",
+                    "-60 to below -15",
+                    "-15 to below 0",
+                    "0 to below 15",
+                    "15 to below 60",
+                    "60 and above"
+                  ],
+                  "counts": [
+                    253,
+                    153106,
+                    309489,
+                    43388,
+                    42339,
+                    29155
+                  ]
+                },
+                "observed_60_plus": {
+                  "records": 39001,
+                  "model_mae": 124.4096093115292,
+                  "model_mean_error": -124.40654885436865
+                }
+              },
+              "test": {
+                "target_summary": {
+                  "records": 597574,
+                  "mean": 18.162460214132476,
+                  "median": 0.0,
+                  "max": 3241.0,
+                  "zero_records": 358939,
+                  "sum_squared_deviation": 1879687778.0374916
+                },
+                "model": {
+                  "records": 597574,
+                  "mae": 23.191612874858578,
+                  "rmse": 55.6693189635077,
+                  "r2": 0.014769625744552317,
+                  "mean_error": -3.2715986486082405,
+                  "p50_absolute_error": 12.718711541718498,
+                  "p90_absolute_error": 38.56414201140431,
+                  "p95_absolute_error": 77.57813378455764,
+                  "sum_absolute_error": 13858704.87208074,
+                  "sum_squared_error": 1851925493.0392687,
+                  "sum_error": -1955022.2908434207
+                },
+                "training_mean_baseline": {
+                  "records": 597574,
+                  "mae": 23.983968576837917,
+                  "rmse": 56.171814072748504,
+                  "r2": -0.003096869705459193,
+                  "mean_error": -3.121105715254107,
+                  "p50_absolute_error": 15.041354498878368,
+                  "p90_absolute_error": 36.95864550112163,
+                  "p95_absolute_error": 79.95864550112164,
+                  "sum_absolute_error": 14332196.038335342,
+                  "sum_squared_error": 1885508926.173018,
+                  "sum_error": -1865091.6266872578
+                },
+                "training_median_baseline": {
+                  "records": 597574,
+                  "mae": 18.162460214132476,
+                  "rmse": 58.952577181727854,
+                  "r2": -0.10487098031159126,
+                  "mean_error": -18.162460214132476,
+                  "p50_absolute_error": 0.0,
+                  "p90_absolute_error": 52.0,
+                  "p95_absolute_error": 95.0,
+                  "sum_absolute_error": 10853414.0,
+                  "sum_squared_error": 2076812478.0,
+                  "sum_error": -10853414.0
+                },
+                "residual_histogram": {
+                  "sign": "actual minus predicted; positive means underprediction",
+                  "labels": [
+                    "below -60",
+                    "-60 to below -15",
+                    "-15 to below 0",
+                    "0 to below 15",
+                    "15 to below 60",
+                    "60 and above"
+                  ],
+                  "counts": [
+                    180,
+                    146857,
+                    308708,
+                    50123,
+                    52874,
+                    38832
+                  ]
+                },
+                "observed_60_plus": {
+                  "records": 52142,
+                  "model_mae": 124.54640573598971,
+                  "model_mean_error": -124.54377831021122
+                }
+              },
+              "research_check": {
+                "criterion": "At least 1% lower RMSE than the constant training-mean baseline in both periods",
+                "by_period": {
+                  "validation": false,
+                  "test": false
+                },
+                "passed": false,
+                "operational_approval": false
+              },
+              "elapsed_seconds": 46.361,
+              "versions": {
+                "python": "3.14.8",
+                "numpy": "2.5.5",
+                "pandas": "3.1.1",
+                "sklearn": "1.9.1"
+              },
+              "source_hashes_unchanged": true,
+              "research_only": true,
+              "production_ready": false,
+              "limitations": [
+                "Historical US domestic schedules, not point-in-time predeparture snapshots or UAE airline validation.",
+                "Target is nonnegative arrival-delay minutes conditional on a completed non-diverted flight with an observed outcome; cancellation/diversion risk is excluded.",
+                "Earlier project experiments inspected this release. May is a frozen model-specific temporal comparison, not a globally untouched holdout.",
+                "One fixed squared-error model targets conditional means. Lower RMSE can coexist with worse MAE than a median baseline; both are reported.",
+                "Extreme delays are retained and can dominate RMSE. Tail errors and bias do not establish individual-flight reliability.",
+                "No uncertainty intervals, causal effects, future-season validation, measured airline benefit or operational approval.",
+                "Duration inference is not deployed. The existing delay-v2 probability model and threshold are unchanged."
+              ],
+              "source_imports": [
+                {
+                  "period": "2025-01",
+                  "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+                  "rows_inserted": 539747
+                },
+                {
+                  "period": "2025-02",
+                  "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+                  "rows_inserted": 504884
+                },
+                {
+                  "period": "2025-03",
+                  "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+                  "rows_inserted": 600872
+                },
+                {
+                  "period": "2025-04",
+                  "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+                  "rows_inserted": 583950
+                },
+                {
+                  "period": "2025-05",
+                  "sha256": "17c3419d7169b313b2bc8ddd3fd57e1e2d4d959c35f2da17f6a5610d4bac7d63",
+                  "rows_inserted": 605648
+                }
+              ],
+              "integrity_verified": true,
+              "report_sha256": "a38a17fef2511c6306e20da334a3674de84c9324b88597580dbdc7dde971129d"
+            },
+            "research_only": true,
+            "production_ready": false,
+            "duration_inference_deployed": false
+          },
+          "evidence_text": "Frozen duration regression trained on 1611046 January-March 2025 eligible US flights; April has 577730 and May has 597574 evaluation flights.\nApril 2025: model RMSE 49.732398 minutes versus training-mean baseline 49.966953; model MAE 21.083687 minutes versus training-median baseline 14.563043.\nMay 2025: model RMSE 55.669319 minutes versus training-mean baseline 56.171814; model MAE 23.191613 minutes versus training-median baseline 18.162460.\nAmong 52142 observed May delays of at least 60 minutes, model MAE was 124.546406 minutes and bias (predicted minus actual) was -124.543778 minutes.\nThe duration model failed the preset 1% RMSE improvement check in both April and May; duration inference is not deployed. This already inspected US release is not a fresh holdout, causal explanation or operational approval.\nTarget is max(0, arrival-delay minutes), without upper clipping, conditional on completed non-diverted flights with observed arrivals.\nThe artifact and April evaluation were frozen before the May query; earlier project experiments had already inspected this five-month release.\nSquared-error fitting targets conditional means; improvement in RMSE can coexist with worse MAE than a median baseline.\nThe severe-delay group is defined retrospectively using actual outcomes, not identified prospectively by this model.\nThese measurements do not identify why the model underperformed. No weather evidence, refitting, threshold change, uncertainty interval or individual-flight estimate is supplied."
+        },
+        "elapsed_ms": 0.59
+      }
+    ],
+    "claims": [
+      {
+        "text": "May 2025: model RMSE 55.669319 minutes versus training-mean baseline 56.171814; model MAE 23.191613 minutes versus training-median baseline 18.162460.",
+        "citation": "T1",
+        "quote": "May 2025: model RMSE 55.669319 minutes versus training-mean baseline 56.171814; model MAE 23.191613 minutes versus training-median baseline 18.162460."
+      },
+      {
+        "text": "Among 52142 observed May delays of at least 60 minutes, model MAE was 124.546406 minutes and bias (predicted minus actual) was -124.543778 minutes.",
+        "citation": "T1",
+        "quote": "Among 52142 observed May delays of at least 60 minutes, model MAE was 124.546406 minutes and bias (predicted minus actual) was -124.543778 minutes."
+      },
+      {
+        "text": "The duration model failed the preset 1% RMSE improvement check in both April and May; duration inference is not deployed. This already inspected US release is not a fresh holdout, causal explanation or operational approval.",
+        "citation": "T1",
+        "quote": "The duration model failed the preset 1% RMSE improvement check in both April and May; duration inference is not deployed. This already inspected US release is not a fresh holdout, causal explanation or operational approval."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-21T07:40:25.971680+00:00",
+    "updated_at": "2026-11-21T07:40:34.365967+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "replayed": false,
+    "model": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+    },
+    "bounds": {
+      "max_tool_calls": 3,
+      "max_planner_calls": 3,
+      "max_summary_calls": 2,
+      "first_planner_timeout_seconds": 45,
+      "later_planner_timeout_seconds": 20,
+      "deadline_seconds": 120,
+      "operational_writes": false
+    },
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      },
+      {
+        "turn": 2,
+        "tool_calls_received": 0
+      }
+    ],
+    "finding_style": "verbatim_source_extracts",
+    "rejected_claims": 0,
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "duration_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "distribution_evidence_mismatches": [],
+      "distribution_limitations_uncited": [],
+      "duration_evidence_mismatches": [],
+      "duration_quotes_uncited": [],
+      "duration_required_quotes_missing": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "uncited_tools": [],
+    "report_sha256": "37f9807673f8080ea7bb5c89f1848f69fb644899018c9a9feea991b86fa41a07",
+    "report_status": "coverage_passed",
+    "limitations": [
+      "Historical US research data and synthetic simulation are separate; no live airline feed.",
+      "Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.",
+      "Review records document a research review only; no airline action is authorized or applied."
+    ]
+  },
+  "production_ready": false
+}

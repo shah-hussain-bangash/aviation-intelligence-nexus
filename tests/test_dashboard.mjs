@@ -2,6 +2,7 @@ import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
 import {validateDuration,renderDuration} from '../apps/web/duration-evaluation.mjs';
+import {validateDurationSnapshot,renderDurationSnapshot} from '../apps/web/agent-duration-evidence.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
@@ -661,4 +662,21 @@ test('duration evidence proxy permits only fixed authenticated reads without que
  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/duration-evaluation');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/duration-evaluation`;
  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'?target=anything')).status,422);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+const durationAgentFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Duration_Agent_Integration.json',import.meta.url),'utf8')).run;
+test('duration agent opt-in preserves old payloads and consumes one of three tool slots',()=>{
+ const input={objective:'Review the frozen negative duration experiment.',month:'2025-05',simulation:false,requireFlights:false,requireKnowledge:false};
+ assert.equal(Object.hasOwn(investigationPayload(input),'include_duration_evidence'),false);input.includeDurationEvidence=true;assert.deepEqual(investigationPayload(input).required_tools,['duration_evidence']);assert.equal(investigationPayload(input).include_duration_evidence,true);
+ assert.equal(investigationPayload({...input,requireFlights:true,requireKnowledge:true}).required_tools.length,3);assert.throws(()=>investigationPayload({...input,requireFlights:true,requireKnowledge:true,includeModelEvidence:true}),/at most three/);
+});
+test('duration agent retains negative evidence beyond extracts and withholds changed scope or approval',()=>{
+ let run=durationAgentFixture();run.claims=[];let html=renderInvestigation(run);assert.match(html,/55.67/);assert.match(html,/124.55/);assert.match(html,/failed its fixed research check/);assert.match(html,/not a group identified prospectively/);
+ run.request.include_duration_evidence=false;assert.match(renderInvestigation(run),/duration evidence could not be verified/);run=durationAgentFixture();run.steps[0].arguments={model_path:'private'};assert.match(renderInvestigation(run),/duration evidence could not be verified/);
+ run=durationAgentFixture();run.quality.duration_evidence_mismatches=['T1'];assert.match(renderInvestigation(run),/duration evidence could not be verified/);run=durationAgentFixture();run.steps[0].observation.snapshot.evaluation.research_check.passed=true;assert.throws(()=>validateDurationSnapshot(run.steps[0].observation));
+ run=durationAgentFixture();run.steps[0].observation.snapshot.evaluation.limitations[0]='<script>bad()</script>';html=renderDurationSnapshot(run.steps[0].observation);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('operations distinguishes duration tool counts from older unreported snapshots',()=>{
+ const r=operationsFixture();let html=renderOperations(r,Date.parse(r.checked_at));assert.match(html,/Recorded duration regression<\/th><td colspan="3">Not reported by this snapshot/);
+ r.recent_window.tools.distribution_evidence={attempted:0,completed:0,failed_or_unfinished:0};assert.doesNotThrow(()=>validateOperations(r));r.recent_window.tools.duration_evidence={attempted:1,completed:1,failed_or_unfinished:0};html=renderOperations(r,Date.parse(r.checked_at));assert.match(html,/Recorded duration regression<\/th><td>1<\/td><td>1/);
+ r.recent_window.tools.duration_evidence.completed=2;assert.throws(()=>validateOperations(r));
 });

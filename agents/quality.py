@@ -4,6 +4,7 @@ from rag.index import SOURCES
 from services.api.route_history import valid_saved_profile
 from agents.model_evidence import valid_observation
 from agents.distribution_evidence import valid_observation as valid_distributions,LIMIT as DISTRIBUTION_LIMIT
+from agents.duration_evidence import valid_observation as valid_duration,required_quotes as duration_quotes
 
 
 def document_scope(request):
@@ -62,6 +63,7 @@ def assess_report(run):
     if run['request'].get('include_model_evidence') and 'model_evidence' not in selected and 'model_evidence' not in missing:
         missing.append('model_evidence')
     if run['request'].get('include_distribution_evidence') and 'distribution_evidence' not in selected and 'distribution_evidence' not in missing:missing.append('distribution_evidence')
+    if run['request'].get('include_duration_evidence') and 'duration_evidence' not in selected and 'duration_evidence' not in missing:missing.append('duration_evidence')
     failed=[s['id'] for s in run['steps'] if s['state']!='completed']
     unavailable=[s['id'] for s in run['steps'] if s['state']=='completed' and not s.get('observation',{}).get('available')]
     uncited=[item['id'] for item in evidence if item['id'] not in cited]
@@ -81,12 +83,18 @@ def assess_report(run):
         and (run['request'].get('include_distribution_evidence') is not True or s.get('arguments')!={} or not valid_distributions(s['observation']))]
     distribution_limits=[s['id'] for s in run['steps'] if s['tool']=='distribution_evidence' and s['state']=='completed' and s.get('observation',{}).get('available')
         and not any(c.get('citation')==s['id'] and DISTRIBUTION_LIMIT in c.get('quote','') for c in run['claims'])]
-    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches or route_mismatches or model_mismatches or model_limits or distribution_mismatches or distribution_limits)
+    duration_mismatches=[s['id'] for s in run['steps'] if s['tool']=='duration_evidence' and s['state']=='completed' and s.get('observation',{}).get('available')
+        and (run['request'].get('include_duration_evidence') is not True or s.get('arguments')!={} or not valid_duration(s['observation']))]
+    duration_missing=[s['id']+':'+label for s in run['steps'] if s['tool']=='duration_evidence' and s['state']=='completed' and s.get('observation',{}).get('available')
+        for label,quote in duration_quotes(s['observation']).items() if not quote or not any(c.get('citation')==s['id'] and quote in c.get('quote','') for c in run['claims'])]
+    duration_limits=sorted({item.split(':')[0] for item in duration_missing})
+    passed=bool(available and run['claims']) and not (missing or failed or unavailable or uncited or invalid or mismatches or route_mismatches or model_mismatches or model_limits or distribution_mismatches or distribution_limits or duration_mismatches or duration_limits)
     return {'version':'research-coverage-v1','passed':passed,'required_tools':run['request'].get('required_tools',[]),
         'missing_tools':missing,'failed_steps':failed,'unavailable_steps':unavailable,'uncited_tools':uncited,
         'invalid_claims':invalid,'covered_sources':len(available&cited),'available_sources':len(available),
         'document_scope':scope,'document_scope_mismatches':mismatches,
         'route_scope_mismatches':route_mismatches,'model_evidence_mismatches':model_mismatches,'model_limitations_uncited':model_limits,
         'distribution_evidence_mismatches':distribution_mismatches,'distribution_limitations_uncited':distribution_limits,
+        'duration_evidence_mismatches':duration_mismatches,'duration_quotes_uncited':duration_limits,'duration_required_quotes_missing':duration_missing,
         'finding_style':'verbatim_source_extracts','semantic_entailment_verified':False,'all_objective_parts_verified':False,
         'meaning':'Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required.'}
