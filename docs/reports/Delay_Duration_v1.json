@@ -1,0 +1,287 @@
+{
+  "format": "ain-duration-regression-v1",
+  "experiment": "positive-delay-duration-v1",
+  "checked_at": "2026-11-21T07:20:51.347716+00:00",
+  "protocol": {
+    "experiment": "positive-delay-duration-v1",
+    "source": "BTS_REPORTING_CARRIER",
+    "periods": {
+      "train": [
+        "2025-01-01",
+        "2025-04-01"
+      ],
+      "validation": [
+        "2025-04-01",
+        "2025-05-01"
+      ],
+      "test": [
+        "2025-05-01",
+        "2025-06-01"
+      ]
+    },
+    "expected_records": {
+      "train": 1611046,
+      "validation": 577730,
+      "test": 597574
+    },
+    "target": "max(0, arrival_delay_minutes), without upper clipping; completed non-diverted flights with observed arrival outcomes only",
+    "features": [
+      "carrier",
+      "origin",
+      "destination",
+      "scheduled_departure_hour",
+      "scheduled_departure_minute",
+      "day_of_week"
+    ],
+    "excluded_inputs": [
+      "arrival_delay_minutes",
+      "departure_delay_minutes",
+      "cancelled",
+      "diverted",
+      "flight_number",
+      "flight_date",
+      "month",
+      "day_of_month"
+    ],
+    "model": {
+      "loss": "squared_error",
+      "max_leaf_nodes": 15,
+      "max_iter": 80,
+      "learning_rate": 0.08,
+      "min_samples_leaf": 200,
+      "l2_regularization": 10.0,
+      "early_stopping": false,
+      "random_state": 42
+    },
+    "preprocessing": "Train-only ordinal categories capped at 200; unknown categories -1; departure-time and weekday sine/cosine; nonnegative prediction clipping",
+    "baselines": [
+      "constant training mean",
+      "constant training median"
+    ],
+    "research_check": "Model RMSE <= 0.99 * training-mean baseline RMSE in both April and May; MAE versus median reported separately; no operational acceptance",
+    "policy": "One prespecified model, no hyperparameter search. Freeze artifact, baselines and April evaluation before loading May rows. Evaluate May once; preserve failures and do not retune. Earlier project experiments already inspected this five-month release: this is a new model-specific temporal benchmark, not a globally untouched holdout. No deployment of duration inference.",
+    "production_ready": false
+  },
+  "protocol_sha256": "814b217e92070cb990f9239804fdca39c768e6a1849f5653fac74c1c36b473f7",
+  "artifact_sha256": "c59abe52bcdf3fdf342d478557919dc67c47b672187953ae38bf545e342cbbea",
+  "freeze_sha256": "313dd69daaf73911746b3fe7cb47a638bb254228e490057f9281c3fba96ad31b",
+  "datasets": {
+    "train": {
+      "records": 1611046,
+      "sha256": "9b7b98cb50d20c25abe1907295cccb4a2b0802378261db7460d84382af1eb445"
+    },
+    "validation": {
+      "records": 577730,
+      "sha256": "e7ca62dae31e6b7aced3a6a159c3e10579edef82431f3cbe9f668a0231899536"
+    },
+    "test": {
+      "records": 597574,
+      "sha256": "f9a25ea7402874e91454970b68b29280554128eea35c2fe210c1a1ed50b8e452"
+    }
+  },
+  "baselines": {
+    "mean": 15.041354498878368,
+    "median": 0.0
+  },
+  "validation": {
+    "target_summary": {
+      "records": 577730,
+      "mean": 14.563043290118221,
+      "median": 0.0,
+      "max": 2575.0,
+      "zero_records": 375157,
+      "sum_squared_deviation": 1442284208.3372874
+    },
+    "model": {
+      "records": 577730,
+      "mae": 21.08368699700144,
+      "rmse": 49.73239750828722,
+      "r2": 0.00927558877549084,
+      "mean_error": 0.24633051843699147,
+      "p50_absolute_error": 12.568464037269942,
+      "p90_absolute_error": 33.07144160685949,
+      "p95_absolute_error": 61.0506448344758,
+      "sum_absolute_error": 12180678.488777641,
+      "sum_squared_error": 1428906173.1233664,
+      "sum_error": 142312.53041660308
+    },
+    "training_mean_baseline": {
+      "records": 577730,
+      "mae": 21.708884228349305,
+      "rmse": 49.96695257959282,
+      "r2": -9.164213279366784e-05,
+      "mean_error": 0.47831120876014627,
+      "p50_absolute_error": 15.041354498878368,
+      "p90_absolute_error": 24.95864550112163,
+      "p95_absolute_error": 62.95864550112163,
+      "sum_absolute_error": 12541873.685244244,
+      "sum_squared_error": 1442416382.338234,
+      "sum_error": 276334.7346369993
+    },
+    "training_median_baseline": {
+      "records": 577730,
+      "mae": 14.563043290118221,
+      "rmse": 52.04372967369566,
+      "r2": -0.0849529281083683,
+      "mean_error": -14.563043290118221,
+      "p50_absolute_error": 0.0,
+      "p90_absolute_error": 40.0,
+      "p95_absolute_error": 78.0,
+      "sum_absolute_error": 8413507.0,
+      "sum_squared_error": 1564810475.0,
+      "sum_error": -8413507.0
+    },
+    "residual_histogram": {
+      "sign": "actual minus predicted; positive means underprediction",
+      "labels": [
+        "below -60",
+        "-60 to below -15",
+        "-15 to below 0",
+        "0 to below 15",
+        "15 to below 60",
+        "60 and above"
+      ],
+      "counts": [
+        253,
+        153106,
+        309489,
+        43388,
+        42339,
+        29155
+      ]
+    },
+    "observed_60_plus": {
+      "records": 39001,
+      "model_mae": 124.4096093115292,
+      "model_mean_error": -124.40654885436865
+    }
+  },
+  "test": {
+    "target_summary": {
+      "records": 597574,
+      "mean": 18.162460214132476,
+      "median": 0.0,
+      "max": 3241.0,
+      "zero_records": 358939,
+      "sum_squared_deviation": 1879687778.0374916
+    },
+    "model": {
+      "records": 597574,
+      "mae": 23.191612874858578,
+      "rmse": 55.6693189635077,
+      "r2": 0.014769625744552317,
+      "mean_error": -3.2715986486082405,
+      "p50_absolute_error": 12.718711541718498,
+      "p90_absolute_error": 38.56414201140431,
+      "p95_absolute_error": 77.57813378455764,
+      "sum_absolute_error": 13858704.87208074,
+      "sum_squared_error": 1851925493.0392687,
+      "sum_error": -1955022.2908434207
+    },
+    "training_mean_baseline": {
+      "records": 597574,
+      "mae": 23.983968576837917,
+      "rmse": 56.171814072748504,
+      "r2": -0.003096869705459193,
+      "mean_error": -3.121105715254107,
+      "p50_absolute_error": 15.041354498878368,
+      "p90_absolute_error": 36.95864550112163,
+      "p95_absolute_error": 79.95864550112164,
+      "sum_absolute_error": 14332196.038335342,
+      "sum_squared_error": 1885508926.173018,
+      "sum_error": -1865091.6266872578
+    },
+    "training_median_baseline": {
+      "records": 597574,
+      "mae": 18.162460214132476,
+      "rmse": 58.952577181727854,
+      "r2": -0.10487098031159126,
+      "mean_error": -18.162460214132476,
+      "p50_absolute_error": 0.0,
+      "p90_absolute_error": 52.0,
+      "p95_absolute_error": 95.0,
+      "sum_absolute_error": 10853414.0,
+      "sum_squared_error": 2076812478.0,
+      "sum_error": -10853414.0
+    },
+    "residual_histogram": {
+      "sign": "actual minus predicted; positive means underprediction",
+      "labels": [
+        "below -60",
+        "-60 to below -15",
+        "-15 to below 0",
+        "0 to below 15",
+        "15 to below 60",
+        "60 and above"
+      ],
+      "counts": [
+        180,
+        146857,
+        308708,
+        50123,
+        52874,
+        38832
+      ]
+    },
+    "observed_60_plus": {
+      "records": 52142,
+      "model_mae": 124.54640573598971,
+      "model_mean_error": -124.54377831021122
+    }
+  },
+  "research_check": {
+    "criterion": "At least 1% lower RMSE than the constant training-mean baseline in both periods",
+    "by_period": {
+      "validation": false,
+      "test": false
+    },
+    "passed": false,
+    "operational_approval": false
+  },
+  "elapsed_seconds": 46.361,
+  "versions": {
+    "python": "3.14.8",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "sklearn": "1.9.1"
+  },
+  "source_hashes_unchanged": true,
+  "research_only": true,
+  "production_ready": false,
+  "limitations": [
+    "Historical US domestic schedules, not point-in-time predeparture snapshots or UAE airline validation.",
+    "Target is nonnegative arrival-delay minutes conditional on a completed non-diverted flight with an observed outcome; cancellation/diversion risk is excluded.",
+    "Earlier project experiments inspected this release. May is a frozen model-specific temporal comparison, not a globally untouched holdout.",
+    "One fixed squared-error model targets conditional means. Lower RMSE can coexist with worse MAE than a median baseline; both are reported.",
+    "Extreme delays are retained and can dominate RMSE. Tail errors and bias do not establish individual-flight reliability.",
+    "No uncertainty intervals, causal effects, future-season validation, measured airline benefit or operational approval.",
+    "Duration inference is not deployed. The existing delay-v2 probability model and threshold are unchanged."
+  ],
+  "source_imports": [
+    {
+      "period": "2025-01",
+      "sha256": "868387dcedaef1b8d8392e608e642219fde50d594c3cf2094aec858167629ccf",
+      "rows_inserted": 539747
+    },
+    {
+      "period": "2025-02",
+      "sha256": "12dc8dbdb3c8b3c20d4c00a8b188196ae202f781a8760871ae502a9c733d0ecd",
+      "rows_inserted": 504884
+    },
+    {
+      "period": "2025-03",
+      "sha256": "9c80fbc2112cdbf3f0613ec2001ba019b3ad75511cd69657080736e7eda9cef4",
+      "rows_inserted": 600872
+    },
+    {
+      "period": "2025-04",
+      "sha256": "f3718431e988e2afd53a1714dfca37f67355b6fc06b02eb506bffa39300d608c",
+      "rows_inserted": 583950
+    },
+    {
+      "period": "2025-05",
+      "sha256": "17c3419d7169b313b2bc8ddd3fd57e1e2d4d959c35f2da17f6a5610d4bac7d63",
+      "rows_inserted": 605648
+    }
+  ]
+}

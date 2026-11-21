@@ -124,8 +124,8 @@
         "P04",
         "P05"
       ],
-      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim. A reproducible frozen-model April permutation experiment and read-only panel add grouped performance reliance with explicit non-causal scope. A full-April fixed-threshold diagnostic and authenticated interactive lab add exact confusion-count reproduction, hypothetical error costs and review-share comparisons; April is already-used validation and the serving threshold is unchanged.",
-      "remaining": "Broader agreed regression/forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
+      "local_progress": "Two delay-classification experiments were evaluated with chronological holdouts; v2 passed its research protocol. An offline route-outcome clustering experiment also records train-only selection, initialization agreement and a fixed later-period comparison with substantial assignment change. A verified recorded-summary dashboard now provides period/group/coverage/transition exploration and JSON export. A bounded read-only historical route lookup adds cohort rates, nominal Wilson uncertainty intervals and explicit sparse-comparison handling. An authenticated recorded-evaluation panel exposes validated calibration, fixed-threshold errors and carrier slices; no retuning or live drift claim. A reproducible frozen-model April permutation experiment and read-only panel add grouped performance reliance with explicit non-causal scope. A full-April fixed-threshold diagnostic and authenticated interactive lab add exact confusion-count reproduction, hypothetical error costs and review-share comparisons; April is already-used validation and the serving threshold is unchanged. A fixed positive-delay regression experiment trained on all 1,611,046 eligible January\u2013March rows, froze April/artifact evidence before May, failed its 1% RMSE improvement check and remains offline; a recorded baseline/residual/severe-delay dashboard exposes the negative result.",
+      "remaining": "Representative regression quality improvements, agreed forecasting/sentiment/anomaly use cases, semantic/business validation of route segments and UAE operational validation remain outstanding.",
       "acceptance": "Versioned artifacts and measured leakage-safe holdout, baseline and cohort evaluations.",
       "production_accepted": false,
       "evidence": [
@@ -192,6 +192,18 @@
         {
           "path": "docs/reports/Threshold_Tradeoffs_Browser.json",
           "sha256": "7d8e5c57975fa0e9f2236f3a26fefe3ee2ba6e82267821c43742369841506a3f"
+        },
+        {
+          "path": "docs/DELAY_DURATION_REGRESSION.md",
+          "sha256": "63d231628ab36845c6bd53d70842e5829a927e519592bb71238618f8262576c0"
+        },
+        {
+          "path": "docs/reports/Delay_Duration_v1.json",
+          "sha256": "a38a17fef2511c6306e20da334a3674de84c9324b88597580dbdc7dde971129d"
+        },
+        {
+          "path": "docs/reports/Duration_Regression_Browser.json",
+          "sha256": "f759cf9ea177a359ed4c25dd97c34640099e433077141f0b0a5b55fb8e149991"
         }
       ]
     },
@@ -672,7 +684,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "bb45b5a004e5ce172afcfaa0225a2710eb0f529adfcdd053b78a87987406e789"
+          "sha256": "0e97abfe949e5d84911061f2b6ed5c35472dfd92962a571c4458ccb12789e7d1"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

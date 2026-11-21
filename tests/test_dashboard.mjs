@@ -1,6 +1,7 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
+import {validateDuration,renderDuration} from '../apps/web/duration-evaluation.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
@@ -646,4 +647,18 @@ test('threshold evidence proxy is fixed read-only, rejects query overrides and s
  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/threshold-tradeoffs');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/threshold-tradeoffs`;
  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'?period=2025-05')).status,422);assert.equal((await fetch(url+'/arbitrary')).status,404);
+});
+const durationFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Delay_Duration_v1.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'a'.repeat(64)});
+test('duration evaluation distinguishes regression, failed research checks, baselines and severe errors',()=>{
+ const r=durationFixture(),html=renderDuration(r);assert.match(html,/Did not pass/);assert.match(html,/55.67/);assert.match(html,/18.16/);assert.match(html,/124.55/);assert.match(html,/not accuracy/);assert.match(html,/no duration inference|No duration inference/);assert.match(html,/globally untouched/);
+ assert.match(renderDuration(r,'validation','mae'),/Median baseline comparison/);assert.throws(()=>renderDuration(r,'train'));assert.throws(()=>renderDuration(r,'test','accuracy'));
+});
+test('duration evaluation validates arithmetic and rejects false success while escaping source text',()=>{
+ let r=durationFixture();r.research_check.passed=true;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.model.rmse=1;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.residual_histogram.counts[0]++;assert.throws(()=>validateDuration(r));
+ r=durationFixture();r.limitations[0]='<script>bad()</script>';const html=renderDuration(r);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.ok(r.test.training_mean_baseline.r2<0);assert.doesNotThrow(()=>validateDuration(r));
+});
+test('duration evidence proxy permits only fixed authenticated reads without query overrides',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/duration-evaluation');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/duration-evaluation`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'?target=anything')).status,422);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });

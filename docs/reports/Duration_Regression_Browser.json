@@ -1,0 +1,88 @@
+{
+  "scope": "Isolated regression evaluation component with actual recorded aggregate evidence and simulated read-only transport; no real user authentication or duration inference",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "failed_check_visible": true,
+        "severe_error_visible": true,
+        "no_inference_claim": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "failed_check_visible": true,
+        "severe_error_visible": true,
+        "no_inference_claim": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Period_Metric",
+      "checks": {
+        "failed_check_visible": true,
+        "severe_error_visible": true,
+        "no_inference_claim": true,
+        "april_and_median": true,
+        "switch_without_new_query": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "False_Success_Withheld",
+      "checks": {
+        "false_success_withheld": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "failed_check_visible": true,
+        "severe_error_visible": true,
+        "no_inference_claim": true,
+        "refresh_clears_immediately": true,
+        "outage_clears": true,
+        "recovered": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_late_response_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Replace",
+      "checks": {
+        "old_response_does_not_clear_new_session": true,
+        "failed_check_visible": true,
+        "severe_error_visible": true,
+        "no_inference_claim": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

@@ -1,0 +1,15 @@
+{
+  "experiment": "positive-delay-duration-v1",
+  "source": "BTS_REPORTING_CARRIER",
+  "periods": {"train": ["2025-01-01", "2025-04-01"], "validation": ["2025-04-01", "2025-05-01"], "test": ["2025-05-01", "2025-06-01"]},
+  "expected_records": {"train": 1611046, "validation": 577730, "test": 597574},
+  "target": "max(0, arrival_delay_minutes), without upper clipping; completed non-diverted flights with observed arrival outcomes only",
+  "features": ["carrier", "origin", "destination", "scheduled_departure_hour", "scheduled_departure_minute", "day_of_week"],
+  "excluded_inputs": ["arrival_delay_minutes", "departure_delay_minutes", "cancelled", "diverted", "flight_number", "flight_date", "month", "day_of_month"],
+  "model": {"loss": "squared_error", "max_leaf_nodes": 15, "max_iter": 80, "learning_rate": 0.08, "min_samples_leaf": 200, "l2_regularization": 10.0, "early_stopping": false, "random_state": 42},
+  "preprocessing": "Train-only ordinal categories capped at 200; unknown categories -1; departure-time and weekday sine/cosine; nonnegative prediction clipping",
+  "baselines": ["constant training mean", "constant training median"],
+  "research_check": "Model RMSE <= 0.99 * training-mean baseline RMSE in both April and May; MAE versus median reported separately; no operational acceptance",
+  "policy": "One prespecified model, no hyperparameter search. Freeze artifact, baselines and April evaluation before loading May rows. Evaluate May once; preserve failures and do not retune. Earlier project experiments already inspected this five-month release: this is a new model-specific temporal benchmark, not a globally untouched holdout. No deployment of duration inference.",
+  "production_ready": false
+}
