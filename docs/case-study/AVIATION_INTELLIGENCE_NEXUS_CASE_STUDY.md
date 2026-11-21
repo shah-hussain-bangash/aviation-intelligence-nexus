@@ -8,7 +8,7 @@
 
 | Project | At a glance |
 |---|---|
-| Project owner | Shah Hussain Bangash · [GitHub](https://github.com/zenithdevelopers7-source) |
+| Project owner | Shah Hussain Bangash · [GitHub](https://github.com/shah-hussain-bangash) |
 | Source baseline | [`c994c8f`, reviewed 21 November 2026][baseline] |
 | Domain | Historical aviation decision-support research |
 | Data evidence | Recorded January–May 2025 BTS import: 2,835,101 stored flights; 2,786,350 eligible observed arrivals |
@@ -311,25 +311,25 @@ A focused demonstration can connect one research decision to its evidence:
 
 AIN provides a substantive senior engineering discussion because it combines measured research with explicit limits, useful failure evidence and recoverable application state. Its evidence supports that discussion without implying operational airline or production approval.
 
-[baseline]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/commit/c994c8f136156fd49f8e0c19ea85f21e3ada3757
-[ci]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/actions/runs/44885389229
-[classification]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DELAY_V2.md
-[training-code]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/ml/train_v2.py
-[prediction]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/services/api/prediction.py
-[duration]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DELAY_DURATION_REGRESSION.md
-[data-quality]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DATA_QUALITY_LINEAGE.md
-[optimization]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/GATE_OPTIMIZATION.md
-[gate-review]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/GATE_PROPOSAL_REVIEW.md
-[knowledge]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/KNOWLEDGE_STUDIO.md
-[agent]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/agents/runtime.py
-[quality]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/AGENT_REPORT_QUALITY.md
-[route]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/HISTORICAL_ROUTE_LOOKUP.md
-[route-agent]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ROUTE_AGENT_INTEGRATION.md
-[queue]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/BACKGROUND_INVESTIGATIONS.md
-[peer-review]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/SECOND_ACCOUNT_REVIEW.md
-[identity]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_IDENTITY.md
-[deployment]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_DEPLOYMENT_RECOVERY.md
-[encrypted]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ENCRYPTED_RECOVERY.md
-[rollback]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_RELEASE_ROLLBACK.md
-[rollback-binding]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ROLLBACK_BUILD_EVIDENCE.md
-[readiness]: https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/RELEASE_READINESS.md
+[baseline]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/commit/c994c8f136156fd49f8e0c19ea85f21e3ada3757
+[ci]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/actions/runs/44885389229
+[classification]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DELAY_V2.md
+[training-code]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/ml/train_v2.py
+[prediction]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/services/api/prediction.py
+[duration]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DELAY_DURATION_REGRESSION.md
+[data-quality]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/DATA_QUALITY_LINEAGE.md
+[optimization]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/GATE_OPTIMIZATION.md
+[gate-review]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/GATE_PROPOSAL_REVIEW.md
+[knowledge]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/KNOWLEDGE_STUDIO.md
+[agent]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/agents/runtime.py
+[quality]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/AGENT_REPORT_QUALITY.md
+[route]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/HISTORICAL_ROUTE_LOOKUP.md
+[route-agent]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ROUTE_AGENT_INTEGRATION.md
+[queue]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/BACKGROUND_INVESTIGATIONS.md
+[peer-review]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/SECOND_ACCOUNT_REVIEW.md
+[identity]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_IDENTITY.md
+[deployment]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_DEPLOYMENT_RECOVERY.md
+[encrypted]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ENCRYPTED_RECOVERY.md
+[rollback]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/LOCAL_RELEASE_ROLLBACK.md
+[rollback-binding]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/ROLLBACK_BUILD_EVIDENCE.md
+[readiness]: https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/c994c8f136156fd49f8e0c19ea85f21e3ada3757/docs/RELEASE_READINESS.md
