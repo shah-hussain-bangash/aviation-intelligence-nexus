@@ -136,3 +136,5 @@ Proposal review: [Synthetic gate research decisions](docs/GATE_PROPOSAL_REVIEW.m
 Data evidence: [Data quality and lineage](docs/DATA_QUALITY_LINEAGE.md) records full-release structural checks, exclusions and import/population reconciliation.
 
 Release evidence: [Build-bound rollback receipts](docs/ROLLBACK_BUILD_EVIDENCE.md) distinguish the running candidate from historical drills and expose a sanitized evidence export.
+
+Daily startup: use **Terminal > Run Task > AIN: Start saved Docker dashboard** or `npm.cmd start`, then open http://127.0.0.1:8090. See [startup and troubleshooting](docs/DAILY_STARTUP.md).

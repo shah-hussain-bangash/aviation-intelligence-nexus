@@ -6,6 +6,7 @@
   "type": "module",
   "engines": { "node": ">=24" },
   "scripts": {
+    "start": "node scripts/start-release.mjs",
     "dev": "node scripts/dev.mjs",
     "dev:all": "node scripts/start-local.mjs",
     "test:web": "node --test tests/test_dashboard.mjs tests/test_startup.mjs",

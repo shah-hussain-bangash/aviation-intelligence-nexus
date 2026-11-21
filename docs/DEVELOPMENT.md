@@ -1,5 +1,9 @@
 # Daily development and automated checks
 
+## Start the saved Docker dashboard
+
+For the existing saved deployment on port **8090**, use **Terminal > Run Task > AIN: Start saved Docker dashboard**, or run `npm.cmd start`. It reuses a ready dashboard or starts only the validated existing API/web pair. It does not rebuild images, create replacement containers or volumes or alter credentials. See [daily startup](DAILY_STARTUP.md) for checks and troubleshooting.
+
 ## One command to start locally
 
 After the project Python environment is installed, run from the repository root:
@@ -18,7 +22,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 87 Node dashboard/proxy/startup tests and 279 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 96 Node dashboard/proxy/startup tests and 286 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv

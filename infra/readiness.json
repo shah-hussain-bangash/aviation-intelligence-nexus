@@ -716,7 +716,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "fe420c92d5fbb131c9376f63115b02ec52dbdd2270b9fadb03fd5754fdd9469a"
+          "sha256": "a83445ad79e08a0542a1b2686128374bf936ae8b1d309b0c17508788f98b0fd3"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
@@ -742,7 +742,7 @@
         "P19",
         "P20"
       ],
-      "local_progress": "Local setup, data/model, AI, monitoring and recovery runbooks are maintained with explicit limitations.",
+      "local_progress": "Local setup, data/model, AI, monitoring and recovery runbooks are maintained with explicit limitations. A host-side daily startup task validates the saved Docker deployment and provides bounded failure messages; the already-running branch was checked locally.",
       "remaining": "Independent operator walkthrough, production incident ownership and deployment/rollback runbooks remain outstanding.",
       "acceptance": "A responsible engineer can deploy, operate, investigate and restore the implemented system.",
       "production_accepted": false,
@@ -758,6 +758,10 @@
         {
           "path": "docs/ENCRYPTED_RECOVERY.md",
           "sha256": "f0b011e79d9b7cdd3c197695a1cd69e22f629e179e9ef7b8cb99ebdd43b26817"
+        },
+        {
+          "path": "docs/DAILY_STARTUP.md",
+          "sha256": "aab27b354ae5a7b9c1074f054405a66ba6c1b82e89df484247c79a7e533b4677"
         }
       ]
     },
