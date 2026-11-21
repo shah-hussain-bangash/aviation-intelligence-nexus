@@ -46,6 +46,14 @@ The application preserves 64 prototype workspaces across eight departments, 256 
 
 A useful journey starts with an explicit directional route. The researcher compares January–March with May, checks denominators and uncertainty, then permits a bounded agent to retrieve that same route evidence. The saved report retains structured tool results independently of the quotations selected by the model. A human can request changes even when mechanical coverage passes.
 
+### Sign-in experience
+
+![Aviation Intelligence Nexus sign-in screen](assets/aviation-signin.png)
+
+*Captured from the running local release on 21 November 2026, with empty credential fields. The travel scene is an AI-generated design illustration. This screen presents access to local research services and does not imply airline affiliation or production acceptance.*
+
+### Research dashboard preview
+
 ![Historical route lookup component using recorded aggregate evidence](assets/aviation-route-history.png)
 
 *Reviewed repository component preview of the recorded JFK–LAX example. It uses actual public aggregate research evidence through preview transport; no real user account is connected. The view is historical research, not a live flight feed or an operational airline dashboard. The component presents recorded research counts and uncertainty.*
