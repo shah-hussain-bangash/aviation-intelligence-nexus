@@ -6,13 +6,13 @@ import time
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-STATES=('queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled')
+STATES=('queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled','withdrawn')
 
 
 class ArchiveQuery(BaseModel):
     model_config=ConfigDict(extra='forbid',str_strip_whitespace=True)
     q: str=Field(default='',max_length=120)
-    state: Literal['all','queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled']='all'
+    state: Literal['all','queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled','withdrawn']='all'
     before: str | None=Field(default=None,pattern=r'^(0|[1-9][0-9]{0,18})$')
     through: str | None=Field(default=None,pattern=r'^(0|[1-9][0-9]{0,18})$')
 

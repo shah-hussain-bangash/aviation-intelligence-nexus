@@ -1,0 +1,109 @@
+{
+  "scope": "Isolated sharing withdrawal component with recorded evidence and simulated transport; no real user withdrawal",
+  "results": [
+    {
+      "scenario": "Pending_Form",
+      "checks": {
+        "owner_control_visible": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "owner_control_visible": true,
+        "closed_controls": true,
+        "evidence_retained": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "owner_control_visible": true,
+        "closed_controls": true,
+        "evidence_retained": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Peer",
+      "checks": {
+        "peer_withdrawal_hidden": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer_Owner",
+      "checks": {
+        "owner_control_visible": true,
+        "closed_controls": true,
+        "evidence_retained": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "owner_control_visible": true,
+        "late_response_does_not_replace": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "New_Input",
+      "checks": {
+        "owner_control_visible": true,
+        "late_response_does_not_replace": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Exact_Retry",
+      "checks": {
+        "owner_control_visible": true,
+        "uncertain_never_claims_saved": true,
+        "same_retry_key": true,
+        "closed_controls": true,
+        "evidence_retained": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Decision_Conflict",
+      "checks": {
+        "owner_control_visible": true,
+        "uncertain_never_claims_saved": true,
+        "reconciled_saved_state": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Refresh_Reconciliation",
+      "checks": {
+        "owner_control_visible": true,
+        "uncertain_never_claims_saved": true,
+        "reconciled_saved_state": true,
+        "closed_controls": true,
+        "evidence_retained": true,
+        "export_receipt": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

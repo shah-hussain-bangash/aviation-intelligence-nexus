@@ -61,3 +61,5 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 .agent-distribution-evidence{border:1px solid var(--line);border-left:3px solid #95743f;border-radius:5px;padding:16px;margin:18px 0}
 
 .agent-peer-inbox{border-top:1px solid var(--line);padding-top:20px;margin-top:24px}.agent-peer-inbox .gate-history-buttons button{white-space:normal;text-align:left;overflow-wrap:anywhere}
+
+.sharing-withdrawal{border:1px solid var(--line);border-left:3px solid #95743f;padding:16px;margin:20px 0;border-radius:5px}.sharing-withdrawal form{display:grid;gap:12px;margin:16px 0}.sharing-withdrawal form label{display:grid;gap:6px}.sharing-withdrawal textarea{width:100%;box-sizing:border-box;min-height:70px;font:inherit;padding:10px;color:var(--txt);background:var(--card);border:1px solid var(--line);border-radius:4px}.sharing-withdrawal button{justify-self:start}.sharing-withdrawal form .knowledge-generation{display:flex;align-items:center;gap:10px}

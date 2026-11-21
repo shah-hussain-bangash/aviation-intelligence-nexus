@@ -19,4 +19,5 @@ def view(run,user,owner_id):
     author=user['id']==owner_id
     return {**run,'review_access':{'second_account_required':True,'is_author':author,
         'can_review':user['role'] in ('researcher','admin') and not author and peer_pending(run),
+        'can_withdraw':(author or user['role']=='admin') and peer_pending(run),
         'scope':'Different local account, not proof of a different person or operational authority'}}

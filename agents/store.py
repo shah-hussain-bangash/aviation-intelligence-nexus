@@ -7,7 +7,7 @@ import sqlite3
 from uuid import uuid4
 from agents.quality import assess_report
 from agents.cancellation import finish_cancelled
-from agents.review_access import can_read,view as review_view
+from agents.review_access import can_read,peer_pending,view as review_view
 
 
 def now():
@@ -123,3 +123,23 @@ class AgentStore:
             result.update(state='reviewed' if decision=='reviewed' else 'needs_changes',updated_at=now())
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',(json.dumps(result),result['updated_at'],run_id))
             return review_view(result,user,row['owner_id'])
+
+    def withdraw_sharing(self,user,request,session_token=None):
+        with closing(self.connection()) as db,db:
+            db.execute('BEGIN IMMEDIATE')
+            row=db.execute('SELECT owner_id,result_json FROM agent_runs WHERE id=?',(str(request.run_id),)).fetchone()
+            if not row or row['owner_id']!=user['id'] and user['role']!='admin':raise KeyError('Investigation unavailable')
+            result=json.loads(row['result_json'])
+            account=db.execute('SELECT username,role,active FROM auth_users WHERE id=?',(user['id'],)).fetchone()
+            if not account or not account['active'] or row['owner_id']!=user['id'] and account['role']!='admin':raise PermissionError('Current account cannot withdraw this sharing')
+            if session_token is not None and not db.execute('SELECT 1 FROM auth_sessions WHERE user_id=? AND token_hash=? AND expires_at>?',(user['id'],hashlib.sha256(session_token.encode()).hexdigest(),datetime.now(timezone.utc).timestamp())).fetchone():raise PermissionError('Current session no longer permits withdrawal')
+            actual_hash=sha({k:result[k] for k in ['request','steps','claims']})
+            if result['request'].get('require_peer_review') is not True or result.get('report_sha256')!=request.report_sha256 or actual_hash!=request.report_sha256 or result['research_only'] is not True or result['operational_approval'] is not False:raise Conflict('Shared report integrity changed or withdrawal is unavailable')
+            if result['state']=='withdrawn':
+                prior=result.get('sharing_withdrawal',{})
+                if all(prior.get(k)==v for k,v in {'withdrawal_key':str(request.withdrawal_key),'actor_id':user['id'],'note':request.note,'report_sha256':request.report_sha256}.items()):return review_view({**result,'withdrawal_replayed':True},user,row['owner_id'])
+                raise Conflict('This report already has a different withdrawal record')
+            if not peer_pending(result):raise Conflict('Only a pending shared report can be withdrawn; recorded decisions remain unchanged')
+            at=now();result.update(state='withdrawn',updated_at=at,sharing_withdrawal={'withdrawal_key':str(request.withdrawal_key),'actor_id':user['id'],'actor':account['username'],'note':request.note,'report_sha256':request.report_sha256,'at':at,'acknowledged':True})
+            db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',(json.dumps(result),at,result['run_id']))
+            return review_view({**result,'withdrawal_replayed':False},user,row['owner_id'])

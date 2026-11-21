@@ -8,7 +8,7 @@ from threading import Lock
 import time
 
 LOCK=Lock()
-STATES=('queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled')
+STATES=('queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled','withdrawn')
 TOOLS=('flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence')
 EXECUTION='local-background-queue-v1'
 
@@ -50,7 +50,7 @@ def snapshot(database,worker,now=None,clock=time.monotonic):
         coverage={'passed':0,'blocked':0,'not_recorded':0};durations=[];missing_tool_time=0
         for state,flag,report_type,steps_json in rows:
             if clock()>=deadline:raise OperationsUnavailable('Operations snapshot deadline exceeded')
-            if state in ('awaiting_review','reviewed','needs_changes'):
+            if state in ('awaiting_review','reviewed','needs_changes','withdrawn'):
                 coverage['passed' if flag=='true' and report_type=='text' else 'blocked' if flag=='false' and report_type=='text' else 'not_recorded']+=1
             steps=json.loads(steps_json) if steps_json is not None else []
             if not isinstance(steps,list) or len(steps)>3:raise ValueError('Invalid saved tool steps')
@@ -60,7 +60,7 @@ def snapshot(database,worker,now=None,clock=time.monotonic):
                 bucket['completed' if step.get('state')=='completed' else 'failed_or_unfinished']+=1
                 elapsed=step.get('elapsed_ms')
                 if step.get('elapsed_type') in ('integer','real') and type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed>=0:values.append(elapsed)
-            if state in ('awaiting_review','reviewed','needs_changes','failed','interrupted'):
+            if state in ('awaiting_review','reviewed','needs_changes','failed','interrupted','withdrawn'):
                 if steps and len(values)==len(steps):durations.append(round(sum(values),2))
                 else:missing_tool_time+=1
         waiting=[age_seconds(created,now) for state,created,started in active if state=='queued']

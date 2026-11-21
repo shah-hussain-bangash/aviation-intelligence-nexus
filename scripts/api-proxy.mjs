@@ -10,7 +10,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const agent = pathname === '/api/v1/research/agent-run';
   const jobSubmit = pathname === '/api/v1/research/agent-jobs';
   const jobRead = /^\/api\/v1\/research\/agent-jobs\/[0-9a-fA-F-]{36}$/.test(pathname);
-  const jobCancel = pathname === '/api/v1/research/agent-cancel';
+  const jobCancel = pathname === '/api/v1/research/agent-cancel'||pathname==='/api/v1/research/agent-withdraw-sharing';
   const routeProfile = pathname === '/api/v1/research/route-profile';
   const archiveRead = pathname === '/api/v1/research/agent-archive';
   const agentReview = pathname === '/api/v1/research/agent-review';

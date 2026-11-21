@@ -24,6 +24,7 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 ## Included today
 
 - Optional second-account research review with explicit pending-report sharing, a reviewer inbox and transactional author/role/session checks. See [second-account review](docs/SECOND_ACCOUNT_REVIEW.md).
+- Authors/admins can withdraw pending peer sharing while retaining report evidence, with exact retries and transactional review conflicts. See [sharing withdrawal](docs/SHARING_WITHDRAWAL.md).
 
 - Explicit agent retrieval of recorded input distributions, retained metric snapshots and limitation-checked research drafts. See [distribution evidence agent](docs/DISTRIBUTION_AGENT_INTEGRATION.md).
 

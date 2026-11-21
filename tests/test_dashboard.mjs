@@ -1,4 +1,5 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
+import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
@@ -602,3 +603,29 @@ test('data quality proxy is fixed read-only and forwards only the session cookie
  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}});const url=`http://127.0.0.1:${frontend}/api/v1/research/data-quality`;
  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/arbitrary')).status,404);
 });
+
+const withdrawalFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Sharing_Withdrawal.json',import.meta.url),'utf8'));
+test('sharing withdrawal requires exact pending sharing context and hides review after withdrawal',()=>{
+ const fixture=withdrawalFixture(),user={id:'fixture',role:'viewer'};
+ assert.equal(canWithdrawSharing(fixture.pending,user),true);assert.equal(canWithdrawSharing(fixture.peer_view,user),false);
+ assert.equal(canWithdrawSharing(fixture.withdrawn,user),false);assert.equal(canWithdrawSharing(fixture.pending,null),false);
+ assert.equal(canWithdrawSharing({...fixture.pending,report_sha256:'invalid'},user),false);
+ assert.equal(canWithdrawSharing({...fixture.pending,request:{}},user),false);
+ assert.equal(canReviewInvestigation(fixture.withdrawn,{role:'admin'}),false);
+ fixture.withdrawn.sharing_withdrawal.note='<script>bad()</script>';const html=renderInvestigation(fixture.withdrawn);
+ assert.match(html,/Sharing withdrawn by/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>|human review required/);assert.match(html,/exported copies cannot be recalled/);
+});
+test('withdrawn archive state is supported while older operations snapshots do not imply zero withdrawals',()=>{
+ assert.match(archiveQuery(new URLSearchParams({state:'withdrawn'})).toString(),/state=withdrawn/);
+ const fixture=operationsFixture();assert.match(renderOperations(fixture,Date.parse(fixture.checked_at)),/Sharing withdrawn<\/th><td>Not reported/);
+ fixture.totals.withdrawn=1;fixture.total_background_runs++;assert.match(renderOperations(fixture,Date.parse(fixture.checked_at)),/Sharing withdrawn<\/th><td>1/);
+});
+test('sharing withdrawal proxy forwards bounded writes and only the session cookie',async t=>{
+ const body=JSON.stringify({note:'End fixture sharing.',acknowledged:true});let writes=0;
+ const backend=await serve(t,async(req,res)=>{writes++;assert.equal(req.url,'/api/v1/research/agent-withdraw-sharing');assert.equal(req.headers.cookie,'ain_session=fixture');assert.equal(req.headers['x-csrf-token'],'fixture-csrf');let received='';for await(const chunk of req)received+=chunk;assert.equal(received,body);res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url,backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/agent-withdraw-sharing`;
+ const headers={'Content-Type':'application/json',Cookie:'ain_session=fixture; unrelated=secret','X-CSRF-Token':'fixture-csrf'};
+ assert.equal((await fetch(url,{method:'POST',headers,body})).status,200);assert.equal((await fetch(url)).status,405);
+ assert.equal((await fetch(url,{method:'POST',headers,body:'x'.repeat(4097)})).status,413);assert.equal((await fetch(url+'/arbitrary')).status,404);assert.equal(writes,1);
+});
+

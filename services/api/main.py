@@ -35,6 +35,7 @@ from infra.readiness import assessment
 from agents.jobs import JobQueue, JobWorker, QueueFull
 from agents.archive import ArchiveQuery, page as archive_page
 from agents.review_inbox import inbox as review_inbox
+from agents.withdrawal import SharingWithdrawal
 from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
@@ -561,6 +562,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except KeyError: return JSONResponse(status_code=404,content={'error':'investigation_unavailable'})
         except Conflict as error: return JSONResponse(status_code=409,content={'error':'review_blocked','message':str(error)})
         except (sqlite3.Error,ValueError): return JSONResponse(status_code=503,content={'error':'review_not_saved'})
+
+    @app.post('/api/v1/research/agent-withdraw-sharing')
+    def withdraw_agent_sharing(withdrawal: SharingWithdrawal,request: Request):
+        try:return agent_store.withdraw_sharing(request.state.user,withdrawal,session_token=request.cookies.get(COOKIE,''))
+        except KeyError:return JSONResponse(status_code=404,content={'error':'investigation_unavailable'})
+        except PermissionError:return JSONResponse(status_code=403,content={'error':'sharing_withdrawal_not_permitted'})
+        except Conflict:return JSONResponse(status_code=409,content={'error':'sharing_withdrawal_conflict','message':'Refresh the saved report; it changed, was withdrawn or already has a research decision.'})
+        except (sqlite3.Error,ValueError,TypeError):return JSONResponse(status_code=503,content={'error':'sharing_withdrawal_unconfirmed'})
 
     @app.get('/api/v1/research/platform-status')
     def platform_status():
