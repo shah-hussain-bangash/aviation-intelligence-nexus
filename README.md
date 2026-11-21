@@ -4,6 +4,7 @@
 
 A research project on how aviation analysts can verify flight-data lineage, evaluate delay alerts, and review synthetic gate proposals.
 
+- [One-page project summary](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_SUMMARY.md) presents the measured results and one reproducible scenario.
 - [Technical case study](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md) covers the architecture, trade-offs, and reproducibility limits.
 - [Data audit](docs/DATA_QUALITY_LINEAGE.md) covers 2,835,101 historical US domestic flight records.
 - [Delay evaluation](docs/DELAY_V2.md) reports 30.22% precision at the demonstration threshold and about 58% of eligible May flights flagged.
