@@ -1,0 +1,123 @@
+{
+  "scope": "Isolated monitoring integrity component with disposable HTTP snapshots, simulated transport/receipt times and accelerated expiry; no primary account or service affected",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "scope_visible": true,
+        "components_visible": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "scope_visible": true,
+        "components_visible": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Automatic_Expiry",
+      "checks": {
+        "scope_visible": true,
+        "initially_fresh": true,
+        "expires_without_response": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Invalid_Contract",
+      "checks": {
+        "contradiction_withheld": true,
+        "valid_recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Outage_Recovery",
+      "checks": {
+        "scope_visible": true,
+        "refresh_clears_immediately": true,
+        "outage_withholds": true,
+        "recovered": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "viewer_hidden": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Replace",
+      "checks": {
+        "old_error_does_not_replace": true,
+        "scope_visible": true,
+        "components_visible": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Future_Clock",
+      "checks": {
+        "scope_visible": true,
+        "clock_or_replay_unknown": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Replayed_Snapshot",
+      "checks": {
+        "scope_visible": true,
+        "clock_or_replay_unknown": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Legacy_Timing",
+      "checks": {
+        "scope_visible": true,
+        "legacy_unknown_timing": true,
+        "export_scope": true,
+        "export_freshness": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false
+}

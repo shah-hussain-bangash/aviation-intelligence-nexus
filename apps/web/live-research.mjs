@@ -67,7 +67,7 @@ if (typeof document !== 'undefined') {
   section.className = 'live-research';
   section.setAttribute('aria-label', 'Connected historical research data');
   section.innerHTML = `<details open><summary><span>Connected research data</span><span id="researchConnection" role="status" aria-live="polite">Connecting…</span></summary>
-    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#agent-operations" data-operations-link hidden>Workflow operations</a><a class="btn sm" href="#data-quality">Data quality and lineage</a><a class="btn sm" href="#gate-lab">Gate Allocation Lab</a><a class="btn sm" href="#model-explanations">Explore model inputs</a><a class="btn sm" href="#input-distributions">Compare historical inputs</a><a class="btn sm" href="#duration-evaluation">Inspect duration regression</a><a class="btn sm" href="#threshold-tradeoffs">Explore decision trade-offs</a><a class="btn sm" href="#model-diagnostics">Inspect model quality</a><a class="btn sm" href="#route-patterns">Explore route patterns</a><a class="btn sm" href="#route-history">Look up a route</a><a class="btn sm" href="#investigation-desk">Investigate a route</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
+    <div class="research-inner"><div class="research-toolbar"><p>Real database counts and measured model evidence</p><a class="btn sm" href="#monitoring-panel" data-monitoring-link hidden>Monitor service health</a><a class="btn sm" href="#agent-operations" data-operations-link hidden>Workflow operations</a><a class="btn sm" href="#data-quality">Data quality and lineage</a><a class="btn sm" href="#gate-lab">Gate Allocation Lab</a><a class="btn sm" href="#model-explanations">Explore model inputs</a><a class="btn sm" href="#input-distributions">Compare historical inputs</a><a class="btn sm" href="#duration-evaluation">Inspect duration regression</a><a class="btn sm" href="#threshold-tradeoffs">Explore decision trade-offs</a><a class="btn sm" href="#model-diagnostics">Inspect model quality</a><a class="btn sm" href="#route-patterns">Explore route patterns</a><a class="btn sm" href="#route-history">Look up a route</a><a class="btn sm" href="#investigation-desk">Investigate a route</a><button type="button" class="btn sm" id="refreshResearch">Refresh data</button></div>
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
   const readinessUI = mountReadiness(section.querySelector('.research-inner'));
@@ -124,6 +124,7 @@ if (typeof document !== 'undefined') {
     investigationLab.setSession(user);
     platformStatus.setSession(user);
     section.querySelector('[data-operations-link]').hidden=user?.role!=='admin';
+    section.querySelector('[data-monitoring-link]').hidden=user?.role!=='admin';
     operations.setSession(user);
     monitoringUI.setSession(user);
     quality.setSession(user);

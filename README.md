@@ -23,6 +23,8 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 
 ## Included today
 
+- Validated local monitoring with automatic stale-health expiry, invalid-timing accounting and scoped diagnostic export. See [monitoring integrity](docs/MONITORING_INTEGRITY.md).
+
 - Opt-in local AI review of the negative regression experiment, with three mandatory source quotations, retained full metrics and human research review. See [regression review agent](docs/DURATION_AGENT_REVIEW.md).
 
 - Offline delay-duration regression with mean/median baselines, residual/tail diagnostics and a preserved negative research result. Duration inference is not deployed. See [duration evaluation](docs/DELAY_DURATION_REGRESSION.md).

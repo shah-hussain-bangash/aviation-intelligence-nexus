@@ -14,6 +14,19 @@ def timestamp():
     return datetime.now(timezone.utc).isoformat()
 
 
+def age_between(current,earlier):
+    if type(current) not in (int,float) or type(earlier) not in (int,float):return None
+    try:
+        value=current-earlier
+        return value if math.isfinite(value) and value>=0 else None
+    except OverflowError:return None
+
+
+def valid_timing(value):
+    try:return type(value) in (int,float) and math.isfinite(value) and value>=0
+    except OverflowError:return False
+
+
 class Monitor:
     def __init__(self, destination, probes, enabled=False, clock=time.monotonic):
         self.destination = Path(destination)
@@ -25,6 +38,7 @@ class Monitor:
         self.lock = Lock()
         self.counts = Counter()
         self.durations = deque(maxlen=200)
+        self.invalid_latencies = 0
         self.failures = deque(maxlen=50)
         self.incidents = deque(maxlen=50)
         self.components = {}
@@ -36,11 +50,14 @@ class Monitor:
 
     def record(self, status, elapsed_ms):
         # Status classes only: never store URLs, headers, input, account IDs or exception text.
-        group = str(status // 100) + 'xx' if 100 <= status <= 599 else 'other'
+        valid_status=type(status) is int and 100<=status<=599
+        group = str(status // 100) + 'xx' if valid_status else 'other'
         with self.lock:
             self.counts[group] += 1
-            self.durations.append(round(max(0, elapsed_ms), 2))
-            if status >= 500:
+            if valid_timing(elapsed_ms):
+                self.durations.append(round(elapsed_ms,2))
+            else:self.invalid_latencies+=1
+            if valid_status and status >= 500:
                 self.failures.append({'at': timestamp(), 'status': status})
 
     def sample(self):
@@ -77,8 +94,11 @@ class Monitor:
 
     def snapshot(self):
         with self.lock:
-            age = None if self.checked_clock is None else max(0, self.clock() - self.checked_clock)
-            fresh = self.enabled and age is not None and age <= 90
+            current=self.clock()
+            age = None if self.checked_clock is None else age_between(current,self.checked_clock)
+            if age is not None:age=round(age,1)
+            uptime=age_between(current,self.started)
+            fresh = self.enabled and bool(self.components) and age is not None and age < 90
             durations = sorted(self.durations)
             return {'enabled': self.enabled, 'instance': self.instance, 'checked_at': self.checked,
                     'sample_age_seconds': None if age is None else round(age, 1),
@@ -88,8 +108,9 @@ class Monitor:
                     'persistence_ok': self.persistence_ok, 'transitions': list(reversed(self.incidents)),
                     'request_counts': dict(self.counts), 'recent_server_failures': list(reversed(self.failures)),
                     'latency': {'sample_size': len(durations), 'window_limit': 200,
-                                'p95_ms': durations[math.ceil(len(durations) * .95) - 1] if durations else None},
-                    'uptime_seconds': round(max(0, self.clock() - self.started), 1),
+                                'p95_ms': durations[math.ceil(len(durations) * .95) - 1] if durations else None,
+                                'invalid_samples':self.invalid_latencies},
+                    'uptime_seconds': round(uptime,1) if uptime is not None else None,
                     'interval_seconds': 30, 'stale_after_seconds': 90,
                     'external_alert_delivery': False, 'production_ready': False}
 

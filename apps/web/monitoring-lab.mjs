@@ -1,27 +1,55 @@
 import {apiFetch} from './research-auth.mjs';
-const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const labels={database:'Database schema',active_model:'Active model artifact',local_ai_models:'Local AI models'};
-
-export function renderMonitoring(data){
-  if(data.production_ready!==false||data.external_alert_delivery!==false||!['healthy','degraded','unknown','disabled'].includes(data.state))throw new Error('Invalid monitoring state');
-  const fresh=['healthy','degraded'].includes(data.state);
-  const counts=data.request_counts;
-  const total=Object.values(counts).reduce((sum,n)=>{if(!Number.isSafeInteger(n)||n<0)throw new Error();return sum+n;},0);
-  return `<div class="research-kpis"><article><span>Local monitor</span><strong>${escape(data.state)}</strong></article><article><span>API responses since restart</span><strong>${total.toLocaleString('en-US')}</strong></article><article><span>Server error responses</span><strong>${escape(counts['5xx']??0)}</strong></article><article><span>Recent latency p95</span><strong>${data.latency.p95_ms===null?'No samples':escape(data.latency.p95_ms)+' ms'}</strong></article></div>
-    <p>Last sample: ${escape(data.checked_at??'Not sampled')} · Sample age: ${escape(data.sample_age_seconds??'unknown')} seconds · ${escape(data.latency.sample_size)} of at most 200 recent requests in latency window.</p>
-    ${fresh?`<ul>${Object.entries(labels).map(([key,label])=>`<li><strong>${label}:</strong> ${data.components[key]===true?'Check passed':'Unavailable'}</li>`).join('')}</ul>`:'<p class="research-caution">Current component health is unknown. Monitoring may be disabled, starting or stale. No healthy status is inferred.</p>'}
-    <p>Local snapshot storage: ${data.persistence_ok===true?'Last write succeeded':data.persistence_ok===false?'Last write failed':'Not yet verified'}.</p>
-    <h4>Recent component transitions</h4>${data.transitions.length?`<ul>${data.transitions.map(e=>`<li>${escape(e.at)} · ${escape(labels[e.component]??'Component')} · ${escape(e.state)}</li>`).join('')}</ul>`:'<p>No component transitions observed in this process.</p>'}
-    <h4>Recent server failures</h4>${data.recent_server_failures.length?`<ul>${data.recent_server_failures.map(e=>`<li>${escape(e.at)} · HTTP ${escape(e.status)}</li>`).join('')}</ul>`:'<p>No server failure responses recorded in this process.</p>'}
-    <p class="research-caution">Local observation only. Checks run every 30 seconds and become stale after 90 seconds. Model presence does not prove successful generation. Counters reset on restart; the latest bounded snapshot is stored locally. No external alerts, protected audit, service-level objective or operational approval.</p>`;
+const escape=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const labels={database:'Database schema',active_model:'Active model artifact',local_ai_models:'Local AI model listing'};
+const integer=v=>Number.isSafeInteger(v)&&v>=0;
+const nonnegative=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0;
+const date=v=>typeof v==='string'&&/(?:Z|[+-]\d\d:\d\d)$/.test(v)&&Number.isFinite(Date.parse(v));
+const keys=(value,expected)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join()===expected.slice().sort().join();
+const fields=['enabled','instance','checked_at','sample_age_seconds','state','components','persistence_ok','transitions','request_counts','recent_server_failures','latency','uptime_seconds','interval_seconds','stale_after_seconds','external_alert_delivery','production_ready'];
+export function validateMonitoring(data){
+ if(!keys(data,fields)||typeof data.enabled!=='boolean'||data.production_ready!==false||data.external_alert_delivery!==false||!['healthy','degraded','unknown','disabled'].includes(data.state)||typeof data.instance!=='string'||!/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(data.instance)||data.interval_seconds!==30||data.stale_after_seconds!==90)throw new Error('Invalid monitoring scope');
+ if(data.checked_at!==null&&!date(data.checked_at)||data.sample_age_seconds!==null&&!nonnegative(data.sample_age_seconds)||data.uptime_seconds!==null&&!nonnegative(data.uptime_seconds)||![true,false,null].includes(data.persistence_ok))throw new Error('Invalid monitoring observation');
+ const fresh=['healthy','degraded'].includes(data.state);
+ if((data.state==='disabled')!==!data.enabled||fresh&&(!data.enabled||data.checked_at===null||data.sample_age_seconds===null||data.sample_age_seconds>90||!keys(data.components,Object.keys(labels))||Object.values(data.components).some(v=>typeof v!=='boolean'))||!fresh&&!keys(data.components,[]))throw new Error('Inconsistent component scope');
+ if(data.checked_at===null&&data.sample_age_seconds!==null||fresh&&(data.state==='healthy')!==(Object.values(data.components).every(Boolean)&&data.persistence_ok===true))throw new Error('Inconsistent health claim');
+ if(!data.request_counts||Array.isArray(data.request_counts)||typeof data.request_counts!=='object'||Object.entries(data.request_counts).some(([k,v])=>!['1xx','2xx','3xx','4xx','5xx','other'].includes(k)||!integer(v)))throw new Error('Invalid response counters');
+ const total=Object.values(data.request_counts).reduce((a,b)=>a+b,0),latency=data.latency;
+ if(!integer(total)||!keys(latency,['sample_size','window_limit','p95_ms',...('invalid_samples' in latency?['invalid_samples']:[])])||latency.window_limit!==200||!integer(latency.sample_size)||latency.sample_size>Math.min(200,total)||(latency.sample_size===0?latency.p95_ms!==null:!nonnegative(latency.p95_ms))||'invalid_samples' in latency&&(!integer(latency.invalid_samples)||latency.sample_size+latency.invalid_samples>total))throw new Error('Invalid latency window');
+ if(!Array.isArray(data.transitions)||data.transitions.length>50||data.transitions.some(e=>!keys(e,['at','component','state'])||!date(e.at)||!Object.hasOwn(labels,e.component)||!['recovered','unavailable'].includes(e.state)))throw new Error('Invalid component transitions');
+ if(!Array.isArray(data.recent_server_failures)||data.recent_server_failures.length>Math.min(50,data.request_counts['5xx']??0)||data.recent_server_failures.some(e=>!keys(e,['at','status'])||!date(e.at)||!Number.isInteger(e.status)||e.status<500||e.status>599))throw new Error('Invalid server failure window');
+ return data;
 }
-
+export function monitoringView(data,elapsedSeconds=0,receivedWall=Date.now()){
+ validateMonitoring(data);if(!nonnegative(elapsedSeconds)||!Number.isFinite(receivedWall))throw new Error('Invalid observation clock');
+ const wallAge=data.checked_at===null?null:(receivedWall-Date.parse(data.checked_at))/1000,clockKnown=wallAge===null||wallAge>=-5;
+ const age=data.sample_age_seconds===null?null:Math.max(data.sample_age_seconds,Math.max(0,wallAge??0))+elapsedSeconds;
+ const fresh=data.enabled&&['healthy','degraded'].includes(data.state)&&clockKnown&&age!==null&&age<90;
+ return {...data,state:!data.enabled?'disabled':fresh?data.state:'unknown',components:fresh?{...data.components}:{},sample_age_seconds:age===null?null:Math.round(age*10)/10,
+  freshness_reason:!data.enabled?'sampling_disabled':!clockKnown?'clock_mismatch':fresh?'fresh':age!==null&&age>=90?'sample_expired':'health_not_established'};
+}
+export function monitoringExport(data,elapsedSeconds=0,receivedWall=Date.now()){
+ return {format:'ain-monitoring-diagnostic-v1',observation:monitoringView(data,elapsedSeconds,receivedWall),received_at:new Date(receivedWall).toISOString(),elapsed_since_receipt_seconds:elapsedSeconds,
+  scope:'Bounded local snapshot; response counters are as received, not live totals. No request contents or account/session details.',external_alert_delivery:false,production_ready:false};
+}
+export function renderMonitoring(data,elapsedSeconds=0,receivedWall=Date.now()){
+ const view=monitoringView(data,elapsedSeconds,receivedWall),fresh=['healthy','degraded'].includes(view.state),counts=view.request_counts,total=Object.values(counts).reduce((a,b)=>a+b,0);
+ return `<div class="research-kpis"><article><span>Local component observation</span><strong class="monitoring-health" data-state="${view.state}">${view.state}</strong></article><article><span>API responses in received snapshot</span><strong>${total.toLocaleString('en-US')}</strong></article><article><span>Server error responses in snapshot</span><strong>${counts['5xx']??0}</strong></article><article><span>Recorded latency p95</span><strong>${view.latency.p95_ms===null?'No accepted samples':escape(view.latency.p95_ms)+' ms'}</strong></article></div>
+ <p>Server sample time: ${escape(view.checked_at??'Not sampled')} · Estimated sample age: ${view.sample_age_seconds===null?'unknown':escape(view.sample_age_seconds)} seconds. ${escape(view.latency.sample_size)} of at most 200 accepted timing samples. Invalid timing samples since restart: ${view.latency.invalid_samples===undefined?'Not reported by this snapshot':view.latency.invalid_samples}.</p>
+ ${fresh?`<ul class="monitoring-components">${Object.entries(labels).map(([key,label])=>`<li><strong>${label}:</strong> ${view.components[key]?'Check passed':'Unavailable'}</li>`).join('')}</ul>`:'<p class="research-caution">Current component health is unknown. Sampling is disabled, starting, stale or its clock could not be reconciled. Previous component badges are withheld.</p>'}
+ <p>Local snapshot storage: ${view.persistence_ok===true?'Last write succeeded':view.persistence_ok===false?'Last write failed':'Not yet verified'}. Freshness: ${escape(view.freshness_reason.replaceAll('_',' '))}.</p>
+ <h4>Recorded component transitions</h4>${view.transitions.length?`<ul>${view.transitions.map(e=>`<li>${escape(e.at)} · ${escape(labels[e.component])} · ${e.state}</li>`).join('')}</ul>`:'<p>No component transitions recorded in this process.</p>'}
+ <h4>Recorded server failures</h4>${view.recent_server_failures.length?`<ul>${view.recent_server_failures.map(e=>`<li>${escape(e.at)} · HTTP ${e.status}</li>`).join('')}</ul>`:'<p>No server failure responses recorded in this process.</p>'}
+ <p class="research-caution">Local observation only. Component evidence expires after 90 seconds, including while this page remains open. Response counts and timings are received snapshots and reset on restart. Model artifact/listing checks do not prove prediction or generation success. No external alerts, protected audit, service-level objective or operational approval.</p>`;
+}
 export function mountMonitoring(parent){
-  const section=document.createElement('section');section.className='research-card';section.hidden=true;
-  section.setAttribute('aria-labelledby','monitoringHeading');
-  section.innerHTML='<span class="research-badge">Service health · administrator</span><h3 id="monitoringHeading">See what needs attention</h3><p>Component checks and API response signals for this running instance.</p><button class="btn sm" type="button">Refresh monitoring</button><div aria-live="polite"></div>';
-  parent.append(section);const button=section.querySelector('button'),output=section.querySelector('div');let generation=0,active=false,timer;
-  async function refresh(){if(!active)return;const current=++generation;button.disabled=true;try{const response=await apiFetch('/api/v1/research/monitoring',{signal:AbortSignal.timeout(10000)});if(!response.ok)throw new Error();const data=await response.json();if(current===generation)output.innerHTML=renderMonitoring(data);}catch{if(current===generation)output.textContent='Monitoring could not be reached. Current health is unknown; previously displayed status has been cleared.';}finally{if(current===generation)button.disabled=false;}}
-  button.addEventListener('click',refresh);
-  return {setSession(user){generation++;clearInterval(timer);active=user?.role==='admin';section.hidden=!active;output.replaceChildren();button.disabled=!active;if(active){refresh();timer=setInterval(refresh,30000);}}};
+ const section=document.createElement('section');section.id='monitoring-panel';section.className='research-card monitoring-panel';section.hidden=true;section.setAttribute('aria-labelledby','monitoringHeading');
+ section.innerHTML='<span class="research-badge">Service health · administrator</span><h3 id="monitoringHeading">See what needs attention</h3><p>Validated component checks and API response signals. Expired health becomes unknown without waiting for another response.</p><div class="research-toolbar"><button class="btn sm" type="button" data-refresh>Refresh monitoring</button><button class="btn sm" type="button" data-export disabled>Export diagnostic JSON</button></div><p data-monitor-status role="status"></p><div class="monitoring-result" aria-live="polite"></div>';
+ parent.append(section);const refresh=section.querySelector('[data-refresh]'),download=section.querySelector('[data-export]'),status=section.querySelector('[data-monitor-status]'),output=section.querySelector('.monitoring-result');let generation=0,active=false,timer,expiry,controller=null,data=null,receivedMono=0,receivedWall=0;
+ function clear(){clearTimeout(expiry);data=null;output.replaceChildren();download.disabled=true;}
+ function elapsed(){return (performance.now()-receivedMono)/1000;}
+ function draw(){if(!data)return;clearTimeout(expiry);try{const age=elapsed(),view=monitoringView(data,age,receivedWall);output.innerHTML=renderMonitoring(data,age,receivedWall);download.disabled=false;if(['healthy','degraded'].includes(view.state))expiry=setTimeout(draw,Math.max(1,Math.ceil((90-view.sample_age_seconds)*1000)+5));}catch{clear();status.textContent='Monitoring clocks or evidence could not be verified. Current health is unknown.';}}
+ async function load(){if(!active)return;const current=++generation;controller?.abort();controller=new AbortController();const pending=controller,timeout=setTimeout(()=>pending.abort(),10000);clear();refresh.disabled=true;status.textContent='Checking local monitoring…';try{const response=await apiFetch('/api/v1/research/monitoring',{signal:pending.signal});if(!response.ok)throw new Error();const payload=validateMonitoring(await response.json());if(current!==generation)return;data=payload;receivedMono=performance.now();receivedWall=Date.now();status.textContent='Validated local snapshot · no independent uptime or external alert delivery.';draw();}catch{if(current===generation){clear();status.textContent='Monitoring could not be verified. Current health is unknown; previously displayed status has been cleared.';}}finally{clearTimeout(timeout);if(current===generation)refresh.disabled=!active;}}
+ refresh.addEventListener('click',load);document.addEventListener('visibilitychange',()=>{if(active&&!document.hidden){draw();load();}});
+ download.addEventListener('click',()=>{if(!data)return;try{const receipt=monitoringExport(data,elapsed(),receivedWall),url=URL.createObjectURL(new Blob([JSON.stringify(receipt,null,2)],{type:'application/json'}));draw();const a=document.createElement('a');a.href=url;a.download='AIN_Local_Monitoring_Diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch{clear();status.textContent='Monitoring diagnostic could not be verified. Refresh before exporting.';}});
+ return {setSession(user){generation++;clearInterval(timer);controller?.abort();active=user?.role==='admin';clear();section.hidden=!active;status.textContent='';refresh.disabled=!active;if(active){load();timer=setInterval(()=>{if(!document.hidden)load();else draw();},30000);}}};
 }

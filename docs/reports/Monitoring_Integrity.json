@@ -1,0 +1,381 @@
+{
+  "format": "ain-monitoring-integrity-check-v1",
+  "checked_at": "2026-11-21T08:04:22.376550+00:00",
+  "scope": "In-process authenticated HTTP with disposable accounts/database, simulated component probes/clock/write failure, and a real missing-model API response. No primary state, account, provider or service is changed or stopped.",
+  "checks": {
+    "anonymous_denied": true,
+    "viewer_denied": true,
+    "fresh_healthy": true,
+    "component_failure_degraded": true,
+    "recovery_recorded": true,
+    "exact_expiry_unknown": true,
+    "backward_clock_unknown": true,
+    "write_failure_degraded": true,
+    "invalid_timings_counted": true,
+    "real_api_failure_recorded": true,
+    "persistence_recovered": true,
+    "request_and_credential_redaction": true,
+    "restart_does_not_reuse_health": true
+  },
+  "passed": true,
+  "snapshots": {
+    "healthy": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.337179+00:00",
+      "sample_age_seconds": 0.0,
+      "state": "healthy",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": true,
+      "transitions": [],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": 0.0,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "degraded": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.341013+00:00",
+      "sample_age_seconds": 0.0,
+      "state": "degraded",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": false
+      },
+      "persistence_ok": true,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": 0.0,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "recovered": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.345667+00:00",
+      "sample_age_seconds": 0.0,
+      "state": "healthy",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": true,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": 0.0,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "expired": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.345667+00:00",
+      "sample_age_seconds": 90.0,
+      "state": "unknown",
+      "components": {},
+      "persistence_ok": true,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": 90,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "invalid_clock": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.345667+00:00",
+      "sample_age_seconds": null,
+      "state": "unknown",
+      "components": {},
+      "persistence_ok": true,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": null,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "persistence_failure": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.356806+00:00",
+      "sample_age_seconds": 0,
+      "state": "degraded",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": false,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 2
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 0
+      },
+      "uptime_seconds": 91,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "invalid_timings": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.356806+00:00",
+      "sample_age_seconds": 0,
+      "state": "degraded",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": false,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 4
+      },
+      "recent_server_failures": [],
+      "latency": {
+        "sample_size": 4,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 2
+      },
+      "uptime_seconds": 91,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "api_failure": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.356806+00:00",
+      "sample_age_seconds": 0,
+      "state": "degraded",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": false,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 4,
+        "5xx": 1
+      },
+      "recent_server_failures": [
+        {
+          "at": "2026-11-21T08:04:22.368150+00:00",
+          "status": 503
+        }
+      ],
+      "latency": {
+        "sample_size": 5,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 2
+      },
+      "uptime_seconds": 91,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    },
+    "final": {
+      "enabled": true,
+      "instance": "75fd6fa7-4fad-4d9b-90a3-7ff11c042635",
+      "checked_at": "2026-11-21T08:04:22.371924+00:00",
+      "sample_age_seconds": 0,
+      "state": "healthy",
+      "components": {
+        "database": true,
+        "active_model": true,
+        "local_ai_models": true
+      },
+      "persistence_ok": true,
+      "transitions": [
+        {
+          "at": "2026-11-21T08:04:22.345667+00:00",
+          "component": "local_ai_models",
+          "state": "recovered"
+        },
+        {
+          "at": "2026-11-21T08:04:22.341013+00:00",
+          "component": "local_ai_models",
+          "state": "unavailable"
+        }
+      ],
+      "request_counts": {
+        "4xx": 2,
+        "2xx": 4,
+        "5xx": 1
+      },
+      "recent_server_failures": [
+        {
+          "at": "2026-11-21T08:04:22.368150+00:00",
+          "status": 503
+        }
+      ],
+      "latency": {
+        "sample_size": 5,
+        "window_limit": 200,
+        "p95_ms": 79.99,
+        "invalid_samples": 2
+      },
+      "uptime_seconds": 91,
+      "interval_seconds": 30,
+      "stale_after_seconds": 90,
+      "external_alert_delivery": false,
+      "production_ready": false
+    }
+  },
+  "production_ready": false
+}

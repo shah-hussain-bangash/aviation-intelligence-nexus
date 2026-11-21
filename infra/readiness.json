@@ -578,7 +578,7 @@
       "dependencies": [
         "P17"
       ],
-      "local_progress": "Admin monitoring shows bounded API response metrics and fresh/stale component checks with local snapshots. Administrator-only queue observations add active ages, retained states, bounded recent tool times and saved coverage flags; these are not semantic accuracy or independent uptime.",
+      "local_progress": "Admin monitoring shows bounded API response metrics and fresh/stale component checks with local snapshots. Administrator-only queue observations add active ages, retained states, bounded recent tool times and saved coverage flags; these are not semantic accuracy or independent uptime. Complete snapshot validation, server/browser clock and expiry guards, invalid-latency accounting and diagnostic export add bounded integrity checks; disposable authenticated failure/recovery and isolated browser evidence are recorded without changing primary services.",
       "remaining": "Independent uptime, centralized protected telemetry, semantic AI/pipeline quality evaluation and owned external alerts remain outstanding.",
       "acceptance": "Working measured dashboards, actionable alerts and response procedures.",
       "production_accepted": false,
@@ -598,6 +598,18 @@
         {
           "path": "docs/reports/Agent_Operations_Dashboard.json",
           "sha256": "b2f3c45c9d2246318d703439287712c525f74ca019d2f44ec2b736914e9e0bb0"
+        },
+        {
+          "path": "docs/MONITORING_INTEGRITY.md",
+          "sha256": "a5ecfd2bd0bdf920f308b04b40b556003c992c7fcb6138dabfc5f6e8362d3290"
+        },
+        {
+          "path": "docs/reports/Monitoring_Integrity.json",
+          "sha256": "3a8706d0eff6f3877ab35508d7e3c9a2f6dc35eefbe58dd18d41505694389355"
+        },
+        {
+          "path": "docs/reports/Monitoring_Integrity_Browser.json",
+          "sha256": "6201d10f9efa5a8b9fa74d7f9cbfa4a38b31a347ea9b11130d4a4bbedfb3cb2f"
         }
       ]
     },
@@ -696,7 +708,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "97c91d918309933cd4c57308833195bb192d20d06db34a76da07b046d74d161f"
+          "sha256": "fe420c92d5fbb131c9376f63115b02ec52dbdd2270b9fadb03fd5754fdd9469a"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

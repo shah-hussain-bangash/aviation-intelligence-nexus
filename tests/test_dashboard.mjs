@@ -27,7 +27,7 @@ import { renderInvestigation, investigationPayload,canReviewInvestigation } from
 import {renderInbox,validateInbox} from '../apps/web/review-inbox.mjs';
 import {renderPlatform} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
-import {renderMonitoring} from '../apps/web/monitoring-lab.mjs';
+import {renderMonitoring,validateMonitoring,monitoringView,monitoringExport} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
 import {renderReadiness,filterReadiness} from '../apps/web/release-readiness.mjs';
 import {renderPatterns,validatePatterns} from '../apps/web/route-patterns.mjs';
@@ -257,14 +257,11 @@ test('encrypted recovery evidence labels a separate local drill and rejects unsu
   assert.throws(()=>renderPlatform({...data,encrypted_backup_drill:{...data.encrypted_backup_drill,independent_recovery_qualified:true}}));
 });
 
-test('monitoring renderer withholds stale component health and escapes transition text',()=>{
-  const data={production_ready:false,external_alert_delivery:false,state:'unknown',request_counts:{'2xx':4,'5xx':1},latency:{p95_ms:25,sample_size:5},components:{database:true},transitions:[{at:'<script>',component:'database',state:'unavailable'}],recent_server_failures:[],persistence_ok:true};
-  const html=renderMonitoring(data);
-  assert.match(html,/Current component health is unknown/);
-  assert.doesNotMatch(html,/Check passed/);
-  assert.match(html,/&lt;script&gt;/);
-  assert.doesNotMatch(html,/<script>/);
-  assert.throws(()=>renderMonitoring({...data,production_ready:true}));
+function monitoringFixture(){return structuredClone(JSON.parse(fs.readFileSync(new URL('../docs/reports/Monitoring_Integrity.json',import.meta.url),'utf8')).snapshots.healthy);}
+test('monitoring renderer withholds expired health and rejects malformed transition metadata',()=>{
+ const data=monitoringFixture(),now=Date.parse(data.checked_at);let html=renderMonitoring(data,90,now);
+ assert.match(html,/Current component health is unknown/);assert.doesNotMatch(html,/Check passed/);
+ data.transitions=[{at:'<script>',component:'database',state:'unavailable'}];assert.throws(()=>renderMonitoring(data));assert.throws(()=>renderMonitoring({...data,production_ready:true}));
 });
 
 test('monitoring route uses the authenticated proxy and rejects writes',async t=>{
@@ -679,4 +676,20 @@ test('operations distinguishes duration tool counts from older unreported snapsh
  const r=operationsFixture();let html=renderOperations(r,Date.parse(r.checked_at));assert.match(html,/Recorded duration regression<\/th><td colspan="3">Not reported by this snapshot/);
  r.recent_window.tools.distribution_evidence={attempted:0,completed:0,failed_or_unfinished:0};assert.doesNotThrow(()=>validateOperations(r));r.recent_window.tools.duration_evidence={attempted:1,completed:1,failed_or_unfinished:0};html=renderOperations(r,Date.parse(r.checked_at));assert.match(html,/Recorded duration regression<\/th><td>1<\/td><td>1/);
  r.recent_window.tools.duration_evidence.completed=2;assert.throws(()=>validateOperations(r));
+});
+
+test('monitoring validates complete health evidence and finite bounded latency windows',()=>{
+ const r=monitoringFixture();assert.doesNotThrow(()=>validateMonitoring(r));
+ for(const change of [v=>v.components.database=false,v=>v.latency.p95_ms=NaN,v=>v.latency.sample_size=201,v=>v.request_counts['private-url']=1,v=>v.checked_at='<script>',v=>v.account='private',v=>v.recent_server_failures.push({at:v.checked_at,status:503})]){const bad=structuredClone(r);change(bad);assert.throws(()=>validateMonitoring(bad));}
+ const legacy=structuredClone(r);delete legacy.latency.invalid_samples;assert.doesNotThrow(()=>validateMonitoring(legacy));assert.match(renderMonitoring(legacy,0,Date.parse(legacy.checked_at)),/Not reported by this snapshot/);
+});
+test('monitoring expires without a new response and rejects future or replayed health',()=>{
+ const r=monitoringFixture(),now=Date.parse(r.checked_at);r.sample_age_seconds=89;
+ assert.equal(monitoringView(r,.5,now).state,'healthy');assert.equal(monitoringView(r,1,now).state,'unknown');assert.deepEqual(monitoringView(r,1,now).components,{});
+ assert.equal(monitoringView(r,0,now+91000).state,'unknown');assert.equal(monitoringView(r,0,now-6000).freshness_reason,'clock_mismatch');assert.throws(()=>monitoringView(r,-1,now));assert.throws(()=>monitoringView(r,NaN,now));
+ const degraded=monitoringFixture();degraded.components.active_model=false;degraded.state='degraded';assert.equal(monitoringView(degraded,0,now).state,'degraded');
+});
+test('monitoring diagnostic export preserves unknown scope and contains only aggregate evidence',()=>{
+ const r=monitoringFixture(),receipt=monitoringExport(r,91,Date.parse(r.checked_at));assert.equal(receipt.format,'ain-monitoring-diagnostic-v1');assert.equal(receipt.observation.state,'unknown');assert.deepEqual(receipt.observation.components,{});assert.equal(receipt.external_alert_delivery,false);assert.equal(receipt.production_ready,false);assert.equal(receipt.observation.request_counts['2xx'],r.request_counts['2xx']);
+ assert.ok(!JSON.stringify(receipt).includes('password'));assert.throws(()=>monitoringExport({...r,user_token:'private'}));
 });
