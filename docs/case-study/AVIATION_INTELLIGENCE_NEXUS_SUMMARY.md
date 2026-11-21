@@ -4,6 +4,8 @@ Shah Hussain Bangash · Dubai, UAE
 
 Aviation decision-support research covering flight-data lineage, delay-model evaluation, and human-reviewed synthetic gate allocation.
 
+[Watch the 75-second walkthrough](assets/aviation-intelligence-nexus-walkthrough.mp4). This captioned recap presents recorded results. The figures and setup are also available below.
+
 ## What the project demonstrates
 
 | Area | Recorded result |
