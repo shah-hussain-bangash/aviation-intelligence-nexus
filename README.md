@@ -1,6 +1,13 @@
 # Aviation Intelligence Nexus
 
-**Featured case study:** [Aviation Intelligence Nexus Case Study — evidence-led research, bounded AI investigations and verifiable recovery](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md). Explore temporal model evaluation, a retained negative experiment, constrained gate optimization, local RAG, research review, security, current CI and build-bound recovery evidence.
+## Start here
+
+A research project on how aviation analysts can verify flight-data lineage, evaluate delay alerts, and review synthetic gate proposals.
+
+- [Technical case study](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md) covers the architecture, trade-offs, and reproducibility limits.
+- [Data audit](docs/DATA_QUALITY_LINEAGE.md) covers 2,835,101 historical US domestic flight records.
+- [Delay evaluation](docs/DELAY_V2.md) reports 30.22% precision at the demonstration threshold and about 58% of eligible May flights flagged.
+- [Gate allocation example](docs/GATE_OPTIMIZATION.md) assigned 5 of 5 flights versus 4 of 5 for the greedy baseline in one synthetic scenario.
 
 An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
 
