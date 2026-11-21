@@ -73,3 +73,4 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 .agent-duration-evidence{border:1px solid var(--line);border-left:3px solid #95743f;border-radius:5px;padding:16px;margin:18px 0}.agent-duration-evidence .research-table{overflow-x:auto}
 
 .monitoring-health[data-state=healthy]{color:#216746}.monitoring-health[data-state=degraded]{color:#a51b3e}.monitoring-health[data-state=unknown]{color:#856427}.monitoring-health[data-state=disabled]{color:var(--muted)}.monitoring-panel{background:var(--card)}.monitoring-panel .research-kpis strong{overflow-wrap:anywhere}
+.platform-status .platform-result p{overflow-wrap:anywhere}

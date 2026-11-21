@@ -25,7 +25,7 @@ import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
 import { renderInvestigation, investigationPayload,canReviewInvestigation } from '../apps/web/investigation-lab.mjs';
 import {renderInbox,validateInbox} from '../apps/web/review-inbox.mjs';
-import {renderPlatform} from '../apps/web/platform-status.mjs';
+import {renderPlatform,rollbackExport} from '../apps/web/platform-status.mjs';
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring,validateMonitoring,monitoringView,monitoringExport} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';
@@ -189,7 +189,7 @@ test('route segmentation proxy is a fixed authenticated read-only route',async t
 test('rollback receipt stays separate from live release qualification and escapes revisions',()=>{
   const data={production_ready:false,recovery:{recorded:false,production_qualified:false},rollback_drill:{recorded:true,production_qualified:false,flight_records:100,checked_at:'2026-11-20',candidate_revision:'<script>',rollback_revision:'previous'}};
   const html=renderPlatform(data);
-  assert.match(html,/Isolated application rollback drill passed/);
+  assert.match(html,/Isolated application rollback drill recorded/);
   assert.match(html,/main deployment was not rolled back/);
   assert.match(html,/&lt;script&gt;/);
   assert.throws(()=>renderPlatform({...data,rollback_drill:{...data.rollback_drill,production_qualified:true}}));
@@ -692,4 +692,24 @@ test('monitoring expires without a new response and rejects future or replayed h
 test('monitoring diagnostic export preserves unknown scope and contains only aggregate evidence',()=>{
  const r=monitoringFixture(),receipt=monitoringExport(r,91,Date.parse(r.checked_at));assert.equal(receipt.format,'ain-monitoring-diagnostic-v1');assert.equal(receipt.observation.state,'unknown');assert.deepEqual(receipt.observation.components,{});assert.equal(receipt.external_alert_delivery,false);assert.equal(receipt.production_ready,false);assert.equal(receipt.observation.request_counts['2xx'],r.request_counts['2xx']);
  assert.ok(!JSON.stringify(receipt).includes('password'));assert.throws(()=>monitoringExport({...r,user_token:'private'}));
+});
+function rollbackFixture(){return {production_ready:false,release_revision:'a'.repeat(40),schema_version:7,recovery:{recorded:false,production_qualified:false},rollback_drill:{recorded:true,production_qualified:false,flight_records:100,checked_at:'2026-11-21T00:00:00Z',candidate_revision:'a'.repeat(40),rollback_revision:'b'.repeat(40),binding:{relation:'matches_current_candidate',candidate_matches_current_build:true,current_revision:'a'.repeat(40),schema_matches:true,state_contracts_match:true}}};}
+test('rollback binding distinguishes current, historical and incompatible evidence',()=>{
+ const value=rollbackFixture();assert.match(renderPlatform(value),/matches this source build/);
+ for(const relation of ['different_release','schema_mismatch','contract_mismatch','unverified_build','unavailable_contracts','legacy_unbound']){
+  const data=structuredClone(value);data.rollback_drill.binding.relation=relation;data.rollback_drill.binding.candidate_matches_current_build=false;
+  assert.doesNotMatch(renderPlatform(data),/Recorded drill matches this source build/);
+ }
+ delete value.rollback_drill.binding;assert.match(renderPlatform(value),/Historical receipt/);
+});
+test('rollback renderer rejects falsely matched evidence',()=>{
+ for(const change of [b=>b.current_revision='b'.repeat(40),b=>b.schema_matches=false,b=>b.state_contracts_match=false,b=>b.candidate_matches_current_build=false,b=>b.relation='invented']){
+  const value=rollbackFixture();change(value.rollback_drill.binding);assert.throws(()=>renderPlatform(value));
+ }
+});
+test('rollback export excludes private fields and preserves limited scope',()=>{
+ const data=rollbackFixture();data.rollback_drill.password_hash='DO-NOT-EXPOSE';data.rollback_drill.binding.private_path='DO-NOT-EXPOSE';
+ const value=rollbackExport(data);assert.equal(value.production_qualified,false);assert.equal(value.rollback_drill.binding.candidate_matches_current_build,true);
+ assert.doesNotMatch(JSON.stringify(value),/DO-NOT-EXPOSE/);assert.match(value.scope,/selected checks only/);
+ assert.throws(()=>rollbackExport({...data,rollback_drill:{recorded:false}}));
 });

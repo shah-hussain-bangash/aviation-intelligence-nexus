@@ -8,7 +8,7 @@ from infra.releases import CONTRACTS, PROJECT, compatible, drill, override_docum
 from infra.status import rollback_drill_status
 
 
-def release(version='candidate', byte='a'):
+def release(version='a' * 40, byte='a'):
     return {'format': 'ain-local-release-v1', 'schema_version': 7, 'source_revision': version,
             'images': {'api': 'sha256:' + byte * 64, 'web': 'sha256:' + byte * 64},
             'contracts': {key: 'f' * 64 for key in CONTRACTS}}
@@ -28,7 +28,7 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaises(ValueError): validate_release(bad)
 
     def test_schema_contract_changes_or_active_jobs_block_rollback(self):
-        current, target = release(), release('previous', 'b')
+        current, target = release(), release('b' * 40, 'b')
         compatible(current, target, facts())
         for state in [{**facts(), 'active_jobs': 1}, {**facts(), 'schema_version': 8}]:
             with self.assertRaises(ValueError): compatible(current, target, state)
@@ -49,7 +49,7 @@ class ReleaseTests(unittest.TestCase):
             with self.assertRaises(ValueError): deployed_images(PROJECT)
 
     def run_drill(self, states, switching=None):
-        current, target = release(), release('previous', 'b')
+        current, target = release(), release('b' * 40, 'b')
         patches = [patch('infra.releases.inspect_release', side_effect=[current, target]),
                    patch('infra.releases.deployed_images', return_value=current['images']),
                    patch('infra.releases.verify', return_value={'passed': True}),
@@ -68,7 +68,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotIn('DO-NOT-EXPOSE', json.dumps(result))
 
     def test_failed_target_health_attempts_candidate_recovery(self):
-        current, target = release(), release('previous', 'b')
+        current, target = release(), release('b' * 40, 'b')
         with patch('infra.releases.inspect_release', side_effect=[current, target]), patch('infra.releases.deployed_images', return_value=current['images']), patch('infra.releases.verify', return_value={'passed': True}), patch('infra.releases.state_facts', return_value=facts()), patch('infra.releases.switch', side_effect=[RuntimeError('target unhealthy'), {}]) as switch:
             with self.assertRaises(RuntimeError): drill(current, target)
             self.assertEqual(switch.call_count, 2)

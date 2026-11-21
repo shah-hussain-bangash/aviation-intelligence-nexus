@@ -23,7 +23,8 @@ Capture the existing main version before building a candidate:
 ```powershell
 python -m infra.releases capture --output .local/releases/prior.json
 $env:AIN_RELEASE_TAG = 'rollback-candidate'
-$env:AIN_RELEASE_REVISION = 'rollback-working-tree'
+$env:AIN_RELEASE_REVISION = (git rev-parse HEAD).Trim()
+# Use a clean, reviewed committed candidate distinct from the captured prior version.
 docker compose build api web
 $api = (docker image inspect ain-api:rollback-candidate | ConvertFrom-Json).Id
 $web = (docker image inspect ain-web:rollback-candidate | ConvertFrom-Json).Id
@@ -58,3 +59,5 @@ The isolated worker is disabled, so this drill does not establish worker recover
 Later scoped-route agent changes alter protected runtime contracts. Older captured manifests may now be rejected by compatibility checks; this historical drill does not qualify rollback of that newer release. Review and re-drill the exact intended pair before claiming compatibility.
 
 Synthetic gate review extends protected compatibility contracts to optimization/gates.py, optimization/history.py and optimization/reviews.py. Older manifests with the previous contract set are rejected. This preserves conservative compatibility checks; the historical drill does not qualify this new release. See GATE_PROPOSAL_REVIEW.md.
+
+Current receipt binding and operator-only publication are described in [Rollback build evidence](ROLLBACK_BUILD_EVIDENCE.md). Version-2 drills require full committed source revisions. The measured report linked above remains historical; newer runtime receipts are retained outside Git and checked against the running candidate.

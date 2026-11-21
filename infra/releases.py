@@ -9,11 +9,10 @@ import subprocess
 from infra.recovery import private_target
 from infra.verify_deployment import compose, verify
 from services.api.paths import ROOT
+from infra.state_contracts import CONTRACTS, contract_digest
 
 PROJECT = 'ain-rollback-drill'
 PORT = 8091
-CONTRACTS = ('services/api/paths.py', 'services/api/prediction.py', 'agents/jobs.py',
-             'agents/store.py', 'agents/runtime.py', 'optimization/history.py', 'optimization/reviews.py', 'optimization/gates.py', 'rag/index.py', 'infra/recovery.py')
 OVERRIDE = ROOT / '.local/releases/rollback-drill.override.json'
 
 
@@ -136,6 +135,8 @@ print(json.dumps({**facts,'active_jobs':active,'account_fingerprint':hashlib.sha
 
 
 def drill(current, target):
+    if any(not re.fullmatch('[0-9a-f]{40}', release.get('source_revision', '')) for release in (current, target)):
+        raise ValueError('Drill requires full committed source revisions')
     # Verify retained local images still match captured source/state contract records.
     for release in (current, target):
         actual = inspect_release(release['images'])
@@ -162,7 +163,8 @@ def drill(current, target):
     preserved = before == after
     if not rolled_back or not preserved:
         raise RuntimeError('Drill did not preserve the recorded state')
-    return {'format': 'ain-rollback-drill-v1', 'checked_at': timestamp(),
+    return {'format': 'ain-rollback-drill-v2', 'checked_at': timestamp(),
+        'contracts_sha256': contract_digest(current['contracts']),
         'scope': 'Separate restored local volume; main deployment not changed by this drill',
         'candidate_revision': current['source_revision'], 'rollback_revision': target['source_revision'],
         'candidate_images': current['images'], 'rollback_images': target['images'],

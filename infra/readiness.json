@@ -645,18 +645,26 @@
         "P17",
         "P19"
       ],
-      "local_progress": "A pinned application-image rollback and return-to-candidate drill passed on a separate restored volume, with health, row-count, account, artifact and prediction checks.",
-      "remaining": "Database downgrade, model/prompt rollback, independent production release/failover and zero-downtime compatibility qualification remain outstanding. New scoped-route runtime contracts require fresh compatibility review; the earlier drill is historical.",
+      "local_progress": "A historical isolated pinned-image rollback drill is retained. The dashboard now binds version-2 runtime receipts to the current source build, verified schema and ten selected state contracts, with explicit historical/mismatch states and a sanitized export. An operator publisher rejects receipts for another deployed image pair.",
+      "remaining": "A current candidate requires its own completed runtime drill receipt; a past source report cannot qualify later builds. Database downgrade, model/prompt rollback, independent production release/failover and zero-downtime compatibility qualification remain outstanding.",
       "acceptance": "Demonstrated rollback preserves acceptable integrity and availability.",
       "production_accepted": false,
       "evidence": [
         {
           "path": "docs/LOCAL_RELEASE_ROLLBACK.md",
-          "sha256": "8ed5d7c63f72012ecd13c5ca740ed14aa5fa0880d8f274c1f1a8cf7a066994c9"
+          "sha256": "8490bc97ca62b8ac50035d303a8517192e909bdd91eaf8d53d003d746e4212c2"
         },
         {
           "path": "docs/reports/Local_Release_Rollback.json",
           "sha256": "1b953b547668b97e27afd8870c74ca3b03d6f2c96d4bc20f4fc276ef182d2322"
+        },
+        {
+          "path": "docs/ROLLBACK_BUILD_EVIDENCE.md",
+          "sha256": "a6740f787b40ee5ab82c6d87f7b6e1405b68274a4a5492c9caa3c4af1e7776ec"
+        },
+        {
+          "path": "docs/reports/Rollback_Binding_Browser.json",
+          "sha256": "e1a9276aa69ae9d43e151483c7a27e3b85d445f5d66f3549cf0f13acf3188dee"
         }
       ]
     },

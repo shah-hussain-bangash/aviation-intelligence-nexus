@@ -590,7 +590,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             'active_model_verified':read_model_report(research_model_directory) is not None,
             'ai_models_present':ai_models_present,'recovery':restore_status(database.parent),
             'encrypted_backup_drill':encrypted_drill_status(database.parent),
-            'rollback_drill':rollback_drill_status(database.parent),
+            'rollback_drill':rollback_drill_status(database.parent, schema_version=SCHEMA_VERSION if database_ready else None),
             'production_ready':False,'limitations':['Local deployment and recorded recovery checks do not establish production qualification.',
                 'No managed TLS, cloud monitoring, protected backup storage or high-availability worker service is configured.']}
 

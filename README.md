@@ -132,3 +132,5 @@ Workflow visibility: [Investigation operations](docs/AGENT_OPERATIONS.md) provid
 Proposal review: [Synthetic gate research decisions](docs/GATE_PROPOSAL_REVIEW.md) bind a review to an exact saved proposal with expiry, replay and conflict checks.
 
 Data evidence: [Data quality and lineage](docs/DATA_QUALITY_LINEAGE.md) records full-release structural checks, exclusions and import/population reconciliation.
+
+Release evidence: [Build-bound rollback receipts](docs/ROLLBACK_BUILD_EVIDENCE.md) distinguish the running candidate from historical drills and expose a sanitized evidence export.
