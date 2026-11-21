@@ -1,0 +1,122 @@
+{
+  "format": "aviation-case-study-evidence-review",
+  "version": 1,
+  "review_date": "2026-11-21",
+  "timezone": "Asia/Dubai",
+  "repository": "zenithdevelopers7-source/aviation-intelligence-nexus",
+  "source_commit": "c994c8f136156fd49f8e0c19ea85f21e3ada3757",
+  "method": "Inspection of repository source, protocols, recorded aggregate experiments, component previews and current hosted job logs; independent arithmetic recomputation from the published May confusion matrix",
+  "hosted_run": {
+    "id": 44885389229,
+    "url": "https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/actions/runs/44885389229",
+    "head_sha": "c994c8f136156fd49f8e0c19ea85f21e3ada3757",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Python tests (windows-latest)",
+        "id": 136789445924,
+        "conclusion": "success",
+        "tests_run": 286,
+        "passed": 286,
+        "skipped": 0
+      },
+      {
+        "name": "Python tests (ubuntu-latest)",
+        "id": 136789445685,
+        "conclusion": "success",
+        "tests_run": 286,
+        "passed": 285,
+        "skipped": 1,
+        "skip_reason": "Windows CurrentUser DPAPI provider"
+      },
+      {
+        "name": "validate",
+        "id": 136789445943,
+        "conclusion": "success",
+        "node_tests_passed": 90,
+        "source_files_checked": 304,
+        "browser_journeys_claimed": false
+      },
+      {
+        "name": "Container smoke checks",
+        "id": 136789445903,
+        "conclusion": "success",
+        "checks": [
+          "Build and startup",
+          "Deployment health/isolation",
+          "Packaged route report integrity",
+          "Bounded anonymous HTTP correctness/latency checks",
+          "API restart and repeated deployment check"
+        ],
+        "full_data_restore_or_live_ollama_reproduction": false
+      }
+    ],
+    "operating_system_python_suites_overlap": true
+  },
+  "recorded_experiments_not_rerun": {
+    "source_flights": 2835101,
+    "eligible_arrivals": 2786350,
+    "classification": {
+      "source_report": "docs/reports/Delay_v2.json",
+      "source_blob_sha": "ec244f6abd85627943ef2d1d21164720e557c3fd",
+      "training_records": 1611046,
+      "validation_records": 577730,
+      "test_records": 597574,
+      "threshold": 0.17,
+      "research_gate_passed": true,
+      "operational_serving_approved": false
+    },
+    "duration": {
+      "research_gate_passed": false,
+      "april_rmse_improvement_percent": 0.4694,
+      "may_rmse_improvement_percent": 0.8946,
+      "inference_deployed": false,
+      "source": "docs/DELAY_DURATION_REGRESSION.md"
+    },
+    "agent": {
+      "source": "docs/reports/Route_Agent_Integration.json",
+      "actual_local_model_execution_is_recorded": true,
+      "mechanical_check_pass_does_not_establish_semantic_acceptance": true,
+      "operational_approval": false
+    },
+    "recovery": {
+      "recorded_full_dataset_restore": true,
+      "source": "docs/reports/Encrypted_Recovery.json",
+      "off_site_key_recovery_qualified": false,
+      "current_candidate_rollback_inferred_from_historical_receipt": false
+    }
+  },
+  "independent_arithmetic": {
+    "records": 597574,
+    "precision": 0.3021573387913937,
+    "recall": 0.742119145194912,
+    "f1": 0.4294585761852301,
+    "accuracy": 0.534613286387962,
+    "alert_rate": 0.579675487889366,
+    "always_on_time_accuracy": 0.7639823687108207,
+    "log_loss_reduction_percent": 4.5257774492977525
+  },
+  "image_review": {
+    "source_path": "docs/images/route-history.png",
+    "source_blob_sha": "5479b663166cc9724cb25265f39a171565c53058",
+    "case_study_path": "assets/aviation-route-history.png",
+    "visually_inspected": true,
+    "kind": "repository component preview with actual public aggregate evidence and synthetic preview transport",
+    "real_user_session": false,
+    "live_flight_feed": false,
+    "new_live_capture_claimed": false
+  },
+  "local_repository_check": {
+    "command": "npm run check",
+    "completed": false,
+    "reason": "Available local source directory lacked Git metadata required by repository-guards.mjs",
+    "current_hosted_source_check_passed": true
+  },
+  "boundaries": [
+    "No raw datasets, private accounts or model artifacts included",
+    "Training, scoring, actual-model runs and full-data recovery were not rerun for this document",
+    "All 24 production requirements remain open",
+    "No UAE airline transfer, safety/operational approval or independent security qualification",
+    "Unsigned review record; not a trusted attestation"
+  ]
+}

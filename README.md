@@ -1,5 +1,7 @@
 # Aviation Intelligence Nexus
 
+**Featured case study:** [Aviation Intelligence Nexus Case Study — evidence-led research, bounded AI investigations and verifiable recovery](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md). Explore temporal model evaluation, a retained negative experiment, constrained gate optimization, local RAG, research review, security, current CI and build-bound recovery evidence.
+
 An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
 
 **Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. A local Docker release and measured restoration are implemented; managed production identity and cloud deployment remain incomplete.**

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+<title id="title">Aviation Intelligence Nexus architecture and research evidence</title>
+<desc id="desc">Historical data supports frozen model experiments, scoped AI research and recoverable local state. The recorded dataset has 2,835,101 source flights. May delay-classifier ROC-AUC is 0.6506, while its chosen threshold has a high false-alert burden. A separate duration-regression experiment failed its research gate. Four current hosted CI jobs succeeded. All 24 production requirements remain open.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101c2e"/><stop offset="1" stop-color="#243448"/></linearGradient><linearGradient id="stripe"><stop stop-color="#d5ae67"/><stop offset="1" stop-color="#c94157"/></linearGradient><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#d2b47c" stroke-width="1.4"/></marker><style>text{font-family:Segoe UI,Arial,sans-serif}.label{fill:#c7b28e;font-size:16px;font-weight:600;letter-spacing:2px}.body{fill:#d5dbe4;font-size:18px}.node{fill:#293a4e;stroke:#6a7482;stroke-width:1.5}.head{fill:#fff8ec;font-weight:600;font-size:23px}.small{fill:#c5cdd9;font-size:16px}.line{fill:none;stroke:#d2b47c;stroke-width:2;marker-end:url(#arrow)}</style></defs>
+<rect width="1440" height="960" rx="24" fill="url(#bg)"/>
+<rect x="56" y="54" width="82" height="5" rx="2" fill="url(#stripe)"/>
+<text x="56" y="94" class="label">AVIATION RESEARCH AND ENTERPRISE ENGINEERING / CASE STUDY</text>
+<text x="56" y="158" fill="#fff8ec" font-size="49" font-weight="700">Aviation Intelligence Nexus</text>
+<text x="56" y="206" class="body" font-size="24">From historical observations to reviewable research decisions.</text>
+<rect x="56" y="236" width="426" height="32" rx="16" fill="#41404a"/><text x="75" y="258" fill="#efdcba" font-size="14" font-weight="600">HISTORICAL RESEARCH / NO OPERATIONAL AUTHORITY</text>
+<text x="56" y="318" class="label">PRESERVE EVIDENCE ACROSS THE RESEARCH LIFECYCLE</text>
+<rect class="node" x="56" y="344" width="300" height="164" rx="15"/><text x="78" y="378" fill="#e2bd7d" font-size="15" font-weight="600">01</text><text x="78" y="416" class="head">Data evidence</text><text x="78" y="452" class="body">Lineage and cohort accounting</text><text x="78" y="480" class="body">Chronological evaluation splits</text>
+<path class="line" d="M359 425H384"/>
+<rect class="node" x="394" y="344" width="300" height="164" rx="15"/><text x="416" y="378" fill="#e2bd7d" font-size="15" font-weight="600">02</text><text x="416" y="416" class="head">Model judgment</text><text x="416" y="452" class="body">Protocol and artifact identity</text><text x="416" y="480" class="body">Passed and failed experiments</text>
+<path class="line" d="M697 425H722"/>
+<rect class="node" x="732" y="344" width="300" height="164" rx="15"/><text x="754" y="378" fill="#e2bd7d" font-size="15" font-weight="600">03</text><text x="754" y="416" class="head">Agent quality</text><text x="754" y="452" class="body">Scoped tools and source quotes</text><text x="754" y="480" class="body">Report-bound research review</text>
+<path class="line" d="M1035 425H1060"/>
+<rect class="node" x="1070" y="344" width="314" height="164" rx="15"/><text x="1092" y="378" fill="#e2bd7d" font-size="15" font-weight="600">04</text><text x="1092" y="416" class="head">Recoverable state</text><text x="1092" y="452" class="body">Fresh-target restore checks</text><text x="1092" y="480" class="body">Candidate-bound rollback</text>
+<rect x="56" y="534" width="1328" height="100" rx="14" fill="#19283a" stroke="#6a7482"/>
+<text x="80" y="568" class="label">A RESEARCH GATE IS NOT AN AIRLINE APPROVAL</text><text x="80" y="604" class="body">Inspect false alerts, severe-delay errors, source relevance and the actual scope of each recovery drill.</text>
+<text x="56" y="686" class="label">SOURCE AND INSPECTED EVIDENCE / 21 NOVEMBER 2026 / c994c8f</text>
+<text x="56" y="740" fill="#fff8ec" font-size="35" font-weight="700">2,835,101</text><text x="56" y="772" class="small">Recorded January–May source flights</text>
+<text x="516" y="740" fill="#fff8ec" font-size="35" font-weight="700">0.6506</text><text x="516" y="772" class="small">May ROC-AUC / threshold precision 30.22%</text>
+<text x="1056" y="740" fill="#fff8ec" font-size="35" font-weight="700">4 CI jobs passed</text><text x="1056" y="772" class="small">Windows · Linux · web · containers</text>
+<path d="M56 811H1384" stroke="#5b6778"/>
+<text x="56" y="846" class="small">Duration-regression research gate failed; negative result preserved and duration inference not deployed.</text>
+<text x="56" y="878" class="small">All 24 production requirements remain open. Historical US results do not establish UAE airline suitability.</text>
+<text x="56" y="923" fill="#abb9cb" font-size="15">MEASURED LOCAL RESEARCH / SOURCE-PINNED RECORDS · No live aviation feed, dispatch or airline-operation approval.</text>
+</svg>
