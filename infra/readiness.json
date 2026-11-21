@@ -344,7 +344,7 @@
       "name": "Authentication",
       "owner_role": "Identity engineering",
       "dependencies": [],
-      "local_progress": "Local Argon2 password accounts, expiring sessions and revocation are implemented.",
+      "local_progress": "Local Argon2 password accounts, expiring sessions and revocation are implemented. Private self-session observations and explicit revocation of other sessions recheck current authority transactionally and preserve the current expiry and other accounts.",
       "remaining": "Managed user/service identity, MFA, lifecycle ownership and HTTPS deployment remain outstanding.",
       "acceptance": "Identity lifecycle, session expiry and revocation tests pass.",
       "production_accepted": false,
@@ -352,6 +352,14 @@
         {
           "path": "docs/LOCAL_IDENTITY.md",
           "sha256": "6d0ee880a54ed96865e06a23bd784ab8935ad780cfd11cabcb2220ef4d14a0f7"
+        },
+        {
+          "path": "docs/ACCOUNT_SECURITY.md",
+          "sha256": "cced4edffd290c5f6cc514000f9cb9ae2b27b30cce198a0e09259f3fd304ad03"
+        },
+        {
+          "path": "docs/reports/Account_Security_Browser.json",
+          "sha256": "085bf1c7c77112ae0a25fd39d19e80d00ac19edb24b3a3d4a9c4537359b8c1a7"
         }
       ]
     },
@@ -362,7 +370,7 @@
       "dependencies": [
         "P12"
       ],
-      "local_progress": "Server-enforced admin/researcher/viewer roles and owner-scoped research records have negative tests.",
+      "local_progress": "Server-enforced admin/researcher/viewer roles and owner-scoped research records have negative tests. Private self-session observations and explicit revocation of other sessions recheck current authority transactionally and preserve the current expiry and other accounts.",
       "remaining": "Applicable tenant isolation, purpose policy and separation-of-duties acceptance remain outstanding.",
       "acceptance": "Negative tests prove unauthorized requests and retrieval are denied.",
       "production_accepted": false,
@@ -370,6 +378,14 @@
         {
           "path": "docs/LOCAL_IDENTITY.md",
           "sha256": "6d0ee880a54ed96865e06a23bd784ab8935ad780cfd11cabcb2220ef4d14a0f7"
+        },
+        {
+          "path": "docs/ACCOUNT_SECURITY.md",
+          "sha256": "cced4edffd290c5f6cc514000f9cb9ae2b27b30cce198a0e09259f3fd304ad03"
+        },
+        {
+          "path": "docs/reports/Account_Security_Browser.json",
+          "sha256": "085bf1c7c77112ae0a25fd39d19e80d00ac19edb24b3a3d4a9c4537359b8c1a7"
         }
       ]
     },
@@ -596,7 +612,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "2da120da55feb8cc4d6830147b2a09db47eecd3ea968db842478aaa882cc47a0"
+          "sha256": "25cba7428204817e432ddbe9c67bb66ef1f3aa528895ac26751379748647674a"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

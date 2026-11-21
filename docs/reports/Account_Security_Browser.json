@@ -1,0 +1,88 @@
+{
+  "scope": "Isolated account-security component with simulated session transport; no real account/session mutation",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "checks": {
+        "confirmation_required": true,
+        "confirmation_enables": true,
+        "receipt": true,
+        "duplicate_disabled": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Mobile_390",
+      "checks": {
+        "confirmation_required": true,
+        "confirmation_enables": true,
+        "receipt": true,
+        "duplicate_disabled": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 390
+    },
+    {
+      "scenario": "Viewer",
+      "checks": {
+        "confirmation_required": true,
+        "confirmation_enables": true,
+        "receipt": true,
+        "duplicate_disabled": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "No_Other",
+      "checks": {
+        "confirmation_required": true,
+        "no_other_sessions": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Stale",
+      "checks": {
+        "stale_withheld": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Lost_Acknowledgment",
+      "checks": {
+        "confirmation_required": true,
+        "confirmation_enables": true,
+        "unknown_clears": true,
+        "reconciled_without_repeating": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Missing_Receipt",
+      "checks": {
+        "confirmation_required": true,
+        "confirmation_enables": true,
+        "unknown_clears": true,
+        "reconciled_without_repeating": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    },
+    {
+      "scenario": "Session_Clear",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1280
+    }
+  ],
+  "production_ready": false,
+  "checked_on": "2026-11-21",
+  "passed": true
+}

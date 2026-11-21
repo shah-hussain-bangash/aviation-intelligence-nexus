@@ -1,5 +1,6 @@
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
+import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {renderArchive} from '../apps/web/agent-archive.mjs';
 import {gateReviewEligible,renderGateReview} from '../apps/web/gate-review.mjs';
 import {validateOperations,renderOperations} from '../apps/web/agent-operations.mjs';
@@ -27,6 +28,21 @@ import {renderRouteHistory,validateRouteHistory} from '../apps/web/route-history
 
 const routeHistoryFixture=()=>JSON.parse(fs.readFileSync(new URL('../docs/reports/Route_History_Lookup.json',import.meta.url),'utf8')).example;
 const archiveFixture=()=>({runs:[{run_id:'00000000-0000-4000-8000-000000000001',actor:'fixture-owner',objective:'Review saved <script> evidence.',state:'cancelled',created_at:'2026-11-21T00:00:00Z',updated_at:'2026-11-21T00:00:00Z'}],through:'9223372036854775807',next_before:null,page_size:10,order:'newest_created_first',search_scope:'objective_literal_ascii_case_insensitive',research_only:true,operational_approval:false});
+const securityFixture=()=>({active_sessions:3,other_active_sessions:2,checked_at:'2026-11-21T10:00:00Z',current_expires_at:'2026-11-21T18:00:00Z',scope:'current_account_local_sessions',production_ready:false});
+test('security counts and receipts preserve current-session scope and require fresh consistent observations',()=>{
+ const data=securityFixture(),now=Date.parse(data.checked_at);assert.match(renderSecurity(data,now),/Other active sessions/);assert.throws(()=>validateSecurity({...data,other_active_sessions:3},now));assert.throws(()=>validateSecurity(data,now+90001));assert.throws(()=>validateSecurity(data,now-5001));assert.throws(()=>validateSecurity({...data,current_expires_at:data.checked_at},now));
+ const receipt={...data,active_sessions:1,other_active_sessions:0,revoked_other_sessions:2,current_session_preserved:true};assert.match(renderSecurity(receipt,now),/2 other active sessions signed out/);assert.throws(()=>validateSecurity({...receipt,current_session_preserved:false},now));assert.throws(()=>validateSecurity(data,now,true));
+});
+test('security rejects untrusted scope and renders only validated numbers and dates',()=>{
+ const data=securityFixture(),now=Date.parse(data.checked_at);assert.throws(()=>renderSecurity({...data,active_sessions:'<script>'},now));assert.throws(()=>renderSecurity({...data,current_expires_at:'<script>'},now));assert.throws(()=>renderSecurity({...data,scope:'all_accounts'},now));assert.throws(()=>renderSecurity({...data,production_ready:true},now));
+ assert.doesNotMatch(renderSecurity({...data,unexpected:'<script>'},now),/<script>/);
+});
+test('security proxy forwards only fixed self-session endpoints with scoped cookie and CSRF',async t=>{
+ const backend=await serve(t,async(req,res)=>{assert.equal(req.headers.cookie,'ain_session=fixture');if(req.method==='POST'){assert.equal(req.url,'/api/v1/auth/revoke-other-sessions');assert.equal(req.headers['x-csrf-token'],'fixture-csrf');let body='';for await(const c of req)body+=c;assert.equal(body,'{"acknowledged":true}');}else assert.equal(req.url,'/api/v1/auth/security');res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,backend)){res.writeHead(404);res.end();}});const base=`http://127.0.0.1:${frontend}`,headers={Cookie:'ain_session=fixture; unrelated=secret','Content-Type':'application/json','X-CSRF-Token':'fixture-csrf'};
+ assert.equal((await fetch(base+'/api/v1/auth/security',{headers})).status,200);assert.equal((await fetch(base+'/api/v1/auth/revoke-other-sessions',{method:'POST',headers,body:'{"acknowledged":true}'})).status,200);
+ assert.equal((await fetch(base+'/api/v1/auth/security?user_id=other')).status,422);assert.equal((await fetch(base+'/api/v1/auth/security',{method:'POST'})).status,405);assert.equal((await fetch(base+'/api/v1/auth/revoke-other-sessions')).status,405);
+});
 test('archive canonical queries preserve literal search and exact 64-bit cursor strings',()=>{
  const q=archiveQuery(new URLSearchParams({q:' %_ 航空 ',state:'failed',before:'9223372036854775806',through:'9223372036854775807'}));assert.equal(q.get('q'),'%_ 航空');assert.equal(q.get('before'),'9223372036854775806');
  for(const query of ['q=a&q=b','before=1','through=9223372036854775808','state=approved','url=private','q='+('x'.repeat(121))])assert.throws(()=>archiveQuery(new URLSearchParams(query)));

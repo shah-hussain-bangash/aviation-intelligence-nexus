@@ -48,6 +48,7 @@ export function mountAuth(parent,onChange) {
     <button class="btn" type="submit">Sign in</button></form>
     <button class="btn sm" type="button" data-auth-refresh>Check account setup</button>
     <button class="btn sm" type="button" data-auth-logout hidden>Sign out</button>
+    <a class="btn sm" href="#account-security" data-auth-security hidden>Account security</a>
     <p class="auth-enrollment" hidden>First account setup is required. In the project terminal, run <code>python -m services.api.manage_users create --username shah --role admin</code>, choose your password privately, then select Check account setup.</p>
     <div class="auth-panel-footer"><span class="auth-footer-line"></span><p>Independent aviation portfolio.<br>Not affiliated with or endorsed by Emirates.</p><span>Thoughtfully built for the future of aviation.</span></div>
     </div></div>`;
@@ -63,6 +64,7 @@ export function mountAuth(parent,onChange) {
     card.querySelector('#authHeading').textContent=user ? 'Research account' : 'Welcome back';
     card.querySelector('.auth-intro').textContent=user ? 'Your account permissions control connected research services.' : 'Sign in to explore your aviation intelligence workspace.';
     form.hidden=!!user; logout.hidden=!user;
+    card.querySelector('[data-auth-security]').hidden=!user;
     status.textContent=user ? `Signed in as ${user.username} · ${user.role}. Sessions expire after eight hours.` : 'Sign in to access connected research services.';
     onChange(user || null);
   };

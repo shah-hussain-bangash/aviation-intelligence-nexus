@@ -1,0 +1,21 @@
+# Account session controls
+
+Signed-in users now have an **Account security** link beside Sign out. The panel shows active sessions for the current account, the number of other active sessions and this session's unchanged expiry time in UTC. Refresh performs an observation only. No password, cookie, session ID, hash, IP address, user agent or other account is returned by the security endpoints.
+
+To sign out other active sessions, first refresh the status, then explicitly select the confirmation checkbox and submit. The current session remains valid with its original expiry; the password, role, account records and saved research histories are unchanged. Researchers, viewers and admins all have the same self-service control. Admin status does not allow selecting another account through these endpoints. Session counts are not device counts; multiple sessions can belong to one browser or computer.
+
+## API and transaction boundary
+
+`GET /api/v1/auth/security` observes the current account through a read-only SQLite connection and read transaction. `POST /api/v1/auth/revoke-other-sessions` requires the exact body `{"acknowledged":true}`, authentication, an accepted Origin and the existing CSRF token. Extra body fields, non-boolean/false acknowledgments and query parameters are rejected. The fixed proxy forwards only the configured session cookie and necessary CSRF header.
+
+The write transaction rechecks the cookie's hashed session lookup, expiry and active account after acquiring the SQLite write lock. It deletes only other unexpired sessions for that same account. A session revoked, expired or disabled between middleware and the transaction cannot delete sessions. Foreign accounts remain untouched. Concurrent identical requests serialize and return the number actually deleted; a retry can truthfully return zero. The current session's expiry is never extended. A legitimate sign-in after the transaction can create a new session, so the receipt is not a guarantee that the account will continue to have exactly one session.
+
+The response contains counts, observation/expiry timestamps, fixed scope flags and, for a successful write, `revoked_other_sessions` and `current_session_preserved=true`. It never contains the credential or session identifier used to select the account. Ordinary counts are not proof that any particular device was disconnected. Deleting sessions affects subsequent API authorization; it does not cancel already-running requests or background investigations. The existing investigation stop control remains separate.
+
+Both connections require an existing database (`mode=ro` or `mode=rw`); missing state is not silently created. A 250ms busy timeout and cooperative three-second SQLite/processing budget bound normal local contention. Exceptions before commit roll the transaction back. A connection or response failure may leave the browser unable to confirm the outcome; it clears old counts and offers refresh instead of claiming success. Only a fresh, internally consistent write receipt confirms a sign-out in the UI. Stale observations after 90 seconds, expired sessions, invalid counts/timestamps and late responses after account changes are withheld.
+
+## Verification and limits
+
+Seven Python tests cover private observations, exclusion of expired/foreign sessions, preservation of password/current expiry/foreign sessions, concurrent retries, invalid current sessions, missing/busy/deadline rollback behavior, authenticated viewer self-service, Origin/CSRF and strict confirmation, and sanitized errors. Three Node tests verify scope/freshness/receipt validation and fixed proxy behavior. Eight isolated browser scenarios cover desktop, 390px mobile, viewer use, no other sessions, stale status, a lost acknowledgment, a missing receipt and session clearing. These browser transports and accounts are simulated; no real user's sessions were revoked to test this feature. The public browser receipt is `reports/Account_Security_Browser.json`.
+
+This adds bounded local session lifecycle controls. It does not implement password change/reset, MFA, managed identity, device attribution, protected audit history, external notifications, HTTPS deployment or production acceptance. A person who has the password can sign in again. All 24 production requirements remain open.

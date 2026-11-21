@@ -1,4 +1,5 @@
 import {mountQuality} from './data-quality.mjs';
+import {mountSecurity} from './account-security.mjs';
 import {mountOperations} from './agent-operations.mjs';
 import {mountExplanations} from './model-explanations.mjs';
 import {mountDiagnostics} from './model-diagnostics.mjs';
@@ -67,6 +68,7 @@ if (typeof document !== 'undefined') {
     <div id="researchBody"><p>Checking the local backend…</p></div></div></details>`;
   document.getElementById('content').before(section);
   const readinessUI = mountReadiness(section.querySelector('.research-inner'));
+  const accountSecurityUI=mountSecurity(section);
   const quality = mountQuality(section.querySelector('.research-inner'));
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
   const explanations = mountExplanations(section.querySelector('.research-inner'));
@@ -109,6 +111,7 @@ if (typeof document !== 'undefined') {
   refresh.addEventListener('click', update);
   section.querySelector('details').hidden=true;
   mountAuth(section,user=>{
+    accountSecurityUI.setSession(user);
     gateLab.setSession(user);
     knowledgeLab.setSession(user);
     investigationLab.setSession(user);

@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Account security milestone: all signed-in roles can observe their own active session count/expiry and explicitly revoke other active sessions. Transactions recheck the current session and preserve its expiry, credentials and foreign accounts. Fresh write receipts, strict acknowledgment, role/CSRF/privacy and contention/rollback behavior are tested; eight isolated browser scenarios passed. Windows passes 285 tests (222 Python, 63 Node). No real user session was revoked for testing; production acceptance remains open. See `ACCOUNT_SECURITY.md`.
+
 Investigation archive milestone: an authenticated read-only metadata archive now searches literal objectives, filters states and pages beyond the latest ten records with owner checks and insertion boundaries. Older records reopen existing evidence/export/review controls. Seven new Python tests, three Node tests and six isolated desktop/mobile scenarios cover query, ownership, cursor, failure and session behavior. Windows passes 275 tests (215 Python, 60 Node). No production acceptance is claimed. See `INVESTIGATION_ARCHIVE.md`.
 
 Cooperative stop milestone: researchers/admins can request a running investigation to stop between bounded calls. Completed tool evidence and request metadata survive; accepted stops cannot publish a reviewable draft. One actual Qwen3 planner-stop/replay check and six isolated desktop/mobile control scenarios passed. Windows passes 265 tests (208 Python, 57 Node). Current calls are not forcibly interrupted; all production requirements remain open. See `COOPERATIVE_INVESTIGATION_STOP.md`.

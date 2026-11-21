@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse
 from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfScope
 from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
+from services.api.account_security import account_sessions, SessionInvalid
 from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
 from optimization.reviews import GateReview,ReviewConflict
@@ -51,6 +52,11 @@ class LoginInput(BaseModel):
 class CancelJob(BaseModel):
     model_config = ConfigDict(extra='forbid')
     run_id: UUID
+
+
+class RevokeSessions(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    acknowledged: bool=Field(strict=True)
 
 
 def connect(database: Path):
@@ -279,6 +285,20 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         response = JSONResponse({"authenticated": False})
         response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict")
         return response
+
+    @app.get('/api/v1/auth/security')
+    def account_security(request: Request):
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'unexpected_security_parameters'})
+        try:return account_sessions(database,request.cookies.get(COOKIE,''))
+        except SessionInvalid:return JSONResponse(status_code=401,content={'error':'sign_in_required'})
+        except (sqlite3.Error,OSError,TimeoutError,ValueError,TypeError,OverflowError):return JSONResponse(status_code=503,content={'error':'account_security_unavailable'})
+
+    @app.post('/api/v1/auth/revoke-other-sessions')
+    def revoke_other_sessions(confirmation: RevokeSessions,request: Request):
+        if request.query_params or not confirmation.acknowledged:return JSONResponse(status_code=422,content={'error':'explicit_confirmation_required'})
+        try:return account_sessions(database,request.cookies.get(COOKIE,''),revoke_others=True)
+        except SessionInvalid:return JSONResponse(status_code=401,content={'error':'sign_in_required'})
+        except (sqlite3.Error,OSError,TimeoutError,ValueError,TypeError,OverflowError):return JSONResponse(status_code=503,content={'error':'session_revocation_unconfirmed'})
 
     @app.get("/health/live")
     def live():
