@@ -6,4 +6,4 @@
 - Run `npm run check` after source changes. Use the local browser for meaningful UI changes.
 - Keep raw data, credentials, user documents and local databases out of Git.
 - For daily sync, follow `docs/GITHUB_SYNC.md`. Stage explicit reviewed paths, preserve user staging, and stop on conflicts or divergence. Never force-push or discard work.
-- Public repository destination is only `zenithdevelopers7-source/aviation-intelligence-nexus` unless the user explicitly changes it.
+- Public repository destination is only `shah-hussain-bangash/aviation-intelligence-nexus` unless the user explicitly changes it.

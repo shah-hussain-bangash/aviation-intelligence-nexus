@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -259,6 +259,14 @@
         {
           "path": "docs/reports/Knowledge_Demo.json",
           "sha256": "932897f86d02b6a186872c34277e54effe5458ed64c8a032c8f96f23419c3ded"
+        },
+        {
+          "path": "docs/RAG_RETRIEVAL_DIAGNOSTICS.md",
+          "sha256": "cdc79aeef1d5b7a910763580f68e18ca3f9999e19912f9643dd732c838efbaea"
+        },
+        {
+          "path": "docs/reports/Retrieval_Diagnostics.json",
+          "sha256": "eb8a40b32b0d30af8d1f2e7a8815fd220808f28bf53a019ef6d12258b6e0c57f"
         }
       ]
     },
@@ -716,7 +724,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "a83445ad79e08a0542a1b2686128374bf936ae8b1d309b0c17508788f98b0fd3"
+          "sha256": "0e7c2c1a9e256058669e23e59159c2f16b4fbbc8257f97059abc340ffb887541"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

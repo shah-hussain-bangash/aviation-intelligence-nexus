@@ -1,0 +1,216 @@
+{
+  "format": "ain-retrieval-cases-v1",
+  "scope": "Curated development diagnostics; labels authored from the current corpus before this run, not independent held-out evaluation.",
+  "cases": [
+    {
+      "id": "v2-splits",
+      "question": "How many eligible training validation and testing flights were used in the second delay experiment?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "1,611,046 training, 577,730 validation and 597,574 testing"
+        }
+      ]
+    },
+    {
+      "id": "v2-alerts",
+      "question": "How many false alerts were recorded in May at the selected second-model threshold?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "241,732 false alerts"
+        }
+      ]
+    },
+    {
+      "id": "v2-inputs",
+      "question": "Which calendar and flight identity features were dropped from the second delay model?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "Calendar month, exact day of month and flight number are dropped"
+        }
+      ]
+    },
+    {
+      "id": "v1-selection",
+      "question": "Which logistic regularization candidate was selected using February log loss?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "C=0.1 was selected."
+        }
+      ]
+    },
+    {
+      "id": "v1-auc",
+      "question": "What was the logistic baseline March ROC-AUC?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "ROC-AUC, higher is better | 0.5604"
+        }
+      ]
+    },
+    {
+      "id": "v1-rejection",
+      "question": "Why was the first logistic model rejected for actionable serving?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "probability quality is worse and the threshold creates too many alerts."
+        }
+      ]
+    },
+    {
+      "id": "import-count",
+      "question": "How many flights did the initial January BTS import contain?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "**539,747 flights**"
+        }
+      ]
+    },
+    {
+      "id": "import-null",
+      "question": "How does the importer store missing delay values?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "Missing delay values remain NULL."
+        }
+      ]
+    },
+    {
+      "id": "import-conflict",
+      "question": "What happens to the import transaction when natural flight identities conflict?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "conflicting identities abort the entire import transaction."
+        }
+      ]
+    },
+    {
+      "id": "dataset-clock",
+      "question": "How is BTS scheduled departure time 2400 represented in the first model dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "hour 24, minute 0."
+        }
+      ]
+    },
+    {
+      "id": "dataset-target",
+      "question": "Are missing arrival-delay targets converted into on-time labels?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "Missing target values are never converted to on-time labels."
+        }
+      ]
+    },
+    {
+      "id": "dataset-test",
+      "question": "Which month is the frozen test period in the original chronological dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "March 2025 | Evaluate the frozen candidate once"
+        }
+      ]
+    },
+    {
+      "id": "gate-interval",
+      "question": "What exact occupied interval does the synthetic gate optimizer use for its departure buffer?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "Occupancy is [arrival, departure + buffer)"
+        }
+      ]
+    },
+    {
+      "id": "gate-priority",
+      "question": "Does assigning one more flight take priority over reducing gate assignment cost?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "assigning another flight takes priority over any cost saving."
+        }
+      ]
+    },
+    {
+      "id": "gate-bounds",
+      "question": "What are the maximum numbers of flights and gates accepted by the optimization request?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "16 flights, 6 gates"
+        }
+      ]
+    },
+    {
+      "id": "identity-cookie",
+      "question": "Which cookie flags protect the local research session token?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "HttpOnly, SameSite=Strict cookies"
+        }
+      ]
+    },
+    {
+      "id": "identity-expiry",
+      "question": "After how many hours does a local sign-in session expire?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "Sessions expire after eight hours"
+        }
+      ]
+    },
+    {
+      "id": "identity-password",
+      "question": "What password length is required when creating the first local administrator?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "12–128 characters"
+        }
+      ]
+    },
+    {
+      "id": "outside-wind",
+      "question": "What is the current runway wind speed at Abu Dhabi airport?",
+      "targets": []
+    },
+    {
+      "id": "outside-schedule",
+      "question": "Which Emirates flight departs Dubai for London tomorrow morning?",
+      "targets": []
+    },
+    {
+      "id": "outside-meals",
+      "question": "How many meals are required for tomorrow's Etihad flights?",
+      "targets": []
+    },
+    {
+      "id": "outside-maintenance",
+      "question": "How should an aircraft hydraulic pump be repaired?",
+      "targets": []
+    },
+    {
+      "id": "outside-football",
+      "question": "Who won the FIFA World Cup in 2022?",
+      "targets": []
+    },
+    {
+      "id": "outside-chemistry",
+      "question": "What is the chemical formula and molar mass of caffeine?",
+      "targets": []
+    }
+  ]
+}

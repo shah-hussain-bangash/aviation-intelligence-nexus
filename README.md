@@ -147,3 +147,5 @@ Data evidence: [Data quality and lineage](docs/DATA_QUALITY_LINEAGE.md) records 
 Release evidence: [Build-bound rollback receipts](docs/ROLLBACK_BUILD_EVIDENCE.md) distinguish the running candidate from historical drills and expose a sanitized evidence export.
 
 Daily startup: use **Terminal > Run Task > AIN: Start saved Docker dashboard** or `npm.cmd start`, then open http://127.0.0.1:8090. See [startup and troubleshooting](docs/DAILY_STARTUP.md).
+
+Retrieval evaluation: [Passage-level RAG diagnostics](docs/RAG_RETRIEVAL_DIAGNOSTICS.md) compare unchanged hybrid search with keyword search on 24 curated questions, retaining misses, abstention errors and availability limits.

@@ -2,7 +2,7 @@
 
 Requested schedule: **daily at 20:00 Asia/Dubai** through the local Codex automation attached to the working chat.
 
-Repository: `https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus.git`
+Repository: `https://github.com/shah-hussain-bangash/aviation-intelligence-nexus.git`
 
 The schedule is configured separately in Codex; this document is not a scheduler. The local checkout, Git authentication and execution environment must be available when the automation runs.
 
@@ -25,3 +25,5 @@ Existing local commits also require review before automatic publication. No comm
 Raw datasets, archives, credentials, private keys, `.env` files, personal documents, local databases, logs and model checkpoints must not be automatically published. Report CSVs under `docs/reports` are permitted only after content review. Secret-pattern detection is a basic guard, not a guarantee that content is safe.
 
 `npm test` now includes source validation, Node integration/startup tests and the Python suite. GitHub also runs Python tests on Linux and Windows using synthetic temporary test fixtures; raw datasets and model artifacts are not needed. These checks do not establish production behavior or airline model suitability.
+
+The GitHub account was renamed to `shah-hussain-bangash`; repository ID 1463875455 is unchanged. Origin and the approved sync destination now use that canonical address. Historical evidence may retain redirected links under the former username. A disconnected Desktop Commander session still blocks scheduled authenticated sync; the account rename does not repair that connection.

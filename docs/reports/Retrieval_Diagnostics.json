@@ -1,0 +1,1610 @@
+{
+  "format": "ain-retrieval-diagnostics-v1",
+  "checked_at": "2026-11-23T05:00:26.321012+00:00",
+  "scope": "Curated development questions about six public project documents; not independently labeled, held-out, representative airline QA or a prompt-injection evaluation.",
+  "suite_sha256": "2c1ecd454f8011d18613a6d41690cb4ef9a3413eb2dfaa5cc2ad3a14c28b7eba",
+  "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+  "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+  "embedding_model": "embeddinggemma:300m",
+  "embedding_digest": "85462619ee721b466c5927d109d4cb765861907d5417b9109caebc4e614679f1",
+  "sources": [
+    {
+      "path": "docs/DELAY_V2.md",
+      "sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826"
+    },
+    {
+      "path": "docs/DELAY_BASELINE.md",
+      "sha256": "2f1e64baf6f3207c3b7f1ed4b172e6d620dceecbbb5a13afb7f4a6806bb84114"
+    },
+    {
+      "path": "docs/DATA_INGESTION.md",
+      "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+    },
+    {
+      "path": "docs/MODEL_DATASET.md",
+      "sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084"
+    },
+    {
+      "path": "docs/GATE_OPTIMIZATION.md",
+      "sha256": "b6b243a273630a58fb934f7c955af57ccd796f8eced88247830781de171c47d2"
+    },
+    {
+      "path": "docs/LOCAL_IDENTITY.md",
+      "sha256": "e1833e998d8a2257da686fabbbc1a8f47ed91d224c69c185706ac1e058d873cc"
+    }
+  ],
+  "passages": 31,
+  "methods": {
+    "hybrid": "Unchanged Knowledge.query with generation disabled; current 65/35 dense/TF-IDF ranking and both existing gates.",
+    "lexical": "Same TF-IDF vectors and lexical gate 0.035; top three, no semantic gate. This is a diagnostic baseline, not threshold-matched abstention."
+  },
+  "metrics": {
+    "hybrid": {
+      "total_cases": 24,
+      "unavailable_cases": 0,
+      "evaluated_answerable_cases": 18,
+      "evaluated_gold_targets": 18,
+      "target_hits_at_3": 17,
+      "target_recall_at_3": 0.9444444444444444,
+      "mean_target_reciprocal_rank_at_3": 0.7314814814814814,
+      "all_targets_found_cases": 17,
+      "evaluated_out_of_corpus_cases": 6,
+      "out_of_corpus_abstentions": 3,
+      "out_of_corpus_false_retrievals": 3
+    },
+    "lexical": {
+      "total_cases": 24,
+      "unavailable_cases": 0,
+      "evaluated_answerable_cases": 18,
+      "evaluated_gold_targets": 18,
+      "target_hits_at_3": 17,
+      "target_recall_at_3": 0.9444444444444444,
+      "mean_target_reciprocal_rank_at_3": 0.7962962962962963,
+      "all_targets_found_cases": 17,
+      "evaluated_out_of_corpus_cases": 6,
+      "out_of_corpus_abstentions": 2,
+      "out_of_corpus_false_retrievals": 4
+    }
+  },
+  "cases": [
+    {
+      "id": "v2-splits",
+      "question": "How many eligible training validation and testing flights were used in the second delay experiment?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "1,611,046 training, 577,730 validation and 597,574 testing"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          null
+        ],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "558ca614a31572d782e3",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 1,
+            "end_line": 8
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "558ca614a31572d782e3",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 1,
+            "end_line": 8
+          },
+          {
+            "id": "14dd3bb7c7348554da32",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 23,
+            "end_line": 37
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          }
+        ]
+      },
+      "case_elapsed_ms": 100.85
+    },
+    {
+      "id": "v2-alerts",
+      "question": "How many false alerts were recorded in May at the selected second-model threshold?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "241,732 false alerts"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "14dd3bb7c7348554da32",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 23,
+            "end_line": 37
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "5e09717eb66a0f1c1219",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 5,
+            "end_line": 10
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "558ca614a31572d782e3",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 1,
+            "end_line": 8
+          },
+          {
+            "id": "14dd3bb7c7348554da32",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 23,
+            "end_line": 37
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          }
+        ]
+      },
+      "case_elapsed_ms": 90.45
+    },
+    {
+      "id": "v2-inputs",
+      "question": "Which calendar and flight identity features were dropped from the second delay model?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "Calendar month, exact day of month and flight number are dropped"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          3
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.3333333333333333,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "558ca614a31572d782e3",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 1,
+            "end_line": 8
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          3
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.3333333333333333,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "558ca614a31572d782e3",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 1,
+            "end_line": 8
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "case_elapsed_ms": 103.69
+    },
+    {
+      "id": "v1-selection",
+      "question": "Which logistic regularization candidate was selected using February log loss?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "C=0.1 was selected."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5e09717eb66a0f1c1219",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 5,
+            "end_line": 10
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "6907a15c52e3e4f459d5",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 36,
+            "end_line": 36
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5e09717eb66a0f1c1219",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 5,
+            "end_line": 10
+          },
+          {
+            "id": "14dd3bb7c7348554da32",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 23,
+            "end_line": 37
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          }
+        ]
+      },
+      "case_elapsed_ms": 96.66
+    },
+    {
+      "id": "v1-auc",
+      "question": "What was the logistic baseline March ROC-AUC?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "ROC-AUC, higher is better | 0.5604"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "a0f0f86e91498359c1d2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 21,
+            "end_line": 22
+          },
+          {
+            "id": "5e09717eb66a0f1c1219",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 5,
+            "end_line": 10
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "a0f0f86e91498359c1d2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 21,
+            "end_line": 22
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "14dd3bb7c7348554da32",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 23,
+            "end_line": 37
+          }
+        ]
+      },
+      "case_elapsed_ms": 82.1
+    },
+    {
+      "id": "v1-rejection",
+      "question": "Why was the first logistic model rejected for actionable serving?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "probability quality is worse and the threshold creates too many alerts."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "5e09717eb66a0f1c1219",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 5,
+            "end_line": 10
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "id": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "a0f0f86e91498359c1d2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 21,
+            "end_line": 22
+          }
+        ]
+      },
+      "case_elapsed_ms": 81.54
+    },
+    {
+      "id": "import-count",
+      "question": "How many flights did the initial January BTS import contain?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "**539,747 flights**"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5063817cab208009c709",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 1,
+            "end_line": 17
+          },
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5063817cab208009c709",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 1,
+            "end_line": 17
+          },
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          }
+        ]
+      },
+      "case_elapsed_ms": 115.16
+    },
+    {
+      "id": "import-null",
+      "question": "How does the importer store missing delay values?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "Missing delay values remain NULL."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          },
+          {
+            "id": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "case_elapsed_ms": 100.75
+    },
+    {
+      "id": "import-conflict",
+      "question": "What happens to the import transaction when natural flight identities conflict?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "conflicting identities abort the entire import transaction."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          },
+          {
+            "id": "12ee90b55bc0405a1406",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 7,
+            "end_line": 17
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          }
+        ]
+      },
+      "case_elapsed_ms": 91.27
+    },
+    {
+      "id": "dataset-clock",
+      "question": "How is BTS scheduled departure time 2400 represented in the first model dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "hour 24, minute 0."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "c82c8475357ebcdc2348",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 40,
+            "end_line": 52
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "case_elapsed_ms": 139.03
+    },
+    {
+      "id": "dataset-target",
+      "question": "Are missing arrival-delay targets converted into on-time labels?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "Missing target values are never converted to on-time labels."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          },
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          },
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          },
+          {
+            "id": "50849a30a5a6538ebdf7",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 9,
+            "end_line": 20
+          }
+        ]
+      },
+      "case_elapsed_ms": 124.02
+    },
+    {
+      "id": "dataset-test",
+      "question": "Which month is the frozen test period in the original chronological dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "March 2025 | Evaluate the frozen candidate once"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          3
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.3333333333333333,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "12ee90b55bc0405a1406",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 7,
+            "end_line": 17
+          },
+          {
+            "id": "4dcc50f9b74ce48b56fa",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 18,
+            "end_line": 29
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          null
+        ],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "7338d65ef59a698acd0e",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 38,
+            "end_line": 39
+          },
+          {
+            "id": "273417b4f8248a7b0bce",
+            "source": "docs/MODEL_DATASET.md",
+            "start_line": 1,
+            "end_line": 6
+          },
+          {
+            "id": "a6ac81c1fbb27481b6e2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 53,
+            "end_line": 57
+          }
+        ]
+      },
+      "case_elapsed_ms": 161.69
+    },
+    {
+      "id": "gate-interval",
+      "question": "What exact occupied interval does the synthetic gate optimizer use for its departure buffer?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "Occupancy is [arrival, departure + buffer)"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "f5e396fbf81313673a9c",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "6b04b692785f0a5abef6",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 15,
+            "end_line": 26
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "f5e396fbf81313673a9c",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "487bddd1218c7ee2cd3e",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 27,
+            "end_line": 35
+          }
+        ]
+      },
+      "case_elapsed_ms": 102.94
+    },
+    {
+      "id": "gate-priority",
+      "question": "Does assigning one more flight take priority over reducing gate assignment cost?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "assigning another flight takes priority over any cost saving."
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "6b04b692785f0a5abef6",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 15,
+            "end_line": 26
+          },
+          {
+            "id": "f5e396fbf81313673a9c",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 1,
+            "end_line": 4
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "8d2c91f5780db1a62d60",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 13,
+            "end_line": 14
+          },
+          {
+            "id": "6b04b692785f0a5abef6",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 15,
+            "end_line": 26
+          }
+        ]
+      },
+      "case_elapsed_ms": 99.15
+    },
+    {
+      "id": "gate-bounds",
+      "question": "What are the maximum numbers of flights and gates accepted by the optimization request?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "16 flights, 6 gates"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          }
+        ]
+      },
+      "case_elapsed_ms": 93.69
+    },
+    {
+      "id": "identity-cookie",
+      "question": "Which cookie flags protect the local research session token?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "HttpOnly, SameSite=Strict cookies"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4624301ef6f64c43bc59",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          },
+          {
+            "id": "a0f0f86e91498359c1d2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 21,
+            "end_line": 22
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          },
+          {
+            "id": "4624301ef6f64c43bc59",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 1,
+            "end_line": 4
+          }
+        ]
+      },
+      "case_elapsed_ms": 81.19
+    },
+    {
+      "id": "identity-expiry",
+      "question": "After how many hours does a local sign-in session expire?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "Sessions expire after eight hours"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4624301ef6f64c43bc59",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          },
+          {
+            "id": "375c069d47fd7c1cde55",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 46,
+            "end_line": 52
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "4624301ef6f64c43bc59",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          },
+          {
+            "id": "375c069d47fd7c1cde55",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 46,
+            "end_line": 52
+          }
+        ]
+      },
+      "case_elapsed_ms": 76.41
+    },
+    {
+      "id": "identity-password",
+      "question": "What password length is required when creating the first local administrator?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "12\u2013128 characters"
+        }
+      ],
+      "hybrid": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "a4a501411945376130a2",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 5,
+            "end_line": 23
+          },
+          {
+            "id": "375c069d47fd7c1cde55",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 46,
+            "end_line": 52
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "a4a501411945376130a2",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 5,
+            "end_line": 23
+          },
+          {
+            "id": "ff53fce54e0b11677456",
+            "source": "docs/LOCAL_IDENTITY.md",
+            "start_line": 36,
+            "end_line": 45
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          }
+        ]
+      },
+      "case_elapsed_ms": 84.1
+    },
+    {
+      "id": "outside-wind",
+      "question": "What is the current runway wind speed at Abu Dhabi airport?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "a6ac81c1fbb27481b6e2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 53,
+            "end_line": 57
+          },
+          {
+            "id": "f5e396fbf81313673a9c",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "7ef642dd43ad1a52a249",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 38,
+            "end_line": 42
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "30e23212b763a4ed40ae",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 24,
+            "end_line": 35
+          },
+          {
+            "id": "f5e396fbf81313673a9c",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "id": "7ef642dd43ad1a52a249",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 38,
+            "end_line": 42
+          }
+        ]
+      },
+      "case_elapsed_ms": 76.57
+    },
+    {
+      "id": "outside-schedule",
+      "question": "Which Emirates flight departs Dubai for London tomorrow morning?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true,
+        "retrieved": []
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5063817cab208009c709",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 1,
+            "end_line": 17
+          },
+          {
+            "id": "90a961804e103764db31",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 5,
+            "end_line": 12
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          }
+        ]
+      },
+      "case_elapsed_ms": 80.79
+    },
+    {
+      "id": "outside-meals",
+      "question": "How many meals are required for tomorrow's Etihad flights?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          },
+          {
+            "id": "7ef642dd43ad1a52a249",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 38,
+            "end_line": 42
+          },
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "5063817cab208009c709",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 1,
+            "end_line": 17
+          },
+          {
+            "id": "c3c46894fd8145493e52",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 22,
+            "end_line": 22
+          },
+          {
+            "id": "421675d963c2423a8800",
+            "source": "docs/DATA_INGESTION.md",
+            "start_line": 18,
+            "end_line": 21
+          }
+        ]
+      },
+      "case_elapsed_ms": 84.27
+    },
+    {
+      "id": "outside-maintenance",
+      "question": "How should an aircraft hydraulic pump be repaired?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "487bddd1218c7ee2cd3e",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 27,
+            "end_line": 35
+          },
+          {
+            "id": "a6ac81c1fbb27481b6e2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 53,
+            "end_line": 57
+          }
+        ]
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true,
+        "retrieved": [
+          {
+            "id": "8d2c91f5780db1a62d60",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 13,
+            "end_line": 14
+          },
+          {
+            "id": "7ef642dd43ad1a52a249",
+            "source": "docs/GATE_OPTIMIZATION.md",
+            "start_line": 38,
+            "end_line": 42
+          },
+          {
+            "id": "a6ac81c1fbb27481b6e2",
+            "source": "docs/DELAY_V2.md",
+            "start_line": 53,
+            "end_line": 57
+          }
+        ]
+      },
+      "case_elapsed_ms": 83.06
+    },
+    {
+      "id": "outside-football",
+      "question": "Who won the FIFA World Cup in 2022?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true,
+        "retrieved": []
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true,
+        "retrieved": []
+      },
+      "case_elapsed_ms": 83.15
+    },
+    {
+      "id": "outside-chemistry",
+      "question": "What is the chemical formula and molar mass of caffeine?",
+      "targets": [],
+      "hybrid": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true,
+        "retrieved": []
+      },
+      "lexical": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true,
+        "retrieved": []
+      },
+      "case_elapsed_ms": 75.52
+    }
+  ],
+  "complete": true,
+  "metric_denominators": "Ranking and abstention metrics include available cases only; unavailable cases are separately counted and never treated as abstentions.",
+  "elapsed_ms": 2322.64,
+  "generated_answers": 0,
+  "ranking_or_threshold_changes": false,
+  "semantic_answer_accuracy_measured": false,
+  "operational_approval": false,
+  "production_ready": false
+}
