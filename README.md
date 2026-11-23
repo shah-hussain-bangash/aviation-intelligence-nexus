@@ -35,6 +35,7 @@ You can also open `apps/web/index.html` directly. A local server gives browser s
 ## Included today
 
 - Validated local monitoring with automatic stale-health expiry, invalid-timing accounting and scoped diagnostic export. See [monitoring integrity](docs/MONITORING_INTEGRITY.md).
+- Separate local observer with bounded health probes and Windows install/status/start/stop commands, including periodic recovery configuration. See [continuous local observation](docs/LOCAL_OBSERVER.md).
 
 - Opt-in local AI review of the negative regression experiment, with three mandatory source quotations, retained full metrics and human research review. See [regression review agent](docs/DURATION_AGENT_REVIEW.md).
 
