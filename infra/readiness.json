@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -291,6 +291,14 @@
         {
           "path": "docs/reports/Scoped_Answer_Candidate.json",
           "sha256": "2491734a2f1a1f5a50cf88e3eecbd8b0e8e9de956b917a2227733b0d6c49d0a1"
+        },
+        {
+          "path": "docs/EXPLICIT_SCOPE_GUARD.md",
+          "sha256": "9dff0214b582e558930a1809c2b06d937ac96630da5350a1f3f9393a8432de28"
+        },
+        {
+          "path": "docs/reports/Scope_Guard_Evaluation.json",
+          "sha256": "c54449c21fd0de4799d3ad855ce2b7b60d007f867f88884fb1ffe199a7f4b597"
         }
       ]
     },
@@ -748,7 +756,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "70c545d2de107a122cfe3b01aaabad9a351335023e674ab012342222329b2a09"
+          "sha256": "015162e579f4d5c32a77e57c535282d3de34801148cc341895c8398faca8465f"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

@@ -155,3 +155,5 @@ Retrieval dashboard: [Recorded comparison and case inspection](docs/RAG_RETRIEVA
 Generated-answer evaluation: [First-run Qwen3 diagnostics](docs/RAG_GENERATION_DIAGNOSTICS.md) preserve incomplete cases and a concrete semantic citation failure; exact quotation checks do not establish answer correctness.
 
 Experiment-scoped research candidate: [Verbatim excerpts and retained challenge failures](docs/SCOPED_RAG_CANDIDATE.md) enforce document/version separation without promoting the candidate to the dashboard.
+
+Explicit version conflicts: [Guarded research entry point](docs/EXPLICIT_SCOPE_GUARD.md) asks for clarification before model access while preserving the original candidate and its failed relevance case.

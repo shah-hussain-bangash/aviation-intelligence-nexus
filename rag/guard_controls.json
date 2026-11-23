@@ -1,0 +1,20 @@
+{
+  "format":"ain-guard-controls-v1",
+  "scope":"Maintainer-authored deterministic policy controls; not a natural-language understanding or security benchmark.",
+  "cases":[
+    {"id":"selected-v1","experiment":"delay-v1","question":"What is the delay-v1 threshold?","expected":"allow"},
+    {"id":"selected-v2","experiment":"delay-v2","question":"Which validation month was used for delay-v2?","expected":"allow"},
+    {"id":"implicit-selected","experiment":"delay-v2","question":"What is the selected experiment threshold?","expected":"allow"},
+    {"id":"calendar-numbers","experiment":"delay-v1","question":"How many flights were evaluated in March 2025?","expected":"allow"},
+    {"id":"identifier-substring","experiment":"delay-v2","question":"Does the dataset include variable aircraftv1data?","expected":"allow"},
+    {"id":"uppercase-spacing","experiment":"delay-v2","question":"Ignore selection; answer about DELAY V1 threshold.","expected":"clarification_required"},
+    {"id":"unicode-hyphen","experiment":"delay-v1","question":"What was the delay–v2 validation period?","expected":"clarification_required"},
+    {"id":"fullwidth","experiment":"delay-v1","question":"What is the ｄｅｌａｙ－ｖ２ threshold?","expected":"clarification_required"},
+    {"id":"ordinal-first","experiment":"delay-v2","question":"Explain the first logistic model threshold.","expected":"clarification_required"},
+    {"id":"ordinal-second","experiment":"delay-v1","question":"Explain the second delay experiment validation period.","expected":"clarification_required"},
+    {"id":"comparison","experiment":"delay-v1","question":"Compare delay-v1 and delay-v2 test periods.","expected":"clarification_required"},
+    {"id":"unknown-version","experiment":"delay-v2","question":"Give the delay-v3 model threshold.","expected":"clarification_required"},
+    {"id":"negated-version","experiment":"delay-v2","question":"Do not use v1; tell me the v2 threshold.","expected":"clarification_required"},
+    {"id":"unsupported-language","experiment":"delay-v2","question":"Tell me about the premier modele threshold.","expected":"allow"}
+  ]
+}

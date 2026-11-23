@@ -22,7 +22,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 100 Node dashboard/proxy/startup tests and 321 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 100 Node dashboard/proxy/startup tests and 331 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -84,3 +84,5 @@ The authenticated read-only retrieval comparison panel is documented in [RAG_RET
 Offline generated-answer diagnostics: `python -m rag.generation_diagnostics --output .local/evaluations/generation-new-run.json`. See [RAG_GENERATION_DIAGNOSTICS.md](RAG_GENERATION_DIAGNOSTICS.md) for the first-run failures, mechanical quote checks and pending semantic review.
 
 The opt-in experiment-scoped excerpt candidate remains separate from serving: see [SCOPED_RAG_CANDIDATE.md](SCOPED_RAG_CANDIDATE.md) for explicit context, verbatim text, the measured conflict/relevance failures and reproduction.
+
+The separate guarded excerpt CLI clarifies explicit version conflicts before retrieval or model access. See [EXPLICIT_SCOPE_GUARD.md](EXPLICIT_SCOPE_GUARD.md) for its narrow syntax, conservative false positives, regression replay and remaining relevance failure.
