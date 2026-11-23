@@ -161,3 +161,5 @@ Explicit version conflicts: [Guarded research entry point](docs/EXPLICIT_SCOPE_G
 Source-context research: [Versioned excerpt selection and bounded context](docs/SOURCE_CONTEXT_ANSWERS.md) retain a failed prompt-only run, add the missing rejection explanation and keep the unsupported-answer limitation visible.
 
 Source coverage: [Conservative pre-generation checks](docs/SOURCE_COVERAGE_GATE.md) stop the known unsupported coefficient answer and retain a valid-paraphrase refusal as a visible limitation.
+
+Dashboard research interface: [Scoped Answer Lab](docs/SCOPED_ANSWER_LAB.md) provides explicit experiment selection, cited excerpts, visible refusals and public JSON export without saving questions or replacing existing Q&A.

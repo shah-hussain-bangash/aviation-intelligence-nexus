@@ -42,6 +42,7 @@ from services.api.diagnostics import load_diagnostics
 from services.api.thresholds import load_thresholds
 from services.api.duration import load_duration
 from services.api.retrieval_evaluation import load_retrieval_evaluation
+from services.api.scoped_lab import ScopedLabQuery,run as run_scoped_lab
 from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
@@ -224,7 +225,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/gate-review", "/api/v1/research/knowledge-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/gate-review", "/api/v1/research/knowledge-query", "/api/v1/research/scoped-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -460,6 +461,21 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/knowledge-status')
     def knowledge_status():
         return knowledge.status()
+
+    @app.post('/api/v1/research/scoped-query')
+    def scoped_query(query:ScopedLabQuery,request:Request):
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'unexpected_scoped_query_parameters'})
+        try:
+            token=request.cookies.get(COOKIE,'');current=auth.session(token)
+            if not current or current['role'] not in ('admin','researcher') or current['id']!=request.state.user['id']:
+                return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
+            result=run_scoped_lab(query,knowledge)
+            after=auth.session(token)
+            if not after or after['id']!=current['id'] or after['role'] not in ('admin','researcher'):
+                return JSONResponse(status_code=403,content={'error':'access_changed','message':'Access changed during the query. Results were withheld.'})
+            return result
+        except (OSError,ValueError,KeyError,TypeError,RuntimeError,sqlite3.Error):
+            return JSONResponse(status_code=503,content={'error':'scoped_query_unavailable','message':'No verified result returned. Check the trusted index and local model service.'})
 
     @app.post('/api/v1/research/knowledge-query')
     def knowledge_query(question: Question, request: Request):

@@ -1,0 +1,280 @@
+{
+  "scope": "Isolated component/protocol fixtures: success derived from a recorded public query; coverage/conflict use actual deterministic branches; abstention/unavailable are simulated outcomes. Not browser deployment proof.",
+  "cases": {
+    "excerpts": {
+      "request": {
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "source": "docs/DELAY_BASELINE.md",
+        "mode": "excerpts",
+        "generation_status": "completed",
+        "scope_guard": {
+          "decision": "allow",
+          "reason": "no_explicit_conflict",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "allow",
+          "required_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ],
+          "missing_terms": [],
+          "matched_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ]
+        },
+        "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+        "claims": [
+          {
+            "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+            "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+            "citation": "8332b317a543cffa5f88",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 1,
+            "end_line": 4
+          },
+          {
+            "text": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+            "quote": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+            "citation": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          },
+          {
+            "text": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+            "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+            "citation": "06fd2985603d1d4b95d8",
+            "source": "docs/DELAY_BASELINE.md",
+            "start_line": 11,
+            "end_line": 23
+          }
+        ],
+        "context_added_count": 2,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    },
+    "coverage": {
+      "request": {
+        "question": "Why did the optimizer choose each individual logistic coefficient for the first model?",
+        "experiment": "delay-v1",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "Why did the optimizer choose each individual logistic coefficient for the first model?",
+        "experiment": "delay-v1",
+        "source": "docs/DELAY_BASELINE.md",
+        "mode": "source_coverage_declined",
+        "generation_status": "not_requested_source_coverage",
+        "scope_guard": {
+          "decision": "allow",
+          "reason": "no_explicit_conflict",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "decline",
+          "required_terms": [
+            "coefficient",
+            "logistic",
+            "optimizer"
+          ],
+          "missing_terms": [
+            "coefficient",
+            "optimizer"
+          ],
+          "matched_terms": [
+            "logistic"
+          ]
+        },
+        "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+        "claims": [],
+        "context_added_count": 0,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    },
+    "conflict": {
+      "request": {
+        "question": "Give the delay-v1 threshold instead.",
+        "experiment": "delay-v2",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "Give the delay-v1 threshold instead.",
+        "experiment": "delay-v2",
+        "source": "docs/DELAY_V2.md",
+        "mode": "clarification_required",
+        "generation_status": "not_requested_scope_conflict",
+        "scope_guard": {
+          "decision": "clarification_required",
+          "reason": "conflicting_explicit_version",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "not_checked_scope_conflict",
+          "required_terms": [],
+          "missing_terms": [],
+          "matched_terms": []
+        },
+        "corpus_revision": null,
+        "claims": [],
+        "context_added_count": 0,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    },
+    "paraphrase": {
+      "request": {
+        "question": "What was the probabilistic assessment of the first model outputs?",
+        "experiment": "delay-v1",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "What was the probabilistic assessment of the first model outputs?",
+        "experiment": "delay-v1",
+        "source": "docs/DELAY_BASELINE.md",
+        "mode": "source_coverage_declined",
+        "generation_status": "not_requested_source_coverage",
+        "scope_guard": {
+          "decision": "allow",
+          "reason": "no_explicit_conflict",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "decline",
+          "required_terms": [
+            "assessment",
+            "probabilistic"
+          ],
+          "missing_terms": [
+            "probabilistic"
+          ],
+          "matched_terms": [
+            "assessment"
+          ]
+        },
+        "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+        "claims": [],
+        "context_added_count": 0,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    },
+    "abstained": {
+      "request": {
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "source": "docs/DELAY_BASELINE.md",
+        "mode": "abstained",
+        "generation_status": "completed",
+        "scope_guard": {
+          "decision": "allow",
+          "reason": "no_explicit_conflict",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "allow",
+          "required_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ],
+          "missing_terms": [],
+          "matched_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ]
+        },
+        "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+        "claims": [],
+        "context_added_count": 0,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    },
+    "unavailable": {
+      "request": {
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "acknowledged": true
+      },
+      "response": {
+        "format": "ain-scoped-lab-v1",
+        "question": "Why was the first logistic model rejected for actionable serving?",
+        "experiment": "delay-v1",
+        "source": "docs/DELAY_BASELINE.md",
+        "mode": "evidence_only",
+        "generation_status": "unavailable_or_rejected",
+        "scope_guard": {
+          "decision": "allow",
+          "reason": "no_explicit_conflict",
+          "mentioned_experiments": [
+            "delay-v1"
+          ]
+        },
+        "coverage": {
+          "decision": "allow",
+          "required_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ],
+          "missing_terms": [],
+          "matched_terms": [
+            "actionable",
+            "logistic",
+            "rejected"
+          ]
+        },
+        "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+        "claims": [],
+        "context_added_count": 0,
+        "saved_to_history": false,
+        "human_review_complete": false,
+        "operational_approval": false,
+        "production_ready": false
+      }
+    }
+  }
+}

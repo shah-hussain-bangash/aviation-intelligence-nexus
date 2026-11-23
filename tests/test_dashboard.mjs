@@ -1,4 +1,5 @@
 import {validateRetrieval,retrievalCases,renderRetrieval,retrievalExport} from '../apps/web/retrieval-evaluation.mjs';
+import {validateScopedResult,renderScopedResult,scopedExport} from '../apps/web/scoped-answer-lab.mjs';
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
@@ -735,4 +736,35 @@ test('retrieval evaluation proxy permits only fixed reads and forwards only the 
  const url=`http://127.0.0.1:${frontend}/api/v1/research/retrieval-diagnostics`;
  assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret',Authorization:'do-not-forward'}})).status,200);
  assert.equal((await fetch(url+'?source=private')).status,422);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/anything')).status,404);
+});
+
+const scopedFixtures=()=>JSON.parse(fs.readFileSync(new URL('./scoped_lab_fixtures.json',import.meta.url),'utf8')).cases;
+test('scoped lab distinguishes refusals, unavailable selection and exact cited excerpts',()=>{
+ const fixtures=scopedFixtures();for(const {request,response} of Object.values(fixtures))assert.equal(validateScopedResult(response,request),response);
+ assert.match(renderScopedResult(fixtures.coverage.response,fixtures.coverage.request),/Source vocabulary mismatch/);
+ assert.match(renderScopedResult(fixtures.conflict.response,fixtures.conflict.request),/Clarify the experiment/);
+ assert.match(renderScopedResult(fixtures.unavailable.response,fixtures.unavailable.request),/not a successful abstention/);
+ assert.match(renderScopedResult(fixtures.excerpts.response,fixtures.excerpts.request),/probability quality is worse/);
+ assert.match(renderScopedResult(fixtures.excerpts.response,fixtures.excerpts.request),/github.com\/shah-hussain-bangash/);
+ const x=structuredClone(fixtures.excerpts);x.response.claims[0].text=x.response.claims[0].quote='<img src=x onerror=alert(1)> literal source excerpt';
+ const html=renderScopedResult(x.response,x.request);assert.ok(!html.includes('<img'));assert.match(html,/&lt;img/);
+});
+test('scoped lab rejects stale identities and contradictions and exports only public fields',()=>{
+ const f=scopedFixtures();for(const change of [r=>r.experiment='delay-v2',r=>r.source='../private',r=>r.claims[0].text='Invented',r=>r.context_added_count=99,r=>r.coverage.missing_terms=['inventedterm'],r=>r.production_ready=true]){
+  const r=structuredClone(f.excerpts.response);change(r);assert.throws(()=>validateScopedResult(r,f.excerpts.request));
+ }
+ const r=structuredClone(f.excerpts.response);r.private_error='PRIVATE-ERROR';r.claims[0].private_token='PRIVATE-ERROR';r.scope_guard.extra='PRIVATE-ERROR';r.coverage.extra='PRIVATE-ERROR';
+ const exported=scopedExport(r,f.excerpts.request);assert.ok(!JSON.stringify(exported).includes('PRIVATE-ERROR'));assert.equal(exported.saved_to_history,false);
+ const unavailable=structuredClone(f.unavailable.response);unavailable.mode='abstained';assert.throws(()=>validateScopedResult(unavailable,f.unavailable.request));
+});
+test('scoped query proxy is bounded POST with CSRF and session cookie only',async()=>{
+ let received;const backend=http.createServer(async(req,res)=>{let body='';for await(const part of req)body+=part;received={url:req.url,method:req.method,headers:req.headers,body};res.setHeader('Content-Type','application/json');res.end(JSON.stringify({ok:true}));});
+ await new Promise(resolve=>backend.listen(0,'127.0.0.1',resolve));const port=backend.address().port;
+ const front=http.createServer(async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://127.0.0.1').pathname,port)){res.writeHead(404);res.end();}});
+ await new Promise(resolve=>front.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+front.address().port;
+ try{let r=await fetch(base+'/api/v1/research/scoped-query',{method:'POST',headers:{'Content-Type':'application/json','Cookie':'ain_session=fixture-session; private=secret','X-CSRF-Token':'csrf-fixture','Authorization':'Bearer PRIVATE-ERROR'},body:'{}'});assert.equal(r.status,200);assert.equal(received.url,'/api/v1/research/scoped-query');assert.equal(received.headers['x-csrf-token'],'csrf-fixture');assert.ok(!received.headers.authorization);assert.equal(received.headers.cookie,'ain_session=fixture-session');
+ assert.equal((await fetch(base+'/api/v1/research/scoped-query')).status,405);
+ assert.equal((await fetch(base+'/api/v1/research/scoped-query?x=1',{method:'POST'})).status,422);
+ assert.equal((await fetch(base+'/api/v1/research/scoped-query',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(4097)})).status,413);
+ }finally{front.closeAllConnections();backend.closeAllConnections();await Promise.all([new Promise(r=>front.close(r)),new Promise(r=>backend.close(r))]);}
 });

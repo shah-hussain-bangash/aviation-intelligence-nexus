@@ -22,7 +22,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 100 Node dashboard/proxy/startup tests and 357 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 103 Node dashboard/proxy/startup tests and 364 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -90,3 +90,5 @@ The separate guarded excerpt CLI clarifies explicit version conflicts before ret
 The source-context candidate preserves the failed prompt-only run, a zero-generation context replay and one fresh composed query. See [SOURCE_CONTEXT_ANSWERS.md](SOURCE_CONTEXT_ANSWERS.md) for provenance, the retained unsupported answer and reproduction.
 
 A separate lexical source-coverage candidate declines missing long content terms before model access. See [SOURCE_COVERAGE_GATE.md](SOURCE_COVERAGE_GATE.md) for the measured coefficient refusal, valid-paraphrase false refusal and short-term blind spots.
+
+The authenticated, unsaved Scoped Answer Lab integrates the experimental coverage/context workflow with explicit experiment selection and acknowledgment. See [SCOPED_ANSWER_LAB.md](SCOPED_ANSWER_LAB.md) for protocol, role/session boundaries, browser fixtures and native API proof.
