@@ -159,3 +159,5 @@ Experiment-scoped research candidate: [Verbatim excerpts and retained challenge 
 Explicit version conflicts: [Guarded research entry point](docs/EXPLICIT_SCOPE_GUARD.md) asks for clarification before model access while preserving the original candidate and its failed relevance case.
 
 Source-context research: [Versioned excerpt selection and bounded context](docs/SOURCE_CONTEXT_ANSWERS.md) retain a failed prompt-only run, add the missing rejection explanation and keep the unsupported-answer limitation visible.
+
+Source coverage: [Conservative pre-generation checks](docs/SOURCE_COVERAGE_GATE.md) stop the known unsupported coefficient answer and retain a valid-paraphrase refusal as a visible limitation.

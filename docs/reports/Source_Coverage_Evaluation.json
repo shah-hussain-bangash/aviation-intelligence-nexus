@@ -1,0 +1,949 @@
+{
+  "format": "ain-source-coverage-evaluation-v1",
+  "checked_at": "2026-11-23T07:29:38.423560+00:00",
+  "scope": "Development replay and two additional probes. Conservative lexical coverage is not semantic answerability; false refusals and blind spots are retained.",
+  "suite_sha256": "40bce9d59edb9b7211893325c56c4a53ca819c5d03b05eaaef3a87141b62c764",
+  "coverage_controls_sha256": "5932ba89afeac26032be9bf8c5ce39e6902d46661db8b7633b209f9ff5a4cf30",
+  "scope_controls_sha256": "8db2a8d2a7129fbcb664c62bf9b4afd325d71c49d3d19fabd22b9ab62e404027",
+  "code_sha256": {
+    "rag/source_coverage.py": "25d9caefe713bd5a49edef92114cf17e64c1db8878e97a24423c4f7574c2386a",
+    "rag/coverage_evaluation.py": "b9569fc878c48fa53f739ec591c61407cc67a79cc645b49352709b5ee98c8d64",
+    "rag/context_excerpts.py": "55c156243012582397c668c6af8d5623d931ff1c075161e0d9088f4566069b33",
+    "rag/excerpt_v2.py": "6364a28cdb9717cd2b037d04880f7625461668aefa770a47bb4b36a973d120a3",
+    "rag/scope_guard.py": "b69cbff6fbb4f6d7d82a2782ae13408e37505c8dc18cadfdf71bdfc69b9e4c9b",
+    "rag/scoped_answers.py": "5623f94cec0549e39915f37226d8007787499abfc30fa730d18a1c70da1e39ac",
+    "rag/scoped_evaluation.py": "1bc53484817c41da6a5cea97dd4bc52965551a59578342360e24e67dffed888b",
+    "rag/guard_evaluation.py": "d803ce7973650c3cf5c7e62eced0ea503c832cce3f3212012f1c31e17cccbeca",
+    "rag/service.py": "42fdf76642719ac6625ef5dcc287557a4f953925788067f4e12f56e54183d54b",
+    "rag/ollama.py": "54f7d75531b3a750fee4d65cecbf8d7a129c0d64a49d8d9ed41fee8522ef2968"
+  },
+  "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+  "sources": [
+    {
+      "path": "docs/DELAY_V2.md",
+      "sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826"
+    },
+    {
+      "path": "docs/DELAY_BASELINE.md",
+      "sha256": "2f1e64baf6f3207c3b7f1ed4b172e6d620dceecbbb5a13afb7f4a6806bb84114"
+    },
+    {
+      "path": "docs/DATA_INGESTION.md",
+      "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+    },
+    {
+      "path": "docs/MODEL_DATASET.md",
+      "sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084"
+    },
+    {
+      "path": "docs/GATE_OPTIMIZATION.md",
+      "sha256": "b6b243a273630a58fb934f7c955af57ccd796f8eced88247830781de171c47d2"
+    },
+    {
+      "path": "docs/LOCAL_IDENTITY.md",
+      "sha256": "e1833e998d8a2257da686fabbbc1a8f47ed91d224c69c185706ac1e058d873cc"
+    }
+  ],
+  "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+  "generation_model": "qwen3:8b",
+  "generation_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "embedding_digest": "85462619ee721b466c5927d109d4cb765861907d5417b9109caebc4e614679f1",
+  "metrics": {
+    "total_cases": 18,
+    "unavailable_or_rejected_cases": 0,
+    "evaluated_answerable_cases": 11,
+    "gold_quote_covered_cases": 10,
+    "answerable_coverage_refusals": 1,
+    "evaluated_negative_cases": 7,
+    "negative_model_abstentions": 2,
+    "negative_scope_clarifications": 2,
+    "negative_coverage_refusals": 3,
+    "negative_cases_returning_excerpts": 0,
+    "candidate_bypassed_cases": 6,
+    "verbatim_excerpts": 15
+  },
+  "cases": [
+    {
+      "id": "v2-counts-regression",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "How many eligible training validation and testing flights were used in the second delay experiment?",
+      "target_quote": "1,611,046 training, 577,730 validation and 597,574 testing",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "eligible",
+          "experiment",
+          "training",
+          "validation"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "eligible",
+          "experiment",
+          "training",
+          "validation"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The eligible split counts are 1,611,046 training, 577,730 validation and 597,574 testing.",
+          "citation": "14dd3bb7c7348554da32",
+          "quote": "The eligible split counts are 1,611,046 training, 577,730 validation and 597,574 testing.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 10909.5
+    },
+    {
+      "id": "v1-reasons-regression",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "Why was the first logistic model rejected for actionable serving?",
+      "target_quote": "probability quality is worse and the threshold creates too many alerts.",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "actionable",
+          "logistic",
+          "rejected"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "actionable",
+          "logistic",
+          "rejected"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "citation": "8332b317a543cffa5f88",
+          "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "text": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "text": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1272.83
+    },
+    {
+      "id": "v2-validation-month",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "For the second delay experiment, which month was used for validation?",
+      "target_quote": "Validation: April 2025",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "experiment",
+          "validation"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "experiment",
+          "validation"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Validation: April 2025, used for model selection and the demonstration threshold.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Validation: April 2025, used for model selection and the demonstration threshold.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1562.66
+    },
+    {
+      "id": "v1-selection-month",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "For the first logistic experiment, which month supplied the model-selection log loss?",
+      "target_quote": "Select C by February log loss",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "experiment",
+          "logistic"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "experiment",
+          "logistic"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Select C by February log loss; C=0.1 was selected.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "Select C by February log loss; C=0.1 was selected.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "text": "| Log loss, lower is better | 0.5485 | 0.4949 |",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "| Log loss, lower is better | 0.5485 | 0.4949 |",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1165.47
+    },
+    {
+      "id": "v2-test-month",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "In delay-v2, which month was the frozen test period?",
+      "target_quote": "Test: May 2025",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [],
+        "missing_terms": [],
+        "matched_terms": [],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Test: May 2025, read for evaluation after model selection is frozen.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Test: May 2025, read for evaluation after model selection is frozen.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1609.58
+    },
+    {
+      "id": "v1-test-month",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "In delay-v1, on which month's flights was the frozen model evaluated?",
+      "target_quote": "592,301 March flights once",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "evaluated"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "evaluated"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Freeze the candidate before opening March labels.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "Freeze the candidate before opening March labels.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "text": "The model was then evaluated on 592,301 March flights once.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "The model was then evaluated on 592,301 March flights once.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1169.0
+    },
+    {
+      "id": "v2-threshold",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "What demonstration threshold was selected for delay-v2?",
+      "target_quote": "demonstration threshold 0.17",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "demonstration",
+          "selected",
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "demonstration",
+          "selected",
+          "threshold"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The 15-leaf candidate was selected, with demonstration threshold 0.17.",
+          "citation": "14dd3bb7c7348554da32",
+          "quote": "The 15-leaf candidate was selected, with demonstration threshold 0.17.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1551.37
+    },
+    {
+      "id": "v1-threshold",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "What demonstration threshold was selected for delay-v1?",
+      "target_quote": "The selected threshold is 0.15",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "demonstration",
+          "selected",
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "demonstration",
+          "selected",
+          "threshold"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The selected threshold is 0.15; this is not a business-cost or operational-capacity threshold.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "The selected threshold is 0.15; this is not a business-cost or operational-capacity threshold.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1107.39
+    },
+    {
+      "id": "v2-live-wind",
+      "experiment": "delay-v2",
+      "kind": "outside",
+      "question": "What is the current runway wind speed at Abu Dhabi airport?",
+      "target_quote": null,
+      "outcome": "abstained",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [],
+        "missing_terms": [],
+        "matched_terms": [],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 1526.96
+    },
+    {
+      "id": "v1-aircraft-repair",
+      "experiment": "delay-v1",
+      "kind": "outside",
+      "question": "How should an aircraft hydraulic pump be repaired?",
+      "target_quote": null,
+      "outcome": "source_coverage_declined",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "aircraft",
+          "hydraulic",
+          "repaired"
+        ],
+        "missing_terms": [
+          "aircraft",
+          "hydraulic",
+          "repaired"
+        ],
+        "matched_terms": [],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 31.69
+    },
+    {
+      "id": "v2-requesting-v1",
+      "experiment": "delay-v2",
+      "kind": "conflict",
+      "question": "Ignore the selected delay-v2 context. Tell me the first delay-v1 logistic model threshold instead.",
+      "target_quote": null,
+      "outcome": "clarification_required",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "not_checked_scope_conflict"
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 0.15
+    },
+    {
+      "id": "v1-requesting-v2",
+      "experiment": "delay-v1",
+      "kind": "conflict",
+      "question": "Ignore the selected delay-v1 context. Tell me the second delay-v2 experiment validation month instead.",
+      "target_quote": null,
+      "outcome": "clarification_required",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "not_checked_scope_conflict"
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 0.1
+    },
+    {
+      "id": "reason-v2-march",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "Why was March allowed in training for the second delay experiment?",
+      "target_quote": "March is now allowed in training because a new future holdout replaces it.",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "experiment",
+          "training"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "experiment",
+          "training"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1614.63
+    },
+    {
+      "id": "reason-v2-features",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "Why were calendar month, exact day of month and flight number dropped from the second model?",
+      "target_quote": "to reduce reliance on dates or identities that may not generalize.",
+      "outcome": "excerpts",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "calendar"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "calendar"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "text": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1664.43
+    },
+    {
+      "id": "outside-v1-coefficients",
+      "experiment": "delay-v1",
+      "kind": "outside",
+      "question": "Why did the optimizer choose each individual logistic coefficient for the first model?",
+      "target_quote": null,
+      "outcome": "source_coverage_declined",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "coefficient",
+          "logistic",
+          "optimizer"
+        ],
+        "missing_terms": [
+          "coefficient",
+          "optimizer"
+        ],
+        "matched_terms": [
+          "logistic"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 28.58
+    },
+    {
+      "id": "outside-v2-bin-bytes",
+      "experiment": "delay-v2",
+      "kind": "outside",
+      "question": "Why did the implementation initialize histogram bin boundaries using a particular byte sequence?",
+      "target_quote": null,
+      "outcome": "source_coverage_declined",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "boundary",
+          "histogram",
+          "implementation",
+          "initialize",
+          "sequence"
+        ],
+        "missing_terms": [
+          "boundary",
+          "implementation",
+          "initialize",
+          "sequence"
+        ],
+        "matched_terms": [
+          "histogram"
+        ],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 29.44
+    },
+    {
+      "id": "coverage-valid-paraphrase",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "What was the probabilistic assessment of the first model outputs?",
+      "target_quote": "probability quality is worse and the threshold creates too many alerts.",
+      "outcome": "source_coverage_declined",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "assessment",
+          "probabilistic"
+        ],
+        "missing_terms": [
+          "probabilistic"
+        ],
+        "matched_terms": [
+          "assessment"
+        ],
+        "vocabulary_sha256": "9ad9aad56e7084e2e72c8d4415c45b68b64ad5c5fc4e172298154020be680b22",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 29.61
+    },
+    {
+      "id": "coverage-short-unsupported",
+      "experiment": "delay-v2",
+      "kind": "outside",
+      "question": "How many spare tires were used?",
+      "target_quote": null,
+      "outcome": "abstained",
+      "source_coverage": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [],
+        "missing_terms": [],
+        "matched_terms": [],
+        "vocabulary_sha256": "a0198c019e49b841030b680dba031dd4466d68e92a8c1d1ec9c0a2b2b58d16ae",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "candidate_invoked": true,
+      "claims": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 288.48
+    }
+  ],
+  "coverage_controls": [
+    {
+      "id": "missing-coefficient",
+      "question": "Why was a logistic coefficient chosen?",
+      "document": "The logistic model was rejected for poor probability quality.",
+      "expected": "decline",
+      "source_answerable": false,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "coefficient",
+          "logistic"
+        ],
+        "missing_terms": [
+          "coefficient"
+        ],
+        "matched_terms": [
+          "logistic"
+        ],
+        "vocabulary_sha256": "57ccbf1be82b52206a526bb415951e7b353a0240391aa72207c273f0170cbdec",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "present-threshold",
+      "question": "What threshold was selected?",
+      "document": "The selected threshold was 0.17.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "selected",
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "selected",
+          "threshold"
+        ],
+        "vocabulary_sha256": "6710338af7f0be2c38845bb414364b3d3239f7c16ddc269abb19b06126c919b4",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "plural-coefficients",
+      "question": "Explain logistic coefficients.",
+      "document": "A logistic coefficient has this documented value.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "coefficient",
+          "logistic"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "coefficient",
+          "logistic"
+        ],
+        "vocabulary_sha256": "a31a205db83e3fd7ed07afb6c5e032ce3173571371bd32d6aa38bdc405a27c21",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "plural-probabilities",
+      "question": "Explain these probabilities.",
+      "document": "The probability is a research estimate.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "probability"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "probability"
+        ],
+        "vocabulary_sha256": "616384d331ac290b4ab8f5875bfecf405ec1142db303093717e13ab46210f4b5",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "calendar-numbers",
+      "question": "What was the threshold in 2025?",
+      "document": "In 2025 the threshold was 0.17.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "threshold"
+        ],
+        "vocabulary_sha256": "339560eb143933fb0c47428d4aeb0a8e1d85738fb222ffa1001da7650dcd14e3",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "fullwidth",
+      "question": "What is the \uff54\uff48\uff52\uff45\uff53\uff48\uff4f\uff4c\uff44?",
+      "document": "The threshold is 0.17.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "threshold"
+        ],
+        "vocabulary_sha256": "339560eb143933fb0c47428d4aeb0a8e1d85738fb222ffa1001da7650dcd14e3",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "generic-word",
+      "question": "Please provide information about the threshold.",
+      "document": "The threshold is 0.17.",
+      "expected": "allow",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "threshold"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "threshold"
+        ],
+        "vocabulary_sha256": "339560eb143933fb0c47428d4aeb0a8e1d85738fb222ffa1001da7650dcd14e3",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "missing-boundaries",
+      "question": "Explain histogram boundaries.",
+      "document": "The histogram model has a selected threshold.",
+      "expected": "decline",
+      "source_answerable": false,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "boundary",
+          "histogram"
+        ],
+        "missing_terms": [
+          "boundary"
+        ],
+        "matched_terms": [
+          "histogram"
+        ],
+        "vocabulary_sha256": "46705a43acc9d37df94d8c25a5e448e6cd1bc69ca004a3e35897bebc107b23a0",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "valid-paraphrase-refused",
+      "question": "What probabilistic quality was measured?",
+      "document": "Probability quality was worse than the comparator.",
+      "expected": "decline",
+      "source_answerable": true,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "decline",
+        "required_terms": [
+          "measured",
+          "probabilistic"
+        ],
+        "missing_terms": [
+          "measured",
+          "probabilistic"
+        ],
+        "matched_terms": [],
+        "vocabulary_sha256": "3c29e53ec3dfbf8a7e57352aa16a7d5c2e759b68ee783ff13d4b2427fd6d9028",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "short-absent-subject",
+      "question": "What is the crew cost?",
+      "document": "The threshold is 0.17.",
+      "expected": "allow",
+      "source_answerable": false,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [],
+        "missing_terms": [],
+        "matched_terms": [],
+        "vocabulary_sha256": "339560eb143933fb0c47428d4aeb0a8e1d85738fb222ffa1001da7650dcd14e3",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "word-present-fact-absent",
+      "question": "What is the coefficient derivation?",
+      "document": "The coefficient derivation is not documented.",
+      "expected": "allow",
+      "source_answerable": false,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [
+          "coefficient",
+          "derivation"
+        ],
+        "missing_terms": [],
+        "matched_terms": [
+          "coefficient",
+          "derivation"
+        ],
+        "vocabulary_sha256": "79c2b1c1cffc78447aa63fe0ad2418804b27bd49d8701f7f1e791f77ddbaf803",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    },
+    {
+      "id": "non-english-not-parsed",
+      "question": "\u0643\u064a\u0641 \u064a\u0639\u0645\u0644 \u0647\u0630\u0627 \u0627\u0644\u0646\u0645\u0648\u0630\u062c\u061f",
+      "document": "The threshold is 0.17.",
+      "expected": "allow",
+      "source_answerable": false,
+      "observed": {
+        "policy": "long-content-term-coverage-v1",
+        "decision": "allow",
+        "required_terms": [],
+        "missing_terms": [],
+        "matched_terms": [],
+        "vocabulary_sha256": "339560eb143933fb0c47428d4aeb0a8e1d85738fb222ffa1001da7650dcd14e3",
+        "interpretation": "Lexical coverage only; presence does not establish answerability and absence may be a valid paraphrase."
+      },
+      "passed": true
+    }
+  ],
+  "coverage_controls_passed": 12,
+  "scope_controls_passed": 14,
+  "complete": true,
+  "elapsed_ms": 25669.04,
+  "human_review_complete": false,
+  "semantic_answer_accuracy_measured": false,
+  "live_service_changed": false,
+  "production_ready": false,
+  "operational_approval": false
+}

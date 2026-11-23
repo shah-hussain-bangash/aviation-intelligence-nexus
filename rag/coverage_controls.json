@@ -1,0 +1,18 @@
+{
+  "format":"ain-coverage-controls-v1",
+  "scope":"Synthetic policy controls, including a known valid-paraphrase refusal and a short-term blind spot; not semantic accuracy labels.",
+  "cases":[
+    {"id":"missing-coefficient","question":"Why was a logistic coefficient chosen?","document":"The logistic model was rejected for poor probability quality.","expected":"decline","source_answerable":false},
+    {"id":"present-threshold","question":"What threshold was selected?","document":"The selected threshold was 0.17.","expected":"allow","source_answerable":true},
+    {"id":"plural-coefficients","question":"Explain logistic coefficients.","document":"A logistic coefficient has this documented value.","expected":"allow","source_answerable":true},
+    {"id":"plural-probabilities","question":"Explain these probabilities.","document":"The probability is a research estimate.","expected":"allow","source_answerable":true},
+    {"id":"calendar-numbers","question":"What was the threshold in 2025?","document":"In 2025 the threshold was 0.17.","expected":"allow","source_answerable":true},
+    {"id":"fullwidth","question":"What is the ｔｈｒｅｓｈｏｌｄ?","document":"The threshold is 0.17.","expected":"allow","source_answerable":true},
+    {"id":"generic-word","question":"Please provide information about the threshold.","document":"The threshold is 0.17.","expected":"allow","source_answerable":true},
+    {"id":"missing-boundaries","question":"Explain histogram boundaries.","document":"The histogram model has a selected threshold.","expected":"decline","source_answerable":false},
+    {"id":"valid-paraphrase-refused","question":"What probabilistic quality was measured?","document":"Probability quality was worse than the comparator.","expected":"decline","source_answerable":true},
+    {"id":"short-absent-subject","question":"What is the crew cost?","document":"The threshold is 0.17.","expected":"allow","source_answerable":false},
+    {"id":"word-present-fact-absent","question":"What is the coefficient derivation?","document":"The coefficient derivation is not documented.","expected":"allow","source_answerable":false},
+    {"id":"non-english-not-parsed","question":"كيف يعمل هذا النموذج؟","document":"The threshold is 0.17.","expected":"allow","source_answerable":false}
+  ]
+}

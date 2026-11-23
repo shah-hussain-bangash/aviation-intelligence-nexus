@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged. A separately versioned prompt-only attempt failed to resolve the reason quote; its first run is retained. Bounded source-context replay and one fresh composed query include that explanation, but one unsupported coefficient answer remains. Context coverage is not semantic acceptance; serving is unchanged.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged. A separately versioned prompt-only attempt failed to resolve the reason quote; its first run is retained. Bounded source-context replay and one fresh composed query include that explanation, but one unsupported coefficient answer remains. Context coverage is not semantic acceptance; serving is unchanged. A separate long-content-term coverage gate blocks the known unsupported coefficient query before model access. Its first 18-case development run retains ten expected quotes and a valid-paraphrase false refusal, with zero negative excerpts; this is not semantic answerability or promotion to serving.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -315,6 +315,14 @@
         {
           "path": "docs/reports/Context_Excerpt_Query.json",
           "sha256": "5db2e066d7947583cc5670dcaa4e491743c7a8a71c11bd0eacaf99d51c29c479"
+        },
+        {
+          "path": "docs/SOURCE_COVERAGE_GATE.md",
+          "sha256": "489537000f77b152827958fa30f406a2d9a81c6d4967f207947cce1158d3409a"
+        },
+        {
+          "path": "docs/reports/Source_Coverage_Evaluation.json",
+          "sha256": "1a9288fa958562725f232f5b8898929954f27780ab882f38b64fa9a62859f26a"
         }
       ]
     },
@@ -772,7 +780,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "1b9f40d62738ea7cbbd7f6089357c8cdb117426fd83b7fd67b59b5f13810784b"
+          "sha256": "f8d3be56caf52192922ea5a4cb0d7eb8215707987442799193b699bd5b0e12c1"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
