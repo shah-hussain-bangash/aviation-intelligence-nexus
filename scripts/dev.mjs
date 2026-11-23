@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { proxyResearchRequest } from './api-proxy.mjs';
 import {runtimeConfig} from './runtime-config.mjs';
+import {securityHeaders} from './security-headers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../apps/web');
 const port = Number(process.env.PORT || 8080);
@@ -14,6 +15,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT m
 const types = { '.mjs': 'text/javascript; charset=utf-8', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
 const inside = value => value === root || value.startsWith(root + path.sep);
 const server = http.createServer(async (req, res) => {
+  for(const [name,value] of Object.entries(securityHeaders))res.setHeader(name,value);
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
     if (pathname === '/__ain/health' && req.method === 'GET') {

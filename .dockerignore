@@ -26,6 +26,7 @@
 !scripts/dev.mjs
 !scripts/api-proxy.mjs
 !scripts/runtime-config.mjs
+!scripts/security-headers.mjs
 !docs/
 !docs/DELAY_V2.md
 !docs/DELAY_BASELINE.md
