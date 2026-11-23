@@ -17,3 +17,15 @@ Limits are a 512 MiB compressed snapshot, two-billion-byte CSV, five million row
 The complete retained January–May 2025 release was preflighted: **2,835,101 rows**, with all five hashes/counts matching the earlier import receipts. Final per-month validation took roughly 16–20 seconds on this workstation with all five months running concurrently. This is local streaming and disk-index processing, not distributed execution, an SLA or a capacity test. See [measured preflight evidence](reports/BTS_Intake_Preflight.json).
 
 New source code works from the terminal without rebuilding the dashboard containers. Review a receipt before explicitly using the existing import workflow. No automatic download, scheduled collector, import approval, dashboard intake UI, operational source-rights review or production orchestration is implemented. Raw snapshots, scratch files and per-run private receipts remain out of Git; only sanitized aggregate evidence is published. Keep the existing frozen ingestion/model documents and experiments unchanged.
+
+## Verify a retained result
+
+```powershell
+python -m pipelines.verify_intake .local/intake/accepted/<run-id>
+```
+
+The read-only verifier checks the version-1 receipt schema, flags/count arithmetic, declared month/source URL, fixed limits, run-directory identity and the retained archive's actual size/SHA-256. It also checks basic file identity while hashing and rejects symbolic files. The CLI only reads beneath the checkout's `.local` boundary, returns exit status 2 with a sanitized failure when unverifiable, and does not print exception text or personal paths. Nothing is copied, rewritten, imported or trained.
+
+`verified: true` means unsigned content consistency, including for a correctly retained **quarantined** input. It never changes that disposition or authorizes import. Rows and their counts are not rescanned; consistent edits to unsigned receipt counts can pass and are not authenticated. Another OS owner can replace data after the check. This is a check of bytes as read, not a signed audit, source-rights decision or transaction binding for a future import. Continue to use the importer's transactional checks and explicit operator review.
+
+[Measured verification evidence](reports/BTS_Intake_Verification.json) covers the five retained monthly snapshots and compares their declared counts/hashes with the earlier preflight report. Its 2,835,101-row total is a sum of receipt claims, not another row scan.
