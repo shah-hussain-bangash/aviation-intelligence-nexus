@@ -1,0 +1,1454 @@
+{
+  "format": "ain-generation-diagnostics-v1",
+  "checked_at": "2026-11-23T06:12:29.331363+00:00",
+  "scope": "Same curated 24-case development suite when using the default suite; no independent held-out labels, semantic accuracy or security qualification.",
+  "suite_sha256": "2c1ecd454f8011d18613a6d41690cb4ef9a3413eb2dfaa5cc2ad3a14c28b7eba",
+  "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+  "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+  "sources": [
+    {
+      "path": "docs/DELAY_V2.md",
+      "sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826"
+    },
+    {
+      "path": "docs/DELAY_BASELINE.md",
+      "sha256": "2f1e64baf6f3207c3b7f1ed4b172e6d620dceecbbb5a13afb7f4a6806bb84114"
+    },
+    {
+      "path": "docs/DATA_INGESTION.md",
+      "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+    },
+    {
+      "path": "docs/MODEL_DATASET.md",
+      "sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084"
+    },
+    {
+      "path": "docs/GATE_OPTIMIZATION.md",
+      "sha256": "b6b243a273630a58fb934f7c955af57ccd796f8eced88247830781de171c47d2"
+    },
+    {
+      "path": "docs/LOCAL_IDENTITY.md",
+      "sha256": "e1833e998d8a2257da686fabbbc1a8f47ed91d224c69c185706ac1e058d873cc"
+    }
+  ],
+  "passages": 31,
+  "code_sha256": {
+    "rag/service.py": "42fdf76642719ac6625ef5dcc287557a4f953925788067f4e12f56e54183d54b",
+    "rag/ollama.py": "54f7d75531b3a750fee4d65cecbf8d7a129c0d64a49d8d9ed41fee8522ef2968",
+    "rag/retrieval_diagnostics.py": "f59db3efdb201d801358cba065df619f274f0781d4ad2ce55b3566fefe01bfec",
+    "rag/generation_diagnostics.py": "32a152ac2157c03f6ef82703a6579e04581f1e71b1141482b98d75b2ef7b6597"
+  },
+  "embedding_model": "embeddinggemma:300m",
+  "embedding_digest": "85462619ee721b466c5927d109d4cb765861907d5417b9109caebc4e614679f1",
+  "generation_model": "qwen3:8b",
+  "generation_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "metrics": {
+    "total_cases": 24,
+    "retrieval_unavailable_cases": 0,
+    "generation_unavailable_or_rejected_cases": 2,
+    "evaluated_answerable_cases": 16,
+    "evaluated_out_of_corpus_cases": 6,
+    "generated_answers": 16,
+    "structurally_verified_claims": 28,
+    "evaluated_gold_targets": 16,
+    "gold_quotes_in_generated_citations": 14,
+    "gold_quote_coverage": 0.875,
+    "answerable_abstentions": 0,
+    "outside_answer_abstentions": 6,
+    "outside_generated_answers": 0,
+    "human_review_pending_cases": 24
+  },
+  "cases": [
+    {
+      "id": "v2-splits",
+      "question": "How many eligible training validation and testing flights were used in the second delay experiment?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "1,611,046 training, 577,730 validation and 597,574 testing"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          null
+        ],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "claims": [
+        {
+          "text": "The validation period for the second delay experiment was April 2025.",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "| Validation | February 2025 | Choose model settings and decision threshold |",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "target_quote_covered": [
+        false
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 11986.26
+    },
+    {
+      "id": "v2-alerts",
+      "question": "How many false alerts were recorded in May at the selected second-model threshold?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "241,732 false alerts"
+        }
+      ],
+      "outcome": "unavailable_or_rejected",
+      "generation_status": "unavailable_or_rejected",
+      "answer_abstained": null,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "claims": [],
+      "target_quote_covered": [
+        false
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2827.12
+    },
+    {
+      "id": "v2-inputs",
+      "question": "Which calendar and flight identity features were dropped from the second delay model?",
+      "targets": [
+        {
+          "source": "docs/DELAY_V2.md",
+          "quote": "Calendar month, exact day of month and flight number are dropped"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          3
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.3333333333333333,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "claims": [
+        {
+          "text": "Calendar month and exact day of month were dropped as inputs.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "text": "Flight number was dropped as an input.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1679.2
+    },
+    {
+      "id": "v1-selection",
+      "question": "Which logistic regularization candidate was selected using February log loss?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "C=0.1 was selected."
+        }
+      ],
+      "outcome": "unavailable_or_rejected",
+      "generation_status": "unavailable_or_rejected",
+      "answer_abstained": null,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        }
+      ],
+      "claims": [],
+      "target_quote_covered": [
+        false
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2282.47
+    },
+    {
+      "id": "v1-auc",
+      "question": "What was the logistic baseline March ROC-AUC?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "ROC-AUC, higher is better | 0.5604"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "claims": [
+        {
+          "text": "The logistic model's ROC-AUC for March is 0.5604",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "| ROC-AUC, higher is better | 0.5604 | 0.5000 |",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1156.01
+    },
+    {
+      "id": "v1-rejection",
+      "question": "Why was the first logistic model rejected for actionable serving?",
+      "targets": [
+        {
+          "source": "docs/DELAY_BASELINE.md",
+          "quote": "probability quality is worse and the threshold creates too many alerts."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "claims": [
+        {
+          "text": "The logistic model was rejected for operational serving due to poor probability quality and excessive false alarms.",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "target_quote_covered": [
+        false
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1118.74
+    },
+    {
+      "id": "import-count",
+      "question": "How many flights did the initial January BTS import contain?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "**539,747 flights**"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "5063817cab208009c709",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 1,
+          "end_line": 17
+        },
+        {
+          "id": "273417b4f8248a7b0bce",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "id": "421675d963c2423a8800",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        }
+      ],
+      "claims": [
+        {
+          "text": "The initial January BTS import contained 539,747 flights.",
+          "citation": "5063817cab208009c709",
+          "quote": "The initial local import contains **539,747 flights** from January 2025 across 14 reporting carriers.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 1,
+          "end_line": 17
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1135.93
+    },
+    {
+      "id": "import-null",
+      "question": "How does the importer store missing delay values?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "Missing delay values remain NULL."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "421675d963c2423a8800",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "claims": [
+        {
+          "text": "Missing delay values remain NULL during the import process.",
+          "citation": "421675d963c2423a8800",
+          "quote": "Missing delay values remain NULL.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "text": "There are 15,923 missing departure delays and 17,478 missing arrival delays.",
+          "citation": "421675d963c2423a8800",
+          "quote": "There are 15,923 missing departure delays and 17,478 missing arrival delays.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "text": "The binary target is arrival delay of at least 15 minutes, conditional on a non-cancelled, non-diverted flight with an observed arrival delay.",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "The binary target is arrival delay of at least 15 minutes, conditional on a non-cancelled, non-diverted flight with an observed arrival delay.",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2489.04
+    },
+    {
+      "id": "import-conflict",
+      "question": "What happens to the import transaction when natural flight identities conflict?",
+      "targets": [
+        {
+          "source": "docs/DATA_INGESTION.md",
+          "quote": "conflicting identities abort the entire import transaction."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "421675d963c2423a8800",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "id": "c3c46894fd8145493e52",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 22,
+          "end_line": 22
+        }
+      ],
+      "claims": [
+        {
+          "text": "Conflicting identities abort the entire import transaction.",
+          "citation": "421675d963c2423a8800",
+          "quote": "Invalid records or conflicting identities abort the entire import transaction.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "text": "Duplicate natural identities with identical stored values are counted.",
+          "citation": "421675d963c2423a8800",
+          "quote": "Duplicate natural identities with identical stored values are counted; conflicting revisions require review rather than silent replacement.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        },
+        {
+          "text": "The local dataset contains 16,312 cancelled and 1,166 diverted flights.",
+          "citation": "421675d963c2423a8800",
+          "quote": "The local dataset contains 16,312 cancelled and 1,166 diverted flights.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2572.64
+    },
+    {
+      "id": "dataset-clock",
+      "question": "How is BTS scheduled departure time 2400 represented in the first model dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "hour 24, minute 0."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "273417b4f8248a7b0bce",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        }
+      ],
+      "claims": [
+        {
+          "text": "BTS scheduled time `2400` stays hour 24, minute 0.",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "BTS scheduled time `2400` stays hour 24, minute 0.",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1007.59
+    },
+    {
+      "id": "dataset-target",
+      "question": "Are missing arrival-delay targets converted into on-time labels?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "Missing target values are never converted to on-time labels."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "421675d963c2423a8800",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        }
+      ],
+      "claims": [
+        {
+          "text": "Missing target values are never converted to on-time labels",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "Missing target values are never converted to on-time labels.",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "text": "The target is arrival delay of at least 15 minutes",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "The binary target is arrival delay of at least 15 minutes, conditional on a non-cancelled, non-diverted flight with an observed arrival delay.",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        },
+        {
+          "text": "There are 17,478 missing arrival delays",
+          "citation": "421675d963c2423a8800",
+          "quote": "There are 15,923 missing departure delays and 17,478 missing arrival delays.",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2248.35
+    },
+    {
+      "id": "dataset-test",
+      "question": "Which month is the frozen test period in the original chronological dataset?",
+      "targets": [
+        {
+          "source": "docs/MODEL_DATASET.md",
+          "quote": "March 2025 | Evaluate the frozen candidate once"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          3
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.3333333333333333,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "273417b4f8248a7b0bce",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "id": "12ee90b55bc0405a1406",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 7,
+          "end_line": 17
+        },
+        {
+          "id": "4dcc50f9b74ce48b56fa",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "claims": [
+        {
+          "text": "The frozen test period is in March 2025.",
+          "citation": "4dcc50f9b74ce48b56fa",
+          "quote": "| Test | March 2025 | Evaluate the frozen candidate once |",
+          "source": "docs/MODEL_DATASET.md",
+          "start_line": 18,
+          "end_line": 29
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 887.42
+    },
+    {
+      "id": "gate-interval",
+      "question": "What exact occupied interval does the synthetic gate optimizer use for its departure buffer?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "Occupancy is [arrival, departure + buffer)"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "f5e396fbf81313673a9c",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "90a961804e103764db31",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "id": "6b04b692785f0a5abef6",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 15,
+          "end_line": 26
+        }
+      ],
+      "claims": [
+        {
+          "text": "The synthetic gate optimizer uses a departure buffer that applies only after departure.",
+          "citation": "90a961804e103764db31",
+          "quote": "Buffer applies only after departure.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "text": "The departure buffer ranges from 0 to 60 minutes.",
+          "citation": "90a961804e103764db31",
+          "quote": "Requests are bounded to 16 flights, 6 gates, one synthetic day, integer costs 0\u20131000 and a buffer of 0\u201360 minutes.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "text": "The occupancy interval is defined as [arrival, departure + buffer).",
+          "citation": "90a961804e103764db31",
+          "quote": "Occupancy is [arrival, departure + buffer), so a gate becomes available exactly at departure + buffer.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2376.05
+    },
+    {
+      "id": "gate-priority",
+      "question": "Does assigning one more flight take priority over reducing gate assignment cost?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "assigning another flight takes priority over any cost saving."
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "90a961804e103764db31",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "id": "6b04b692785f0a5abef6",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 15,
+          "end_line": 26
+        },
+        {
+          "id": "f5e396fbf81313673a9c",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 1,
+          "end_line": 4
+        }
+      ],
+      "claims": [
+        {
+          "text": "Assigning another flight takes priority over any cost saving.",
+          "citation": "90a961804e103764db31",
+          "quote": "The penalty is n times the largest declared assignment cost plus one, so assigning another flight takes priority over any cost saving.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "text": "The penalty is n times the largest declared assignment cost plus one.",
+          "citation": "90a961804e103764db31",
+          "quote": "The penalty is n times the largest declared assignment cost plus one, so assigning another flight takes priority over any cost saving.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "text": "Costs are invented units, not currency or measured airline benefit.",
+          "citation": "90a961804e103764db31",
+          "quote": "Costs are invented units, not currency or measured airline benefit.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 2254.74
+    },
+    {
+      "id": "gate-bounds",
+      "question": "What are the maximum numbers of flights and gates accepted by the optimization request?",
+      "targets": [
+        {
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "quote": "16 flights, 6 gates"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "90a961804e103764db31",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "id": "ff53fce54e0b11677456",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        }
+      ],
+      "claims": [
+        {
+          "text": "The maximum number of flights accepted by the optimization request is 16.",
+          "citation": "90a961804e103764db31",
+          "quote": "Requests are bounded to 16 flights, 6 gates, one synthetic day, integer costs 0\u20131000 and a buffer of 0\u201360 minutes.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "text": "The maximum number of gates accepted by the optimization request is 6.",
+          "citation": "90a961804e103764db31",
+          "quote": "Requests are bounded to 16 flights, 6 gates, one synthetic day, integer costs 0\u20131000 and a buffer of 0\u201360 minutes.",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 5,
+          "end_line": 12
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1918.33
+    },
+    {
+      "id": "identity-cookie",
+      "question": "Which cookie flags protect the local research session token?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "HttpOnly, SameSite=Strict cookies"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "4624301ef6f64c43bc59",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "ff53fce54e0b11677456",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        }
+      ],
+      "claims": [
+        {
+          "text": "Random session tokens in HttpOnly, SameSite=Strict cookies, scoped to /api",
+          "citation": "ff53fce54e0b11677456",
+          "quote": "- Random session tokens in HttpOnly, SameSite=Strict cookies, scoped to `/api`. Only token hashes are stored in SQLite. Sessions expire after eight hours and can be revoked by logout or CLI access changes.",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1188.58
+    },
+    {
+      "id": "identity-expiry",
+      "question": "After how many hours does a local sign-in session expire?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "Sessions expire after eight hours"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          2
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 0.5,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "4624301ef6f64c43bc59",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "ff53fce54e0b11677456",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        },
+        {
+          "id": "375c069d47fd7c1cde55",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 46,
+          "end_line": 52
+        }
+      ],
+      "claims": [
+        {
+          "text": "Sessions expire after eight hours",
+          "citation": "ff53fce54e0b11677456",
+          "quote": "Sessions expire after eight hours and can be revoked by logout or CLI access changes.",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 808.98
+    },
+    {
+      "id": "identity-password",
+      "question": "What password length is required when creating the first local administrator?",
+      "targets": [
+        {
+          "source": "docs/LOCAL_IDENTITY.md",
+          "quote": "12\u2013128 characters"
+        }
+      ],
+      "outcome": "generated",
+      "generation_status": "completed",
+      "answer_abstained": false,
+      "retrieval": {
+        "target_ranks": [
+          1
+        ],
+        "target_hits": 1,
+        "reciprocal_rank_sum": 1.0,
+        "all_targets_found": true,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "a4a501411945376130a2",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 5,
+          "end_line": 23
+        },
+        {
+          "id": "375c069d47fd7c1cde55",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 46,
+          "end_line": 52
+        },
+        {
+          "id": "ff53fce54e0b11677456",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 36,
+          "end_line": 45
+        }
+      ],
+      "claims": [
+        {
+          "text": "The password must be between 12 and 128 characters long.",
+          "citation": "a4a501411945376130a2",
+          "quote": "Enter and confirm a private password of 12\u2013128 characters when prompted.",
+          "source": "docs/LOCAL_IDENTITY.md",
+          "start_line": 5,
+          "end_line": 23
+        }
+      ],
+      "target_quote_covered": [
+        true
+      ],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 1013.97
+    },
+    {
+      "id": "outside-wind",
+      "question": "What is the current runway wind speed at Abu Dhabi airport?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "completed",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "f5e396fbf81313673a9c",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "7ef642dd43ad1a52a249",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 38,
+          "end_line": 42
+        }
+      ],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 281.55
+    },
+    {
+      "id": "outside-schedule",
+      "question": "Which Emirates flight departs Dubai for London tomorrow morning?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "skipped_no_evidence",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true
+      },
+      "retrieved": [],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 64.49
+    },
+    {
+      "id": "outside-meals",
+      "question": "How many meals are required for tomorrow's Etihad flights?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "completed",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "c3c46894fd8145493e52",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 22,
+          "end_line": 22
+        },
+        {
+          "id": "7ef642dd43ad1a52a249",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 38,
+          "end_line": 42
+        },
+        {
+          "id": "421675d963c2423a8800",
+          "source": "docs/DATA_INGESTION.md",
+          "start_line": 18,
+          "end_line": 21
+        }
+      ],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 286.28
+    },
+    {
+      "id": "outside-maintenance",
+      "question": "How should an aircraft hydraulic pump be repaired?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "completed",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": false,
+        "available": true
+      },
+      "retrieved": [
+        {
+          "id": "487bddd1218c7ee2cd3e",
+          "source": "docs/GATE_OPTIMIZATION.md",
+          "start_line": 27,
+          "end_line": 35
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        }
+      ],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 283.72
+    },
+    {
+      "id": "outside-football",
+      "question": "Who won the FIFA World Cup in 2022?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "skipped_no_evidence",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true
+      },
+      "retrieved": [],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 88.76
+    },
+    {
+      "id": "outside-chemistry",
+      "question": "What is the chemical formula and molar mass of caffeine?",
+      "targets": [],
+      "outcome": "abstained",
+      "generation_status": "skipped_no_evidence",
+      "answer_abstained": true,
+      "retrieval": {
+        "target_ranks": [],
+        "target_hits": 0,
+        "reciprocal_rank_sum": 0,
+        "all_targets_found": false,
+        "abstained": true,
+        "available": true
+      },
+      "retrieved": [],
+      "claims": [],
+      "target_quote_covered": [],
+      "human_review": {
+        "status": "pending",
+        "semantic_correctness": null,
+        "question_answered": null
+      },
+      "elapsed_ms": 61.15
+    }
+  ],
+  "complete": false,
+  "elapsed_ms": 42118.35,
+  "metric_denominators": "Quote coverage and answer abstention use completed/skipped-no-evidence cases only; provider failures and rejected generation are not correct abstentions. Exact gold-quote copying is not semantic correctness.",
+  "semantic_answer_accuracy_measured": false,
+  "human_review_complete": false,
+  "ranking_prompt_or_threshold_changes": false,
+  "operational_approval": false,
+  "production_ready": false
+}

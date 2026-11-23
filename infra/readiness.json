@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -275,6 +275,14 @@
         {
           "path": "docs/reports/Retrieval_Dashboard_Browser.json",
           "sha256": "f5eb66fdde0c6331c6e1f85acf49a0324020292810d4654590388eecd4dab447"
+        },
+        {
+          "path": "docs/RAG_GENERATION_DIAGNOSTICS.md",
+          "sha256": "135548b021c9221e80f421be76b5a566279a7999e5c19edd8637666ebb11106c"
+        },
+        {
+          "path": "docs/reports/Generation_Diagnostics.json",
+          "sha256": "54405945c0cf3d809ae30481694f4336757829e0e3bd38a410d7a89c6504e648"
         }
       ]
     },
@@ -732,7 +740,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "323ae37464e0149c89b45d7b18565e6215a5c40c5f54f02a6b00245b4d49dd67"
+          "sha256": "63f605106a84a852dd2bdc189b723e836f6f21ab90b2db4eca787316a2ccd63a"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
