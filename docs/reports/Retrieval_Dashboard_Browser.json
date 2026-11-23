@@ -1,0 +1,117 @@
+{
+  "format": "ain-retrieval-dashboard-browser-v1",
+  "scope": "Isolated component preview based on the recorded public evaluation; simulated HTTP failures, session changes and one unavailable-query fixture. No primary account, database or model calls used.",
+  "results": [
+    {
+      "scenario": "Desktop",
+      "mode": "desktop",
+      "checks": {
+        "scope_visible": true,
+        "initial_issues": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "filters",
+      "mode": "filters",
+      "checks": {
+        "scope_visible": true,
+        "keyword_issues": true,
+        "outside_count": true,
+        "search_count": true,
+        "source_links": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "outage",
+      "mode": "outage",
+      "checks": {
+        "scope_visible": true,
+        "refresh_clears_immediately": true,
+        "outage_withholds": true,
+        "recovered": true,
+        "initial_issues": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "invalid",
+      "mode": "invalid",
+      "checks": {
+        "contradiction_withheld": true,
+        "valid_recovery": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "viewer",
+      "mode": "viewer",
+      "checks": {
+        "scope_visible": true,
+        "initial_issues": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "session",
+      "mode": "session",
+      "checks": {
+        "session_cleared": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "replace",
+      "mode": "replace",
+      "checks": {
+        "old_response_does_not_replace": true,
+        "scope_visible": true,
+        "initial_issues": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "unavailable",
+      "mode": "unavailable",
+      "checks": {
+        "scope_visible": true,
+        "unavailable_is_not_abstention": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "scenario": "Mobile_390",
+      "mode": "mobile",
+      "checks": {
+        "scope_visible": true,
+        "initial_issues": true,
+        "export_scope": true,
+        "export_selection": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 433
+    }
+  ],
+  "production_ready": false
+}

@@ -41,6 +41,7 @@ from services.api.data_quality import load_quality
 from services.api.diagnostics import load_diagnostics
 from services.api.thresholds import load_thresholds
 from services.api.duration import load_duration
+from services.api.retrieval_evaluation import load_retrieval_evaluation
 from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
@@ -617,6 +618,12 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError, ZeroDivisionError):
             return JSONResponse(status_code=503, content={'error':'model_explanations_unavailable',
                 'message':'Recorded permutation evidence could not be verified. Explanations are withheld.'})
+
+    @app.get('/api/v1/research/retrieval-diagnostics')
+    def retrieval_diagnostics(request: Request):
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'retrieval_query_not_supported'})
+        try:return load_retrieval_evaluation()
+        except (OSError,ValueError,KeyError,TypeError,ZeroDivisionError):return JSONResponse(status_code=503,content={'error':'retrieval_evidence_unavailable','message':'Recorded retrieval evidence could not be verified. Results are withheld.'})
 
     @app.get('/api/v1/research/duration-evaluation')
     def duration_evaluation(request: Request):

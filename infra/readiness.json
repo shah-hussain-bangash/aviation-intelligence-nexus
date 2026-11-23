@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -267,6 +267,14 @@
         {
           "path": "docs/reports/Retrieval_Diagnostics.json",
           "sha256": "eb8a40b32b0d30af8d1f2e7a8815fd220808f28bf53a019ef6d12258b6e0c57f"
+        },
+        {
+          "path": "docs/RAG_RETRIEVAL_DASHBOARD.md",
+          "sha256": "f446f8c216281b6cd59de71528ceaa17a90a45c9bd01544605f709f984be9267"
+        },
+        {
+          "path": "docs/reports/Retrieval_Dashboard_Browser.json",
+          "sha256": "f5eb66fdde0c6331c6e1f85acf49a0324020292810d4654590388eecd4dab447"
         }
       ]
     },
@@ -724,7 +732,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "072f47f591c393d8662cace9927d5d5e5e0ce82ca731715bcf1a8677f5580c1d"
+          "sha256": "323ae37464e0149c89b45d7b18565e6215a5c40c5f54f02a6b00245b4d49dd67"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

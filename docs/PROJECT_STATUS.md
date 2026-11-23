@@ -2,6 +2,8 @@
 
 ## Delivered
 
+Retrieval-dashboard milestone: authenticated read-only report validation, hybrid/keyword comparisons, case filters, revision-bound passage links and allowlisted JSON export are implemented. Seven Python tests, three Node tests and nine isolated browser scenarios cover integrity, availability, session changes and failures. No model, database schema or frozen evaluation changes; deployment verification remains separate. See `RAG_RETRIEVAL_DASHBOARD.md`.
+
 Retrieval-diagnostics milestone: 24 fixed curated cases compare actual unchanged hybrid retrieval with a TF-IDF baseline. Both found 17/18 required passages; mean target reciprocal rank was 0.7315 hybrid versus 0.7963 lexical. Hybrid correctly abstained on 3/6 out-of-corpus questions versus 2/6 lexical; three hybrid false retrievals remain visible. The completed run had no unavailable queries, after an earlier model-status timeout. No generated-answer accuracy, held-out performance, security robustness or production acceptance is claimed. Eight fixture tests cover provenance, availability and scoring. See `RAG_RETRIEVAL_DIAGNOSTICS.md`.
 
 Saved-startup milestone: a VS Code task and `npm.cmd start` reuse the ready container dashboard or validate and start only the existing primary API/web pair. Missing deployments, unrelated ports, wrong volumes/state paths and unsafe bindings stop startup; no rebuild, replacement container/volume, credential change or rollback-test startup is performed. Six synthetic startup tests and the real already-running branch passed. The stopped-container branch was not exercised against the running user deployment. See `DAILY_STARTUP.md`.

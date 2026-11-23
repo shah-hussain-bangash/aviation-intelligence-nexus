@@ -1,3 +1,4 @@
+import {validateRetrieval,retrievalCases,renderRetrieval,retrievalExport} from '../apps/web/retrieval-evaluation.mjs';
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
@@ -712,4 +713,26 @@ test('rollback export excludes private fields and preserves limited scope',()=>{
  const value=rollbackExport(data);assert.equal(value.production_qualified,false);assert.equal(value.rollback_drill.binding.candidate_matches_current_build,true);
  assert.doesNotMatch(JSON.stringify(value),/DO-NOT-EXPOSE/);assert.match(value.scope,/selected checks only/);
  assert.throws(()=>rollbackExport({...data,rollback_drill:{recorded:false}}));
+});
+const retrievalFixture=()=>({...JSON.parse(fs.readFileSync(new URL('../docs/reports/Retrieval_Diagnostics.json',import.meta.url),'utf8')),integrity_verified:true,report_sha256:'eb8a40b32b0d30af8d1f2e7a8815fd220808f28bf53a019ef6d12258b6e0c57f'});
+test('recorded retrieval comparison exposes misses, filters and limited metric meaning',()=>{
+ const r=retrievalFixture();assert.equal(retrievalCases(r).length,4);assert.equal(retrievalCases(r,'lexical').length,5);
+ assert.equal(retrievalCases(r,'hybrid','all').length,24);assert.equal(retrievalCases(r,'hybrid','outside').length,6);assert.equal(retrievalCases(r,'hybrid','issues','wind').length,1);
+ let html=renderRetrieval(r);assert.match(html,/not answer accuracy/);assert.match(html,/Keyword search ranked relevant passages higher overall/);assert.match(html,/4 of 24 questions/);assert.match(html,/Out-of-corpus question returned evidence/);
+ r.cases[0].question='<script>alert(1)</script>';html=renderRetrieval(r,'hybrid','all');assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('retrieval validation rejects contradictory evidence and export excludes unrelated fields',()=>{
+ for(const change of [r=>r.production_ready=true,r=>r.integrity_verified=false,r=>r.metrics.hybrid.target_hits_at_3=18,r=>r.cases[0].hybrid.target_ranks=[0],r=>r.cases[0].hybrid.retrieved[0].source='../private',r=>r.cases[0].hybrid.available=false]){
+  const r=retrievalFixture();change(r);assert.throws(()=>validateRetrieval(r));
+ }
+ const r=retrievalFixture();r.private_path='DO-NOT-EXPOSE';r.metrics.hybrid.private_path='DO-NOT-EXPOSE';r.cases[0].private_path='DO-NOT-EXPOSE';
+ const result=retrievalExport(r,'lexical','outside','wind');assert.equal(result.production_ready,false);assert.equal(result.recorded_evaluation_only,true);assert.equal(result.displayed_case_ids.length,1);assert.doesNotMatch(JSON.stringify(result),/DO-NOT-EXPOSE/);
+ assert.throws(()=>retrievalCases(r,'invented'));assert.throws(()=>retrievalCases(r,'hybrid','unsupported'));
+});
+test('retrieval evaluation proxy permits only fixed reads and forwards only the session cookie',async t=>{
+ const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/retrieval-diagnostics');assert.equal(req.headers.cookie,'ain_session=fixture');assert.equal(req.headers.authorization,undefined);res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,backend)){res.writeHead(404);res.end();}});
+ const url=`http://127.0.0.1:${frontend}/api/v1/research/retrieval-diagnostics`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret',Authorization:'do-not-forward'}})).status,200);
+ assert.equal((await fetch(url+'?source=private')).status,422);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal((await fetch(url+'/anything')).status,404);
 });

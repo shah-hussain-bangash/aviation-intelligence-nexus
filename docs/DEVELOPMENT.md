@@ -22,7 +22,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 97 Node dashboard/proxy/startup tests and 294 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 100 Node dashboard/proxy/startup tests and 301 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -78,3 +78,5 @@ Synthetic gate review adds a proposal-bound, expiring research decision. Use uni
 The offline BTS structural audit and recorded lineage panel are documented in DATA_QUALITY_LINEAGE.md. Refreshing the UI verifies a pinned report; it does not rerun database scans.
 
 Curated passage retrieval diagnostics: `python -m rag.retrieval_diagnostics --output .local/evaluations/retrieval-new-run.json`. See RAG_RETRIEVAL_DIAGNOSTICS.md for scope, unavailable-case accounting and reproduction.
+
+The authenticated read-only retrieval comparison panel is documented in [RAG_RETRIEVAL_DASHBOARD.md](RAG_RETRIEVAL_DASHBOARD.md).
