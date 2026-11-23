@@ -1,0 +1,19 @@
+# Local flight-data intake and quarantine
+
+The optional preflight command copies one monthly ZIP into private intake storage, validates the CSV without extraction, and publishes an accepted or quarantined snapshot with a JSON receipt. It does not open the primary database, import records, contact BTS, execute archive contents or train a model. Original downloads remain unchanged.
+
+```powershell
+python -m pipelines.intake_bts .local/downloads/bts_2025_01.zip --year 2025 --month 1
+```
+
+Use the project `.venv` interpreter. The CLI writes only below the checkout's ignored `.local` directory. Each run creates a new identifier and separate receipt; retries do not overwrite previous runs. Outputs are `.local/intake/accepted/<run-id>/archive.zip` and `receipt.json`, or the corresponding `quarantined` directory. Accepted means the selected checks completed under this protocol; it does not mean operational approval or permission to import automatically. Exit status is 0 for acceptance and 2 for a completed quarantine result. Input/setup/copy/publication I/O errors fail separately and may leave a private staging directory for inspection.
+
+The owned snapshot is hashed before/after validation and publication. Local exclusive hard-link publication requires a compatible filesystem. No archive path is extracted. The central directory is bounded before parsing; multidisk/excessive metadata, unsafe members, encryption and unsupported compression are rejected. One CSV and small optional readme files are supported. Readme content is not executed or inspected as instructions. CSV lines/fields/columns are bounded; the official trailing empty column is accepted only as empty data. Duplicate headers, missing fields and malformed records are rejected.
+
+Field checks reuse the existing importer's normalization for month, reporting carrier, airports, flight number, scheduled time, flags and finite delays. Missing delays remain missing. A disk-backed temporary key/hash index detects identical duplicates and conflicting natural identities without holding the dataset in memory. The scratch database is separate from application state and removed after the scan. The check does not compare against flights already in the application database; the existing transactional importer remains responsible for cross-import conflict checks.
+
+Limits are a 512 MiB compressed snapshot, two-billion-byte CSV, five million rows, sixteen archive members, bounded metadata and a 120-second copy/scan budget. Resource-bound quarantine requires review and does not prove data is factually incorrect. Receipt counts for incomplete scans describe only the processed prefix. CSV CRC verification is claimed only after reading the complete CSV; other readme content is not CRC-qualified. Checksums identify bytes, not independent BTS authorization or authenticity. The declared source URL is derived from the chosen period, not proof of where a file originated.
+
+The complete retained January–May 2025 release was preflighted: **2,835,101 rows**, with all five hashes/counts matching the earlier import receipts. Final per-month validation took roughly 16–20 seconds on this workstation with all five months running concurrently. This is local streaming and disk-index processing, not distributed execution, an SLA or a capacity test. See [measured preflight evidence](reports/BTS_Intake_Preflight.json).
+
+New source code works from the terminal without rebuilding the dashboard containers. Review a receipt before explicitly using the existing import workflow. No automatic download, scheduled collector, import approval, dashboard intake UI, operational source-rights review or production orchestration is implemented. Raw snapshots, scratch files and per-run private receipts remain out of Git; only sanitized aggregate evidence is published. Keep the existing frozen ingestion/model documents and experiments unchanged.
