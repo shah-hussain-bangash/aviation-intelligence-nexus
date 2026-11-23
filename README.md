@@ -153,3 +153,5 @@ Retrieval evaluation: [Passage-level RAG diagnostics](docs/RAG_RETRIEVAL_DIAGNOS
 Retrieval dashboard: [Recorded comparison and case inspection](docs/RAG_RETRIEVAL_DASHBOARD.md) adds authenticated filters, source quotations and safe JSON export without model calls.
 
 Generated-answer evaluation: [First-run Qwen3 diagnostics](docs/RAG_GENERATION_DIAGNOSTICS.md) preserve incomplete cases and a concrete semantic citation failure; exact quotation checks do not establish answer correctness.
+
+Experiment-scoped research candidate: [Verbatim excerpts and retained challenge failures](docs/SCOPED_RAG_CANDIDATE.md) enforce document/version separation without promoting the candidate to the dashboard.

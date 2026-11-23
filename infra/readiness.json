@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -283,6 +283,14 @@
         {
           "path": "docs/reports/Generation_Diagnostics.json",
           "sha256": "54405945c0cf3d809ae30481694f4336757829e0e3bd38a410d7a89c6504e648"
+        },
+        {
+          "path": "docs/SCOPED_RAG_CANDIDATE.md",
+          "sha256": "56263f89e9ca23ea417ce1f73e4040e5912285b765fb6f4d5a8ce252dac38ec5"
+        },
+        {
+          "path": "docs/reports/Scoped_Answer_Candidate.json",
+          "sha256": "2491734a2f1a1f5a50cf88e3eecbd8b0e8e9de956b917a2227733b0d6c49d0a1"
         }
       ]
     },
@@ -740,7 +748,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "63f605106a84a852dd2bdc189b723e836f6f21ab90b2db4eca787316a2ccd63a"
+          "sha256": "70c545d2de107a122cfe3b01aaabad9a351335023e674ab012342222329b2a09"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
