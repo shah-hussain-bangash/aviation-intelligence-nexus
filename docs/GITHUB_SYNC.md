@@ -27,3 +27,5 @@ Raw datasets, archives, credentials, private keys, `.env` files, personal docume
 `npm test` now includes source validation, Node integration/startup tests and the Python suite. GitHub also runs Python tests on Linux and Windows using synthetic temporary test fixtures; raw datasets and model artifacts are not needed. These checks do not establish production behavior or airline model suitability.
 
 The GitHub account was renamed to `shah-hussain-bangash`; repository ID 1463875455 is unchanged. Origin and the approved sync destination now use that canonical address. Historical evidence may retain redirected links under the former username. A disconnected Desktop Commander session still blocks scheduled authenticated sync; the account rename does not repair that connection.
+
+The existing portfolio walkthrough is the only approved MP4: `docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4`, Git blob SHA-1 `32eee7b910c70253d79ed39e0974669ead4f73e0`. Source checks verify its exact path and bytes; modified clips and other MP4s require review. The 5 MiB limit and ordinary-file/symlink checks still apply.

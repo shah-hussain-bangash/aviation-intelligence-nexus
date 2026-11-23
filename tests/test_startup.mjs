@@ -3,6 +3,22 @@ import http from 'node:http';
 import { test } from 'node:test';
 import { inspectPort, portNumber } from '../scripts/start-local.mjs';
 import {ready,startRelease,validateContainers} from '../scripts/start-release.mjs';
+import {reviewedBinary,reviewFile} from '../scripts/repository-guards.mjs';
+import fs from 'node:fs';
+
+test('portfolio media exception is restricted to exact path and unchanged committed bytes',()=>{
+ const path='docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4';
+ assert.equal(reviewedBinary(path,Buffer.from('changed clip')),false);
+ assert.equal(reviewedBinary('docs/case-study/assets/another.mp4',Buffer.from('clip')),false);
+ assert.ok(reviewFile('docs/case-study/assets/another.mp4').includes('File type needs manual review'));
+ // Hosted CI has the published clip; the older local checkout may still await its Git fetch.
+ const file=new URL('../'+path,import.meta.url);
+ if(fs.existsSync(file)){
+  const bytes=fs.readFileSync(file);assert.equal(reviewedBinary(path,bytes),true);
+  const changed=Buffer.from(bytes);changed[changed.length-1]^=1;assert.equal(reviewedBinary(path,changed),false);
+  assert.deepEqual(reviewFile(path),[]);
+ }
+});
 
 function savedContainers(){return ['api','web'].map(service=>({Name:`/ain-local-release-${service}-1`,Config:{Labels:{'com.docker.compose.project':'ain-local-release','com.docker.compose.service':service},Env:['AIN_STATE_ROOT=/app/.local/active']},HostConfig:{PortBindings:service==='web'?{'8080/tcp':[{HostIp:'127.0.0.1',HostPort:'8090'}]}:{}},Mounts:service==='api'?[{Destination:'/app/.local',Type:'volume',Name:'ain-local-release_state'}]:[]}));}
 

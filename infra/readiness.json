@@ -724,7 +724,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "0e7c2c1a9e256058669e23e59159c2f16b4fbbc8257f97059abc340ffb887541"
+          "sha256": "072f47f591c393d8662cace9927d5d5e5e0ce82ca731715bcf1a8677f5580c1d"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",
