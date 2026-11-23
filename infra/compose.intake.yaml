@@ -1,0 +1,12 @@
+# Opt-in metadata only. Never mount the intake archives into the API.
+services:
+  api:
+    environment:
+      AIN_INTAKE_OVERVIEW_MOUNTED: "1"
+    volumes:
+      - type: bind
+        source: ./.local/intake-dashboard
+        target: /intake-status
+        read_only: true
+        bind:
+          create_host_path: false

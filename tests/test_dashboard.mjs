@@ -1,3 +1,4 @@
+import {validateIntake,renderIntake} from '../apps/web/intake-overview.mjs';
 import {validateRetrieval,retrievalCases,renderRetrieval,retrievalExport} from '../apps/web/retrieval-evaluation.mjs';
 import {validateScopedResult,renderScopedResult,scopedExport} from '../apps/web/scoped-answer-lab.mjs';
 import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
@@ -788,3 +789,8 @@ test('scoped query proxy is bounded POST with CSRF and session cookie only',asyn
  assert.equal((await fetch(base+'/api/v1/research/scoped-query',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(4097)})).status,413);
  }finally{front.closeAllConnections();backend.closeAllConnections();await Promise.all([new Promise(r=>front.close(r)),new Promise(r=>backend.close(r))]);}
 });
+
+function intakeFixture(){return {format:'ain-intake-overview-v1',checked_at:'2026-11-23T12:00:00Z',runs_checked:4,accepted_runs:2,quarantined_runs:1,unverifiable_runs:1,unique_archives:1,repeated_accepted_runs:1,declared_rows:100,archives:[{period:'2025-01',sha256:'a'.repeat(64),bytes:1000,declared_rows:100,runs:2}],quarantine_reasons:{invalid_zip:1},receipt_authenticated:false,rows_rescanned:false,import_authorized:false,import_performed:false,production_ready:false};}
+test('intake snapshot distinguishes deduplicated unsigned claims from imported records',()=>{const r=intakeFixture();assert.equal(validateIntake(r),r);const html=renderIntake(r);assert.match(html,/unsigned receipt claims/);assert.match(html,/Not imported flight counts/);assert.match(html,/repeated accepted checks excluded/);assert.match(html,/invalid zip: 1/);});
+test('intake snapshot rejects duplicate hashes, corrupt accounting and readiness claims',()=>{for(const change of [r=>r.production_ready=true,r=>r.declared_rows++,r=>r.accepted_runs=true,r=>r.archives.push({...r.archives[0]}),r=>r.archives[0].runs=1,r=>r.quarantine_reasons.invalid_zip=2,r=>r.archives[0].period='<script>']){const r=intakeFixture();change(r);assert.throws(()=>validateIntake(r));}});
+test('intake proxy rejects query controls and writes before upstream access',async()=>{for(const [method,url,expected] of [['GET','/api/v1/research/intake-overview?path=secret',422],['POST','/api/v1/research/intake-overview',405]]){let status;const res={writeHead(code){status=code;},end(){}};assert.equal(await proxyResearchRequest({method,url,headers:{}},res,'/api/v1/research/intake-overview',1),true);assert.equal(status,expected);}});
