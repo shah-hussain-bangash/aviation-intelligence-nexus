@@ -1,0 +1,11 @@
+# Continuous local observer
+
+`python -m infra.local_observer run --directory .local/observer --port 8090` runs a separate OS process that polls dashboard readiness and frontend liveness every five seconds. It needs no account, model access or Docker privileges. Approved targets are loopback ports 8090 (main dashboard) and 8092 (isolated drill). HTTP proxies and redirects are disabled; response size and request duration are bounded. A valid dashboard JSON identity is required, with explicit backend readiness for the API probe.
+
+Only one observer may use a directory. Its OS file lock is released on normal exit or process termination. A process restart starts a new monitoring instance; it does not reuse earlier health or claim uninterrupted history. The existing monitor retains at most 50 component transitions in its current instance and writes its latest record atomically. A persistence failure exits the observer unsuccessfully. These local files are editable evidence, not protected auditing or durable incident storage.
+
+Inspect current health with `python -m infra.local_observer status --directory .local/observer`. Missing, malformed, future-dated or samples at least 15 seconds old return `unknown`. A recently written file is a health observation, not proof that a supervisor will keep running. Slow sequential probes may cause conservative expiry. The observer does not restart application services.
+
+Stop it gracefully by creating `.local/observer/stop.request`. The next loop exits within approximately five seconds plus any in-progress probes. Remove that request explicitly before starting again. Ctrl+C or ending its supervisor also stops the process. No credentials or request contents are recorded. No email, Slack, SMS or on-call notifications are sent.
+
+A Windows logon task may supervise this command in the normal signed-in user's session. Installing and starting that task must be verified separately; adding this module does not install it. A workstation that is off, asleep or logged out cannot provide independent availability monitoring. Task restarts and logon behavior require separate runtime checks. Off-host monitoring, external alert delivery, alert acknowledgement/escalation, high availability and production acceptance remain incomplete. All 24 production requirements remain open.
