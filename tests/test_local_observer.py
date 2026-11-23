@@ -28,6 +28,7 @@ class LocalObserverTests(unittest.TestCase):
         self.record()
         self.assertEqual(status(self.root, self.now)['state'], 'healthy')
         self.assertEqual(status(self.root, self.now + timedelta(seconds=15))['state'], 'unknown')
+        self.assertEqual(status(self.root, self.now + timedelta(seconds=14.999))['state'], 'unknown')
         self.assertEqual(status(self.root, self.now - timedelta(seconds=1))['state'], 'unknown')
         self.record(checked_at='2026-01-01T00:00:00')
         self.assertEqual(status(self.root)['state'], 'unknown')

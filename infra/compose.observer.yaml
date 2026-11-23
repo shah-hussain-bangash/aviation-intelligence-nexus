@@ -1,0 +1,13 @@
+# Opt-in with root compose.yaml first: expose only host observer state read-only.
+# Start the host observer first. Missing host directories must not be created silently.
+services:
+  api:
+    environment:
+      AIN_OBSERVER_MOUNTED: "1"
+    volumes:
+      - type: bind
+        source: ./.local/observer
+        target: /observer
+        read_only: true
+        bind:
+          create_host_path: false

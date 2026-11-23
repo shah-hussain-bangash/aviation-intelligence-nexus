@@ -22,3 +22,21 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/manage-local-obs
 The one-minute trigger provides another launch opportunity after an exited process; it does not kill or repair a hung running process. The ignore-new-instance policy and OS lock prevent duplicate observers. A periodic trigger does not establish exact recovery latency or continuous availability. Windows Restart-on-Failure settings alone failed a workstation drill; manual recovery restored monitoring. A later drill with the periodic trigger configured observed a new healthy observer automatically, while status correctly expired during the gap. That drill did not identify which trigger fired, and it does not qualify Restart-on-Failure policy or logon startup. Detailed receipts remain private runtime evidence, not source-code guarantees.
 
 A workstation that is off, asleep or logged out cannot provide independent availability monitoring. Logon startup still needs a runtime check. Off-host monitoring, external alert delivery, alert acknowledgement/escalation, high availability and production acceptance remain incomplete. All 24 production requirements remain open.
+
+## Dashboard observations
+
+The authenticated Release & recovery panel reads the observer's sanitized endpoint observations. Fresh healthy/degraded observations include sample time and age. Missing, malformed or expired observations display unknown. A displayed observation automatically clears after its remaining 15-second freshness window; refreshing service status obtains a new observation. Sign-out and failed refreshes clear previous results. This card does not query Windows Task Scheduler or verify that a task/process is running, and it sends no notifications.
+
+Native development reads only `observer/health.json` beside its state database. Docker defaults to unknown unless the opt-in `infra/compose.observer.yaml` overlay is supplied. This overlay mounts only the existing host `.local/observer` directory at `/observer`, read-only, and sets the explicit deployment flag. Mount the directory rather than one file so atomic record replacement remains visible. Missing host directories are refused. Keys, snapshots, restored databases and the rest of the checkout are outside this mount.
+
+For an existing reviewed release, use both Compose files consistently when building/recreating the deployment:
+
+```powershell
+$env:AIN_RELEASE_REVISION = (git rev-parse HEAD).Trim()
+docker compose -f compose.yaml -f infra/compose.observer.yaml build api web
+docker compose -f compose.yaml -f infra/compose.observer.yaml up -d --no-build --pull never --wait --wait-timeout 90 api web
+```
+
+Follow the existing release-preservation checks before recreating a saved deployment. These commands do not qualify a new build automatically; verify the mounted directory, source revision, saved accounts/data/model, container isolation and actual status after deployment. Removing the overlay during recreation disconnects the observer display. A later source revision will not match an earlier rollback receipt's candidate identity, even if selected contracts are unchanged. Historical rollback and recovery evidence remains historical.
+
+[Browser checks](reports/Observer_Dashboard_Browser.json) use synthetic observations and establish UI behavior only. They do not represent live task verification or a deployed mount.

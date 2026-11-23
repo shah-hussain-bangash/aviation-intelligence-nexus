@@ -1,0 +1,19 @@
+{
+  "scope": "Browser UI checks using synthetic endpoint observations; no actual task, credentials or flight data",
+  "checks": {
+    "healthy_observation_visible": true,
+    "degraded_api_and_live_frontend_distinguished": true,
+    "unknown_health_does_not_retain_component_claims": true,
+    "remaining_freshness_window_expires_automatically": true,
+    "refresh_failure_clears_previous_results": true,
+    "sign_out_clears_results_and_disables_controls": true,
+    "expiry_does_not_restore_signed_out_results": true,
+    "viewer_fixture_can_read_observations": true,
+    "narrow_layout_has_no_horizontal_overflow": true,
+    "viewport_override_reset": true
+  },
+  "narrow_requested_width": 390,
+  "narrow_observed_width": 433,
+  "production_ready": false,
+  "live_deployment_verified": false
+}

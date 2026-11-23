@@ -27,7 +27,27 @@ import { sampleGateScenario, renderGatePlan } from '../apps/web/gate-lab.mjs';
 import { renderKnowledge } from '../apps/web/knowledge-lab.mjs';
 import { renderInvestigation, investigationPayload,canReviewInvestigation } from '../apps/web/investigation-lab.mjs';
 import {renderInbox,validateInbox} from '../apps/web/review-inbox.mjs';
-import {renderPlatform,rollbackExport} from '../apps/web/platform-status.mjs';
+import {renderPlatform,rollbackExport,renderObserver,observerAfterDelay} from '../apps/web/platform-status.mjs';
+
+function observerFixture(){return {state:'healthy',components:{api_readiness:true,frontend_liveness:true},sample_age_seconds:2,checked_at:'2026-11-23T10:00:00Z',source_mode:'container_readonly_mount',task_runtime_verified:false,external_alert_delivery:false,production_ready:false};}
+test('observer accounts conservatively for response delay and never renews an expired sample',()=>{
+ assert.equal(observerAfterDelay(observerFixture(),1).sample_age_seconds,3);
+ assert.equal(observerAfterDelay(observerFixture(),13).state,'unknown');
+ assert.equal(observerAfterDelay(observerAfterDelay(observerFixture(),13),0).state,'unknown');
+ assert.throws(()=>observerAfterDelay(observerFixture(),-1));
+});
+test('observer display distinguishes observations, unavailable endpoints and unknown health',()=>{
+ assert.match(renderObserver(observerFixture()),/Fresh observation · endpoints healthy/);
+ const degraded=observerFixture();degraded.state='degraded';degraded.components.api_readiness=false;
+ assert.match(renderObserver(degraded),/Observed unavailable/);
+ assert.match(renderObserver(),/No fresh observation available/);
+ assert.match(renderObserver(observerFixture()),/does not verify that the Windows task is running/);
+});
+test('observer rejects stale and contradictory observations and unsafe readiness claims',()=>{
+ for(const change of [v=>v.sample_age_seconds=15,v=>v.sample_age_seconds=-1,v=>v.sample_age_seconds=NaN,v=>v.state='degraded',v=>v.components.api_readiness='true',v=>v.components=[],v=>v.state='unknown',v=>v.source_mode='not_configured',v=>v.task_runtime_verified=true,v=>v.external_alert_delivery=true,v=>v.production_ready=true,v=>v.checked_at='<img src=x onerror=alert(1)>']){
+  const value=observerFixture();change(value);assert.throws(()=>renderObserver(value));
+ }
+});
 import {runtimeConfig,routing} from '../scripts/runtime-config.mjs';
 import {renderMonitoring,validateMonitoring,monitoringView,monitoringExport} from '../apps/web/monitoring-lab.mjs';
 import fs from 'node:fs';

@@ -16,6 +16,7 @@ COPY pipelines pipelines
 COPY ml ml
 COPY infra infra
 COPY docs docs
+RUN mkdir -p /observer
 USER 10001:10001
 EXPOSE 8002
 CMD ["python","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8002","--workers","1"]

@@ -64,6 +64,8 @@ def status(directory, now=None):
         assert checked.utcoffset() is not None
         age = (datetime.now(timezone.utc) if now is None else now).timestamp() - checked.timestamp()
         assert 0 <= age < 15
+        age = round(age, 2)
+        assert age < 15
         components = record['components']
         assert isinstance(components, dict)
         assert set(components) == {'api_readiness', 'frontend_liveness'}
@@ -74,6 +76,19 @@ def status(directory, now=None):
                 'production_ready': False}
     except (OSError, ValueError, TypeError, KeyError, AssertionError, OverflowError):
         return {'state': 'unknown', 'components': {}, 'external_alert_delivery': False, 'production_ready': False}
+
+
+def deployment_status(state):
+    """Read only the fixed observer directory selected by the deployment, never a request path."""
+    container = os.environ.get('AIN_CONTAINER') == '1'
+    mounted = os.environ.get('AIN_OBSERVER_MOUNTED') == '1'
+    if container and not mounted:
+        result = {'state': 'unknown', 'components': {}, 'external_alert_delivery': False, 'production_ready': False}
+        mode = 'not_configured'
+    else:
+        result = status(Path('/observer') if container else Path(state) / 'observer')
+        mode = 'container_readonly_mount' if container else 'native_local_file'
+    return {**result, 'source_mode': mode, 'task_runtime_verified': False}
 
 
 def observe(directory, port=8090, once=False):
