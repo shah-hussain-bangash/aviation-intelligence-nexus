@@ -1,0 +1,359 @@
+{
+  "format": "ain-scoped-review-browser-v1",
+  "scope": "Isolated browser preview with public result fixtures and synthetic self-assessments. No primary accounts, saved reviews, live generation or real semantic verdicts used.",
+  "review_results": [
+    {
+      "mode": "positive",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "draft",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "negative",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "refusal",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "scope",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "unavailable",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "unavailable_cannot_be_reviewed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "reset",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "reset_keeps_result": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "edit",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "edit_clears_review": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "session",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "session_clears_review": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "replace",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "account_resets_assessment": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "viewer",
+      "checks": {
+        "no_review_without_result": true,
+        "viewer_has_no_review": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "race",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "stale_export_discarded": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "annotation-race",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "stale_annotation_export_discarded": true,
+        "new_annotation_exported": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "tamper",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "tampering_rejected": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "refusal",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 433,
+      "scenario": "narrow-review"
+    }
+  ],
+  "lab_regressions": [
+    {
+      "mode": "excerpts",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "input_edit_clears_result": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "coverage",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "conflict",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "paraphrase",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "unavailable",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "abstained",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "outage",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "failure_withholds": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "invalid",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "failure_withholds": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "edit",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "edit_discards_late_result": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "session",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "logout_discards_late_result": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "replace",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "old_account_does_not_replace": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "viewer",
+      "checks": {
+        "no_automatic_query": true,
+        "viewer_cannot_submit": true,
+        "no_export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    }
+  ],
+  "production_ready": false
+}

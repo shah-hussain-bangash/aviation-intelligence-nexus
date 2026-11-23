@@ -1,0 +1,30 @@
+import {reviewResult,sha256,assessment,buildReview} from './scoped-review-contract.mjs';
+const escape=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const options='<option value="uncertain">Not assessed / uncertain</option><option value="yes">Yes</option><option value="no">No</option>';
+const labels={draft:'Draft self-review',self_reviewed:'Self-reviewed · research only',needs_revision:'Needs revision',self_reviewed_refusal:'Refusal self-reviewed',refusal_needs_revision:'Refusal needs revision',not_evaluable:'Unavailable outcome · not evaluable'};
+
+export function mountScopedReview(parent){
+ const section=document.createElement('section');section.className='scoped-review';section.id='scoped-self-review';section.setAttribute('aria-label','Analyst self-review');section.hidden=true;parent.append(section);
+ let result=null,resultEpoch=0,revision=0,ready=false,exporting=false;
+ function clear(){resultEpoch++;revision++;result=null;ready=false;exporting=false;section.hidden=true;section.replaceChildren();}
+ function setResult(value){
+  clear();result=reviewResult(value);const current=resultEpoch;section.hidden=false;
+  const excerpts=result.mode==='excerpts',unavailable=result.mode==='evidence_only';
+  section.innerHTML=`<div class="scoped-review-title"><div><span class="research-badge">Analyst checkpoint</span><h4>Review the evidence yourself</h4></div><strong data-review-assessment>${labels[unavailable?'not_evaluable':'draft']}</strong></div><p>This is a browser-local self-assessment. It does not establish an independent review, verified reviewer identity or operational approval. Nothing is uploaded or saved to history.</p><p class="scoped-review-digest">Result SHA-256: <code data-result-digest>Binding this result…</code></p>
+  <form data-review-form><label class="scoped-ack"><input type="checkbox" name="source_checked" ${unavailable?'disabled':''}>I checked the cited source and the result context myself.</label>
+  ${excerpts?`<label>Does the result answer the question?<select name="question_answered">${options}</select></label>${result.claims.map((c,i)=>`<fieldset><legend>Excerpt ${i+1} · ${escape(c.source)} · lines ${c.start_line}–${c.end_line}</legend><p class="scoped-review-excerpt">${escape(c.quote)}</p><div class="scoped-review-judgments"><label>Does the source support this excerpt?<select name="supported_${i}">${options}</select></label><label>Is this excerpt relevant to the question?<select name="relevant_${i}">${options}</select></label></div></fieldset>`).join('')}`:unavailable?'<p>No validated answer was returned. Notes can document the failure; this cannot become a successful semantic review.</p>':`<label>Was the clarification or refusal appropriate?<select name="decision_appropriate">${options}</select></label>`}
+  <label>Review notes <span class="scoped-review-secondary">Optional · up to 2,000 characters · included in your download</span><textarea name="notes" maxlength="2000" rows="3" placeholder="Record missing context, unsupported claims, or a refusal that needs revision"></textarea></label><div class="scoped-actions"><button type="button" class="btn" data-export-review disabled>Export self-review (JSON)</button><button type="button" class="btn sm" data-reset-review>Reset assessment</button></div></form><p role="status" aria-live="polite" data-review-status>Binding the current result. Review fields start unassessed.</p>`;
+  const form=section.querySelector('[data-review-form]'),button=section.querySelector('[data-export-review]'),status=section.querySelector('[data-review-status]');
+  function annotations(){return {source_checked:!!form.elements.source_checked.checked,question_answered:excerpts?form.elements.question_answered.value:'not_applicable',decision_appropriate:excerpts?'not_applicable':unavailable?'not_evaluable':form.elements.decision_appropriate.value,
+   claims:result.claims.map((c,i)=>({claim_index:i,citation:c.citation,supported:form.elements['supported_'+i].value,relevant:form.elements['relevant_'+i].value})),notes:form.elements.notes.value};}
+  function update(){revision++;exporting=false;try{section.querySelector('[data-review-assessment]').textContent=labels[assessment(result,annotations())];button.disabled=!ready;status.textContent='Assessment changed locally. No review has been uploaded.';}catch{button.disabled=true;status.textContent='Review fields could not be verified.';}}
+  form.addEventListener('input',update);form.addEventListener('change',update);form.addEventListener('submit',e=>e.preventDefault());
+  section.querySelector('[data-reset-review]').addEventListener('click',()=>{form.reset();update();});
+  button.addEventListener('click',async()=>{if(!result||!ready||exporting)return;const expectedEpoch=resultEpoch,expectedRevision=revision,snapshot=result,a=annotations();exporting=true;button.disabled=true;status.textContent='Binding this assessment to the exact result…';try{
+   const bundle=await buildReview(snapshot,a);if(expectedEpoch!==resultEpoch||expectedRevision!==revision)return;
+   const blob=new Blob([JSON.stringify(bundle,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='AIN_Scoped_Self_Review.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Self-review exported. It is unsigned and does not verify reviewer identity or semantic correctness.';
+  }catch{if(expectedEpoch===resultEpoch)status.textContent='Self-review could not be verified; no export was produced.';}finally{if(expectedEpoch===resultEpoch&&expectedRevision===revision){exporting=false;button.disabled=!ready;}}});
+  sha256(result).then(hash=>{if(current!==resultEpoch)return;ready=true;section.querySelector('[data-result-digest]').textContent=hash;button.disabled=false;status.textContent='Exact result bound. Draft or completed self-assessments can be exported.';}).catch(()=>{if(current!==resultEpoch)return;ready=false;button.disabled=true;status.textContent='Result binding unavailable. Self-review export is disabled.';});
+ }
+ return {clear,setResult};
+}

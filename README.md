@@ -163,3 +163,5 @@ Source-context research: [Versioned excerpt selection and bounded context](docs/
 Source coverage: [Conservative pre-generation checks](docs/SOURCE_COVERAGE_GATE.md) stop the known unsupported coefficient answer and retain a valid-paraphrase refusal as a visible limitation.
 
 Dashboard research interface: [Scoped Answer Lab](docs/SCOPED_ANSWER_LAB.md) provides explicit experiment selection, cited excerpts, visible refusals and public JSON export without saving questions or replacing existing Q&A.
+
+Analyst checkpoint: [Scoped-result self-review](docs/SCOPED_SELF_REVIEW.md) adds per-excerpt judgments, refusal feedback, notes and an exact-result review export with an offline consistency verifier.
