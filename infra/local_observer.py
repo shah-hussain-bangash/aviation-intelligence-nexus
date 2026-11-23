@@ -65,6 +65,7 @@ def status(directory, now=None):
         age = (datetime.now(timezone.utc) if now is None else now).timestamp() - checked.timestamp()
         assert 0 <= age < 15
         components = record['components']
+        assert isinstance(components, dict)
         assert set(components) == {'api_readiness', 'frontend_liveness'}
         assert all(type(value) is bool for value in components.values())
         return {'state': 'healthy' if all(components.values()) else 'degraded',

@@ -35,7 +35,7 @@ class LocalObserverTests(unittest.TestCase):
     def test_degraded_malformed_and_oversized_records(self):
         self.record(components={'api_readiness': False, 'frontend_liveness': True})
         self.assertEqual(status(self.root, self.now)['state'], 'degraded')
-        for components in ({}, {'api_readiness': 'true', 'frontend_liveness': True}):
+        for components in ({}, ['api_readiness', 'frontend_liveness'], {'api_readiness': 'true', 'frontend_liveness': True}):
             self.record(components=components)
             self.assertEqual(status(self.root, self.now)['state'], 'unknown')
         (self.root / 'health.json').write_text('x' * 64001)
