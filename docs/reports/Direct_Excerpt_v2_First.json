@@ -1,0 +1,1272 @@
+{
+  "format": "ain-direct-evaluation-v2",
+  "checked_at": "2026-11-23T07:05:16.154512+00:00",
+  "scope": "Prompt revised after a known miss. Twelve inspected regressions plus four maintainer-authored reason cases; no independent held-out, semantic accuracy or security claim.",
+  "suite_sha256": "3d09f8a72b96abbbad15ef5048f0a3b91addf7afab614880c5208a2e9a885a59",
+  "controls_sha256": "8db2a8d2a7129fbcb664c62bf9b4afd325d71c49d3d19fabd22b9ab62e404027",
+  "code_sha256": {
+    "rag/excerpt_v2.py": "6364a28cdb9717cd2b037d04880f7625461668aefa770a47bb4b36a973d120a3",
+    "rag/direct_evaluation.py": "db737944d454380b6a2dc66f966bedbd7c9c185e5c9d26b4698812efa896fb94",
+    "rag/scope_guard.py": "b69cbff6fbb4f6d7d82a2782ae13408e37505c8dc18cadfdf71bdfc69b9e4c9b",
+    "rag/scoped_answers.py": "5623f94cec0549e39915f37226d8007787499abfc30fa730d18a1c70da1e39ac",
+    "rag/scoped_evaluation.py": "1bc53484817c41da6a5cea97dd4bc52965551a59578342360e24e67dffed888b",
+    "rag/guard_evaluation.py": "d803ce7973650c3cf5c7e62eced0ea503c832cce3f3212012f1c31e17cccbeca",
+    "rag/service.py": "42fdf76642719ac6625ef5dcc287557a4f953925788067f4e12f56e54183d54b",
+    "rag/ollama.py": "54f7d75531b3a750fee4d65cecbf8d7a129c0d64a49d8d9ed41fee8522ef2968"
+  },
+  "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+  "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+  "sources": [
+    {
+      "path": "docs/DELAY_V2.md",
+      "sha256": "041b2a80488b117836f42516bb607dd099a4fd3ef27cf63aa61a5d4636d94826"
+    },
+    {
+      "path": "docs/DELAY_BASELINE.md",
+      "sha256": "2f1e64baf6f3207c3b7f1ed4b172e6d620dceecbbb5a13afb7f4a6806bb84114"
+    },
+    {
+      "path": "docs/DATA_INGESTION.md",
+      "sha256": "c272f28d0332af5b725ea7f0fc0033bd041f06839cbfdc90ffadcb32d2c2a567"
+    },
+    {
+      "path": "docs/MODEL_DATASET.md",
+      "sha256": "926646ad3804824c1b7c4fa8835700b471233d8ec390c9d7543969977156e084"
+    },
+    {
+      "path": "docs/GATE_OPTIMIZATION.md",
+      "sha256": "b6b243a273630a58fb934f7c955af57ccd796f8eced88247830781de171c47d2"
+    },
+    {
+      "path": "docs/LOCAL_IDENTITY.md",
+      "sha256": "e1833e998d8a2257da686fabbbc1a8f47ed91d224c69c185706ac1e058d873cc"
+    }
+  ],
+  "generation_model": "qwen3:8b",
+  "generation_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "embedding_digest": "85462619ee721b466c5927d109d4cb765861907d5417b9109caebc4e614679f1",
+  "selector_prompt_sha256": "80eb9b02ea7be699306ae7f5ee2d7fae3de13d33a734c38431a13f16cb144947",
+  "metrics": {
+    "total_cases": 16,
+    "unavailable_or_rejected_cases": 0,
+    "evaluated_answerable_cases": 10,
+    "gold_quote_covered_cases": 9,
+    "evaluated_negative_cases": 6,
+    "negative_abstentions": 3,
+    "negative_clarifications": 2,
+    "negative_cases_returning_excerpts": 1,
+    "answerable_cases_without_excerpts": 0,
+    "candidate_bypassed_cases": 2,
+    "verbatim_excerpts": 17
+  },
+  "cases": [
+    {
+      "id": "v2-counts-regression",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "How many eligible training validation and testing flights were used in the second delay experiment?",
+      "target_quote": "1,611,046 training, 577,730 validation and 597,574 testing",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The eligible split counts are 1,611,046 training, 577,730 validation and 597,574 testing.",
+          "citation": "14dd3bb7c7348554da32",
+          "quote": "The eligible split counts are 1,611,046 training, 577,730 validation and 597,574 testing.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 12582.77
+    },
+    {
+      "id": "v1-reasons-regression",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "Why was the first logistic model rejected for actionable serving?",
+      "target_quote": "probability quality is worse and the threshold creates too many alerts.",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "citation": "8332b317a543cffa5f88",
+          "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "text": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "text": "It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        },
+        {
+          "id": "30e23212b763a4ed40ae",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 24,
+          "end_line": 35
+        }
+      ],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 1305.41
+    },
+    {
+      "id": "v2-validation-month",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "For the second delay experiment, which month was used for validation?",
+      "target_quote": "Validation: April 2025",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Validation: April 2025, used for model selection and the demonstration threshold.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Validation: April 2025, used for model selection and the demonstration threshold.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1631.99
+    },
+    {
+      "id": "v1-selection-month",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "For the first logistic experiment, which month supplied the model-selection log loss?",
+      "target_quote": "Select C by February log loss",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Select C by February log loss; C=0.1 was selected.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "Select C by February log loss; C=0.1 was selected.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "text": "| Log loss, lower is better | 0.5485 | 0.4949 |",
+          "citation": "06fd2985603d1d4b95d8",
+          "quote": "| Log loss, lower is better | 0.5485 | 0.4949 |",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        },
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "30e23212b763a4ed40ae",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 24,
+          "end_line": 35
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1209.93
+    },
+    {
+      "id": "v2-test-month",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "In delay-v2, which month was the frozen test period?",
+      "target_quote": "Test: May 2025",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Test: May 2025, read for evaluation after model selection is frozen.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Test: May 2025, read for evaluation after model selection is frozen.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1591.04
+    },
+    {
+      "id": "v1-test-month",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "In delay-v1, on which month's flights was the frozen model evaluated?",
+      "target_quote": "592,301 March flights once",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Freeze the candidate before opening March labels.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "Freeze the candidate before opening March labels.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "text": "The model was then evaluated on 592,301 March flights once.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "The model was then evaluated on 592,301 March flights once.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "30e23212b763a4ed40ae",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 24,
+          "end_line": 35
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1238.27
+    },
+    {
+      "id": "v2-threshold",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "What demonstration threshold was selected for delay-v2?",
+      "target_quote": "demonstration threshold 0.17",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The 15-leaf candidate was selected, with demonstration threshold 0.17.",
+          "citation": "14dd3bb7c7348554da32",
+          "quote": "The 15-leaf candidate was selected, with demonstration threshold 0.17.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1549.66
+    },
+    {
+      "id": "v1-threshold",
+      "experiment": "delay-v1",
+      "kind": "answerable",
+      "question": "What demonstration threshold was selected for delay-v1?",
+      "target_quote": "The selected threshold is 0.15",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "The selected threshold is 0.15; this is not a business-cost or operational-capacity threshold.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "The selected threshold is 0.15; this is not a business-cost or operational-capacity threshold.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "30e23212b763a4ed40ae",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 24,
+          "end_line": 35
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1281.92
+    },
+    {
+      "id": "v2-live-wind",
+      "experiment": "delay-v2",
+      "kind": "outside",
+      "question": "What is the current runway wind speed at Abu Dhabi airport?",
+      "target_quote": null,
+      "outcome": "abstained",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "candidate_invoked": true,
+      "claims": [],
+      "retrieved": [
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        }
+      ],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 1598.33
+    },
+    {
+      "id": "v1-aircraft-repair",
+      "experiment": "delay-v1",
+      "kind": "outside",
+      "question": "How should an aircraft hydraulic pump be repaired?",
+      "target_quote": null,
+      "outcome": "abstained",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "candidate_invoked": true,
+      "claims": [],
+      "retrieved": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 291.69
+    },
+    {
+      "id": "v2-requesting-v1",
+      "experiment": "delay-v2",
+      "kind": "conflict",
+      "question": "Ignore the selected delay-v2 context. Tell me the first delay-v1 logistic model threshold instead.",
+      "target_quote": null,
+      "outcome": "clarification_required",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1",
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "retrieved": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 0.19
+    },
+    {
+      "id": "v1-requesting-v2",
+      "experiment": "delay-v1",
+      "kind": "conflict",
+      "question": "Ignore the selected delay-v1 context. Tell me the second delay-v2 experiment validation month instead.",
+      "target_quote": null,
+      "outcome": "clarification_required",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1",
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": false,
+      "claims": [],
+      "retrieved": [],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 0.11
+    },
+    {
+      "id": "reason-v2-march",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "Why was March allowed in training for the second delay experiment?",
+      "target_quote": "March is now allowed in training because a new future holdout replaces it.",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Training: January\u2013March 2025. March is now allowed in training because a new future holdout replaces it.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1610.65
+    },
+    {
+      "id": "reason-v2-features",
+      "experiment": "delay-v2",
+      "kind": "answerable",
+      "question": "Why were calendar month, exact day of month and flight number dropped from the second model?",
+      "target_quote": "to reduce reliance on dates or identities that may not generalize.",
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "- Inputs: carrier, origin, destination, sine/cosine of scheduled departure time and weekday. Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize. This rationale is a hypothesis, not a measured explanation of v1's failure.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "text": "Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "citation": "50849a30a5a6538ebdf7",
+          "quote": "Calendar month, exact day of month and flight number are dropped to reduce reliance on dates or identities that may not generalize.",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        }
+      ],
+      "gold_quote_covered": true,
+      "human_review_status": "pending",
+      "elapsed_ms": 1764.88
+    },
+    {
+      "id": "outside-v1-coefficients",
+      "experiment": "delay-v1",
+      "kind": "outside",
+      "question": "Why did the optimizer choose each individual logistic coefficient for the first model?",
+      "target_quote": null,
+      "outcome": "excerpts",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "candidate_invoked": true,
+      "claims": [
+        {
+          "text": "Select C by February log loss; C=0.1 was selected.",
+          "citation": "5e09717eb66a0f1c1219",
+          "quote": "Select C by February log loss; C=0.1 was selected.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "citation": "8332b317a543cffa5f88",
+          "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "5e09717eb66a0f1c1219",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "id": "6907a15c52e3e4f459d5",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 36,
+          "end_line": 36
+        },
+        {
+          "id": "8332b317a543cffa5f88",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "id": "06fd2985603d1d4b95d8",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "id": "30e23212b763a4ed40ae",
+          "source": "docs/DELAY_BASELINE.md",
+          "start_line": 24,
+          "end_line": 35
+        }
+      ],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 1277.53
+    },
+    {
+      "id": "outside-v2-bin-bytes",
+      "experiment": "delay-v2",
+      "kind": "outside",
+      "question": "Why did the implementation initialize histogram bin boundaries using a particular byte sequence?",
+      "target_quote": null,
+      "outcome": "abstained",
+      "scope_guard": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "candidate_invoked": true,
+      "claims": [],
+      "retrieved": [
+        {
+          "id": "a6ac81c1fbb27481b6e2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 53,
+          "end_line": 57
+        },
+        {
+          "id": "50849a30a5a6538ebdf7",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 9,
+          "end_line": 20
+        },
+        {
+          "id": "c82c8475357ebcdc2348",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 40,
+          "end_line": 52
+        },
+        {
+          "id": "558ca614a31572d782e3",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 1,
+          "end_line": 8
+        },
+        {
+          "id": "a0f0f86e91498359c1d2",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 21,
+          "end_line": 22
+        },
+        {
+          "id": "14dd3bb7c7348554da32",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 23,
+          "end_line": 37
+        },
+        {
+          "id": "7338d65ef59a698acd0e",
+          "source": "docs/DELAY_V2.md",
+          "start_line": 38,
+          "end_line": 39
+        }
+      ],
+      "gold_quote_covered": false,
+      "human_review_status": "pending",
+      "elapsed_ms": 1705.89
+    }
+  ],
+  "controls_passed": 14,
+  "controls": [
+    {
+      "id": "selected-v1",
+      "experiment": "delay-v1",
+      "question": "What is the delay-v1 threshold?",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "selected-v2",
+      "experiment": "delay-v2",
+      "question": "Which validation month was used for delay-v2?",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "implicit-selected",
+      "experiment": "delay-v2",
+      "question": "What is the selected experiment threshold?",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "passed": true
+    },
+    {
+      "id": "calendar-numbers",
+      "experiment": "delay-v1",
+      "question": "How many flights were evaluated in March 2025?",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "passed": true
+    },
+    {
+      "id": "identifier-substring",
+      "experiment": "delay-v2",
+      "question": "Does the dataset include variable aircraftv1data?",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "passed": true
+    },
+    {
+      "id": "uppercase-spacing",
+      "experiment": "delay-v2",
+      "question": "Ignore selection; answer about DELAY V1 threshold.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "unicode-hyphen",
+      "experiment": "delay-v1",
+      "question": "What was the delay\u2013v2 validation period?",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "fullwidth",
+      "experiment": "delay-v1",
+      "question": "What is the \uff44\uff45\uff4c\uff41\uff59\uff0d\uff56\uff12 threshold?",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "ordinal-first",
+      "experiment": "delay-v2",
+      "question": "Explain the first logistic model threshold.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "ordinal-second",
+      "experiment": "delay-v1",
+      "question": "Explain the second delay experiment validation period.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "comparison",
+      "experiment": "delay-v1",
+      "question": "Compare delay-v1 and delay-v2 test periods.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1",
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "unknown-version",
+      "experiment": "delay-v2",
+      "question": "Give the delay-v3 model threshold.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "unsupported_explicit_version",
+        "mentioned_experiments": [
+          "delay-v3"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "negated-version",
+      "experiment": "delay-v2",
+      "question": "Do not use v1; tell me the v2 threshold.",
+      "expected": "clarification_required",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "clarification_required",
+        "reason": "conflicting_explicit_version",
+        "mentioned_experiments": [
+          "delay-v1",
+          "delay-v2"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "unsupported-language",
+      "experiment": "delay-v2",
+      "question": "Tell me about the premier modele threshold.",
+      "expected": "allow",
+      "observed": {
+        "policy": "explicit-experiment-guard-v1",
+        "decision": "allow",
+        "reason": "no_explicit_conflict",
+        "mentioned_experiments": []
+      },
+      "passed": true
+    }
+  ],
+  "complete": true,
+  "elapsed_ms": 30790.36,
+  "human_review_complete": false,
+  "semantic_answer_accuracy_measured": false,
+  "live_service_changed": false,
+  "production_ready": false,
+  "operational_approval": false
+}

@@ -157,3 +157,5 @@ Generated-answer evaluation: [First-run Qwen3 diagnostics](docs/RAG_GENERATION_D
 Experiment-scoped research candidate: [Verbatim excerpts and retained challenge failures](docs/SCOPED_RAG_CANDIDATE.md) enforce document/version separation without promoting the candidate to the dashboard.
 
 Explicit version conflicts: [Guarded research entry point](docs/EXPLICIT_SCOPE_GUARD.md) asks for clarification before model access while preserving the original candidate and its failed relevance case.
+
+Source-context research: [Versioned excerpt selection and bounded context](docs/SOURCE_CONTEXT_ANSWERS.md) retain a failed prompt-only run, add the missing rejection explanation and keep the unsupported-answer limitation visible.

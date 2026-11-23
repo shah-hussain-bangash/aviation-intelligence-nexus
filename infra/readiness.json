@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged. A separately versioned prompt-only attempt failed to resolve the reason quote; its first run is retained. Bounded source-context replay and one fresh composed query include that explanation, but one unsupported coefficient answer remains. Context coverage is not semantic acceptance; serving is unchanged.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -299,6 +299,22 @@
         {
           "path": "docs/reports/Scope_Guard_Evaluation.json",
           "sha256": "c54449c21fd0de4799d3ad855ce2b7b60d007f867f88884fb1ffe199a7f4b597"
+        },
+        {
+          "path": "docs/SOURCE_CONTEXT_ANSWERS.md",
+          "sha256": "d0c395ea932a2214724bccf5278399fa30035e4233d2abc51cd0c8f47d2b2bcc"
+        },
+        {
+          "path": "docs/reports/Direct_Excerpt_v2_First.json",
+          "sha256": "f8ca85ea79e5f4ea14f2593e893b3be2367906900cfdcc76e8475988aec658e6"
+        },
+        {
+          "path": "docs/reports/Context_Excerpt_Replay.json",
+          "sha256": "4b0487da44ca36ed68b85687dc470dcc1e6d082e0b36af14601439b46bfd02ca"
+        },
+        {
+          "path": "docs/reports/Context_Excerpt_Query.json",
+          "sha256": "5db2e066d7947583cc5670dcaa4e491743c7a8a71c11bd0eacaf99d51c29c479"
         }
       ]
     },
@@ -756,7 +772,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "015162e579f4d5c32a77e57c535282d3de34801148cc341895c8398faca8465f"
+          "sha256": "1b9f40d62738ea7cbbd7f6089357c8cdb117426fd83b7fd67b59b5f13810784b"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

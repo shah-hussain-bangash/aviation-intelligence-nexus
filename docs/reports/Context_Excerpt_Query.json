@@ -1,0 +1,115 @@
+{
+  "format": "ain-context-excerpts-v1",
+  "question": "Why was the first logistic model rejected for actionable serving?",
+  "experiment": "delay-v1",
+  "source": "docs/DELAY_BASELINE.md",
+  "selector_version": "direct-excerpts-v2",
+  "selector_prompt_sha256": "80eb9b02ea7be699306ae7f5ee2d7fae3de13d33a734c38431a13f16cb144947",
+  "index_sha256": "bcea13a5ad6151c724804d8c084a7c9b3aaaf990751a550702a619d9a72d5fd8",
+  "corpus_revision": "66dbd462cc0554459429591e1f65ab6c374c76b3",
+  "generation_model": "qwen3:8b",
+  "generation_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "embedding_digest": "85462619ee721b466c5927d109d4cb765861907d5417b9109caebc4e614679f1",
+  "scope_guard": {
+    "policy": "explicit-experiment-guard-v1",
+    "decision": "allow",
+    "reason": "no_explicit_conflict",
+    "mentioned_experiments": [
+      "delay-v1"
+    ]
+  },
+  "candidate_invoked": true,
+  "mode": "excerpts",
+  "claims": [
+    {
+      "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+      "citation": "8332b317a543cffa5f88",
+      "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "text": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+      "citation": "06fd2985603d1d4b95d8",
+      "quote": "Ranking is slightly better than the constant baseline, but probability quality is worse and the threshold creates too many alerts. **Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 11,
+      "end_line": 23
+    },
+    {
+      "text": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+      "citation": "06fd2985603d1d4b95d8",
+      "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices. It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 11,
+      "end_line": 23
+    }
+  ],
+  "retrieved": [
+    {
+      "id": "8332b317a543cffa5f88",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "id": "06fd2985603d1d4b95d8",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 11,
+      "end_line": 23
+    },
+    {
+      "id": "5e09717eb66a0f1c1219",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 5,
+      "end_line": 10
+    },
+    {
+      "id": "6907a15c52e3e4f459d5",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 36,
+      "end_line": 36
+    },
+    {
+      "id": "30e23212b763a4ed40ae",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 24,
+      "end_line": 35
+    }
+  ],
+  "generation_status": "completed",
+  "answer_style": "Verbatim selected excerpts with bounded source context; relevance requires review",
+  "live_service_changed": false,
+  "human_review_complete": false,
+  "operational_approval": false,
+  "production_ready": false,
+  "context_policy": "preceding-sentence-context-v1",
+  "context_added_count": 2,
+  "original_claims": [
+    {
+      "text": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+      "citation": "8332b317a543cffa5f88",
+      "quote": "Status: **trained locally; rejected for operational serving**. This is a completed modelling experiment, not a deployment milestone. The full measured report is `docs/reports/Delay_Baseline_v1.json`. The trusted serialized pipeline stays in `.local/models/delay-baseline-v1/model.joblib`, outside Git.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "text": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+      "citation": "06fd2985603d1d4b95d8",
+      "quote": "**Do not serve this candidate as an actionable risk model.** The report includes calibration bins and carrier slices.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 11,
+      "end_line": 23
+    },
+    {
+      "text": "It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+      "citation": "06fd2985603d1d4b95d8",
+      "quote": "It does not establish statistical significance, prospective reliability, airline business benefit or UAE transfer.",
+      "source": "docs/DELAY_BASELINE.md",
+      "start_line": 11,
+      "end_line": 23
+    }
+  ]
+}

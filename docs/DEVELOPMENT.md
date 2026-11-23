@@ -22,7 +22,7 @@ VS Code: **Terminal > Run Task > AIN: Start API and dashboard** provides the sam
 npm.cmd test
 ```
 
-This runs source validation, 100 Node dashboard/proxy/startup tests and 331 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
+This runs source validation, 100 Node dashboard/proxy/startup tests and 347 Python backend/data/model/history/optimization/knowledge/agent/recovery/monitoring tests (Windows; Linux skips the Windows DPAPI provider case). It uses the project's `.venv` interpreter regardless of the terminal's active environment. To install it on Windows:
 
 ```powershell
 python -m venv .venv
@@ -86,3 +86,5 @@ Offline generated-answer diagnostics: `python -m rag.generation_diagnostics --ou
 The opt-in experiment-scoped excerpt candidate remains separate from serving: see [SCOPED_RAG_CANDIDATE.md](SCOPED_RAG_CANDIDATE.md) for explicit context, verbatim text, the measured conflict/relevance failures and reproduction.
 
 The separate guarded excerpt CLI clarifies explicit version conflicts before retrieval or model access. See [EXPLICIT_SCOPE_GUARD.md](EXPLICIT_SCOPE_GUARD.md) for its narrow syntax, conservative false positives, regression replay and remaining relevance failure.
+
+The source-context candidate preserves the failed prompt-only run, a zero-generation context replay and one fresh composed query. See [SOURCE_CONTEXT_ANSWERS.md](SOURCE_CONTEXT_ANSWERS.md) for provenance, the retained unsupported answer and reproduction.
