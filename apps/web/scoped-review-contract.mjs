@@ -11,7 +11,7 @@ export function canonical(value){
 }
 export async function sha256(value){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical(value))))].map(v=>v.toString(16).padStart(2,'0')).join('');}
 export function reviewResult(value){
- if(value?.format!=='ain-scoped-lab-export-v1')throw Error('Use an exported scoped research result');
+ if(value?.format!=='ain-scoped-lab-export-v1'||typeof value.question!=='string'||value.question.length<8||value.question.length>600)throw Error('Use an exported scoped research result');
  return scopedExport({...value,format:'ain-scoped-lab-v1'},{question:value.question,experiment:value.experiment});
 }
 export function validateAnnotations(result,a){

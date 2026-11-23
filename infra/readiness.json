@@ -247,7 +247,7 @@
         "P03",
         "P13"
       ],
-      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged. A separately versioned prompt-only attempt failed to resolve the reason quote; its first run is retained. Bounded source-context replay and one fresh composed query include that explanation, but one unsupported coefficient answer remains. Context coverage is not semantic acceptance; serving is unchanged. A separate long-content-term coverage gate blocks the known unsupported coefficient query before model access. Its first 18-case development run retains ten expected quotes and a valid-paraphrase false refusal, with zero negative excerpts; this is not semantic answerability or promotion to serving. An opt-in unsaved dashboard lab exposes the coverage/context candidate with explicit experiment selection, researcher/admin authorization, post-execution session checks, source citations, distinct refusal states and public export. Component/native API evidence is separate from primary container deployment. Browser-local analyst self-review now records source checking, per-excerpt support/relevance, refusal feedback and notes against exact-result/review digests, with an offline unsigned-consistency verifier. Synthetic review evidence does not establish semantic acceptance or an independent reviewer.",
+      "local_progress": "Six public project documents support local neural retrieval and generated answers with citation/abstention checks. A curated 24-question passage/abstention comparison records hybrid versus keyword retrieval, exact quote/source targets, availability failures and retained misses; it does not establish held-out answer accuracy or security robustness. A read-only authenticated dashboard compares the frozen retrieval methods with case evidence, filtering, session clearing and public JSON export. A first unchanged-Qwen3 24-case generation run retains two unavailable/rejected outcomes and a semantic citation mismatch; 28 structurally verified claims are not semantic acceptance, and all cases await human review. An opt-in scoped excerpt candidate enforces selected-document and verbatim-text construction, but its first development run retained two conflict abstention failures and one missing reason quote; it is not promoted to serving. A separate deterministic explicit-version guard clarifies the two known conflict cases before candidate/model access; 14 syntax controls passed, with narrow recognition and conservative false positives documented. The rejection-reason relevance miss remains; serving is unchanged. A separately versioned prompt-only attempt failed to resolve the reason quote; its first run is retained. Bounded source-context replay and one fresh composed query include that explanation, but one unsupported coefficient answer remains. Context coverage is not semantic acceptance; serving is unchanged. A separate long-content-term coverage gate blocks the known unsupported coefficient query before model access. Its first 18-case development run retains ten expected quotes and a valid-paraphrase false refusal, with zero negative excerpts; this is not semantic answerability or promotion to serving. An opt-in unsaved dashboard lab exposes the coverage/context candidate with explicit experiment selection, researcher/admin authorization, post-execution session checks, source citations, distinct refusal states and public export. Component/native API evidence is separate from primary container deployment. Browser-local analyst self-review now records source checking, per-excerpt support/relevance, refusal feedback and notes against exact-result/review digests, with an offline unsigned-consistency verifier. Synthetic review evidence does not establish semantic acceptance or an independent reviewer. A read-only browser-local self-review file inspector now checks bounded UTF-8 artifacts, digests and assessment consistency without uploading files or re-running questions. Imported artifacts remain unsigned, identity-unverified and separate from live results; all semantic acceptance limits remain.",
       "remaining": "Authorized aviation corpus coverage, robust grounding/security evaluation and deployed permission boundaries remain outstanding.",
       "acceptance": "Measured grounding, citation, abstention, permission and injection-resistance evaluation.",
       "production_accepted": false,
@@ -343,6 +343,14 @@
         {
           "path": "docs/reports/Scoped_Review_Browser.json",
           "sha256": "7275f13532bec19030a9061cac8c1038daf900064b9011929d71b214571be684"
+        },
+        {
+          "path": "docs/REVIEW_FILE_INSPECTOR.md",
+          "sha256": "62259a884a30d0175c22a95425d8be98f6b298b8d3790a0661896741f5ec5cb0"
+        },
+        {
+          "path": "docs/reports/Review_Inspector_Browser.json",
+          "sha256": "29c687f86814c36cb7cb67133e11dd99fc0d48fff592b6641add5c8f136ce9cf"
         }
       ]
     },
@@ -800,7 +808,7 @@
       "evidence": [
         {
           "path": "docs/DEVELOPMENT.md",
-          "sha256": "e9cd49f6b17dba20387fe4cbab107f592bb1aeb6e4eddbbad7276b4b9b7071d2"
+          "sha256": "381a5deb478ba0bdb8a8453cc327ffc66d4d79fccbf23f18c3234ecfca16773b"
         },
         {
           "path": "docs/reports/Encrypted_Recovery.json",

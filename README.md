@@ -165,3 +165,5 @@ Source coverage: [Conservative pre-generation checks](docs/SOURCE_COVERAGE_GATE.
 Dashboard research interface: [Scoped Answer Lab](docs/SCOPED_ANSWER_LAB.md) provides explicit experiment selection, cited excerpts, visible refusals and public JSON export without saving questions or replacing existing Q&A.
 
 Analyst checkpoint: [Scoped-result self-review](docs/SCOPED_SELF_REVIEW.md) adds per-excerpt judgments, refusal feedback, notes and an exact-result review export with an offline consistency verifier.
+
+Local review files: [Self-review artifact inspector](docs/REVIEW_FILE_INSPECTOR.md) reopens exported JSON, checks consistency and displays original results/notes without uploading the file or running a model query.

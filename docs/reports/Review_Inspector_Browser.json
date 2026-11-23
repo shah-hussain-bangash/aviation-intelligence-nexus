@@ -1,0 +1,342 @@
+{
+  "format": "ain-review-inspector-browser-v1",
+  "scope": "Isolated component QA using public fixtures and synthetic self-reviews, including a real local file chooser. No primary accounts, real analyst verdicts or model queries used except a simulated response in the separation fixture.",
+  "inspector_results": [
+    {
+      "mode": "draft",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "positive",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "negative",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "refusal",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "unavailable",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "xss",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "unsafe_text_is_literal": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "replace",
+      "checks": {
+        "initial_empty": true,
+        "latest_file_wins": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "clear-pending",
+      "checks": {
+        "initial_empty": true,
+        "late_file_does_not_return": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "session-pending",
+      "checks": {
+        "initial_empty": true,
+        "late_file_does_not_return": true,
+        "signed_out_disabled": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "malformed",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "oversize",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "utf8",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "tampered",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "source-changed",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "replacement-invalid",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "crypto-failure",
+      "checks": {
+        "initial_empty": true,
+        "old_content_cleared_immediately": true,
+        "invalid_file_withheld": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "clear",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "clear_removes_content": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "account-replace",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "account_clears_file": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "independent-edit",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "import_stays_distinct": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "live-separation",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "live_query_not_replaced": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "viewer",
+      "checks": {
+        "initial_empty": true,
+        "viewer_cannot_choose": true,
+        "no_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 1422
+    },
+    {
+      "mode": "native-file-chooser",
+      "checks": {
+        "public_fixture_loaded": true,
+        "synthetic_notes_visible": true,
+        "local_status_visible": true
+      }
+    },
+    {
+      "mode": "refusal",
+      "checks": {
+        "initial_empty": true,
+        "scope_visible": true,
+        "assessment_preserved": true,
+        "no_import_network": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 433,
+      "scenario": "narrow-inspector"
+    }
+  ],
+  "existing_workflow_results": [
+    {
+      "workflow": "self-review",
+      "mode": "positive",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "assessment_correct": true,
+        "scope_is_honest": true,
+        "result_digest_matches": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    },
+    {
+      "workflow": "self-review",
+      "mode": "race",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "stale_export_discarded": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    },
+    {
+      "workflow": "self-review",
+      "mode": "replace",
+      "checks": {
+        "no_review_without_result": true,
+        "exact_result_bound": true,
+        "initial_unassessed": true,
+        "account_resets_assessment": true,
+        "review_has_no_network_write": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    },
+    {
+      "workflow": "lab",
+      "mode": "excerpts",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "outcome_distinct": true,
+        "scope_visible": true,
+        "export_is_public": true,
+        "source_links": true,
+        "input_edit_clears_result": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    },
+    {
+      "workflow": "lab",
+      "mode": "edit",
+      "checks": {
+        "no_automatic_query": true,
+        "explicit_ack_required": true,
+        "pending_withholds_export": true,
+        "edit_discards_late_result": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    },
+    {
+      "workflow": "lab",
+      "mode": "viewer",
+      "checks": {
+        "no_automatic_query": true,
+        "viewer_cannot_submit": true,
+        "no_export": true,
+        "no_horizontal_overflow": true
+      },
+      "viewport": 2206
+    }
+  ],
+  "production_ready": false
+}
