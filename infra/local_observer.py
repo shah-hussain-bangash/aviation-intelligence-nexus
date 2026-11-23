@@ -9,6 +9,7 @@ import time
 from urllib.request import HTTPRedirectHandler, ProxyHandler, build_opener
 from infra.recovery import private_target
 from services.api.monitoring import Monitor
+from infra.observer_history import IncidentHistory, history
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -103,12 +104,15 @@ def observe(directory, port=8090, once=False):
     if stop.exists():
         raise ValueError('Remove the existing stop request explicitly before starting')
     with exclusive(directory):
+        journal = IncidentHistory(directory, port)
         monitor = Monitor(record, {'api_readiness': lambda: probe(port, True),
                                   'frontend_liveness': lambda: probe(port, False)}, enabled=True)
         while not stop.exists():
             monitor.sample()
             if monitor.persistence_ok is not True:
                 raise OSError('Observer record could not be persisted')
+            observation = monitor.snapshot()
+            journal.observe(observation['checked_at'], observation['components'])
             if once:
                 return
             time.sleep(5)
@@ -116,7 +120,7 @@ def observe(directory, port=8090, once=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['run', 'status'])
+    parser.add_argument('action', choices=['run', 'status', 'history'])
     parser.add_argument('--directory', required=True)
     parser.add_argument('--port', type=int, choices=[8090, 8092], default=8090)
     parser.add_argument('--once', action='store_true')
@@ -124,6 +128,8 @@ def main():
     directory = private_target(args.directory)
     if args.action == 'status':
         print(json.dumps(status(directory)))
+    elif args.action == 'history':
+        print(json.dumps(history(directory)))
     else:
         observe(directory, args.port, args.once)
 

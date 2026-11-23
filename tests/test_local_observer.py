@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 from infra.local_observer import exclusive, observe, probe, status
+from infra.observer_history import history
 
 
 class LocalObserverTests(unittest.TestCase):
@@ -84,3 +85,5 @@ class LocalObserverTests(unittest.TestCase):
         record = json.loads((self.root / 'health.json').read_text())
         self.assertFalse(record['production_ready'])
         self.assertEqual(record['request_counts'], {})
+        self.assertTrue(history(self.root)['recorded'])
+        self.assertEqual(history(self.root)['events_total'], 0)
