@@ -28,4 +28,6 @@ The [retry scheduling increment](RETRY_SCHEDULING.md) adds opt-in persisted due 
 
 The [bounded ingestion runner](BOUNDED_INGESTION_RUNNER.md) executes synthetic due work in the foreground with cooperative stop/pause, invocation budgets and recorded status. It does not install a background supervisor or grant real-source approval.
 
+The [runner snapshot inspection increment](RUNNER_STATUS_INSPECTION.md) classifies recent/stale records without liveness claims and retains an actual abrupt-runner-exit/ledger-replay trace. It is not independently supervised monitoring or an automatic recovery policy.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
