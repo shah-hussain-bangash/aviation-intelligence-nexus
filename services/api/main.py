@@ -17,6 +17,7 @@ from uuid import UUID, uuid4
 from fastapi.responses import JSONResponse
 from services.api.configuration import validate_environment
 from services.api.migrations import MigrationHistoryError, history_version, require_current
+from infra.recovery_state import require_complete_restore
 
 # Fail before project imports resolve state paths or construct services.
 validate_environment(os.environ)
@@ -83,6 +84,7 @@ def connect(database: Path):
 
 
 def initialize(database: Path):
+    require_complete_restore(database)
     database.parent.mkdir(parents=True, exist_ok=True)
     with closing(connect(database)) as connection, connection:
         # Reject bad history before changing journal mode; repeat under the write lock.

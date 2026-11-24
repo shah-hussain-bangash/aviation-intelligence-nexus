@@ -8,7 +8,7 @@ CONTRACTS = ('services/api/paths.py', 'services/api/prediction.py', 'agents/jobs
              'agents/store.py', 'agents/runtime.py', 'optimization/history.py',
              'optimization/reviews.py', 'optimization/gates.py', 'rag/index.py', 'infra/recovery.py',
              'services/api/auth.py', 'services/api/account_security.py', 'services/api/security_audit.py',
-             'services/api/migrations.py')
+             'services/api/migrations.py', 'infra/recovery_state.py')
 
 
 def contract_digest(contracts):

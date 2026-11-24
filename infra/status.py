@@ -6,10 +6,12 @@ import re
 import os
 from infra.rollback_evidence import validate_receipt, binding
 from services.api.paths import ROOT, SCHEMA_VERSION
+from infra.recovery_state import RestoreIncompleteError, restore_incomplete
 
 
 def restore_status(state):
     try:
+        if restore_incomplete(state):raise ValueError('Restore is incomplete')
         file=Path(state)/'recovery-receipt.json'
         if file.stat().st_size>16000:raise ValueError('Oversized receipt')
         receipt=json.loads(file.read_text(encoding='utf-8'))
@@ -18,7 +20,7 @@ def restore_status(state):
         if not isinstance(receipt.get('flight_records'),int) or isinstance(receipt['flight_records'],bool) or receipt['flight_records']<0:raise ValueError('Invalid receipt count')
         return {'recorded':True,**{key:receipt.get(key) for key in ('snapshot_id','restored_at','schema_version','flight_records','active_model_restored','knowledge_index_restored','elapsed_ms')},
             **{flag:True for flag in flags},'production_qualified':False}
-    except (OSError,ValueError,TypeError,KeyError):
+    except (OSError,ValueError,TypeError,KeyError,RestoreIncompleteError):
         return {'recorded':False,'message':'No verified local restore receipt for this instance.','production_qualified':False}
 
 

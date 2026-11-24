@@ -60,8 +60,11 @@ class RecoveryTests(unittest.TestCase):
         before=latest_events(self.state/'ain.sqlite3')['events']
         manifest=backup(self.state,self.backup)
         self.assertEqual(manifest['database']['row_counts']['security_audit'],len(before))
-        restore(self.backup,self.root/'audit-restored')
-        self.assertEqual(latest_events(self.root/'audit-restored/ain.sqlite3')['events'],before)
+        receipt=restore(self.backup,self.root/'audit-restored')
+        events=latest_events(self.root/'audit-restored/ain.sqlite3')['events']
+        self.assertEqual(events[1:],before)
+        self.assertEqual(events[0]['event_id'],receipt['session_revocation_event_id'])
+        self.assertEqual(events[0]['action'],'sign_out')
 
     def test_corrupt_backup_is_rejected_before_target_creation(self):
         backup(self.state,self.backup);(self.backup/'models/delay-v2/model.joblib').write_bytes(b'corrupt')
