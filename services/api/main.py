@@ -15,6 +15,10 @@ from pydantic import BaseModel, ConfigDict, Field
 import hmac
 from uuid import UUID, uuid4
 from fastapi.responses import JSONResponse
+from services.api.configuration import validate_environment
+
+# Fail before project imports resolve state paths or construct services.
+validate_environment(os.environ)
 from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfScope
 from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
@@ -160,6 +164,7 @@ def read_model_report(directory: Path):
 
 def create_app(database: Path | None = None, model_directory: Path | None = None,
                research_model_directory: Path | None = None, knowledge_index: Path | None = None):
+    config=validate_environment(os.environ)
     database = Path(database) if database is not None else Path(
         os.environ.get("AIN_DB_PATH", str(STATE / "ain.sqlite3")))
     model_directory = model_directory if model_directory is not None else STATE / "models/delay-baseline-v1"
@@ -172,7 +177,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     agent_store = AgentStore(database)
     investigator = Investigator(database,knowledge,agent_store)
     job_queue = JobQueue(agent_store)
-    job_worker = JobWorker(job_queue, investigator, enabled=os.environ.get('AIN_AGENT_JOBS') == '1')
+    job_worker = JobWorker(job_queue, investigator, enabled=config.agent_jobs)
     auth = AuthStore(database)
     def database_probe():
         with closing(connect(database)) as connection:
@@ -186,9 +191,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         'database': database_probe,
         'active_model': lambda: read_model_report(research_model_directory) is not None,
         'local_ai_models': ai_probe,
-    }, enabled=os.environ.get('AIN_MONITOR_ENABLED') == '1')
+    }, enabled=config.monitor)
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
-               for port in (os.environ.get("PORT", "8080"), os.environ.get("AIN_API_PORT", "8002"))}
+               for port in (config.web_port,config.api_port)}
 
     @asynccontextmanager
     async def lifespan(app):

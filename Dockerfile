@@ -27,7 +27,7 @@ RUN addgroup -g 10001 ain && adduser -D -u 10001 -G ain ain
 ARG RELEASE_REVISION=working-tree
 LABEL org.opencontainers.image.revision=$RELEASE_REVISION
 COPY apps/web apps/web
-COPY scripts/dev.mjs scripts/api-proxy.mjs scripts/runtime-config.mjs scripts/security-headers.mjs scripts/
+COPY scripts/dev.mjs scripts/api-proxy.mjs scripts/runtime-config.mjs scripts/security-headers.mjs scripts/check-environment.mjs scripts/
 USER 10001:10001
 EXPOSE 8080
 CMD ["node","scripts/dev.mjs"]
