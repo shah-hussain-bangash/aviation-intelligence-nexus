@@ -26,4 +26,6 @@ The [resumable synthetic ingestion increment](RESUMABLE_SYNTHETIC_INGESTION.md) 
 
 The [retry scheduling increment](RETRY_SCHEDULING.md) adds opt-in persisted due times, bounded backoff and pause controls to synthetic case queues. It is manual invocation policy, not installed background supervision or real-source approval.
 
+The [bounded ingestion runner](BOUNDED_INGESTION_RUNNER.md) executes synthetic due work in the foreground with cooperative stop/pause, invocation budgets and recorded status. It does not install a background supervisor or grant real-source approval.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
