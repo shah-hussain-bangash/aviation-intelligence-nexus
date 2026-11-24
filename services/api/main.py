@@ -40,6 +40,7 @@ from agents.withdrawal import SharingWithdrawal
 from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.intake_overview import load_overview
+from services.api.batch_lineage import load_lineage
 from services.api.diagnostics import load_diagnostics
 from services.api.thresholds import load_thresholds
 from services.api.duration import load_duration
@@ -621,6 +622,14 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except (OSError, ValueError, KeyError, TypeError):
             return JSONResponse(status_code=503, content={'error': 'readiness_evidence_unavailable',
                 'message': 'The scope/evidence assessment could not be verified. No readiness claim is returned.'})
+
+    @app.get('/api/v1/research/batch-lineage')
+    def batch_lineage(request: Request):
+        if request.query_params:
+            return JSONResponse(status_code=422,content={'error':'query_not_allowed'})
+        try: return load_lineage(database.parent,request.state.user['role'])
+        except (OSError,ValueError,TypeError,KeyError,OverflowError,RecursionError):
+            return JSONResponse(status_code=503,content={'error':'batch_lineage_unavailable'})
 
     @app.get('/api/v1/research/intake-overview')
     def intake_overview(request: Request):
