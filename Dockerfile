@@ -19,7 +19,7 @@ COPY docs docs
 RUN mkdir -p /observer /intake-status
 USER 10001:10001
 EXPOSE 8002
-CMD ["python","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8002","--workers","1"]
+CMD ["python","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8002","--workers","1","--log-config","infra/request-logging.json","--no-access-log"]
 
 FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS web
 WORKDIR /app

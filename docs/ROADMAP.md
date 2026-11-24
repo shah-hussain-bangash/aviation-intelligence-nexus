@@ -2,6 +2,8 @@
 
 Keep all 64 workspace options. Prioritize one integrated, measurable workflow before expanding services.
 
+The local-first [production delivery sequence](PRODUCTION_DELIVERY_PLAN.md) defines the exit evidence for these phases. Its first foundation increment is [request correlation and safe error telemetry](REQUEST_CORRELATION.md); this does not close a production acceptance requirement.
+
 1. **Foundation:** Python API, persistent database, migrations, identity, permissions and correlated audit.
 2. **Data:** authorized historical flight release, reproducible ingestion, schema/quality checks, time-safe joins and source coverage.
 3. **Data science:** reproducible delay baseline, temporal holdout, calibration/error analysis, model artifact and versioned scoring.

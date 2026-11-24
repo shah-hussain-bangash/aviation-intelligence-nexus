@@ -9,7 +9,7 @@
     "start": "node scripts/start-release.mjs",
     "dev": "node scripts/dev.mjs",
     "dev:all": "node scripts/start-local.mjs",
-    "test:web": "node --test tests/test_dashboard.mjs tests/test_startup.mjs tests/test_scoped_review.mjs tests/test_security_headers.mjs",
+    "test:web": "node --test tests/test_dashboard.mjs tests/test_startup.mjs tests/test_scoped_review.mjs tests/test_security_headers.mjs tests/test_request_ids.mjs",
     "test:python": "node scripts/python-checks.mjs",
     "test": "npm run check && npm run test:web && npm run test:python",
     "check": "node scripts/check.mjs",
