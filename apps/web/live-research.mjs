@@ -1,3 +1,4 @@
+import {mountBatchLineage} from './batch-lineage.mjs';
 import {mountIntakeOverview} from './intake-overview.mjs';
 import {mountRetrieval} from './retrieval-evaluation.mjs';
 import {mountScopedLab} from './scoped-answer-lab.mjs';
@@ -78,6 +79,7 @@ if (typeof document !== 'undefined') {
   const inputDistributionsUI=mountDistributions(section.querySelector('.research-inner'));
   const intakeOverview = mountIntakeOverview(section.querySelector('.research-inner'));
   const quality = mountQuality(section.querySelector('.research-inner'));
+  const batchLineage = mountBatchLineage(section.querySelector('.research-inner'));
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
   const explanations = mountExplanations(section.querySelector('.research-inner'));
   const duration = mountDuration(section.querySelector('.research-inner'));
@@ -125,6 +127,7 @@ if (typeof document !== 'undefined') {
   mountAuth(section,user=>{
     accountSecurityUI.setSession(user);
     intakeOverview.setSession(user);
+    batchLineage.setSession(user);
     inputDistributionsUI.setSession(user);
     gateLab.setSession(user);
     knowledgeLab.setSession(user);
