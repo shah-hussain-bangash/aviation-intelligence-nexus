@@ -5,6 +5,7 @@ import hashlib
 from pathlib import Path
 import sqlite3
 import time
+from services.api.security_audit import append_event
 
 
 class SessionInvalid(ValueError):
@@ -21,7 +22,7 @@ def observe(db,token_hash,current):
         'scope':'current_account_local_sessions','production_ready':False}
 
 
-def account_sessions(database,token,revoke_others=False):
+def account_sessions(database,token,revoke_others=False,*,request_id=None):
     if not isinstance(token,str) or not token or len(token)>128:raise SessionInvalid('Invalid current session')
     token_hash=hashlib.sha256(token.encode()).hexdigest();deadline=time.monotonic()+3
     uri=Path(database).resolve().as_uri()+('?mode=rw' if revoke_others else '?mode=ro')
@@ -33,5 +34,6 @@ def account_sessions(database,token,revoke_others=False):
         if revoke_others:
             removed=db.execute('DELETE FROM auth_sessions WHERE user_id=? AND token_hash<>? AND expires_at>?',(row['user_id'],token_hash,current)).rowcount
             result.update(active_sessions=1,other_active_sessions=0,revoked_other_sessions=removed,current_session_preserved=True)
+            append_event(db,'other_sessions_revoked','success',actor_id=row['user_id'],subject_id=row['user_id'],request_id=request_id)
         if time.monotonic()>=deadline:raise TimeoutError('Session query exceeded budget')
         return result

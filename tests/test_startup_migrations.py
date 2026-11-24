@@ -29,12 +29,12 @@ class StartupMigrationTests(unittest.TestCase):
                 list(workers.map(lambda _: initialize(path), range(8)))
             self.assertEqual(before, self.dump(path))
             with closing(sqlite3.connect(path)) as db:
-                self.assertEqual(history_version(db, 7), 7)
+                self.assertEqual(history_version(db, 8), 8)
 
     def test_gapped_and_newer_histories_stop_before_journal_or_migration_writes(self):
         for sql, code in [
             ('DELETE FROM schema_migrations WHERE version=4', 'migration_history_gap'),
-            ('INSERT INTO schema_migrations(version) VALUES (8)', 'migration_history_newer_than_service')]:
+            ('INSERT INTO schema_migrations(version) VALUES (9)', 'migration_history_newer_than_service')]:
             with self.subTest(code=code), tempfile.TemporaryDirectory() as folder:
                 path = Path(folder) / 'synthetic.sqlite3'; initialize(path); self.execute(path, sql)
                 with closing(sqlite3.connect(path)) as db:
@@ -84,7 +84,7 @@ class StartupMigrationTests(unittest.TestCase):
     def test_failed_legacy_upgrade_rolls_back_without_recording_new_versions(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'synthetic.sqlite3'; initialize(path)
-            for table in ('research_runs', 'auth_users', 'auth_sessions', 'auth_limits', 'gate_runs', 'knowledge_runs', 'agent_runs'):
+            for table in ('research_runs', 'auth_users', 'auth_sessions', 'auth_limits', 'gate_runs', 'knowledge_runs', 'agent_runs', 'security_audit'):
                 self.execute(path, 'DROP TABLE ' + table)
             self.execute(path, 'DELETE FROM schema_migrations WHERE version>=3')
             before = self.dump(path)

@@ -11,6 +11,7 @@ from threading import Lock
 import time
 import os
 from uuid import uuid4
+from services.api.security_audit import append_event
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError, InvalidHashError
@@ -56,18 +57,20 @@ class AuthStore:
             db.execute("BEGIN IMMEDIATE")
             if not db.execute("SELECT 1 FROM auth_users LIMIT 1").fetchone() and role != "admin":
                 raise ValueError("The first account must be an admin")
+            user_id = str(uuid4())
             db.execute("INSERT INTO auth_users(id,username,password_hash,role,active) VALUES(?,?,?,?,1)",
-                       (str(uuid4()), username, encoded, role))
+                       (user_id, username, encoded, role))
+            append_event(db,'account_created','success',subject_id=user_id)
 
     def enrollment_required(self):
         with closing(self.connect()) as db:
             return not bool(db.execute("SELECT 1 FROM auth_users LIMIT 1").fetchone())
 
-    def login(self, username, password):
+    def login(self, username, password, *, request_id=None):
         username = username.lower()
         key = hashlib.sha256(username.encode()).hexdigest()
         current = time.time()
-        denied = False
+        denied = False; limited = False
         with self.lock, closing(self.connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
             db.execute("DELETE FROM auth_limits WHERE window_start < ?", (current - 3600,))
@@ -75,28 +78,38 @@ class AuthStore:
             failures = limit["failures"] if limit and current - limit["window_start"] < 60 else 0
             started = limit["window_start"] if failures else current
             if failures >= 5:
-                raise LoginLimited("Try again later")
-            user = db.execute("SELECT * FROM auth_users WHERE username=?", (username,)).fetchone()
-            try:
-                HASHER.verify(user["password_hash"] if user else DUMMY_HASH, password)
-                denied = not user or not user["active"]
-            except (VerificationError, InvalidHashError):
-                denied = True
-            if denied:
-                db.execute("INSERT INTO auth_limits(key,failures,window_start) VALUES(?,?,?) "
-                    "ON CONFLICT(key) DO UPDATE SET failures=excluded.failures,window_start=excluded.window_start",
-                    (key, failures + 1, started))
+                append_event(db,'sign_in','limited',request_id=request_id)
+                limited = True
             else:
-                if HASHER.check_needs_rehash(user["password_hash"]):
-                    db.execute("UPDATE auth_users SET password_hash=? WHERE id=?", (HASHER.hash(password), user["id"]))
-                db.execute("DELETE FROM auth_limits WHERE key=?", (key,))
-                db.execute("DELETE FROM auth_sessions WHERE expires_at < ?", (current,))
-                token = secrets.token_urlsafe(32)
-                db.execute("INSERT INTO auth_sessions(token_hash,user_id,expires_at) VALUES(?,?,?)",
-                    (hashlib.sha256(token.encode()).hexdigest(), user["id"], current + SESSION_SECONDS))
+                token, denied = self._attempt_login(db, username, password, key, current, failures, started, request_id)
+        if limited:
+            raise LoginLimited("Try again later")
         if denied:
             raise LoginDenied("Invalid username or password")
         return token
+
+    def _attempt_login(self, db, username, password, key, current, failures, started, request_id):
+        user = db.execute("SELECT * FROM auth_users WHERE username=?", (username,)).fetchone()
+        try:
+            HASHER.verify(user["password_hash"] if user else DUMMY_HASH, password)
+            denied = not user or not user["active"]
+        except (VerificationError, InvalidHashError):
+            denied = True
+        if denied:
+            db.execute("INSERT INTO auth_limits(key,failures,window_start) VALUES(?,?,?) "
+                "ON CONFLICT(key) DO UPDATE SET failures=excluded.failures,window_start=excluded.window_start",
+                (key, failures + 1, started))
+        else:
+            if HASHER.check_needs_rehash(user["password_hash"]):
+                db.execute("UPDATE auth_users SET password_hash=? WHERE id=?", (HASHER.hash(password), user["id"]))
+            db.execute("DELETE FROM auth_limits WHERE key=?", (key,))
+            db.execute("DELETE FROM auth_sessions WHERE expires_at < ?", (current,))
+            token = secrets.token_urlsafe(32)
+            db.execute("INSERT INTO auth_sessions(token_hash,user_id,expires_at) VALUES(?,?,?)",
+                (hashlib.sha256(token.encode()).hexdigest(), user["id"], current + SESSION_SECONDS))
+        append_event(db,'sign_in','denied' if denied else 'success',
+                     actor_id=None if denied else user['id'],subject_id=None if denied else user['id'],request_id=request_id)
+        return None if denied else token, denied
 
     def session(self, token):
         if not token or len(token) > 128:
@@ -107,9 +120,12 @@ class AuthStore:
                 (hashlib.sha256(token.encode()).hexdigest(), time.time())).fetchone()
             return dict(row) if row else None
 
-    def logout(self, token):
+    def logout(self, token, *, request_id=None):
         with closing(self.connect()) as db, db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute('SELECT user_id FROM auth_sessions WHERE token_hash=?',(hashlib.sha256(token.encode()).hexdigest(),)).fetchone()
             db.execute("DELETE FROM auth_sessions WHERE token_hash=?", (hashlib.sha256(token.encode()).hexdigest(),))
+            append_event(db,'sign_out','success',actor_id=row['user_id'] if row else None,request_id=request_id)
 
     def set_access(self, username, role=None, disable=False):
         with closing(self.connect()) as db, db:
@@ -123,3 +139,4 @@ class AuthStore:
             db.execute("UPDATE auth_users SET role=?,active=? WHERE id=?",
                        (role or row["role"], 0 if disable else row["active"], row["id"]))
             db.execute("DELETE FROM auth_sessions WHERE user_id=?", (row["id"],))
+            append_event(db,'access_changed','success',subject_id=row['id'])

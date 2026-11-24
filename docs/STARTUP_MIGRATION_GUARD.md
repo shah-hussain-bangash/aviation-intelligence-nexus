@@ -1,6 +1,6 @@
 # Startup migration-history guard
 
-Local foundation increment, 24 November 2026. Adds runtime history admission; schema version remains 7 and no new migration is introduced. This is not managed database availability or production acceptance.
+Local foundation increment, 24 November 2026. Adds runtime history admission; its initial implementation used schema 7 without a new migration. The following [security-audit increment](LOCAL_SECURITY_AUDIT.md) advances the source to schema 8. This is not managed database availability or production acceptance.
 
 Previously initialization used the highest recorded version alone. A history containing 1, 2, 3, 5, 6, 7 could therefore appear current. `services/api/migrations.py` now requires integer versions forming a contiguous prefix from 1, with no version newer than the running service. The history table must be a table with an integer version primary key and an `applied_at` column. Checks emit fixed diagnostic codes, without paths or row values.
 

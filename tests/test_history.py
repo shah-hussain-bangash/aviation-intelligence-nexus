@@ -48,7 +48,7 @@ class HistoryTests(unittest.TestCase):
     def test_upgrade_from_version_two_keeps_existing_flights(self):
         with closing(sqlite3.connect(self.db)) as connection, connection:
             connection.execute("DROP TABLE research_runs")
-            for table in ("auth_sessions", "auth_users", "auth_limits", "gate_runs", "knowledge_runs", "agent_runs"):
+            for table in ("auth_sessions", "auth_users", "auth_limits", "gate_runs", "knowledge_runs", "agent_runs", "security_audit"):
                 connection.execute(f"DROP TABLE {table}")
             connection.execute("DELETE FROM schema_migrations WHERE version>=3")
             connection.execute("INSERT INTO flights (source,source_record_id,flight_date,carrier,origin,destination) "

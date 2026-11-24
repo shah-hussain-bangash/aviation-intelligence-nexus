@@ -16,7 +16,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const routeProfile = pathname === '/api/v1/research/route-profile';
   const archiveRead = pathname === '/api/v1/research/agent-archive';
   const agentReview = pathname === '/api/v1/research/agent-review';
-  const securityRead=pathname==='/api/v1/auth/security';
+  const securityRead=pathname==='/api/v1/auth/security'||pathname==='/api/v1/research/security-audit';
   const distributionsRead=pathname==='/api/v1/research/input-distributions';
   const intakeRead=['/api/v1/research/intake-overview','/api/v1/research/batch-lineage'].includes(pathname);
   const thresholdsRead=['/api/v1/research/threshold-tradeoffs','/api/v1/research/duration-evaluation','/api/v1/research/retrieval-diagnostics'].includes(pathname);

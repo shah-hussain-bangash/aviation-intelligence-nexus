@@ -115,6 +115,14 @@ test('security proxy forwards only fixed self-session endpoints with scoped cook
  assert.equal((await fetch(base+'/api/v1/auth/security',{headers})).status,200);assert.equal((await fetch(base+'/api/v1/auth/revoke-other-sessions',{method:'POST',headers,body:'{"acknowledged":true}'})).status,200);
  assert.equal((await fetch(base+'/api/v1/auth/security?user_id=other')).status,422);assert.equal((await fetch(base+'/api/v1/auth/security',{method:'POST'})).status,405);assert.equal((await fetch(base+'/api/v1/auth/revoke-other-sessions')).status,405);
 });
+test('security audit proxy allows only the fixed read and strips unrelated cookies',async t=>{
+ let calls=0;
+ const backend=await serve(t,(req,res)=>{calls++;assert.equal(req.url,'/api/v1/research/security-audit');assert.equal(req.method,'GET');assert.equal(req.headers.cookie,'ain_session=fixture');assert.equal(req.headers['x-role'],undefined);res.setHeader('Content-Type','application/json');res.end('{}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,backend)){res.writeHead(404);res.end();}});
+ const url=`http://127.0.0.1:${frontend}/api/v1/research/security-audit`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=private','X-Role':'admin'}})).status,200);
+ assert.equal((await fetch(url+'?limit=1')).status,422);assert.equal((await fetch(url,{method:'POST'})).status,405);assert.equal(calls,1);
+});
 test('archive canonical queries preserve literal search and exact 64-bit cursor strings',()=>{
  const q=archiveQuery(new URLSearchParams({q:' %_ 航空 ',state:'failed',before:'9223372036854775806',through:'9223372036854775807'}));assert.equal(q.get('q'),'%_ 航空');assert.equal(q.get('before'),'9223372036854775806');
  for(const query of ['q=a&q=b','before=1','through=9223372036854775808','state=approved','url=private','q='+('x'.repeat(121))])assert.throws(()=>archiveQuery(new URLSearchParams(query)));

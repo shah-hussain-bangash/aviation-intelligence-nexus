@@ -13,7 +13,7 @@ from services.api.paths import ROOT,STATE,SCHEMA_VERSION
 from agents.store import AgentStore
 
 FILES=('ain.sqlite3','models/delay-v2/model.joblib','models/delay-v2/report.json','knowledge/index.json')
-TABLES=('flights','imports','auth_users','auth_sessions','research_runs','gate_runs','knowledge_runs','agent_runs')
+TABLES=('flights','imports','auth_users','auth_sessions','research_runs','gate_runs','knowledge_runs','agent_runs','security_audit')
 
 
 def timestamp():return datetime.now(timezone.utc).isoformat()

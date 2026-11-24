@@ -4,4 +4,4 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 STATE=Path(os.environ.get('AIN_STATE_ROOT',str(ROOT/'.local'))).resolve()
-SCHEMA_VERSION=7
+SCHEMA_VERSION=8

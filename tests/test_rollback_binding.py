@@ -16,7 +16,7 @@ def receipt():
             'candidate_revision': 'a' * 40, 'rollback_revision': 'b' * 40,
             'candidate_images': {'api': 'sha256:' + 'a' * 64, 'web': 'sha256:' + 'c' * 64},
             'rollback_images': {'api': 'sha256:' + 'b' * 64, 'web': 'sha256:' + 'd' * 64},
-            'schema_version': 7, 'contracts_sha256': current_contract_digest(),
+            'schema_version': 8, 'contracts_sha256': current_contract_digest(),
             'flight_records': 100, 'active_jobs_at_start': 0, 'production_qualified': False,
             **{key: True for key in FLAGS}}
 
@@ -24,14 +24,14 @@ def receipt():
 class RollbackBindingTests(unittest.TestCase):
     def test_build_schema_and_contracts_must_all_match(self):
         value = receipt()
-        self.assertTrue(binding(value, 'a' * 40, 7)['candidate_matches_current_build'])
-        self.assertEqual(binding(value, 'b' * 40, 7)['relation'], 'different_release')
-        self.assertEqual(binding(value, 'a' * 40, 8)['relation'], 'schema_mismatch')
-        self.assertEqual(binding(value, 'working-tree', 7)['relation'], 'unverified_build')
+        self.assertTrue(binding(value, 'a' * 40, 8)['candidate_matches_current_build'])
+        self.assertEqual(binding(value, 'b' * 40, 8)['relation'], 'different_release')
+        self.assertEqual(binding(value, 'a' * 40, 7)['relation'], 'schema_mismatch')
+        self.assertEqual(binding(value, 'working-tree', 8)['relation'], 'unverified_build')
         value['contracts_sha256'] = '0' * 64
-        self.assertEqual(binding(value, 'a' * 40, 7)['relation'], 'contract_mismatch')
+        self.assertEqual(binding(value, 'a' * 40, 8)['relation'], 'contract_mismatch')
         with tempfile.TemporaryDirectory() as folder:
-            self.assertEqual(binding(value, 'a' * 40, 7, Path(folder))['relation'], 'unavailable_contracts')
+            self.assertEqual(binding(value, 'a' * 40, 8, Path(folder))['relation'], 'unavailable_contracts')
 
     def test_legacy_receipt_is_historical_even_when_revision_matches(self):
         value = receipt(); value['format'] = 'ain-rollback-drill-v1'
@@ -76,7 +76,7 @@ class RollbackBindingTests(unittest.TestCase):
 
     def test_operator_publication_requires_exact_deployed_image_pair(self):
         value = receipt()
-        running = {'images': value['rollback_images'], 'source_revision': value['candidate_revision'], 'schema_version': 7, 'contracts': {}}
+        running = {'images': value['rollback_images'], 'source_revision': value['candidate_revision'], 'schema_version': 8, 'contracts': {}}
         with patch('infra.releases.deployed_images', return_value=running['images']), patch('infra.releases.inspect_release', return_value=running), patch('infra.publish_rollback.subprocess.run') as run:
             with self.assertRaises(ValueError): publish(value)
             run.assert_not_called()
