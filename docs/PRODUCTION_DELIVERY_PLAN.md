@@ -18,6 +18,8 @@ The original production assessment retains 24 open requirements. Its dated entri
 
 The request-correlation change introduces server-generated API request IDs, allowlisted structured response-preparation events, generic correlated unhandled-error responses and validated proxy ID forwarding. See `REQUEST_CORRELATION.md` for execution and limitations. This is one local foundation increment, not completion of Phase 1 or protected audit.
 
-Next foundation increment: review deployment configuration and secret handling against a private HTTPS environment, define identity integration and the database migration/availability target, and agree the first release's users, workload and service objectives. The cloud/provider decision remains deferred under the user's local-first preference.
+The second local foundation increment is [configuration and secret-reference preflight](CONFIGURATION_PREFLIGHT.md): strict local settings, rejected unsupported security/secret declarations, safe diagnostic commands and startup admission checks. This validates supported environment settings; it does not implement a secret provider, managed identity or HTTPS.
+
+Next foundation increment: define the private HTTPS/identity integration boundary and database migration/availability target, and agree the first release's users, workload and service objectives. The cloud/provider decision remains deferred under the user's local-first preference. Production profiles remain fail-closed until their required controls exist.
 
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

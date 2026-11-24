@@ -8,6 +8,7 @@ services:
       args:
         RELEASE_REVISION: ${AIN_RELEASE_REVISION:-working-tree}
     environment:
+      AIN_ENV: ${AIN_ENV-local}
       AIN_CONTAINER: "1"
       AIN_MONITOR_ENABLED: "1"
       AIN_AGENT_JOBS: "1"
@@ -41,6 +42,7 @@ services:
       args:
         RELEASE_REVISION: ${AIN_RELEASE_REVISION:-working-tree}
     environment:
+      AIN_ENV: ${AIN_ENV-local}
       AIN_CONTAINER: "1"
       AIN_BIND_HOST: 0.0.0.0
       AIN_API_HOST: api

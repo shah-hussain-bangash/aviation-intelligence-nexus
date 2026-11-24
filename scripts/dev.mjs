@@ -7,11 +7,8 @@ import {runtimeConfig} from './runtime-config.mjs';
 import {securityHeaders} from './security-headers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../apps/web');
-const port = Number(process.env.PORT || 8080);
-const apiPort = Number(process.env.AIN_API_PORT || 8002);
 const config=runtimeConfig();
-if (!Number.isInteger(apiPort) || apiPort < 1 || apiPort > 65535) throw new Error('AIN_API_PORT must be a valid local port.');
-if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be a valid local port.');
+const port=config.webPort,apiPort=config.apiPort;
 const types = { '.mjs': 'text/javascript; charset=utf-8', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
 const inside = value => value === root || value.startsWith(root + path.sep);
 const server = http.createServer(async (req, res) => {
