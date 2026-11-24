@@ -32,4 +32,6 @@ The seventh local foundation increment adds the [audit schema/connection guard](
 
 The eighth local foundation increment adds [audited restore-session revocation and unfinished-restore interlocks](AUDITED_RESTORE.md). The revocation/event commit is atomic; the entire multi-step restore is not. Failed copies remain marked and normal startup, backup/verification and the receipt projection refuse them. Schema remains 8; directory publication, independent recovery and actual-image qualification remain open.
 
+The ninth local foundation increment adds a [read-only restore evidence verifier](RESTORE_EVIDENCE_VERIFICATION.md) for fresh quiescent offline copies, and integrates it into the synthetic rehearsal. It streams retained rows and compares manifest/receipt/event/artifact bindings without modifying inputs. This is consistency evidence, not authenticated origin, live-health policy, active-agent recovery verification or production qualification.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

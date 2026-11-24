@@ -32,6 +32,8 @@ This is an application startup interlock, not filesystem access control or a glo
 
 The CLI returns the receipt with snapshot UUID, event UUID, aggregate scope and count. The event can be inspected in the restored SQLite audit table or the existing admin-only bounded audit endpoint after signing in with the existing account credentials. The general platform receipt projection retains its previous sanitized fields; it does not expose new event details to every role. Receipts and events remain local and owner-editable, without independent authentication or protected external storage.
 
+For a fresh quiescent offline copy, the later [read-only restore evidence verifier](RESTORE_EVIDENCE_VERIFICATION.md) compares the manifest, receipt, actual rows, artifacts and audit event. It reports consistency rather than authenticating those owner-controlled inputs, and it is not a live-health check.
+
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p test_audited_restore.py -v
 .\.venv\Scripts\python.exe -m infra.verify_schema8

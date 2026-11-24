@@ -19,6 +19,8 @@ The command pins the canonical LF-normalized SHA-256 of `infra/fixtures/schema7.
 5. Exercise the rollback metadata guard using explicitly synthetic release records. An 8-to-7 pair must be rejected. No real image identity or compatibility is inferred from these synthetic records.
 6. Record source file hashes, Git revision/dirty state when available, fixture identity and check outcomes. Changed source hashes during a run prevent a passing report. Failures retain their case and a fixed stage/error report, without raw exceptions or account values. Git identity may be unavailable in source bundles; file hashes are still recorded.
 
+The later [restore evidence verifier](RESTORE_EVIDENCE_VERIFICATION.md) is also required to pass on separately prepared offline copies of this command's own quiescent synthetic backup/restore pair. Its JSON report is retained under `offline-evidence/verification.json`. The copies are made before restored-account sign-in; they are not live application data and do not provide independent source authentication.
+
 The report excludes passwords, hashes of account rows, session values and absolute local paths. The **private case files contain generated synthetic credentials/session state and plaintext backups**; keep them out of Git. A failed fixture hash or environment admission is rejected before case files are created. A later failure may leave a partial private case for investigation. Cooperative limits in existing backup/read routines are not a hard deadline for the whole rehearsal.
 
 ## Runtime safeguards changed

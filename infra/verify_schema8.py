@@ -27,7 +27,7 @@ FIXTURE_REVISION = '515cb8c8121aa8a41e09f5e4d05e62280554b955'
 TABLES = ('auth_users', 'auth_sessions', 'auth_limits', 'flights', 'imports', 'research_runs',
           'gate_runs', 'knowledge_runs', 'agent_runs')
 SOURCES = tuple(dict.fromkeys((*CONTRACTS, 'services/api/main.py', 'infra/releases.py',
-                             'infra/verify_schema8.py', 'infra/fixtures/schema7.sql')))
+                             'infra/verify_schema8.py', 'infra/verify_restore_evidence.py', 'infra/fixtures/schema7.sql')))
 
 
 def source_hashes():
@@ -153,6 +153,25 @@ def run_rehearsal(directory):
         require(manifest['database']['row_counts']['security_audit'] == len(upgraded['security_audit']))
         require(receipt['sessions_revoked'])
         require({p: checksum(directory / 'schema8-restored' / p) for p in artifacts} == original_artifacts)
+        stage = 'offline_receipt_evidence'
+        # This command owns these synthetic states; all their writers are closed.
+        # Never use this raw-copy recipe on a live application database.
+        evidence_root = directory / 'offline-evidence'; evidence_root.mkdir()
+        evidence_backup = evidence_root / 'backup'; evidence_backup.mkdir()
+        evidence_restored = evidence_root / 'restored'; evidence_restored.mkdir()
+        for entry in manifest['files']:
+            name = entry['path']
+            for origin, destination in ((directory / 'schema8-backup', evidence_backup),
+                                        (directory / 'schema8-restored', evidence_restored)):
+                target = destination / name; target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(origin / name, target)
+        shutil.copyfile(directory / 'schema8-backup/manifest.json', evidence_backup / 'manifest.json')
+        shutil.copyfile(directory / 'schema8-restored/recovery-receipt.json', evidence_restored / 'recovery-receipt.json')
+        from infra.verify_restore_evidence import verify_evidence
+        evidence = verify_evidence(evidence_backup, evidence_restored, offline_copy=True)
+        require(evidence['consistency_verified'])
+        (evidence_root / 'verification.json').write_text(json.dumps(evidence, indent=2) + '\n', encoding='utf-8')
+        report['checks']['offline_receipt_evidence_consistent'] = True
         restored_auth = AuthStore(recovered_db)
         require(restored_auth.session(token) is None)
         require(restored_auth.session(restored_auth.login('synthetic-admin', password))['id'] == user_id)
