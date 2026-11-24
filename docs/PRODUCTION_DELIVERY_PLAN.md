@@ -34,4 +34,8 @@ The eighth local foundation increment adds [audited restore-session revocation a
 
 The ninth local foundation increment adds a [read-only restore evidence verifier](RESTORE_EVIDENCE_VERIFICATION.md) for fresh quiescent offline copies, and integrates it into the synthetic rehearsal. It streams retained rows and compares manifest/receipt/event/artifact bindings without modifying inputs. This is consistency evidence, not authenticated origin, live-health policy, active-agent recovery verification or production qualification.
 
+## Data-platform continuation
+
+The first new data-platform increment adds [bounded private-copy ingestion and atomic replay handling](IMPORT_SAFETY.md), with a synthetic-only drill linking a stored fixture row to its import ledger and archive hash. Existing selected-field normalization and real BTS labels remain unchanged; no external archive or primary database is imported by the drill. Concurrent small-fixture replays and rollback are measured locally, not representative-scale ingestion or source authorization. Foundation and production acceptance remain open while work proceeds on data reliability.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.
