@@ -18,4 +18,6 @@ The local [import safety increment](IMPORT_SAFETY.md) adds private archive captu
 
 The [availability-time feature increment](TIME_SAFE_FEATURES.md) adds a bounded research join and synthetic delayed-weather demonstration. It does not integrate a weather feed into the frozen model or establish predictive improvement.
 
+The [UTC decision-time increment](DECISION_TIMES.md) connects explicitly mapped synthetic local schedules to the availability-time join. It records timezone rule bytes and excludes unresolved civil-time ambiguity; it does not authorize real airport mappings or enrich the frozen flight dataset.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
