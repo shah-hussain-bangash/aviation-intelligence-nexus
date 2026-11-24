@@ -45,6 +45,8 @@ The acknowledgement means the operator has ensured no writers can access the sna
 
 Checks: SQLite integrity, contiguous migration records 1 through 8, required core tables/column names, primary-key columns, the documented owner/history indexes, and selected uniqueness constraints. It does **not** fully compare SQL types, nullability, defaults, collations, triggers, all additional store tables, row semantics or access rights. It does not read/export account values, calculate dataset row counts, load artifacts, import the API, invoke migration code or open the default live database. Reports omit local paths, raw exception messages and row contents.
 
+The later [audit-specific contract check](AUDIT_CONTRACT_GUARD.md) adds expected table/trigger DDL and current-connection safeguard checks for `security_audit`. The general limitations above still apply to the remaining schema and data; this is not full database or historical-log authentication.
+
 Successful inspection exits 0 with `local_schema_checks_passed: true`; refusal exits 2. Older contiguous histories report `migration_required`; gaps, newer versions and structure failures remain blocked. All reports retain `production_ready: false`. The 30-second budget is cooperative (hash chunks and SQLite progress callbacks), not a hard operating-system I/O deadline. No migration or production approval follows from a pass.
 
 Focused verification:

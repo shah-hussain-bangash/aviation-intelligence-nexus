@@ -28,4 +28,6 @@ The fifth local foundation increment adds [transactional security events](LOCAL_
 
 The sixth local foundation increment adds a [repeatable synthetic schema-8 upgrade/recovery rehearsal](SCHEMA8_REHEARSAL.md), contiguous-history backup verification and rollback metadata rejection before Docker access. It verifies isolated database return points, not a primary deployment or image/model parity. The schema-7 return point predates all schema-8 writes; its data-loss implications remain a release decision.
 
+The seventh local foundation increment adds the [audit schema/connection guard](AUDIT_CONTRACT_GUARD.md). Specified missing or altered safeguards prevent startup, covered identity writes, healthy audit projections and backup/offline qualification. Schema remains 8, with no automatic repair. This remains local structural/configuration evidence, not independently protected or authenticated audit contents.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

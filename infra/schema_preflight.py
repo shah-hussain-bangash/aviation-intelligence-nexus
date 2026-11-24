@@ -7,6 +7,7 @@ from pathlib import Path
 import sqlite3
 import stat
 import time
+from services.api.security_audit import AuditContractError, require_audit_contract
 
 # Independent admission contract for the eight migrations in main.initialize.
 # This module deliberately does not import the API or resolve its active state.
@@ -136,6 +137,10 @@ def inspect_snapshot(path, *, offline_snapshot=False):
                     raise Refused('required_index_missing')
                 if any(fields not in unique for fields in UNIQUE.get(table, [])):
                     raise Refused('required_uniqueness_missing')
+            try:
+                require_audit_contract(connection)
+            except AuditContractError:
+                raise Refused('audit_schema_contract_invalid') from None
         if stable_file() != before or digest() != fingerprint or stable_file() != before:
             raise Refused('snapshot_changed')
         report.update(status='checked', local_schema_checks_passed=True, snapshot_sha256=fingerprint,
