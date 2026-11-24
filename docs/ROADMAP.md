@@ -24,4 +24,6 @@ The [feature resource measurement increment](FEATURE_RESOURCE_MEASUREMENT.md) su
 
 The [resumable synthetic ingestion increment](RESUMABLE_SYNTHETIC_INGESTION.md) adds durable batch states, single-host worker exclusion and an actual crash/restart/replay trace. It does not authorize external imports or install a production scheduler.
 
+The [retry scheduling increment](RETRY_SCHEDULING.md) adds opt-in persisted due times, bounded backoff and pause controls to synthetic case queues. It is manual invocation policy, not installed background supervision or real-source approval.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
