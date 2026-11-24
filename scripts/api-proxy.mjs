@@ -1,5 +1,6 @@
 // Fixed local research routes; never forward arbitrary destinations or browser credentials.
 import {routing} from './runtime-config.mjs';
+import {randomUUID} from 'node:crypto';
 import {archiveQuery} from '../apps/web/agent-archive-contract.mjs';
 export async function proxyResearchRequest(req, res, pathname, apiPort,config={}) {
   const {apiHost,sessionCookie:cookieName}=routing(config);
@@ -24,6 +25,8 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname)||securityWrite;
   const write = gateReview || jobSubmit || jobCancel || prediction || optimization || knowledge || scoped || agent || agentReview || authWrite;
   if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations','/api/v1/research/data-quality'].includes(pathname) && !write && !jobRead && !routeProfile && !archiveRead && !securityRead && !distributionsRead && !reviewInbox && !thresholdsRead && !intakeRead) return false;
+  const proxyRequestId=randomUUID();
+  res.setHeader?.('X-Request-ID',proxyRequestId);
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
@@ -70,12 +73,14 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
     if (body.length > 1024 * 1024) throw new Error('Unexpected response size');
     JSON.parse(body);
     const cookies = response.headers.getSetCookie().filter(value=>value.startsWith(cookieName+'='));
+    const backendRequestId=response.headers.get('x-request-id')||'';
+    const requestId=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(backendRequestId)?backendRequestId:proxyRequestId;
     res.writeHead(response.status, { 'Content-Type': 'application/json; charset=utf-8', ...(cookies.length ? {'Set-Cookie':cookies}:{}),
-      'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
+      'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff','X-Request-ID':requestId });
     res.end(body);
   } catch {
     res.writeHead(503, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    res.end(JSON.stringify({ error: 'backend_unavailable' }));
+    res.end(JSON.stringify({ error: 'backend_unavailable',request_id:proxyRequestId }));
   }
   return true;
 }

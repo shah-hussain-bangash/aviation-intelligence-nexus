@@ -41,6 +41,7 @@ from services.api.segments import load_segments
 from services.api.data_quality import load_quality
 from services.api.intake_overview import load_overview
 from services.api.batch_lineage import load_lineage
+from services.api.request_context import install_request_context
 from services.api.diagnostics import load_diagnostics
 from services.api.thresholds import load_thresholds
 from services.api.duration import load_duration
@@ -248,6 +249,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         if request.url.path.startswith('/api/v1/') and (request.url.path != '/api/v1/research/monitoring' or response.status_code >= 400):
             monitor.record(response.status_code, (time.monotonic() - started) * 1000)
         return response
+
+    # Registered last so early identity/CSRF failures also receive a server request ID.
+    install_request_context(app)
 
     @app.get('/api/v1/research/agent-operations')
     def agent_operations(request: Request):
