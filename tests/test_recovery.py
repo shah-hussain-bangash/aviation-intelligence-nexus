@@ -76,6 +76,12 @@ class RecoveryTests(unittest.TestCase):
         with closing(sqlite3.connect(self.state/'ain.sqlite3')) as db,db:db.execute('INSERT INTO schema_migrations(version) VALUES(9999)')
         with self.assertRaises(ValueError):database_facts(self.state/'ain.sqlite3')
 
+    def test_gapped_history_cannot_qualify_as_a_valid_backup(self):
+        with closing(sqlite3.connect(self.state/'ain.sqlite3')) as db,db:
+            db.execute('DELETE FROM schema_migrations WHERE version=4')
+        with self.assertRaisesRegex(ValueError,'migration history'):
+            database_facts(self.state/'ain.sqlite3')
+
     def test_restore_marks_inflight_agent_interrupted_without_replaying_tools(self):
         store=AgentStore(self.state/'ain.sqlite3');user={'id':'fixture','username':'fixture','role':'admin'}
         run=store.begin(user,'fixture-key',{'objective':'Fixture research request','month':'2025-05','include_simulation':False})

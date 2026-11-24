@@ -25,7 +25,7 @@ def docker(*args):
 
 
 def validate_release(release):
-    if release.get('format') != 'ain-local-release-v1' or type(release.get('schema_version')) is not int:
+    if release.get('format') != 'ain-local-release-v1' or type(release.get('schema_version')) is not int or release['schema_version'] < 1:
         raise ValueError('Unsupported release record')
     if set(release.get('images', {})) != {'api', 'web'} or set(release.get('contracts', {})) != set(CONTRACTS):
         raise ValueError('Incomplete pinned release')
@@ -77,12 +77,21 @@ def deployed_images(project):
     return images
 
 
-def compatible(current, target, state):
+def require_compatible_pair(current, target):
+    """Metadata rejection only; passing does not verify images or deployed state."""
     validate_release(current); validate_release(target)
-    if current['schema_version'] != target['schema_version'] or state['schema_version'] != current['schema_version']:
+    if current['schema_version'] != target['schema_version']:
         raise ValueError('Schema rollback is not supported')
     if current['contracts'] != target['contracts']:
         raise ValueError('State contracts changed; rollback is not qualified')
+
+
+def compatible(current, target, state):
+    require_compatible_pair(current, target)
+    if type(state.get('schema_version')) is not int or state['schema_version'] != current['schema_version']:
+        raise ValueError('Schema rollback is not supported')
+    if type(state.get('active_jobs')) is not int or state['active_jobs'] < 0:
+        raise ValueError('Unverified active-job observation')
     if state['active_jobs'] != 0:
         raise ValueError('Waiting or running investigations block release changes')
 
@@ -135,6 +144,8 @@ print(json.dumps({**facts,'active_jobs':active,'account_fingerprint':hashlib.sha
 
 
 def drill(current, target):
+    # Reject incompatible recorded pairs before any Docker access or possible switching.
+    require_compatible_pair(current, target)
     if any(not re.fullmatch('[0-9a-f]{40}', release.get('source_revision', '')) for release in (current, target)):
         raise ValueError('Drill requires full committed source revisions')
     # Verify retained local images still match captured source/state contract records.
