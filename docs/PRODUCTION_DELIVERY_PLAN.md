@@ -54,4 +54,8 @@ The eighth new data-platform increment adds [read-only runner snapshot inspectio
 
 The ninth new data-platform increment adds [offline synthetic batch/archive/ledger/row reconciliation](CASE_RECONCILIATION.md). Retained succeeded batches are reconstructed in new scratch state and every selected flight row is compared against a declared offline case, with queue/ledger bindings and before/after input hashes. It rejects changed copies without repairing them. This is reproducibility/consistency evidence using the existing importer, not independent parsing, source authentication, current health or a production acceptance gate.
 
+## Data-science continuation
+
+The first new data-science increment adds [point-in-time split preparation](TEMPORAL_PREPARATION.md). It revalidates feature availability, separates targets/provenance from model inputs, and excludes labels unavailable at each chronological cutoff. The synthetic demonstration does not read the frozen holdout or fit a model. Authorized data, grouped identity/cohort checks, independent experiment registration, train-only preprocessing and unused chronological evaluation remain open; earlier phases are not thereby accepted.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.
