@@ -26,7 +26,20 @@ The metadata is unsigned and editable by the local owner. The API rechecks recei
 
 ## Verification commands
 
+To reproduce the complete handoff using the existing retained January archive:
+
 ```powershell
+.\.venv\Scripts\python.exe -m pipelines.verify_lineage_handoff .local/downloads/bts_2025_01.zip
+```
+
+Each invocation creates a fresh `.local/lineage-handoff/<verification-id>` folder. The returned identifier locates `started.json`, the retained intake archive/receipt, a separate research database and `result.json`. A failed case retains `failure.json` with its fixed stage and any already-created intake evidence. An optional `--directory` must name a new folder under `.local`; existing cases are never reused or replaced.
+
+This host-only command runs preflight, receipt verification, lineage export and actual authenticated API requests in memory, using three disposable synthetic accounts. It checks admin/researcher/viewer projections, anonymous denial, query and write rejection, analyst denial of the admin overview and missing-metadata unavailability. The temporary metadata absence check restores its own file. It starts no socket server and imports no flight records. Run in the project virtual environment with the established locked dependencies. Container mounts, enabled background workers and enabled monitors are rejected before any case folder is created. No user password is requested or printed.
+
+The report includes the source commit when Git is available, a working-tree-change indicator and canonical source-text SHA-256 values. An uncommitted run must be described using those fingerprints, not as proof of an unchanged commit. The result checks research archive identity against the pinned recorded audit; it is not production or original-import qualification.
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest tests.test_lineage_handoff -q
 .\.venv\Scripts\python.exe -m unittest tests.test_batch_lineage tests.test_intake_bts tests.test_verify_intake tests.test_intake_overview -q
 npm.cmd run test:web
 npm.cmd run check
