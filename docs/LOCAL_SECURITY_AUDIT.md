@@ -28,6 +28,8 @@ The recovery inventory now counts audit rows; the existing consistent database s
 
 **Schema compatibility changed.** The prior schema-7 image cannot start on a schema-8 database. Old rollback/build evidence is historical and is not requalified by these tests. Before any eventual deployment, take a verified version-7 backup using the existing release, rehearse upgrade/restore on isolated state, bind new images and state contracts, and review the return path and acceptable data loss. Do not deploy this branch or attempt a downgrade because a PR passes. No real database is upgraded by editing source files alone.
 
+The later [synthetic schema-8 rehearsal](SCHEMA8_REHEARSAL.md) makes the local database exercise repeatable and verifies a separate pre-upgrade return point. It does not qualify actual images, representative data, model parity or the primary deployment.
+
 ## Verification and remaining requirements
 
 ```powershell

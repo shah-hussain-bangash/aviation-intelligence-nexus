@@ -11,6 +11,7 @@ import time
 from uuid import uuid4
 from services.api.paths import ROOT,STATE,SCHEMA_VERSION
 from agents.store import AgentStore
+from services.api.migrations import MigrationHistoryError, history_version
 
 FILES=('ain.sqlite3','models/delay-v2/model.joblib','models/delay-v2/report.json','knowledge/index.json')
 TABLES=('flights','imports','auth_users','auth_sessions','research_runs','gate_runs','knowledge_runs','agent_runs','security_audit')
@@ -34,7 +35,8 @@ def safe_file(root,relative):
 def database_facts(path):
     with closing(sqlite3.connect(Path(path).resolve().as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
         if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise ValueError('Database integrity check failed')
-        schema=db.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0]
+        try:schema=history_version(db,SCHEMA_VERSION)
+        except MigrationHistoryError:raise ValueError('Backup migration history is incompatible with this release') from None
         if schema!=SCHEMA_VERSION:raise ValueError('Backup schema is incompatible with this release')
         counts={table:db.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0] for table in TABLES}
     return {'schema_version':schema,'row_counts':counts}

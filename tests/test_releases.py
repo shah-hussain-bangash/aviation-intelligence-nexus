@@ -41,6 +41,26 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(override['services']['api']['environment'], {'AIN_AGENT_JOBS': '0'})
         self.assertNotIn('volumes', json.dumps(override))
 
+    def test_invalid_schema_and_ambiguous_state_cannot_qualify(self):
+        for version in (0, -1, True):
+            value=release();value['schema_version']=version
+            with self.assertRaises(ValueError):validate_release(value)
+        current,target=release(),release('b'*40,'b')
+        for state in ({**facts(),'schema_version':True},{**facts(),'active_jobs':False},{**facts(),'active_jobs':-1},{}):
+            with self.assertRaises(ValueError):compatible(current,target,state)
+
+    def test_schema8_to_schema7_pair_is_rejected_before_any_docker_access(self):
+        current,target=release(),release('b'*40,'b');current['schema_version']=8
+        with patch('infra.releases.inspect_release') as inspect,patch('infra.releases.deployed_images') as deployed,patch('infra.releases.verify') as verify,patch('infra.releases.state_facts') as state,patch('infra.releases.switch') as switch:
+            with self.assertRaisesRegex(ValueError,'Schema rollback'):drill(current,target)
+            for operation in (inspect,deployed,verify,state,switch):operation.assert_not_called()
+
+    def test_changed_contracts_are_rejected_before_any_docker_access(self):
+        current,target=release(),release('b'*40,'b');target['contracts'][CONTRACTS[0]]='e'*64
+        with patch('infra.releases.inspect_release') as inspect,patch('infra.releases.switch') as switch:
+            with self.assertRaisesRegex(ValueError,'State contracts changed'):drill(current,target)
+            inspect.assert_not_called();switch.assert_not_called()
+
     def test_primary_or_host_state_mount_cannot_be_used_for_the_drill(self):
         container = {'Config': {'Labels': {'com.docker.compose.project': PROJECT}},
                      'Image': release()['images']['api'],
