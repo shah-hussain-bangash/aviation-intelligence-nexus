@@ -29,7 +29,7 @@ Before any engine or schema change:
 4. Measure concurrent readers, writers and workers, lock timeouts, retry/idempotency behavior and interrupted migration recovery at a representative scale. The current offline inspection is not a concurrency test.
 5. Prefer additive, backward-compatible changes and a reviewed cutover. An older application image cannot safely roll back incompatible database changes. Define rollback compatibility or a separately verified restore and acceptable data loss before deployment.
 
-No managed engine, migration runner, live startup enforcement, high availability or independent off-site recovery is implemented here. Current local startup still uses `MAX(version)`; the new command catches gaps only when explicitly run on a suitable snapshot. It is a review aid, not an automated release gate.
+No managed engine, standalone migration runner, high availability or independent off-site recovery is implemented here. The later [startup migration-history guard](STARTUP_MIGRATION_GUARD.md) checks contiguous history during initialization and health checks. The offline command below remains a separate review aid for additional selected structures, not an automated release gate.
 
 ## Implemented offline inspection
 

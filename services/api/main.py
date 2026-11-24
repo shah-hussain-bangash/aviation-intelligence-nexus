@@ -16,6 +16,7 @@ import hmac
 from uuid import UUID, uuid4
 from fastapi.responses import JSONResponse
 from services.api.configuration import validate_environment
+from services.api.migrations import MigrationHistoryError, history_version, require_current
 
 # Fail before project imports resolve state paths or construct services.
 validate_environment(os.environ)
@@ -83,16 +84,16 @@ def connect(database: Path):
 def initialize(database: Path):
     database.parent.mkdir(parents=True, exist_ok=True)
     with closing(connect(database)) as connection, connection:
+        # Reject bad history before changing journal mode; repeat under the write lock.
+        history_version(connection, SCHEMA_VERSION, allow_empty=True)
         # Local WAL permits checkpoint writes while the dashboard holds a historical read snapshot.
         if connection.execute('PRAGMA journal_mode=WAL').fetchone()[0] != 'wal':
             raise RuntimeError('Local database could not enable concurrent read/checkpoint storage')
         connection.execute("BEGIN IMMEDIATE")
+        version = history_version(connection, SCHEMA_VERSION, allow_empty=True)
         connection.execute("CREATE TABLE IF NOT EXISTS schema_migrations "
                            "(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL "
                            "DEFAULT CURRENT_TIMESTAMP)")
-        version = connection.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations").fetchone()[0]
-        if version > SCHEMA_VERSION:
-            raise RuntimeError("Database schema is newer than this service supports")
         if version == 0:
             connection.execute("""CREATE TABLE flights (
                 id INTEGER PRIMARY KEY,
@@ -148,6 +149,7 @@ def initialize(database: Path):
             connection.execute("CREATE TABLE agent_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,request_key TEXT NOT NULL,input_hash TEXT NOT NULL,result_json TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(owner_id,request_key))")
             connection.execute("CREATE INDEX agent_runs_owner ON agent_runs(owner_id,updated_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (7)")
+        require_current(connection, SCHEMA_VERSION)
 
 
 def read_model_report(directory: Path):
@@ -181,7 +183,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     auth = AuthStore(database)
     def database_probe():
         with closing(connect(database)) as connection:
-            return connection.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0] == SCHEMA_VERSION
+            require_current(connection, SCHEMA_VERSION)
+            return True
 
     def ai_probe():
         installed = ollama.models()
@@ -332,15 +335,17 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     def ready():
         try:
             with closing(connect(database)) as connection:
+                require_current(connection, SCHEMA_VERSION)
                 connection.execute("SELECT id FROM flights LIMIT 1").fetchone()
             return {"status": "ready", "database": "reachable"}
-        except sqlite3.Error:
+        except (sqlite3.Error, MigrationHistoryError):
             return JSONResponse(status_code=503, content={"status": "not_ready", "database": "unavailable"})
 
     @app.get("/api/v1/status")
     def status():
         try:
             with closing(connect(database)) as connection:
+                require_current(connection, SCHEMA_VERSION)
                 count = connection.execute("SELECT COUNT(*) FROM flights").fetchone()[0]
             return {
                 "stage": "local_backend_foundation",
@@ -352,7 +357,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
                 "dashboard_integration_available": True,
                 "production_ready": False,
             }
-        except sqlite3.Error:
+        except (sqlite3.Error, MigrationHistoryError):
             return JSONResponse(status_code=503, content={"error": "database_unavailable"})
 
     @app.get("/api/v1/model/report")
@@ -606,9 +611,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     def platform_status():
         try:
             with closing(connect(database)) as db:
-                schema=db.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0]
-            database_ready=schema==SCHEMA_VERSION
-        except sqlite3.Error:
+                require_current(db, SCHEMA_VERSION)
+            database_ready=True
+        except (sqlite3.Error, MigrationHistoryError):
             database_ready=False
         try:
             installed=ollama.models();ai_models_present=ollama.EMBED_MODEL in installed and ollama.CHAT_MODEL in installed
