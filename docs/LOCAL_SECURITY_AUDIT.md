@@ -18,11 +18,13 @@ This initial coverage does not include rejected Origin/CSRF requests, input vali
 
 SQLite triggers reject ordinary UPDATE/DELETE statements on the audit table. These are accidental-edit guards. A database/filesystem owner can drop triggers, alter data, replace the file or truncate history; no cryptographic chain, independent witness, write-once storage, deletion detection or tamper-proof claim is made. An administrator role at the API is not the same authority as the OS/database owner. The application retains write access because it must append its events.
 
+The later [audit contract guard](AUDIT_CONTRACT_GUARD.md) checks the expected local table/trigger definitions and current connection safeguards at startup, covered event writes, health/read projections, backup verification and offline inspection. This detects specified schema/configuration drift; it does not authenticate historical log contents or defeat a database/code owner.
+
 The read is query-only, fixed-size and has a cooperative query budget; SQLite may manage live WAL sidecars. This is not the offline immutable snapshot command. Events currently accumulate without automatic pruning, off-host delivery or storage quotas. Flood resistance, disk capacity, retention/legal policy, redaction approval, delivery/retry and collector failure behavior need qualification before production. Current per-username sign-in limits are not a global anti-abuse policy.
 
 ## Migration, recovery and rollback
 
-Version 8 creates the event table and UPDATE/DELETE guards inside the existing migration transaction. A valid version-7 database upgrades without changing account IDs, password hashes, sessions, flights or existing history. It does not backfill historical events or invent earlier activity. The startup guard continues to reject gapped/future histories. The offline preflight checks the added table/columns/primary key/event-ID uniqueness; it does not validate trigger definitions or every SQL constraint.
+Version 8 creates the event table and UPDATE/DELETE guards inside the existing migration transaction. A valid version-7 database upgrades without changing account IDs, password hashes, sessions, flights or existing history. It does not backfill historical events or invent earlier activity. The startup guard continues to reject gapped/future histories. The offline preflight checks selected structures and now also checks the expected audit-specific table/trigger DDL and connection safeguards; it does not fully validate every table or all data semantics.
 
 The recovery inventory now counts audit rows; the existing consistent database snapshot includes the table. Synthetic recovery tests verify exact retained events through restore. This is not a fresh recovery qualification for the real deployment, and restore-driven session invalidation does not append a new security event yet.
 

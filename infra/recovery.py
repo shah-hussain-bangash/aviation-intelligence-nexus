@@ -12,6 +12,7 @@ from uuid import uuid4
 from services.api.paths import ROOT,STATE,SCHEMA_VERSION
 from agents.store import AgentStore
 from services.api.migrations import MigrationHistoryError, history_version
+from services.api.security_audit import AuditContractError, require_audit_contract
 
 FILES=('ain.sqlite3','models/delay-v2/model.joblib','models/delay-v2/report.json','knowledge/index.json')
 TABLES=('flights','imports','auth_users','auth_sessions','research_runs','gate_runs','knowledge_runs','agent_runs','security_audit')
@@ -38,6 +39,8 @@ def database_facts(path):
         try:schema=history_version(db,SCHEMA_VERSION)
         except MigrationHistoryError:raise ValueError('Backup migration history is incompatible with this release') from None
         if schema!=SCHEMA_VERSION:raise ValueError('Backup schema is incompatible with this release')
+        try:require_audit_contract(db)
+        except AuditContractError:raise ValueError('Backup audit schema is incompatible with this release') from None
         counts={table:db.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0] for table in TABLES}
     return {'schema_version':schema,'row_counts':counts}
 

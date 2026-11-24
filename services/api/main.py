@@ -24,7 +24,7 @@ from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfSc
 from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
 from services.api.account_security import account_sessions, SessionInvalid
-from services.api.security_audit import latest_events
+from services.api.security_audit import AUDIT_TABLE_SQL, AUDIT_TRIGGER_SQL, latest_events, require_audit_contract
 from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
 from optimization.reviews import GateReview,ReviewConflict
@@ -86,7 +86,9 @@ def initialize(database: Path):
     database.parent.mkdir(parents=True, exist_ok=True)
     with closing(connect(database)) as connection, connection:
         # Reject bad history before changing journal mode; repeat under the write lock.
-        history_version(connection, SCHEMA_VERSION, allow_empty=True)
+        existing_version = history_version(connection, SCHEMA_VERSION, allow_empty=True)
+        if existing_version == SCHEMA_VERSION:
+            require_audit_contract(connection)
         # Local WAL permits checkpoint writes while the dashboard holds a historical read snapshot.
         if connection.execute('PRAGMA journal_mode=WAL').fetchone()[0] != 'wal':
             raise RuntimeError('Local database could not enable concurrent read/checkpoint storage')
@@ -151,17 +153,12 @@ def initialize(database: Path):
             connection.execute("CREATE INDEX agent_runs_owner ON agent_runs(owner_id,updated_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (7)")
         if version < 8:
-            connection.execute("""CREATE TABLE security_audit (
-                sequence INTEGER PRIMARY KEY AUTOINCREMENT,
-                event_id TEXT NOT NULL UNIQUE, occurred_at TEXT NOT NULL,
-                action TEXT NOT NULL CHECK(action IN ('account_created','sign_in','sign_out','access_changed','other_sessions_revoked')),
-                outcome TEXT NOT NULL CHECK(outcome IN ('success','denied','limited')),
-                actor_id TEXT, subject_id TEXT, request_id TEXT
-            )""")
-            connection.execute("CREATE TRIGGER security_audit_no_update BEFORE UPDATE ON security_audit BEGIN SELECT RAISE(ABORT,'security_audit_append_only'); END")
-            connection.execute("CREATE TRIGGER security_audit_no_delete BEFORE DELETE ON security_audit BEGIN SELECT RAISE(ABORT,'security_audit_append_only'); END")
+            connection.execute(AUDIT_TABLE_SQL)
+            for sql in AUDIT_TRIGGER_SQL.values():
+                connection.execute(sql)
             connection.execute("INSERT INTO schema_migrations(version) VALUES (8)")
         require_current(connection, SCHEMA_VERSION)
+        require_audit_contract(connection)
 
 
 def read_model_report(directory: Path):
@@ -196,6 +193,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     def database_probe():
         with closing(connect(database)) as connection:
             require_current(connection, SCHEMA_VERSION)
+            require_audit_contract(connection)
             return True
 
     def ai_probe():
@@ -362,6 +360,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         try:
             with closing(connect(database)) as connection:
                 require_current(connection, SCHEMA_VERSION)
+                require_audit_contract(connection)
                 connection.execute("SELECT id FROM flights LIMIT 1").fetchone()
             return {"status": "ready", "database": "reachable"}
         except (sqlite3.Error, MigrationHistoryError):
@@ -372,6 +371,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         try:
             with closing(connect(database)) as connection:
                 require_current(connection, SCHEMA_VERSION)
+                require_audit_contract(connection)
                 count = connection.execute("SELECT COUNT(*) FROM flights").fetchone()[0]
             return {
                 "stage": "local_backend_foundation",
@@ -638,6 +638,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         try:
             with closing(connect(database)) as db:
                 require_current(db, SCHEMA_VERSION)
+                require_audit_contract(db)
             database_ready=True
         except (sqlite3.Error, MigrationHistoryError):
             database_ready=False
