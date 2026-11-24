@@ -115,13 +115,17 @@ class BoundedLines:
         return line
 
 
-def import_archive(archive: Path, database: Path, year: int, month: int, *, synthetic=False):
+def import_archive(archive: Path, database: Path, year: int, month: int, *, synthetic=False, expected_sha256=None):
     date(year, month, 1)  # Validate period before any database mutation.
     if type(synthetic) is not bool:raise ValueError('Synthetic mode must be explicit')
+    if expected_sha256 is not None and (not isinstance(expected_sha256,str) or not re.fullmatch('[0-9a-f]{64}',expected_sha256)):
+        raise ValueError('Invalid expected archive identity')
     period = f"{year:04d}-{month:02d}"
     url = 'urn:ain:synthetic-bts-schema:'+period if synthetic else source_url(year,month)
     deadline=time.monotonic()+SECONDS
     with owned_snapshot(archive,deadline) as (snapshot,digest):
+        if expected_sha256 is not None and digest!=expected_sha256:
+            raise ValueError('Captured archive does not match expected identity')
         bounded_zip_metadata(snapshot)
         initialize(database)
         with closing(connect(database)) as connection, connection:
