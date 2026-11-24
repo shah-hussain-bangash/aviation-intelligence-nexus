@@ -21,7 +21,7 @@ class RouteIndexTests(unittest.TestCase):
             after=lookup(path,'JFK','LAX')
             self.assertEqual(before['periods'],after['periods'])
             with closing(sqlite3.connect(path)) as connection:
-                self.assertEqual(connection.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0],7)
+                self.assertEqual(connection.execute('SELECT MAX(version) FROM schema_migrations').fetchone()[0],8)
                 self.assertEqual(connection.execute('SELECT COUNT(*) FROM auth_users').fetchone()[0],0)
 
     def test_missing_database_and_wrong_existing_definition_fail_without_replacement(self):

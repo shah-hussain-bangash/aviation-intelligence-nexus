@@ -19,7 +19,7 @@ These are design requirements derived from [OpenID Connect token validation](htt
 
 ## Database migration and availability boundary
 
-Retain SQLite schema 7 for the local research environment. A future shared deployment should evaluate a managed relational database (PostgreSQL is a candidate, not an implemented adapter) against measured concurrency and recovery requirements. Current stores issue SQLite-specific SQL and create tables outside the seven core migrations too; changing a connection string cannot migrate this application.
+Retain SQLite for the local research environment. Source now targets schema 8 through the proposed [security-audit migration](LOCAL_SECURITY_AUDIT.md); the existing schema-7 deployment is unchanged. A future shared deployment should evaluate a managed relational database (PostgreSQL is a candidate, not an implemented adapter) against measured concurrency and recovery requirements. Current stores issue SQLite-specific SQL and create additional tables outside the core migrations too; changing a connection string cannot migrate this application.
 
 Before any engine or schema change:
 
@@ -43,7 +43,7 @@ The path is an example, not the live project database. Do not run this on the ru
 
 The acknowledgement means the operator has ensured no writers can access the snapshot for the entire inspection. It cannot discover all open handles or prove that condition. SQLite's [immutable option](https://www.sqlite.org/uri.html) disables change detection and locking and is unsafe for changing database files. Accordingly the command rejects WAL/SHM/journal siblings, redirected paths, missing/nonregular files and files outside its 2 GiB size allowance before connecting. It uses `mode=ro&immutable=1`, query-only mode and disabled trusted schema. SHA-256 and file metadata are compared before/after successful checks. These observations do not eliminate races or protect against a malicious filesystem owner. Keep untrusted files outside this workflow.
 
-Checks: SQLite integrity, contiguous migration records 1 through 7, required core tables/column names, primary-key columns, the documented owner/history indexes, and selected uniqueness constraints. It does **not** fully compare SQL types, nullability, defaults, collations, triggers, all additional store tables, row semantics or access rights. It does not read/export account values, calculate dataset row counts, load artifacts, import the API, invoke migration code or open the default live database. Reports omit local paths, raw exception messages and row contents.
+Checks: SQLite integrity, contiguous migration records 1 through 8, required core tables/column names, primary-key columns, the documented owner/history indexes, and selected uniqueness constraints. It does **not** fully compare SQL types, nullability, defaults, collations, triggers, all additional store tables, row semantics or access rights. It does not read/export account values, calculate dataset row counts, load artifacts, import the API, invoke migration code or open the default live database. Reports omit local paths, raw exception messages and row contents.
 
 Successful inspection exits 0 with `local_schema_checks_passed: true`; refusal exits 2. Older contiguous histories report `migration_required`; gaps, newer versions and structure failures remain blocked. All reports retain `production_ready: false`. The 30-second budget is cooperative (hash chunks and SQLite progress callbacks), not a hard operating-system I/O deadline. No migration or production approval follows from a pass.
 

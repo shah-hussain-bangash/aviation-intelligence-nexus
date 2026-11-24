@@ -8,9 +8,9 @@ import sqlite3
 import stat
 import time
 
-# Independent admission contract for the seven migrations in main.initialize.
+# Independent admission contract for the eight migrations in main.initialize.
 # This module deliberately does not import the API or resolve its active state.
-VERSION = 7
+VERSION = 8
 MAX_BYTES = 2 * 1024 ** 3
 SECONDS = 30
 COLUMNS = {
@@ -24,6 +24,7 @@ COLUMNS = {
     'gate_runs': 'id owner_id request_key scenario_hash result_json created_at',
     'knowledge_runs': 'id owner_id result_json created_at',
     'agent_runs': 'id owner_id request_key input_hash result_json updated_at',
+    'security_audit': 'sequence event_id occurred_at action outcome actor_id subject_id request_id',
 }
 INDEXES = {
     'research_runs': [('created_at',), ('owner_id', 'created_at')],
@@ -36,10 +37,11 @@ UNIQUE = {
     'research_runs': [('request_key',)], 'auth_users': [('username',)],
     'gate_runs': [('owner_id', 'request_key')],
     'agent_runs': [('owner_id', 'request_key')],
+    'security_audit': [('event_id',)],
 }
 PRIMARY = {'schema_migrations': 'version', 'flights': 'id', 'imports': 'sha256',
            'research_runs': 'id', 'auth_users': 'id', 'auth_sessions': 'token_hash',
-           'auth_limits': 'key', 'gate_runs': 'id', 'knowledge_runs': 'id', 'agent_runs': 'id'}
+           'auth_limits': 'key', 'gate_runs': 'id', 'knowledge_runs': 'id', 'agent_runs': 'id', 'security_audit': 'sequence'}
 
 
 class Refused(Exception):

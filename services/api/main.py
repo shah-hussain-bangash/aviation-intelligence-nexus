@@ -24,6 +24,7 @@ from services.api.prediction import ResearchPredictor, Scenario, ScenarioOutOfSc
 from services.api.history import IdempotencyConflict, ResearchHistory
 from services.api.auth import AuthStore, COOKIE, SESSION_SECONDS, LoginDenied, LoginLimited, csrf_token
 from services.api.account_security import account_sessions, SessionInvalid
+from services.api.security_audit import latest_events
 from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
 from optimization.reviews import GateReview,ReviewConflict
@@ -149,6 +150,17 @@ def initialize(database: Path):
             connection.execute("CREATE TABLE agent_runs(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,request_key TEXT NOT NULL,input_hash TEXT NOT NULL,result_json TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(owner_id,request_key))")
             connection.execute("CREATE INDEX agent_runs_owner ON agent_runs(owner_id,updated_at)")
             connection.execute("INSERT INTO schema_migrations(version) VALUES (7)")
+        if version < 8:
+            connection.execute("""CREATE TABLE security_audit (
+                sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_id TEXT NOT NULL UNIQUE, occurred_at TEXT NOT NULL,
+                action TEXT NOT NULL CHECK(action IN ('account_created','sign_in','sign_out','access_changed','other_sessions_revoked')),
+                outcome TEXT NOT NULL CHECK(outcome IN ('success','denied','limited')),
+                actor_id TEXT, subject_id TEXT, request_id TEXT
+            )""")
+            connection.execute("CREATE TRIGGER security_audit_no_update BEFORE UPDATE ON security_audit BEGIN SELECT RAISE(ABORT,'security_audit_append_only'); END")
+            connection.execute("CREATE TRIGGER security_audit_no_delete BEFORE DELETE ON security_audit BEGIN SELECT RAISE(ABORT,'security_audit_append_only'); END")
+            connection.execute("INSERT INTO schema_migrations(version) VALUES (8)")
         require_current(connection, SCHEMA_VERSION)
 
 
@@ -277,6 +289,17 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             return JSONResponse(status_code=403, content={'error': 'admin_role_required'})
         return monitor.snapshot()
 
+    @app.get('/api/v1/research/security-audit')
+    def security_audit(request: Request):
+        if request.state.user['role'] != 'admin':
+            return JSONResponse(status_code=403, content={'error':'admin_role_required'})
+        if request.query_params:
+            return JSONResponse(status_code=422, content={'error':'query_not_allowed'})
+        try:
+            return latest_events(database)
+        except (sqlite3.Error, OSError, ValueError):
+            return JSONResponse(status_code=503, content={'error':'security_audit_unavailable'})
+
     @app.get('/api/v1/research/input-distributions')
     def input_distributions(request: Request):
         try:return load_distributions()
@@ -293,9 +316,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
 
     @app.post("/api/v1/auth/login")
-    def login(credentials: LoginInput):
+    def login(credentials: LoginInput, request: Request):
         try:
-            token = auth.login(credentials.username, credentials.password)
+            token = auth.login(credentials.username, credentials.password, request_id=request.state.request_id)
             response = JSONResponse({"authenticated": True, "user": auth.session(token), "csrf_token": csrf_token(token)})
             response.set_cookie(COOKIE, token, max_age=SESSION_SECONDS, httponly=True, samesite="strict", secure=False, path="/api")
             return response
@@ -308,7 +331,10 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
 
     @app.post("/api/v1/auth/logout")
     def logout(request: Request):
-        auth.logout(request.cookies[COOKIE])
+        try:
+            auth.logout(request.cookies[COOKIE], request_id=request.state.request_id)
+        except sqlite3.Error:
+            return JSONResponse(status_code=503, content={'error':'sign_out_unconfirmed'})
         response = JSONResponse({"authenticated": False})
         response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict")
         return response
@@ -323,7 +349,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/auth/revoke-other-sessions')
     def revoke_other_sessions(confirmation: RevokeSessions,request: Request):
         if request.query_params or not confirmation.acknowledged:return JSONResponse(status_code=422,content={'error':'explicit_confirmation_required'})
-        try:return account_sessions(database,request.cookies.get(COOKIE,''),revoke_others=True)
+        try:return account_sessions(database,request.cookies.get(COOKIE,''),revoke_others=True,request_id=request.state.request_id)
         except SessionInvalid:return JSONResponse(status_code=401,content={'error':'sign_in_required'})
         except (sqlite3.Error,OSError,TimeoutError,ValueError,TypeError,OverflowError):return JSONResponse(status_code=503,content={'error':'session_revocation_unconfirmed'})
 

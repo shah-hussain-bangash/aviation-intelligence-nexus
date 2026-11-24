@@ -55,6 +55,14 @@ class RecoveryTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):restore(self.backup,target)
         self.assertEqual((target/'keep.txt').read_text(),'keep')
 
+    def test_security_events_survive_snapshot_restore_and_are_in_inventory(self):
+        from services.api.security_audit import latest_events
+        before=latest_events(self.state/'ain.sqlite3')['events']
+        manifest=backup(self.state,self.backup)
+        self.assertEqual(manifest['database']['row_counts']['security_audit'],len(before))
+        restore(self.backup,self.root/'audit-restored')
+        self.assertEqual(latest_events(self.root/'audit-restored/ain.sqlite3')['events'],before)
+
     def test_corrupt_backup_is_rejected_before_target_creation(self):
         backup(self.state,self.backup);(self.backup/'models/delay-v2/model.joblib').write_bytes(b'corrupt')
         target=self.root/'restored'

@@ -68,8 +68,8 @@ class SchemaPreflightTests(unittest.TestCase):
 
     def test_old_and_new_versions_are_not_automatically_migrated(self):
         for sql, code, status in [
-            ('DELETE FROM schema_migrations WHERE version=7', 'schema_upgrade_requires_separate_review', 'migration_required'),
-            ('INSERT INTO schema_migrations(version) VALUES (8)', 'schema_newer_than_service', 'blocked')]:
+            ('DELETE FROM schema_migrations WHERE version=8', 'schema_upgrade_requires_separate_review', 'migration_required'),
+            ('INSERT INTO schema_migrations(version) VALUES (9)', 'schema_newer_than_service', 'blocked')]:
             with self.subTest(code=code), tempfile.TemporaryDirectory() as folder:
                 path = self.fixture(folder); self.mutate(path, sql); before = path.read_bytes()
                 report = self.check(path)
