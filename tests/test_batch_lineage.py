@@ -2,6 +2,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import unittest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
@@ -9,6 +10,7 @@ from tests import test_verify_intake
 from services.api.batch_lineage import project,load_lineage
 from services.api.data_quality import REPORT_SHA256
 from services.api.main import create_app
+from pipelines import batch_lineage
 
 
 class BatchLineageTests(unittest.TestCase):
@@ -55,3 +57,52 @@ class BatchLineageTests(unittest.TestCase):
         self.assertEqual(load_lineage(self.root,'viewer')['dataset']['recorded_rows'],1)
         with patch.dict('os.environ',{'AIN_INTAKE_OVERVIEW_MOUNTED':'1'}):
             with self.assertRaises((ValueError,OSError)):load_lineage(self.root,'admin')
+
+    def export_paths(self):
+        run=self.root/'.local/intake/accepted'/self.run.name
+        shutil.copytree(self.run,run)
+        return run,self.root/'.local/research-state'
+
+    def test_export_reopens_exact_receipt_without_changing_input_artifacts(self):
+        run,state=self.export_paths();before={p.name:p.read_bytes() for p in run.iterdir()}
+        with patch('infra.recovery.ROOT',self.root): result=batch_lineage.export(run,state)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in run.iterdir()})
+        self.assertEqual(result,load_lineage(state,'admin'))
+        self.assertEqual(result['intake']['receipt_sha256'],hashlib.sha256(before['receipt.json']).hexdigest())
+        self.assertFalse(result['import_performed'])
+
+    def test_export_never_replaces_existing_lineage_record(self):
+        run,state=self.export_paths()
+        with patch('infra.recovery.ROOT',self.root):
+            batch_lineage.export(run,state);target=state/'intake-dashboard/batch-lineage.json';before=target.read_bytes()
+            with self.assertRaises(FileExistsError):batch_lineage.export(run,state)
+        self.assertEqual(target.read_bytes(),before)
+
+    def test_export_detects_any_receipt_byte_change_during_archive_verification(self):
+        run,state=self.export_paths();original=batch_lineage.verify_run
+        def changed(directory):
+            result=original(directory)
+            with (directory/'receipt.json').open('ab') as stream:stream.write(b' ')
+            return result
+        with patch('infra.recovery.ROOT',self.root),patch('pipelines.batch_lineage.verify_run',side_effect=changed):
+            with self.assertRaises(ValueError):batch_lineage.export(run,state)
+        self.assertFalse(state.exists())
+
+    def test_export_rejects_oversized_receipt_before_archive_work(self):
+        run,state=self.export_paths();(run/'receipt.json').write_bytes(b' '*64001)
+        with patch('infra.recovery.ROOT',self.root),patch('pipelines.batch_lineage.verify_run') as verifier:
+            with self.assertRaises(ValueError):batch_lineage.export(run,state)
+            verifier.assert_not_called()
+        self.assertFalse(state.exists())
+
+    def test_export_does_not_publish_a_changed_archive(self):
+        run,state=self.export_paths();archive=run/'archive.zip';raw=bytearray(archive.read_bytes());raw[-1]^=1;archive.write_bytes(raw)
+        with patch('infra.recovery.ROOT',self.root):
+            with self.assertRaises(ValueError):batch_lineage.export(run,state)
+        self.assertFalse(state.exists())
+
+    def test_export_cannot_write_outside_private_research_root(self):
+        run,state=self.export_paths();outside=self.root/'outside-private-state'
+        with patch('infra.recovery.ROOT',self.root):
+            with self.assertRaises(ValueError):batch_lineage.export(run,outside)
+        self.assertFalse(outside.exists())

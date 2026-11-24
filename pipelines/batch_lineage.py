@@ -2,17 +2,34 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import stat
 from infra.recovery import private_target
 from pipelines.verify_intake import verify_run
 from services.api.batch_lineage import project
 from services.api.data_quality import REPORT_SHA256
 
 
+def read_receipt(path):
+    if path.is_symlink() or not path.is_file(): raise ValueError('Invalid receipt file')
+    with path.open('rb') as stream:
+        before=os.fstat(stream.fileno())
+        if not stat.S_ISREG(before.st_mode) or before.st_size>64000: raise ValueError('Invalid receipt size')
+        raw=stream.read(64001)
+        after=os.fstat(stream.fileno())
+    identity=lambda value:(value.st_dev,value.st_ino,value.st_size,value.st_mtime_ns)
+    if len(raw)!=before.st_size or len(raw)>64000 or identity(before)!=identity(after) or identity(after)!=identity(path.stat()):
+        raise ValueError('Receipt changed while reading')
+    return raw
+
+
 def export(run, state):
     run=private_target(run); state=private_target(state)
+    before=read_receipt(run/'receipt.json')
     checked=verify_run(run)
-    text=(run/'receipt.json').read_bytes().decode('utf-8')
+    if read_receipt(run/'receipt.json')!=before: raise ValueError('Receipt changed during verification')
+    text=before.decode('utf-8')
     envelope={'format':'ain-batch-lineage-v1','receipt_text':text,
         'receipt_sha256':hashlib.sha256(text.encode('utf-8')).hexdigest(),'dataset_report_sha256':REPORT_SHA256}
     result=project(envelope,'admin')
