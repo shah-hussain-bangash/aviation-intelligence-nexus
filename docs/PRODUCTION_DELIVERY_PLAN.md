@@ -30,4 +30,6 @@ The sixth local foundation increment adds a [repeatable synthetic schema-8 upgra
 
 The seventh local foundation increment adds the [audit schema/connection guard](AUDIT_CONTRACT_GUARD.md). Specified missing or altered safeguards prevent startup, covered identity writes, healthy audit projections and backup/offline qualification. Schema remains 8, with no automatic repair. This remains local structural/configuration evidence, not independently protected or authenticated audit contents.
 
+The eighth local foundation increment adds [audited restore-session revocation and unfinished-restore interlocks](AUDITED_RESTORE.md). The revocation/event commit is atomic; the entire multi-step restore is not. Failed copies remain marked and normal startup, backup/verification and the receipt projection refuse them. Schema remains 8; directory publication, independent recovery and actual-image qualification remain open.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

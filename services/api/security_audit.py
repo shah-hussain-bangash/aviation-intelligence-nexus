@@ -69,9 +69,11 @@ def append_event(db, action, outcome, *, actor_id=None, subject_id=None, request
     if not db.in_transaction:
         raise RuntimeError('security_event_requires_transaction')
     require_audit_contract(db)
+    event_id = str(uuid4())
     db.execute('INSERT INTO security_audit(event_id,occurred_at,action,outcome,actor_id,subject_id,request_id) VALUES(?,?,?,?,?,?,?)',
-               (str(uuid4()), datetime.now(timezone.utc).isoformat(), action, outcome,
+               (event_id, datetime.now(timezone.utc).isoformat(), action, outcome,
                 identifier(actor_id), identifier(subject_id), identifier(request_id)))
+    return event_id
 
 
 def latest_events(database):

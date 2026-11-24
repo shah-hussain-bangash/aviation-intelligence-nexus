@@ -10,7 +10,7 @@ Each event has a sequence, random event UUID, UTC timestamp, allowlisted action/
 
 Successful sign-in identifies its actor/subject; account creation/access change identifies the subject, with no claimed signed-in actor because those operations use the local OS-owner CLI. Direct store/CLI calls have no HTTP request ID. API sign-in/sign-out/session revocation use the server-generated request ID, ignoring the caller's `X-Request-ID`. A sign-out reaching the store after another revocation may have an unknown actor. Timestamps use the local clock and are not independently attested.
 
-This initial coverage does not include rejected Origin/CSRF requests, input validation failures, read access, every permission denial, service failures, session expiry/rehash/automatic cleanup, agent actions, restore session revocation or every business mutation. Access-change events record occurrence and subject, not a before/after role diff. There is no claim of complete forensic reconstruction.
+This coverage does not include rejected Origin/CSRF requests, input validation failures, read access, every permission denial, service failures, session expiry/rehash/automatic cleanup, agent actions or every business mutation. [Restore session revocation](AUDITED_RESTORE.md) now adds one aggregate sign-out event linked through the recovery receipt, without claiming a signed-in user initiated it. Access-change events record occurrence and subject, not a before/after role diff. There is no claim of complete forensic reconstruction.
 
 ## Access and local controls
 
@@ -26,7 +26,7 @@ The read is query-only, fixed-size and has a cooperative query budget; SQLite ma
 
 Version 8 creates the event table and UPDATE/DELETE guards inside the existing migration transaction. A valid version-7 database upgrades without changing account IDs, password hashes, sessions, flights or existing history. It does not backfill historical events or invent earlier activity. The startup guard continues to reject gapped/future histories. The offline preflight checks selected structures and now also checks the expected audit-specific table/trigger DDL and connection safeguards; it does not fully validate every table or all data semantics.
 
-The recovery inventory now counts audit rows; the existing consistent database snapshot includes the table. Synthetic recovery tests verify exact retained events through restore. This is not a fresh recovery qualification for the real deployment, and restore-driven session invalidation does not append a new security event yet.
+The recovery inventory counts audit rows; the consistent database snapshot includes the table. Synthetic recovery tests verify exact retained events plus one new receipt-bound aggregate sign-out event for restored-session revocation. Unfinished restores carry a normal-startup interlock. This is not fresh recovery qualification for the real deployment; see [audited restore behavior and limits](AUDITED_RESTORE.md).
 
 **Schema compatibility changed.** The prior schema-7 image cannot start on a schema-8 database. Old rollback/build evidence is historical and is not requalified by these tests. Before any eventual deployment, take a verified version-7 backup using the existing release, rehearse upgrade/restore on isolated state, bind new images and state contracts, and review the return path and acceptable data loss. Do not deploy this branch or attempt a downgrade because a PR passes. No real database is upgraded by editing source files alone.
 

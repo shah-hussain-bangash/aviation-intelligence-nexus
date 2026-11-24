@@ -12,7 +12,8 @@ from uuid import uuid4
 from services.api.paths import ROOT,STATE,SCHEMA_VERSION
 from agents.store import AgentStore
 from services.api.migrations import MigrationHistoryError, history_version
-from services.api.security_audit import AuditContractError, require_audit_contract
+from services.api.security_audit import AuditContractError, append_event, identifier, require_audit_contract
+from infra.recovery_state import RESTORE_MARKER, require_complete_restore
 
 FILES=('ain.sqlite3','models/delay-v2/model.joblib','models/delay-v2/report.json','knowledge/index.json')
 TABLES=('flights','imports','auth_users','auth_sessions','research_runs','gate_runs','knowledge_runs','agent_runs','security_audit')
@@ -47,6 +48,7 @@ def database_facts(path):
 
 def verify(backup):
     backup=Path(backup).resolve()
+    require_complete_restore(backup/'ain.sqlite3')
     if (backup/'manifest.json').stat().st_size>64000:raise ValueError('Oversized backup manifest')
     manifest=json.loads((backup/'manifest.json').read_text(encoding='utf-8'))
     if manifest.get('format')!='ain-recovery-v1' or not isinstance(manifest.get('files'),list):raise ValueError('Unsupported backup manifest')
@@ -70,6 +72,7 @@ def verify(backup):
 
 def backup(state,destination):
     state=Path(state).resolve();destination=Path(destination).resolve()
+    require_complete_restore(state/'ain.sqlite3')
     source=safe_file(state,'ain.sqlite3');destination.mkdir(parents=True,exist_ok=False)
     started=time.monotonic()
     def progress(status,remaining,total):
@@ -94,22 +97,38 @@ def backup(state,destination):
 def restore(backup_directory,destination):
     started=time.monotonic();manifest=verify(backup_directory)
     destination=Path(destination).resolve();destination.mkdir(parents=True,exist_ok=False)
+    marker=destination/RESTORE_MARKER
+    with marker.open('x',encoding='utf-8') as stream:
+        json.dump({'format':'ain-restore-incomplete-v1','snapshot_id':manifest['snapshot_id'],'started_at':timestamp()},stream)
     for entry in manifest['files']:
         origin=safe_file(backup_directory,entry['path']);target=destination/entry['path'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(origin,target)
         if checksum(target)!=entry['sha256']:raise ValueError('Restored file failed checksum verification')
     original=database_facts(destination/'ain.sqlite3')
     with closing(sqlite3.connect(destination/'ain.sqlite3')) as db,db:
-        db.execute('DELETE FROM auth_sessions')
+        db.execute('BEGIN IMMEDIATE')
+        revoked=db.execute('DELETE FROM auth_sessions').rowcount
+        event_id=append_event(db,'sign_out','success')
+        if identifier(event_id) is None:raise ValueError('Restore audit event was not confirmed')
+        recorded=db.execute('SELECT action,outcome,actor_id,subject_id,request_id FROM security_audit WHERE event_id=?',(event_id,)).fetchone()
+        if recorded!=('sign_out','success',None,None,None):raise ValueError('Restore audit event was not confirmed')
     AgentStore(destination/'ain.sqlite3').recover(restoring=True)
     restored=database_facts(destination/'ain.sqlite3')
-    expected={**original['row_counts'],'auth_sessions':0}
+    expected={**original['row_counts'],'auth_sessions':0,'security_audit':original['row_counts']['security_audit']+1}
     if restored['row_counts']!=expected:raise ValueError('Restored row counts differ from the snapshot')
+    with closing(sqlite3.connect(destination/'ain.sqlite3')) as db:
+        event=db.execute('SELECT action,outcome,actor_id,subject_id,request_id FROM security_audit WHERE event_id=?',(event_id,)).fetchone()
+        if event!=('sign_out','success',None,None,None):raise ValueError('Restore audit event binding failed')
     receipt={'format':'ain-restore-receipt-v1','snapshot_id':manifest['snapshot_id'],'restored_at':timestamp(),'schema_version':SCHEMA_VERSION,
         'checksums_verified':True,'database_integrity_verified':True,'row_counts_preserved':True,'sessions_revoked':True,
+        'session_revocation_audited':True,'session_revocation_event_id':event_id,
+        'session_revocation_scope':'all_restored_sessions','revoked_session_rows':revoked,
+        'expected_row_changes':{'auth_sessions':-revoked,'security_audit':1},
         'flight_records':restored['row_counts']['flights'],'active_model_restored':any(e['path']=='models/delay-v2/model.joblib' for e in manifest['files']),
         'knowledge_index_restored':any(e['path']=='knowledge/index.json' for e in manifest['files']),
         'elapsed_ms':round((time.monotonic()-started)*1000,2),'production_qualified':False}
-    (destination/'recovery-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8')
+    with (destination/'recovery-receipt.json').open('x',encoding='utf-8') as stream:
+        stream.write(json.dumps(receipt,indent=2)+'\n')
+    marker.unlink()
     return receipt
 
 

@@ -144,7 +144,12 @@ def run_rehearsal(directory):
         receipt = restore(directory / 'schema8-backup', directory / 'schema8-restored')
         recovered_db = directory / 'schema8-restored/ain.sqlite3'
         recovered = snapshot_rows(recovered_db, audit=True)
-        require(recovered == {**upgraded, 'auth_sessions': []})
+        require(recovered == {**upgraded, 'auth_sessions': [], 'security_audit': recovered['security_audit']})
+        require(len(recovered['security_audit']) == len(upgraded['security_audit']) + 1)
+        require(recovered['security_audit'][:-1] == upgraded['security_audit'])
+        restore_event = recovered['security_audit'][-1]
+        require(restore_event[1] == receipt['session_revocation_event_id'])
+        require(restore_event[3:] == ('sign_out', 'success', None, None, None))
         require(manifest['database']['row_counts']['security_audit'] == len(upgraded['security_audit']))
         require(receipt['sessions_revoked'])
         require({p: checksum(directory / 'schema8-restored' / p) for p in artifacts} == original_artifacts)
@@ -152,6 +157,7 @@ def run_rehearsal(directory):
         require(restored_auth.session(token) is None)
         require(restored_auth.session(restored_auth.login('synthetic-admin', password))['id'] == user_id)
         report['checks'].update(schema8_rows_and_audit_restored=True, restored_sessions_revoked=True,
+                                restore_revocation_audited=True,
                                 restored_credentials_work=True, placeholder_artifact_hashes_preserved=True,
                                 upgraded_source_unchanged_by_restore=snapshot_rows(database, audit=True) == upgraded)
         stage = 'schema7_return_point'
