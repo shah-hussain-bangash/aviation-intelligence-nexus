@@ -32,4 +32,6 @@ The [runner snapshot inspection increment](RUNNER_STATUS_INSPECTION.md) classifi
 
 The [offline case reconciliation increment](CASE_RECONCILIATION.md) compares reconstructed retained batches with selected stored rows and queue/ledger bindings. It preserves source cases and rejects changed copies; it does not authenticate data or certify current service health.
 
+The [point-in-time split preparation increment](TEMPORAL_PREPARATION.md) validates feature and label availability at chronological cutoffs, with targets separated from model inputs. It uses a synthetic demonstration and preserves the frozen experiments; it does not claim model benefit or close earlier phases.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
