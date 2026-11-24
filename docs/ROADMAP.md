@@ -20,4 +20,6 @@ The [availability-time feature increment](TIME_SAFE_FEATURES.md) adds a bounded 
 
 The [UTC decision-time increment](DECISION_TIMES.md) connects explicitly mapped synthetic local schedules to the availability-time join. It records timezone rule bytes and excludes unresolved civil-time ambiguity; it does not authorize real airport mappings or enrich the frozen flight dataset.
 
+The [feature resource measurement increment](FEATURE_RESOURCE_MEASUREMENT.md) supplies deterministic synthetic smoke/capacity workloads and measured phase time/Python allocation evidence. It does not substitute for representative authorized data or whole-system load qualification.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
