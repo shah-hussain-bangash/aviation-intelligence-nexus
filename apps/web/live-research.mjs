@@ -2,6 +2,7 @@ import {mountBatchLineage} from './batch-lineage.mjs';
 import {mountIntakeOverview} from './intake-overview.mjs';
 import {mountRetrieval} from './retrieval-evaluation.mjs';
 import {mountScopedLab} from './scoped-answer-lab.mjs';
+import {mountSyntheticScoring} from './synthetic-scoring.mjs';
 import {mountDuration} from './duration-evaluation.mjs';
 import {mountTradeoffs} from './threshold-tradeoffs.mjs';
 import {mountQuality} from './data-quality.mjs';
@@ -85,6 +86,8 @@ if (typeof document !== 'undefined') {
   const duration = mountDuration(section.querySelector('.research-inner'));
   const retrieval = mountRetrieval(section.querySelector('.research-inner'));
   const scopedLab = mountScopedLab(section.querySelector('.research-inner'));
+  const syntheticLab=mountSyntheticScoring(section.querySelector('.research-inner'));
+  const syntheticLink=document.createElement('a');syntheticLink.className='btn sm';syntheticLink.href='#synthetic-model-lab';syntheticLink.textContent='Synthetic Model Lab';syntheticLink.hidden=true;section.querySelector('.research-toolbar').append(syntheticLink);
   const tradeoffs = mountTradeoffs(section.querySelector('.research-inner'));
   const diagnostics = mountDiagnostics(section.querySelector('.research-inner'));
   const routePatterns = mountPatterns(section.querySelector('.research-inner'));
@@ -145,6 +148,8 @@ if (typeof document !== 'undefined') {
     duration.setSession(user);
     retrieval.setSession(user);
     scopedLab.setSession(user);
+    syntheticLab.setSession(user);
+    syntheticLink.hidden=!['admin','researcher'].includes(user?.role);
     routePatterns.setSession(user);
     routeHistory.setSession(user);
     section.querySelector('details').hidden=!user;

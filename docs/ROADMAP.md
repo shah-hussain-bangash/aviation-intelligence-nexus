@@ -50,4 +50,6 @@ The [catalog-selected scoring command](CATALOG_SELECTED_SCORING.md) binds local 
 
 The [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md) connects the selected-version workflow to existing local sessions/roles and server-configured dataset IDs. It is disabled by default and verified in-process; frontend routing, deployment and production identity remain open.
 
+The [Synthetic Model Lab dashboard connection](SYNTHETIC_SCORING_DASHBOARD.md) adds a role-aware panel and exact proxy routes with bound result rendering and stale-result clearing. It is checked in an isolated fixture-session browser harness, not a deployed authenticated browser journey.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
