@@ -91,4 +91,18 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 .intake-overview p,.intake-overview th,.intake-overview td,.intake-overview summary{font-size:.875rem;line-height:1.6}
 .intake-overview .intake-hash{overflow-wrap:anywhere;display:block;max-width:260px;font-size:.8125rem;margin-top:8px}
 .intake-overview .pattern-controls{display:flex;gap:8px;flex-wrap:wrap}
+.synthetic-model-lab{border-top:3px solid #c90030;scroll-margin-top:24px}
+.synthetic-model-lab[hidden]{display:none!important}
+.synthetic-model-lab p{font-size:1rem;line-height:1.65}
+.synthetic-model-lab label,.synthetic-model-lab button,.synthetic-model-lab select,.synthetic-model-lab summary,.synthetic-model-lab .research-badge{font-size:.875rem}
+.synthetic-model-lab form>label{display:block;margin:16px 0}
+.synthetic-model-lab select{display:block;max-width:100%;min-width:min(100%,280px);padding:12px;background:#fff;color:#172c3b;border:1px solid #8a949c}
+.synthetic-model-lab .synthetic-table{overflow-x:auto;margin:18px 0;border:1px solid #d7dde1;border-radius:6px}
+.synthetic-model-lab table{width:100%;border-collapse:collapse;font-size:.875rem}
+.synthetic-model-lab caption{text-align:left;padding:12px;background:#f1f4f6}
+.synthetic-model-lab th,.synthetic-model-lab td{text-align:left;padding:12px;border-bottom:1px solid #dde2e6;white-space:nowrap}
+.synthetic-model-lab th{color:#172c3b;background:#f7f9fa}
+.synthetic-model-lab .synthetic-lineage{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:12px;font-size:.875rem}
+.synthetic-model-lab dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media(max-width:600px){.synthetic-model-lab .synthetic-lineage{grid-template-columns:1fr;gap:6px}.synthetic-model-lab .scoped-actions button{width:100%}.synthetic-model-lab .scoped-heading{display:block}}
 @media(max-width:600px){.intake-overview .pattern-heading{display:block}.intake-overview .pattern-controls{margin-top:14px}.intake-overview .diagnostic-metrics{grid-template-columns:1fr 1fr}.intake-overview .research-table{max-width:100%;overflow-x:auto}}

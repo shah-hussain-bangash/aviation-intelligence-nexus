@@ -9,6 +9,8 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const gateReview = pathname === '/api/v1/research/gate-review';
   const knowledge = pathname === '/api/v1/research/knowledge-query';
   const scoped = pathname === '/api/v1/research/scoped-query';
+  const syntheticScore=pathname==='/api/v1/research/synthetic-score';
+  const syntheticContext=pathname==='/api/v1/research/synthetic-scoring';
   const agent = pathname === '/api/v1/research/agent-run';
   const jobSubmit = pathname === '/api/v1/research/agent-jobs';
   const jobRead = /^\/api\/v1\/research\/agent-jobs\/[0-9a-fA-F-]{36}$/.test(pathname);
@@ -23,14 +25,15 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const reviewInbox=pathname==='/api/v1/research/agent-review-inbox';
   const securityWrite=pathname==='/api/v1/auth/revoke-other-sessions';
   const authWrite = ['/api/v1/auth/login','/api/v1/auth/logout'].includes(pathname)||securityWrite;
-  const write = gateReview || jobSubmit || jobCancel || prediction || optimization || knowledge || scoped || agent || agentReview || authWrite;
-  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations','/api/v1/research/data-quality'].includes(pathname) && !write && !jobRead && !routeProfile && !archiveRead && !securityRead && !distributionsRead && !reviewInbox && !thresholdsRead && !intakeRead) return false;
+  const write = gateReview || jobSubmit || jobCancel || prediction || optimization || knowledge || scoped || syntheticScore || agent || agentReview || authWrite;
+  if (!['/api/v1/research/summary', '/api/v1/research/history','/api/v1/research/gate-history','/api/v1/auth/session','/api/v1/research/knowledge-status','/api/v1/research/knowledge-history','/api/v1/research/agent-status','/api/v1/research/agent-history','/api/v1/research/platform-status','/api/v1/research/readiness','/api/v1/research/monitoring','/api/v1/research/agent-operations','/api/v1/research/route-segments','/api/v1/research/model-diagnostics','/api/v1/research/model-explanations','/api/v1/research/data-quality'].includes(pathname) && !write && !syntheticContext && !jobRead && !routeProfile && !archiveRead && !securityRead && !distributionsRead && !reviewInbox && !thresholdsRead && !intakeRead) return false;
   const proxyRequestId=randomUUID();
   res.setHeader?.('X-Request-ID',proxyRequestId);
   if (req.method !== (write ? 'POST' : 'GET')) {
     res.writeHead(405); res.end(); return true;
   }
   let targetPath = pathname;
+  if((syntheticScore||syntheticContext)&&new URL(req.url,'http://127.0.0.1').search){res.writeHead(422);res.end();return true;}
   if(scoped&&new URL(req.url,'http://127.0.0.1').search){res.writeHead(422);res.end();return true;}
   if((reviewInbox||thresholdsRead||intakeRead)&&new URL(req.url,'http://127.0.0.1').search){res.writeHead(422);res.end();return true;}
   if((securityRead||securityWrite)&&new URL(req.url,'http://127.0.0.1').search){res.writeHead(422);res.end();return true;}
