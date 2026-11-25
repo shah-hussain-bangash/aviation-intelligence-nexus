@@ -41,6 +41,7 @@ class RestoredDataApiTests(unittest.TestCase):
         with closing(sqlite3.connect(state / 'ain.sqlite3')) as db, db:
             db.execute("INSERT INTO flights(source,source_record_id,flight_date,carrier,origin,destination,cancelled,diverted) VALUES('BTS_REPORTING_CARRIER','test-1','2025-01-01','AA','JFK','LAX',0,0)")
             counts = {t: db.execute('SELECT COUNT(*) FROM ' + t).fetchone()[0] for t in recovery.SNAPSHOT_TABLES if t != 'security_audit'}
+        if hasattr(cls, 'configure_model'): cls.configure_model(state)
         files = {name: {'sha256': recovery.checksum(state / name), 'size_bytes': (state / name).stat().st_size}
                  for name in recovery.FILES}
         (cls.case / 'plan.json').write_text(json.dumps({'files': files, 'database': {'schema_version': 7, 'row_counts': counts}}))

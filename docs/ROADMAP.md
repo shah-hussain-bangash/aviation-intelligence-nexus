@@ -64,4 +64,6 @@ The [full retained snapshot recovery command](FULL_SNAPSHOT_RECOVERY.md) checks 
 
 The [restored retained-data API rehearsal](RESTORED_DATA_API.md) checks normal proxy login, retained-data summaries, researcher/viewer boundaries and cleanup on another private copy of a qualified restore. It preserves original users/business rows and uses only disposable probe passwords. It does not deploy the branch or qualify an original-user browser/model/RAG journey.
 
+The [restored prediction API journey](RESTORED_PREDICTION_API.md) adds an opt-in trusted-artifact prediction, durable owner-bound history, request-key replay/conflict checks, viewer denial and an explicit owned API restart. It writes only one expected probe prediction in a private copy and does not retrain/evaluate the historical model or deploy the branch.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.

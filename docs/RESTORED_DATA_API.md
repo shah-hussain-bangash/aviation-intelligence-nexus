@@ -27,6 +27,8 @@ The report records HTTP checks, retained aggregate/monthly counts, state-preserv
 
 ## Tests and limits
 
+The separate [opt-in historical prediction journey](RESTORED_PREDICTION_API.md) adds explicit trusted-model admission, one persisted researcher-owned result, replay/conflict checks and an owned API restart. It is disabled by default and separately reports expected history changes; the read-only mode above remains unchanged.
+
 ```powershell
 .\.venv\Scripts\python.exe -m unittest tests.test_restored_data_api -v
 npm.cmd test
