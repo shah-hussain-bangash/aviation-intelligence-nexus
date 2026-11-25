@@ -76,6 +76,8 @@ The eighth new data-science increment adds [catalog-selected synthetic scoring](
 
 The [synthetic recovery runbooks](RECOVERY_RUNBOOKS.md) replace private launchers with explicit immutable image/revision inputs, pure isolation admission checks, separately recorded harness provenance and private execution reports. Packaged recovery, HTTP/permissions, explicit outage, automatic process restart, fresh-volume HTTP restore and Windows-key encrypted continuation are available without selecting the primary deployment. These refactored tools require their own Docker execution evidence. Earlier private observations remain historical; all production acceptance requirements remain open.
 
+The [historical model recovery parity command](RESEARCH_MODEL_RECOVERY.md) extends recovery evidence from nonexecutable placeholders to an explicitly trusted, manifest-pinned delay-v2 artifact. Three historical scenario outputs must match exactly after restore in a fresh synthetic schema-8 state. The original snapshot database is not opened or migrated. This remains artifact/inference consistency evidence, not real-data evaluation, full database/retrieval recovery, independent recovery or production acceptance.
+
 ## Product-integration continuation
 
 The first new integration increment adds an [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md), using existing local sessions/roles and server-configured dataset IDs with explicit model/input/revision pins. Viewer/anonymous, origin/CSRF, changed evidence and mid-run revoked-session cases are verified in-process. Default startup remains disabled; frontend routing, authenticated dashboard journey and deployed qualification remain open. The existing real delay predictor is unchanged.
