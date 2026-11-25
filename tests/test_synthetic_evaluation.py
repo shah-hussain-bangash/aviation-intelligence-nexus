@@ -91,6 +91,18 @@ class SyntheticEvaluationTests(unittest.TestCase):
         self.assertEqual(sorted([first.returncode,second.returncode]),[0,2],err_a+err_b)
         self.assertEqual(sorted([json.loads(out_a)['state'],json.loads(out_b)['state']]),['evaluated','refused'])
 
+    def test_development_query_identity_cannot_reappear_in_holdout(self):
+        development=json.loads((self.case/'synthetic-development.json').read_text(encoding='utf-8'))
+        reused=development['partitions']['validation'][0]['query_id']
+        policy_path=self.case/'holdout-policy.json';policy=json.loads(policy_path.read_text(encoding='utf-8'))
+        for name,key in [('holdout-features.json','features_sha256'),('holdout-labels.json','labels_sha256')]:
+            path=self.case/name;rows=json.loads(path.read_text(encoding='utf-8'));rows[0]['query_id']=reused
+            data=json.dumps(rows).encode();path.write_bytes(data);policy[key]=hashlib.sha256(data).hexdigest()
+        policy_path.write_text(json.dumps(policy),encoding='utf-8')
+        result=evaluate_once(self.case)
+        self.assertEqual(result['state'],'failed');self.assertTrue(result['claim_consumed'])
+        self.assertFalse(result['test_evaluated'])
+
     def test_demo_hashes_freeze_and_repeat_refusal(self):
         result=verify(self.root/'drill')
         self.assertTrue(result['passed']);self.assertEqual(len(result['checks']),10)

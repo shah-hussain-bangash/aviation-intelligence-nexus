@@ -20,7 +20,7 @@ This is **one attempt per local directory**, not globally exactly-once evaluatio
 
 ## Scoring contract
 
-The entire holdout must contain 2–10,000 matched feature rows with one unique label per query. No post-hoc missing/stale/maturity exclusions are performed. Decision times must lie in `[validation_end, test_end)`, weather must have been available by each decision, and labels must become available after decision but no later than `test_end`. Extra label fields, duplicates, orphans, unmatched weather and invalid numerical values refuse the claimed attempt.
+The entire holdout must contain 2–10,000 matched feature rows with one unique label per query. The frozen `synthetic-development.json` must match the selection's canonical development hash and contain no test rows. Its training/validation query IDs cannot reappear in holdout; training IDs also bind to fitted preprocessing state. ID disjointness does not independently establish distinct physical flights or groups. No post-hoc missing/stale/maturity exclusions are performed. Decision times must lie in `[validation_end, test_end)`, weather must have been available by each decision, and labels must become available after decision but no later than `test_end`. Extra label fields, duplicates, orphans, unmatched weather and invalid numerical values refuse the claimed attempt.
 
 Each JSON artifact is limited to 8 MiB. Reads reject duplicate keys/nonfinite constants and observably changed files. Frozen fields and file identities are rechecked after scoring. These are bounded local consistency checks, not a hard execution deadline, a general hostile-file sandbox, representative capacity measurement or authenticated source validation.
 

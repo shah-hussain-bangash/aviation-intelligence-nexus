@@ -12,7 +12,7 @@ from scipy.sparse import csr_matrix
 
 from ml.regression_selection import metrics, protocol as selection_protocol
 from ml.temporal_preparation import LABEL_FIELDS, feature_time, number
-from ml.train_preprocessing import signature
+from ml.train_preprocessing import signature, validate as validate_development
 from pipelines.synthetic_ingestion import host,local
 from pipelines.time_safe_features import airport,identifier,require,timestamp
 
@@ -75,6 +75,12 @@ def evaluate_once(directory):
         selection,selection_hash=read_json(directory/'frozen-selection.json')
         selected,state,bounds=validate_freeze(policy,protocol,selection)
         require(protocol_hash==policy['protocol_sha256'] and selection_hash==policy['selection_sha256'],'frozen_artifact_identity_mismatch')
+        development,development_file_hash=read_json(directory/'synthetic-development.json')
+        require(type(development) is dict and type(development.get('partitions')) is dict and development['partitions'].get('test')==[],'development_test_rows_not_accepted')
+        require(signature(development)==selection['development_sha256'],'development_identity_mismatch')
+        validate_development(development)
+        development_ids={row['query_id'] for rows in development['partitions'].values() for row in rows}
+        require(state['training_query_ids']==[row['query_id'] for row in development['partitions']['train']],'training_identity_binding_invalid')
         claim_file=local(directory/'holdout-attempt.json');output=local(directory/'holdout-evaluation.json')
         require(not output.exists(),'evaluation_result_already_exists')
         claim={'format':'ain-synthetic-holdout-attempt-v1','attempt_id':uuid4().hex,
@@ -101,7 +107,7 @@ def evaluate_once(directory):
         origins={origin:index for index,origin in enumerate(state['origin_categories'])}
         for row in features:
             decision=feature_time(row,'synthetic');key=row['query_id']
-            require(key not in seen and bounds[2]<=decision<bounds[3] and row['status']=='matched','invalid_holdout_feature_cohort')
+            require(key not in seen and key not in development_ids and bounds[2]<=decision<bounds[3] and row['status']=='matched','invalid_holdout_feature_cohort')
             seen.add(key);require(key in targets,'missing_holdout_target')
             label=targets[key]
             require(decision<timestamp(label['label_available_at'])<=bounds[3],'immature_holdout_target')
@@ -122,9 +128,11 @@ def evaluate_once(directory):
             selected_metrics=metrics(target,prediction)
             baseline_metrics=metrics(target,np.full(len(target),selection['baseline']['value']))
         for name,expected in [('holdout-policy.json',policy_hash),('registered-protocol.json',protocol_hash),
-                              ('frozen-selection.json',selection_hash),('holdout-features.json',features_hash),('holdout-labels.json',labels_hash)]:
+                              ('frozen-selection.json',selection_hash),('synthetic-development.json',development_file_hash),
+                              ('holdout-features.json',features_hash),('holdout-labels.json',labels_hash)]:
             require(read_json(directory/name)[1]==expected,'evaluation_input_changed')
         result.update(state='evaluated',test_evaluated=True,features_sha256=features_hash,labels_sha256=labels_hash,
+                      development_file_sha256=development_file_hash,development_ids_disjoint=True,
                       selected_state_sha256=selection['selected_state_sha256'],selected_metrics=selected_metrics,
                       baseline_metrics=baseline_metrics,unknown_origin_count=unknown,
                       prediction_sha256=signature(prediction.tolist()),query_ids_sha256=signature([row['query_id'] for row in features]))

@@ -54,7 +54,7 @@ def verify(directory):
             'deployment_performed':False,'production_ready':False}
     try:
         case=directory/'experiment';selected,policy=setup(case)
-        before={name:hashlib.sha256((case/name).read_bytes()).hexdigest() for name in ('registered-protocol.json','frozen-selection.json','holdout-policy.json','holdout-features.json','holdout-labels.json')}
+        before={name:hashlib.sha256((case/name).read_bytes()).hexdigest() for name in ('registered-protocol.json','frozen-selection.json','synthetic-development.json','holdout-policy.json','holdout-features.json','holdout-labels.json')}
         first=evaluate_once(case)
         receipt=(case/'holdout-evaluation.json').read_bytes();claim=(case/'holdout-attempt.json').read_bytes()
         second=evaluate_once(case)
@@ -63,7 +63,7 @@ def verify(directory):
             'first_attempt_evaluated':first['state']=='evaluated' and first['test_evaluated'],
             'attempt_claim_retained':json.loads(claim)['attempt_id']==first['attempt_id'],
             'pinned_selection_used':first['selection_sha256']==policy['selection_sha256'],
-            'complete_synthetic_cohort_scored':first['selected_metrics']['records']==first['baseline_metrics']['records']==8,
+            'complete_synthetic_cohort_scored':first['selected_metrics']['records']==first['baseline_metrics']['records']==8 and first['development_ids_disjoint'],
             'selected_model_not_refitted':first['model_refitted'] is False,
             'repeat_attempt_refused':second['state']=='refused' and not second['test_evaluated'] and not second['claim_consumed'],
             'repeat_preserved_receipt_and_claim':receipt==(case/'holdout-evaluation.json').read_bytes() and claim==(case/'holdout-attempt.json').read_bytes(),
