@@ -54,4 +54,6 @@ The [Synthetic Model Lab dashboard connection](SYNTHETIC_SCORING_DASHBOARD.md) a
 
 The [isolated browser session rehearsal](ISOLATED_BROWSER_SESSION.md) adds a native-test-only cookie namespace and verifies ordinary browser login/scoring/viewer/logout with disposable accounts. It does not qualify the user's real-account journey or deployed release; the auth source fingerprint requires fresh future recovery evidence.
 
+The [versioned synthetic recovery runbooks](RECOVERY_RUNBOOKS.md) replace private workstation launchers with explicit image/revision inputs, isolated admission and reviewed HTTP, outage, restart, restore and encrypted continuation commands. Earlier private observations do not qualify the refactored runners; retain new execution evidence before release review.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.

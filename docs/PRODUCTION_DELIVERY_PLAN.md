@@ -72,6 +72,10 @@ The seventh new data-science increment adds a [local synthetic model catalog](SY
 
 The eighth new data-science increment adds [catalog-selected synthetic scoring](CATALOG_SELECTED_SCORING.md), requiring the observed selected model/revision and exact feature-file identity. Read-only scoring retains catalog/selection/input/artifact lineage and refuses observable mid-run changes. This connects the pointer to a local CLI, not an authenticated API, protected scoring ledger or deployed model switch.
 
+## Versioned local recovery qualification
+
+The [synthetic recovery runbooks](RECOVERY_RUNBOOKS.md) replace private launchers with explicit immutable image/revision inputs, pure isolation admission checks, separately recorded harness provenance and private execution reports. Packaged recovery, HTTP/permissions, explicit outage, automatic process restart, fresh-volume HTTP restore and Windows-key encrypted continuation are available without selecting the primary deployment. These refactored tools require their own Docker execution evidence. Earlier private observations remain historical; all production acceptance requirements remain open.
+
 ## Product-integration continuation
 
 The first new integration increment adds an [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md), using existing local sessions/roles and server-configured dataset IDs with explicit model/input/revision pins. Viewer/anonymous, origin/CSRF, changed evidence and mid-run revoked-session cases are verified in-process. Default startup remains disabled; frontend routing, authenticated dashboard journey and deployed qualification remain open. The existing real delay predictor is unchanged.
