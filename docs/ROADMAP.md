@@ -36,4 +36,6 @@ The [point-in-time split preparation increment](TEMPORAL_PREPARATION.md) validat
 
 The [train-only preprocessing increment](TRAIN_ONLY_PREPROCESSING.md) fits encoders/scaling only on prepared training features and freezes that state for future transformations. Its synthetic evidence is not a fitted predictive model or real-data improvement claim.
 
+The [validation regression selection increment](VALIDATION_REGRESSION_SELECTION.md) records a local development protocol, fits train-only synthetic candidates and selects on validation MAE without test evaluation. It does not establish real-data model benefit or production acceptance.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
