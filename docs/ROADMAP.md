@@ -44,4 +44,6 @@ The [read-only synthetic error diagnostics](SYNTHETIC_ERROR_DIAGNOSTICS.md) reco
 
 The [portable synthetic model bundle](SYNTHETIC_MODEL_BUNDLE.md) exports receipt-bound frozen JSON scoring state and verifies prediction parity without training-data access. It is local artifact execution evidence, not a protected model registry or deployed service.
 
+The [local synthetic model catalog](SYNTHETIC_MODEL_CATALOG.md) records verified artifact versions and revision-bound selection/previous-version rollback in separate private state. It does not deploy the selected version or establish protected model promotion.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
