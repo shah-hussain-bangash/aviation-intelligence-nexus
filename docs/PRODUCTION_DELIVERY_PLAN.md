@@ -68,4 +68,6 @@ The fifth new data-science increment adds [read-only synthetic error diagnostics
 
 The sixth new data-science increment adds a [portable synthetic scoring bundle](SYNTHETIC_MODEL_BUNDLE.md), exporting receipt-bound JSON preprocessing/coefficient state without training rows or targets. Explicit hash-pinned scoring has fixture prediction parity and no source-experiment dependency; it does not provide protected registry promotion, a deployed service or independent real-data quality evidence.
 
+The seventh new data-science increment adds a [local synthetic model catalog](SYNTHETIC_MODEL_CATALOG.md): verified artifact copies, transactional history and revision-bound version selection/previous-version rollback in separate private SQLite state. The pointer is metadata only; no deployed model switch, protected registry or model-quality acceptance is implemented.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.
