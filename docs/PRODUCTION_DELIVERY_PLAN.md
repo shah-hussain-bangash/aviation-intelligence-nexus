@@ -66,4 +66,6 @@ The fourth new data-science increment adds [one-attempt synthetic holdout evalua
 
 The fifth new data-science increment adds [read-only synthetic error diagnostics](SYNTHETIC_ERROR_DIAGNOSTICS.md), bound to a supplied completed-receipt hash. It verifies aggregate consistency and reports origin/category errors with small-cohort flags, without resetting evaluation or fitting/selecting models. Descriptive toy results are not independent model-quality, statistical-significance or production-acceptance evidence.
 
+The sixth new data-science increment adds a [portable synthetic scoring bundle](SYNTHETIC_MODEL_BUNDLE.md), exporting receipt-bound JSON preprocessing/coefficient state without training rows or targets. Explicit hash-pinned scoring has fixture prediction parity and no source-experiment dependency; it does not provide protected registry promotion, a deployed service or independent real-data quality evidence.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.
