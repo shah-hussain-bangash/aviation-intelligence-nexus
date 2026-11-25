@@ -12,7 +12,7 @@ From the repository root, use the exact historical report bytes:
 
 The command prints a fresh private packet path, packet SHA-256 and annotations path under `.local/generation-review/<unique-case>/`. It checks the current suite, all six source document hashes, exact passage identities/line ranges, cited quotations and recorded case metrics. It refuses stale source bytes rather than silently rewriting the report to fit the current checkout. A checkout whose line endings differ from the recorded bytes may fail this check; use the exact original corpus bytes, not edited hashes.
 
-Open `READ_ME.txt` for the questions, generated claims and retrieved context. `packet.json` also contains the full six source documents, original diagnostic report/model identities and case bindings. The packet is deliberately an offline file workflow; no new dashboard review panel or network service is claimed.
+Open `READ_ME.txt` for the questions, generated claims and retrieved context. `packet.json` also contains the full six source documents, original diagnostic report/model identities and case bindings. The packet is deliberately an offline file workflow; no deployed dashboard review panel or network service is claimed.
 
 Edit **only `annotations.json`**:
 
@@ -36,10 +36,26 @@ Replace the angle-bracket placeholders before running. This command checks bindi
 
 The summary records packet/report hashes, a canonical annotation hash and per-case dispositions. Outputs must be fresh files under private `.local`; overwrites, parent traversal and redirected paths are refused. Keep annotations and their packet together for later inspection. Do not publish personal reviewer notes automatically.
 
+## Optional offline review page
+
+Create a fresh page from the already exported packet:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag.review_page --packet .local/generation-review/<unique-case>/packet.json --packet-sha256 <printed-full-sha256> --output .local/generation-review/<unique-case>/review.html
+```
+
+Open the resulting HTML file in a browser. It includes the exact saved questions, generated claims, expandable retrieved context and all six full documents. Its desktop and narrow-screen layouts use local fonts and no external assets. The renderer revalidates the packet/corpus before writing; a restrictive content policy admits only the embedded script/style hashes and blocks connections. Model content is displayed as literal text, never interpreted as HTML.
+
+Enter a reviewer label, read the sources, check the source-review box and select judgments. Unavailable runs have notes but no answer-quality rating controls. The progress display counts declarations, not correct answers. All judgments start undecided. Entries stay in memory only: **refreshing or closing the tab clears them**. There is no import/resume or automatic save in this increment.
+
+Click **Download review JSON** before closing. The browser chooses its normal download location and may rename repeated downloads. Run the existing `rag.semantic_review assess` command with the original packet/hash and this downloaded annotation file, choosing a new private assessment output. A browser download is not an assessed, authenticated or uploaded review. The original packet, template and report stay unchanged.
+
+Focused UI checks: `node --test tests/test_generation_review.mjs` and `python -m unittest tests.test_review_page -v`. Browser verification must exercise actual download-to-Python assessment interoperability using a clearly labelled synthetic reviewer fixture, then reset to undecided. Synthetic UI selections are not genuine human judgments.
+
 ## Limits and checks
 
 Hashes bind supplied bytes but do not authenticate the source report, packet author or human reviewer. An operator can create a different unsigned report and explicitly pin it; the command is not an approval authority. The summary always retains `human_identity_verified: false`, `independent_review: false`, `semantic_benchmark_accuracy_measured: false`, `operational_approval: false` and `production_ready: false`. It does not overwrite the original report's pending review fields, calculate benchmark accuracy, repair generated answers or close production requirements.
 
 Focused check: `python -m unittest tests.test_semantic_review -v`. Tests use synthetic reviewer declarations and cover pending/negative/all-declared cases, unavailable-case exclusion, altered/missing bindings, source drift, strict JSON, file pins and private new-file output. The redirect test runs where the operating system permits fixture symlinks.
 
-Run `npm test` for repository regression checks. Actual human assessment, independently checked judgments, a protected review store, dashboard integration and representative unseen evaluation remain open.
+Run `npm test` for repository regression checks. Actual human assessment, independently checked judgments, a protected review store, deployed dashboard integration and representative unseen evaluation remain open.

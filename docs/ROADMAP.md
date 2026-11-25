@@ -66,6 +66,6 @@ The [restored retained-data API rehearsal](RESTORED_DATA_API.md) checks normal p
 
 The [restored prediction API journey](RESTORED_PREDICTION_API.md) adds an opt-in trusted-artifact prediction, durable owner-bound history, request-key replay/conflict checks, viewer denial and an explicit owned API restart. It writes only one expected probe prediction in a private copy and does not retrain/evaluate the historical model or deploy the branch.
 
-The [frozen generation self-review workflow](GENERATION_SELF_REVIEW.md) exports exact diagnostic answers, source context and undecided annotation fields into private offline files. It checks declared decisions against case/citation bindings and keeps unavailable runs outside answer-quality judgments. Human assessment, authenticated independent review and benchmark accuracy remain open.
+The [frozen generation self-review workflow](GENERATION_SELF_REVIEW.md) exports exact diagnostic answers, source context and undecided annotation fields into private offline files. Its optional standalone review page collects declarations and downloads packet-bound annotations for Python assessment. It checks declared decisions against case/citation bindings and keeps unavailable runs outside answer-quality judgments. Human assessment, authenticated independent review and benchmark accuracy remain open.
 
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
