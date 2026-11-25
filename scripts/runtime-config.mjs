@@ -2,7 +2,7 @@
 export function routing(config={}) {
   const apiHost=config.apiHost||'127.0.0.1',sessionCookie=config.sessionCookie||'ain_session';
   if(!['127.0.0.1','api'].includes(apiHost))throw new Error('Unapproved API host.');
-  if(!['ain_session','ain_release_session'].includes(sessionCookie))throw new Error('Unapproved session namespace.');
+  if(!['ain_session','ain_release_session'].includes(sessionCookie)&&!(sessionCookie==='ain_test_session'&&config.profile==='test'&&config.container!==true&&apiHost==='127.0.0.1'))throw new Error('Unapproved session namespace.');
   return {apiHost,sessionCookie};
 }
 
@@ -20,7 +20,7 @@ export function runtimeConfig(env=process.env){
   const bindHost=env.AIN_BIND_HOST??'127.0.0.1',apiHost=env.AIN_API_HOST??'127.0.0.1',sessionCookie=env.AIN_SESSION_COOKIE??'ain_session';
   if(!['127.0.0.1','0.0.0.0'].includes(bindHost)||bindHost==='0.0.0.0'&&!container)codes.push('bind_host_not_allowed');
   if(!['127.0.0.1','api'].includes(apiHost)||apiHost==='api'&&!container)codes.push('api_host_not_allowed');
-  if(!['ain_session','ain_release_session'].includes(sessionCookie))codes.push('cookie_namespace_not_allowed');
+  if(!['ain_session','ain_release_session'].includes(sessionCookie)&&!(sessionCookie==='ain_test_session'&&profile==='test'&&!container))codes.push('cookie_namespace_not_allowed');
   const modelHost=env.AIN_OLLAMA_HOST??'127.0.0.1';
   if(!['127.0.0.1','ollama','host.docker.internal'].includes(modelHost)||modelHost!=='127.0.0.1'&&!container)codes.push('model_host_not_allowed');
   if(!container&&(env.AIN_OBSERVER_MOUNTED==='1'||env.AIN_INTAKE_OVERVIEW_MOUNTED==='1'))codes.push('container_mounts_require_container_mode');
@@ -32,7 +32,7 @@ export function runtimeConfig(env=process.env){
   if(Object.hasOwn(env,'AIN_DATABASE_URL'))codes.push('managed_database_not_configured');
   if(Object.hasOwn(env,'AIN_RELEASE_REVISION')&&!(/^[0-9a-f]{40}$/.test(env.AIN_RELEASE_REVISION)||['working-tree','development-working-tree'].includes(env.AIN_RELEASE_REVISION)))codes.push('invalid_release_revision');
   if(codes.length){const error=new Error('Invalid local configuration: '+codes.join(','));error.codes=[...new Set(codes)];throw error;}
-  return {...routing({apiHost,sessionCookie}),bindHost,profile,container,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
+  return {...routing({apiHost,sessionCookie,profile,container}),bindHost,profile,container,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
 }
 
 export function environmentDiagnostic(env=process.env){

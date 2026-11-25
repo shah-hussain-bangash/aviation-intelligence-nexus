@@ -10,6 +10,20 @@ from services.api.configuration import ConfigurationError,diagnostic,validate_en
 
 
 class ConfigurationTests(unittest.TestCase):
+    def test_preview_cookie_requires_native_test_profile(self):
+        valid={'AIN_ENV':'test','AIN_SESSION_COOKIE':'ain_test_session'}
+        self.assertEqual(validate_environment(valid).profile,'test')
+        for change in ({'AIN_ENV':'local'},{'AIN_ENV':'production'},{'AIN_CONTAINER':'1'}):
+            with self.assertRaises(ConfigurationError):validate_environment({**valid,**change})
+        self.assertEqual(validate_environment({}).profile,'local')
+
+    def test_direct_auth_import_enforces_test_cookie_gate_in_fresh_processes(self):
+        command=[sys.executable,'-c','from services.api.auth import COOKIE;print(COOKIE)']
+        for profile,container,allowed in [('test','0',True),('local','0',False),('test','1',False)]:
+            result=subprocess.run(command,env=self.child_env(AIN_ENV=profile,AIN_CONTAINER=container,AIN_SESSION_COOKIE='ain_test_session'),capture_output=True,text=True,timeout=20)
+            self.assertEqual(result.returncode==0,allowed,result.stderr)
+            if allowed:self.assertEqual(result.stdout.strip(),'ain_test_session')
+
     def child_env(self,**values):
         env={k:v for k,v in os.environ.items() if not k.startswith('AIN_') and k!='PORT'};env.update(values);return env
 

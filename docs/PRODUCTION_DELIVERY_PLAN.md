@@ -78,4 +78,6 @@ The first new integration increment adds an [opt-in authenticated synthetic scor
 
 The second new integration increment adds the [Synthetic Model Lab dashboard connection](SYNTHETIC_SCORING_DASHBOARD.md): exact proxy routes, a role-aware opt-in scoring panel, bound predictions/lineage and cleared stale/unavailable results. Browser verification uses an isolated injected fixture session; real browser login, default-service activation, deployed journey and production qualification remain open.
 
+The third new integration increment adds an [isolated native-test session namespace and browser rehearsal](ISOLATED_BROWSER_SESSION.md). Actual browser login, synthetic scoring, viewer visibility and logout are exercised without injected sessions or normal-cookie replacement. Schema stays 8, but the auth source fingerprint changes; future release recovery/rollback qualification must be refreshed. Real-account/deployed acceptance and managed production controls remain open.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

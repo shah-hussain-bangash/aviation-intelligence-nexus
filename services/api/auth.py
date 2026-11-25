@@ -17,7 +17,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError, InvalidHashError
 
 COOKIE = os.environ.get('AIN_SESSION_COOKIE','ain_session')
-if COOKIE not in ('ain_session','ain_release_session'):
+if COOKIE not in ('ain_session','ain_release_session') and not (COOKIE=='ain_test_session' and os.environ.get('AIN_ENV')=='test' and os.environ.get('AIN_CONTAINER','0')=='0'):
     raise RuntimeError('Unsupported session cookie namespace')
 SESSION_SECONDS = 8 * 60 * 60
 HASHER = PasswordHasher(time_cost=3, memory_cost=65536, parallelism=2)
