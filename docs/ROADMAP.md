@@ -42,4 +42,6 @@ The [one-attempt synthetic evaluation increment](SYNTHETIC_HOLDOUT_EVALUATION.md
 
 The [read-only synthetic error diagnostics](SYNTHETIC_ERROR_DIAGNOSTICS.md) reconcile a completed evaluation receipt with descriptive origin/category error reports. They never fit or select models and do not establish statistical significance, real airline quality or a fresh holdout.
 
+The [portable synthetic model bundle](SYNTHETIC_MODEL_BUNDLE.md) exports receipt-bound frozen JSON scoring state and verifies prediction parity without training-data access. It is local artifact execution evidence, not a protected model registry or deployed service.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
