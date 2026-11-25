@@ -58,4 +58,6 @@ The [versioned synthetic recovery runbooks](RECOVERY_RUNBOOKS.md) replace privat
 
 The [historical model recovery parity command](RESEARCH_MODEL_RECOVERY.md) copies an explicitly trusted, manifest-pinned model pair into a synthetic schema-8 recovery state and compares three predictions before/after restore. It never opens the original flight database or establishes new model accuracy, full-system recovery or production acceptance.
 
+The [copied-index retrieval recovery command](RETRIEVAL_RECOVERY.md) compares two scoped evidence results and an unrelated-question abstention before/after restore, using the recorded existing local embedding model. It verifies corpus chunk bindings and index parity in synthetic state, not generated-answer quality, restored model weights or off-host availability.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.

@@ -78,6 +78,8 @@ The [synthetic recovery runbooks](RECOVERY_RUNBOOKS.md) replace private launcher
 
 The [historical model recovery parity command](RESEARCH_MODEL_RECOVERY.md) extends recovery evidence from nonexecutable placeholders to an explicitly trusted, manifest-pinned delay-v2 artifact. Three historical scenario outputs must match exactly after restore in a fresh synthetic schema-8 state. The original snapshot database is not opened or migrated. This remains artifact/inference consistency evidence, not real-data evaluation, full database/retrieval recovery, independent recovery or production acceptance.
 
+The [copied-index retrieval recovery command](RETRIEVAL_RECOVERY.md) extends local recovery checks to the existing project-evidence index. It validates exact allowlisted corpus chunks and recorded embedding identity, then compares evidence/scopes/scores and an unrelated-question abstention before/after a fresh restore. Generation remains disabled, provider weights are not restored and source snapshot databases are not opened. This is local retrieval parity, not semantic answer evaluation or independent recovery.
+
 ## Product-integration continuation
 
 The first new integration increment adds an [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md), using existing local sessions/roles and server-configured dataset IDs with explicit model/input/revision pins. Viewer/anonymous, origin/CSRF, changed evidence and mid-run revoked-session cases are verified in-process. Default startup remains disabled; frontend routing, authenticated dashboard journey and deployed qualification remain open. The existing real delay predictor is unchanged.
