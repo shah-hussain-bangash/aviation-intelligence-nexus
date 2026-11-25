@@ -46,4 +46,6 @@ The [portable synthetic model bundle](SYNTHETIC_MODEL_BUNDLE.md) exports receipt
 
 The [local synthetic model catalog](SYNTHETIC_MODEL_CATALOG.md) records verified artifact versions and revision-bound selection/previous-version rollback in separate private state. It does not deploy the selected version or establish protected model promotion.
 
+The [catalog-selected scoring command](CATALOG_SELECTED_SCORING.md) binds local synthetic predictions to an observed selected version, revision and feature-file hash, with post-score change checks. This is CLI integration only; it does not add a scoring service or protected execution ledger.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
