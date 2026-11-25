@@ -72,4 +72,8 @@ The seventh new data-science increment adds a [local synthetic model catalog](SY
 
 The eighth new data-science increment adds [catalog-selected synthetic scoring](CATALOG_SELECTED_SCORING.md), requiring the observed selected model/revision and exact feature-file identity. Read-only scoring retains catalog/selection/input/artifact lineage and refuses observable mid-run changes. This connects the pointer to a local CLI, not an authenticated API, protected scoring ledger or deployed model switch.
 
+## Product-integration continuation
+
+The first new integration increment adds an [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md), using existing local sessions/roles and server-configured dataset IDs with explicit model/input/revision pins. Viewer/anonymous, origin/CSRF, changed evidence and mid-run revoked-session cases are verified in-process. Default startup remains disabled; frontend routing, authenticated dashboard journey and deployed qualification remain open. The existing real delay predictor is unchanged.
+
 PRs remain reviewable and unmerged until explicitly authorized. PR #1 covers the single-batch trace; PR #2 adds the five-month coverage audit. Keep later increments separate and declare any stacked-branch dependency. After an eventual merge, verify the final main revision and its own checks before considering deployment. Do not deploy a branch merely because its development tests passed.

@@ -57,6 +57,7 @@ from services.api.scoped_lab import ScopedLabQuery,run as run_scoped_lab
 from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
+from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScoringService
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -176,7 +177,8 @@ def read_model_report(directory: Path):
 
 
 def create_app(database: Path | None = None, model_directory: Path | None = None,
-               research_model_directory: Path | None = None, knowledge_index: Path | None = None):
+               research_model_directory: Path | None = None, knowledge_index: Path | None = None,
+               synthetic_scoring: SyntheticScoringService | None = None):
     config=validate_environment(os.environ)
     database = Path(database) if database is not None else Path(
         os.environ.get("AIN_DB_PATH", str(STATE / "ain.sqlite3")))
@@ -249,7 +251,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
             if unsafe and request.url.path != "/api/v1/auth/login":
                 if not user or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), csrf_token(token)):
                     return JSONResponse(status_code=403, content={"error": "csrf_rejected"})
-            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/gate-review", "/api/v1/research/knowledge-query", "/api/v1/research/scoped-query", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
+            if request.url.path in ("/api/v1/research/predict", "/api/v1/research/optimize-gates", "/api/v1/research/gate-review", "/api/v1/research/knowledge-query", "/api/v1/research/scoped-query", "/api/v1/research/synthetic-score", "/api/v1/research/agent-run", "/api/v1/research/agent-review", "/api/v1/research/agent-jobs", "/api/v1/research/agent-cancel") and request.method == "POST" and user["role"] not in ("admin", "researcher"):
                 return JSONResponse(status_code=403, content={"error": "researcher_role_required"})
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={"error": "identity_store_unavailable"})
@@ -506,6 +508,30 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/knowledge-status')
     def knowledge_status():
         return knowledge.status()
+
+    @app.get('/api/v1/research/synthetic-scoring')
+    def synthetic_scoring_context(request:Request):
+        if request.state.user['role'] not in ('admin','researcher'):
+            return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'unexpected_synthetic_scoring_parameters'})
+        if synthetic_scoring is None:return {'available':False,'source_scope':'synthetic','production_ready':False}
+        try:return synthetic_scoring.context()
+        except Exception:return JSONResponse(status_code=503,content={'error':'synthetic_scoring_unavailable'})
+
+    @app.post('/api/v1/research/synthetic-score')
+    def synthetic_score(query:SyntheticScoreRequest,request:Request):
+        if request.query_params:return JSONResponse(status_code=422,content={'error':'unexpected_synthetic_scoring_parameters'})
+        try:
+            token=request.cookies.get(COOKIE,'');current=auth.session(token)
+            if not current or current['role'] not in ('admin','researcher') or current['id']!=request.state.user['id']:
+                return JSONResponse(status_code=403,content={'error':'researcher_role_required'})
+            if synthetic_scoring is None:return JSONResponse(status_code=503,content={'error':'synthetic_scoring_not_configured'})
+            result=synthetic_scoring.run(query)
+            after=auth.session(token)
+            if not after or after['id']!=current['id'] or after['role'] not in ('admin','researcher'):
+                return JSONResponse(status_code=403,content={'error':'access_changed'})
+            return result
+        except Exception:return JSONResponse(status_code=503,content={'error':'synthetic_scoring_unavailable'})
 
     @app.post('/api/v1/research/scoped-query')
     def scoped_query(query:ScopedLabQuery,request:Request):

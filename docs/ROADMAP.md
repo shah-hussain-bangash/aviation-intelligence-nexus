@@ -48,4 +48,6 @@ The [local synthetic model catalog](SYNTHETIC_MODEL_CATALOG.md) records verified
 
 The [catalog-selected scoring command](CATALOG_SELECTED_SCORING.md) binds local synthetic predictions to an observed selected version, revision and feature-file hash, with post-score change checks. This is CLI integration only; it does not add a scoring service or protected execution ledger.
 
+The [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md) connects the selected-version workflow to existing local sessions/roles and server-configured dataset IDs. It is disabled by default and verified in-process; frontend routing, deployment and production identity remain open.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
