@@ -38,4 +38,6 @@ The [train-only preprocessing increment](TRAIN_ONLY_PREPROCESSING.md) fits encod
 
 The [validation regression selection increment](VALIDATION_REGRESSION_SELECTION.md) records a local development protocol, fits train-only synthetic candidates and selects on validation MAE without test evaluation. It does not establish real-data model benefit or production acceptance.
 
+The [one-attempt synthetic evaluation increment](SYNTHETIC_HOLDOUT_EVALUATION.md) pins a frozen selection under a separate policy and consumes a local marker before holdout reads. It does not refit candidates or establish globally protected evaluation or real airline model quality.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
