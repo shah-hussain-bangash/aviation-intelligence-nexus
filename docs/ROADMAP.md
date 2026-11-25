@@ -62,4 +62,6 @@ The [copied-index retrieval recovery command](RETRIEVAL_RECOVERY.md) compares tw
 
 The [full retained snapshot recovery command](FULL_SNAPSHOT_RECOVERY.md) checks an explicit offline backup in private native copies: copy-only schema upgrade, streaming table preservation, fresh restore, audited session revocation and artifact/offline receipt consistency. It does not select the running deployment, test real passwords or qualify off-host or production recovery.
 
+The [restored retained-data API rehearsal](RESTORED_DATA_API.md) checks normal proxy login, retained-data summaries, researcher/viewer boundaries and cleanup on another private copy of a qualified restore. It preserves original users/business rows and uses only disposable probe passwords. It does not deploy the branch or qualify an original-user browser/model/RAG journey.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
