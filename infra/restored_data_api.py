@@ -27,6 +27,9 @@ from infra.verify_schema8 import source_identity
 from services.api.paths import ROOT
 from rag.ollama import NoRedirect
 
+SCENARIO = {'carrier': 'AA', 'origin': 'JFK', 'destination': 'LAX',
+            'flight_date': '2025-05-15', 'scheduled_departure': '09:00'}
+
 
 def admit(report_path, report_sha256, expected_revision):
     require(isinstance(report_sha256, str) and re.fullmatch('[0-9a-f]{64}', report_sha256), 'full_report_pin_required')
@@ -85,7 +88,11 @@ def prepare(case, password):
         migration = row_digest(db.execute('SELECT version,applied_at FROM schema_migrations ORDER BY version'))
     auth = AuthStore(STATE / 'ain.sqlite3')
     for username, role in zip(plan['usernames'], ('researcher', 'viewer')): auth.create_user(username, password, role)
-    return {'expected_dataset': expected, 'expected_monthly': monthly, 'migration_fingerprint': migration}
+    result = {'expected_dataset': expected, 'expected_monthly': monthly, 'migration_fingerprint': migration}
+    if plan.get('with_prediction'):
+        from services.api.prediction import ResearchPredictor, Scenario
+        result['expected_prediction'] = ResearchPredictor(STATE / 'models/delay-v2').predict(Scenario.model_validate(SCENARIO))
+    return result
 
 
 def inspect_after(case):
@@ -104,18 +111,36 @@ def inspect_after(case):
         require(audit == {'rows': audit_count, 'sha256': plan['original_tables']['security_audit']['sha256']}, 'historical_audit_changed')
         migration = row_digest(db.execute('SELECT version,applied_at FROM schema_migrations ORDER BY version'))
         require(migration == plan['migration_fingerprint'], 'migration_history_changed')
+        if plan.get('with_prediction'):
+            from services.api.history import ResearchHistory
+            owner = db.execute('SELECT id FROM auth_users WHERE username=?', (plan['usernames'][0],)).fetchone()[0]
+            original_runs = row_digest(db.execute('SELECT * FROM research_runs WHERE owner_id IS NOT ? ORDER BY id', (owner,)))
+            expected = plan['original_tables']['research_runs']
+            require(original_runs == {'rows': expected['rows'], 'sha256': expected['sha256']}, 'original_research_rows_changed')
+            rows = db.execute('SELECT request_key,input_sha256,scenario_json,result_json,model_version,artifact_sha256 FROM research_runs WHERE owner_id=?', (owner,)).fetchall()
+            require(len(rows) == 1, 'probe_prediction_count_unexpected')
+            key, input_hash, scenario, result, version, artifact = rows[0]
+            saved = plan['prediction_probe']
+            require(key == saved['request_key'] and input_hash == ResearchHistory.input_hash(SCENARIO)
+                    and json.loads(scenario) == SCENARIO and json.loads(result) == saved['result']
+                    and version == 'delay-v2' and artifact == plan['files']['models/delay-v2/model.joblib'], 'stored_prediction_binding_failed')
     after = fingerprints(STATE / 'ain.sqlite3')
     for table, expected in plan['original_tables'].items():
-        if table not in ('auth_users', 'auth_sessions', 'auth_limits', 'security_audit'):
+        if table not in ('auth_users', 'auth_sessions', 'auth_limits', 'security_audit') and not (plan.get('with_prediction') and table == 'research_runs'):
             require(after['tables'][table] == expected, 'retained_business_rows_changed')
     require(after['tables']['auth_users']['rows'] == old['rows'] + 2
             and after['tables']['auth_sessions']['rows'] == 0
             and after['tables']['security_audit']['rows'] == audit_count + 6, 'probe_identity_changes_unexpected')
     require(all(checksum(STATE / name) == pin for name, pin in plan['files'].items() if name != 'ain.sqlite3'), 'copied_artifacts_changed')
-    return {'original_accounts_preserved': True, 'business_table_fingerprints_preserved': True,
+    checks = {'original_accounts_preserved': True,
             'historical_audit_and_migrations_preserved': True, 'probe_sessions_closed': True,
             'expected_probe_accounts_and_events_only': True, 'artifact_bytes_preserved': True,
             'flight_records': after['tables']['flights']['rows']}
+    if plan.get('with_prediction'):
+        require(after['tables']['research_runs']['rows'] == plan['original_tables']['research_runs']['rows'] + 1, 'unexpected_research_row_count')
+        checks.update(original_business_rows_preserved=True, one_bound_probe_prediction_only=True)
+    else: checks['business_table_fingerprints_preserved'] = True
+    return checks
 
 
 def client(): return build_opener(ProxyHandler({}), NoRedirect(), HTTPCookieProcessor(CookieJar()))
@@ -142,17 +167,33 @@ def stop_owned(process):
     require(process.poll() is not None, 'owned_service_stop_unverified')
 
 
-def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, api_port=18102):
+def wait_ready(opener, base, processes):
+    deadline = time.monotonic() + 40
+    while True:
+        require(all(p.poll() is None for p in processes), 'owned_service_exited')
+        try:
+            ready = request(opener, base, '/__ain/ready')
+            if ready[0] == 200 and ready[3]['backend_ready'] is True: return
+        except (OSError, ValueError, TypeError, KeyError): pass
+        require(time.monotonic() < deadline, 'owned_services_not_ready'); time.sleep(.2)
+
+
+def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, api_port=18102,
+              with_prediction=False, trusted_local_model=False):
+    require(type(with_prediction) is bool and (not with_prediction or trusted_local_model is True), 'explicit_trusted_local_model_required')
     for port in (web_port, api_port): require(type(port) is int and 1024 <= port <= 65535, 'unprivileged_port_required')
     require(web_port != api_port, 'distinct_probe_ports_required')
     qualification, source, files = admit(report_path, report_sha256, expected_revision)
+    if with_prediction:
+        require({'models/delay-v2/model.joblib', 'models/delay-v2/report.json'}.issubset(files), 'prediction_model_pair_required')
     for port in (web_port, api_port):
         with socket.socket() as probe: probe.bind(('127.0.0.1', port))
     require(shutil.disk_usage(ROOT).free >= sum((source / n).stat().st_size for n in files) * 2 + 512 * 1024 ** 2, 'probe_disk_budget_insufficient')
     case = ROOT / '.local/restored-api' / uuid4().hex
     state = case / 'state'; state.mkdir(parents=True, exist_ok=False)
     usernames = ['probe_' + case.name[:12] + suffix for suffix in ('_research', '_viewer')]
-    plan = {'files': files, 'usernames': usernames, 'original_tables': qualification['restored_table_fingerprints']}
+    plan = {'files': files, 'usernames': usernames, 'original_tables': qualification['restored_table_fingerprints'],
+            'with_prediction': with_prediction}
     env = {k: v for k, v in os.environ.items() if not k.startswith('AIN_') and k != 'PORT'}
     env.update(AIN_ENV='test', AIN_CONTAINER='0', AIN_AGENT_JOBS='0', AIN_MONITOR_ENABLED='0',
                AIN_SESSION_COOKIE='ain_test_session', AIN_STATE_ROOT=str(state), AIN_DB_PATH=str(state / 'ain.sqlite3'),
@@ -162,7 +203,8 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
               'recovery_revision': expected_revision, 'recovery_report_sha256': report_sha256,
               'primary_state_accessed': False, 'qualified_source_modified': False,
               'probe_plaintext_passwords_persisted': False, 'actual_existing_password_tested': False,
-              'inference_executed': False, 'production_ready': False, 'checks': {}}
+              'prediction_requested': with_prediction, 'inference_executed': False,
+              'model_retrained': False, 'model_accuracy_evaluated': False, 'production_ready': False, 'checks': {}}
     processes = []; logs = []; stage = 'private_copy'
 
     def worker(function, password=None):
@@ -178,6 +220,7 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
             shutil.copyfile(source / name, target); require(checksum(target) == pin, 'probe_copy_mismatch')
         (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
         password = secrets.token_urlsafe(32); baseline = worker('prepare', password)
+        if with_prediction: report['inference_executed'] = True
         plan.update(baseline); (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
         stage = 'owned_services'
         commands = ([sys.executable, '-m', 'uvicorn', 'services.api.main:app', '--host', '127.0.0.1', '--port', str(api_port),
@@ -186,14 +229,8 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
             log = (case / (label + '.log')).open('w', encoding='utf-8'); logs.append(log)
             processes.append(subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT,
                                              creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0))
-        base = 'http://127.0.0.1:' + str(web_port); opener = client(); deadline = time.monotonic() + 40
-        while True:
-            require(all(p.poll() is None for p in processes), 'owned_service_exited')
-            try:
-                ready = request(opener, base, '/__ain/ready')
-                if ready[0] == 200 and ready[3]['backend_ready'] is True: break
-            except (OSError, ValueError, TypeError, KeyError): pass
-            require(time.monotonic() < deadline, 'owned_services_not_ready'); time.sleep(.2)
+        base = 'http://127.0.0.1:' + str(web_port); opener = client()
+        wait_ready(opener, base, processes)
         stage = 'authenticated_reads'
         status, headers, html, _ = request(opener, base, '/')
         require(status == 200 and b'Aviation' in html and headers.get('Content-Security-Policy'), 'dashboard_or_headers_failed')
@@ -212,7 +249,40 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
             require([{'period': x['period'], 'records': x['records']} for x in dataset['monthly']] == baseline['expected_monthly'], 'monthly_summary_mismatch')
             require(request(actor, base, '/api/v1/research/history')[3]['runs'] == [], 'original_owner_history_exposed')
             require(request(actor, base, '/api/v1/research/security-audit')[0] == 403, 'admin_audit_boundary_failed')
+            if with_prediction and role == 'researcher':
+                key = str(uuid4()); keyed = {**authorized, 'Idempotency-Key': key}
+                first = request(actor, base, '/api/v1/research/predict', body=SCENARIO, headers=keyed)
+                require(first[0] == 200 and first[3]['replayed'] is False, 'authenticated_prediction_failed')
+                saved = first[3]
+                require(all(saved[k] == v for k, v in baseline['expected_prediction'].items()), 'prediction_parity_failed')
+                require(saved['research_only'] is True and saved['operational_serving_approved'] is False
+                        and saved['artifact_sha256'] == files['models/delay-v2/model.joblib'], 'prediction_scope_or_artifact_changed')
+                replay = request(actor, base, '/api/v1/research/predict', body=SCENARIO, headers=keyed)
+                require(replay[0] == 200 and replay[3] == {**saved, 'replayed': True}, 'prediction_replay_failed')
+                conflict = request(actor, base, '/api/v1/research/predict', body={**SCENARIO, 'scheduled_departure': '10:00'}, headers=keyed)
+                require(conflict[0] == 409 and 'arrival_delay_15_probability' not in conflict[3], 'conflicting_request_key_not_denied')
+                require(request(actor, base, '/api/v1/research/predict', body={**SCENARIO, 'arrival_delay_minutes': 999}, headers=authorized)[0] == 422, 'target_label_input_accepted')
+                plan['prediction_probe'] = {'request_key': key, 'result': saved}
+                (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
+                stop_owned(processes[0])
+                processes[0] = subprocess.Popen(commands[0], cwd=ROOT, env=env, stdout=logs[0], stderr=subprocess.STDOUT,
+                                                creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+                wait_ready(actor, base, processes)
+                persisted = request(actor, base, '/api/v1/research/predict', body=SCENARIO, headers=keyed)
+                require(persisted[0] == 200 and persisted[3] == {**saved, 'replayed': True}, 'prediction_not_preserved_across_api_restart')
+                require(request(actor, base, '/api/v1/research/history')[3]['runs'] == [saved], 'owner_prediction_history_mismatch')
+                report['prediction'] = {'scenario_kind': 'historical_research_schedule', 'scenario': SCENARIO,
+                                        'probability': saved['arrival_delay_15_probability'], 'artifact_sha256': saved['artifact_sha256'],
+                                        'run_id': saved['run_id'], 'research_only': True, 'operational_serving_approved': False,
+                                        'owned_api_restart_exercised': True}
+                report['prediction_checks'] = {'pinned_artifact_prediction_matches_direct_copy': True,
+                        'request_key_replay_same_saved_run': True, 'changed_payload_conflict_denied': True,
+                        'label_input_rejected_without_history': True, 'history_and_session_survive_owned_api_restart': True}
             if role == 'viewer': require(request(actor, base, '/api/v1/research/predict', body={}, headers=authorized)[0] == 403, 'viewer_mutation_not_denied')
+            if with_prediction and role == 'viewer':
+                denied = request(actor, base, '/api/v1/research/predict', body=SCENARIO, headers={**authorized, 'Idempotency-Key': plan['prediction_probe']['request_key']})
+                require(denied[0] == 403 and 'arrival_delay_15_probability' not in denied[3], 'viewer_replayed_foreign_prediction')
+                report['prediction_checks']['viewer_cannot_replay_or_read_researcher_prediction'] = True
             require(request(actor, base, '/api/v1/auth/logout', body={}, headers=origin)[0] == 403, 'csrf_not_enforced')
             require(request(actor, base, '/api/v1/auth/logout', body={}, headers={**authorized, 'Origin': 'https://untrusted.example'})[0] == 403, 'origin_not_enforced')
             require(request(actor, base, '/api/v1/auth/logout', body={}, headers=authorized)[0] == 200, 'probe_logout_failed')
@@ -238,7 +308,9 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
         except (OSError, ValueError, subprocess.SubprocessError):
             report.update(passed=False, owned_services_stopped=False, error='owned_service_cleanup_unverified')
         for log in logs: log.close()
-        report['scope'] = 'Native gateway/API rehearsal on another private copy with disposable researcher/viewer accounts; no existing password, model inference, browser interaction, live deployment or off-host qualification.'
+        report['scope'] = ('Native gateway/API rehearsal on another private copy with disposable accounts; '
+                           'optional trusted historical prediction writes exactly one probe-owned run; '
+                           'no existing password, model retraining/accuracy evaluation, browser interaction, live deployment or off-host qualification.')
         target = case / 'report.json'; target.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(json.dumps({'passed': report['passed'], 'report': str(target), 'owned_services_stopped': report['owned_services_stopped'], 'production_ready': False}, indent=2))
     return report, target
@@ -249,9 +321,12 @@ def main():
     parser.add_argument('--recovery-report', type=Path, required=True); parser.add_argument('--report-sha256', required=True)
     parser.add_argument('--expected-recovery-revision', required=True)
     parser.add_argument('--web-port', type=int, default=18180); parser.add_argument('--api-port', type=int, default=18102)
+    parser.add_argument('--with-prediction', action='store_true'); parser.add_argument('--trusted-local-model', action='store_true')
     args = parser.parse_args()
     try:
-        report, _ = run_check(args.recovery_report, args.report_sha256, args.expected_recovery_revision, web_port=args.web_port, api_port=args.api_port)
+        report, _ = run_check(args.recovery_report, args.report_sha256, args.expected_recovery_revision,
+                             web_port=args.web_port, api_port=args.api_port,
+                             with_prediction=args.with_prediction, trusted_local_model=args.trusted_local_model)
         return 0 if report['passed'] else 2
     except (ValueError, OSError, RuntimeError, KeyError, TypeError):
         print(json.dumps({'passed': False, 'error': 'restored_data_api_admission_refused', 'production_ready': False})); return 2
