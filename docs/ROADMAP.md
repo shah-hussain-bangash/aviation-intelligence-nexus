@@ -60,4 +60,6 @@ The [historical model recovery parity command](RESEARCH_MODEL_RECOVERY.md) copie
 
 The [copied-index retrieval recovery command](RETRIEVAL_RECOVERY.md) compares two scoped evidence results and an unrelated-question abstention before/after restore, using the recorded existing local embedding model. It verifies corpus chunk bindings and index parity in synthetic state, not generated-answer quality, restored model weights or off-host availability.
 
+The [full retained snapshot recovery command](FULL_SNAPSHOT_RECOVERY.md) checks an explicit offline backup in private native copies: copy-only schema upgrade, streaming table preservation, fresh restore, audited session revocation and artifact/offline receipt consistency. It does not select the running deployment, test real passwords or qualify off-host or production recovery.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.

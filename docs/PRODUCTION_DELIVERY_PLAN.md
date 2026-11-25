@@ -80,6 +80,8 @@ The [historical model recovery parity command](RESEARCH_MODEL_RECOVERY.md) exten
 
 The [copied-index retrieval recovery command](RETRIEVAL_RECOVERY.md) extends local recovery checks to the existing project-evidence index. It validates exact allowlisted corpus chunks and recorded embedding identity, then compares evidence/scopes/scores and an unrelated-question abstention before/after a fresh restore. Generation remains disabled, provider weights are not restored and source snapshot databases are not opened. This is local retrieval parity, not semantic answer evaluation or independent recovery.
 
+The [full retained snapshot recovery command](FULL_SNAPSHOT_RECOVERY.md) extends local qualification from synthetic databases to a manifest-selected offline backup. Copy-only schema upgrade and restore must preserve streamed base-table and migration-history fingerprints, account/history rows and artifact bytes, with the explicit restored-session/audit changes. Sidecar-bearing or active-agent snapshots are refused. Separate retained-data execution evidence is required; no running deployment, real-password login, model/RAG execution, independent recovery or production rollout is authorized or qualified.
+
 ## Product-integration continuation
 
 The first new integration increment adds an [opt-in authenticated synthetic scoring API](AUTHENTICATED_SYNTHETIC_SCORING.md), using existing local sessions/roles and server-configured dataset IDs with explicit model/input/revision pins. Viewer/anonymous, origin/CSRF, changed evidence and mid-run revoked-session cases are verified in-process. Default startup remains disabled; frontend routing, authenticated dashboard journey and deployed qualification remain open. The existing real delay predictor is unchanged.
