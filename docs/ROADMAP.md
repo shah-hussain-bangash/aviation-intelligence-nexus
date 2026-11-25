@@ -34,4 +34,6 @@ The [offline case reconciliation increment](CASE_RECONCILIATION.md) compares rec
 
 The [point-in-time split preparation increment](TEMPORAL_PREPARATION.md) validates feature and label availability at chronological cutoffs, with targets separated from model inputs. It uses a synthetic demonstration and preserves the frozen experiments; it does not claim model benefit or close earlier phases.
 
+The [train-only preprocessing increment](TRAIN_ONLY_PREPROCESSING.md) fits encoders/scaling only on prepared training features and freezes that state for future transformations. Its synthetic evidence is not a fitted predictive model or real-data improvement claim.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
