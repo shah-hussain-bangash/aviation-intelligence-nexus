@@ -58,7 +58,7 @@ from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScoringService
-from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, CaseConflict, CaseMissing
+from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, AttachEvidence, CaseConflict, CaseMissing
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -547,6 +547,18 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/research/cases/{case_id}/events')
     def case_event(case_id: UUID, payload: ChangeCase, request: Request):
         return case_response(request,lambda user:research_cases.change(user,case_id,payload),write=True)
+
+    @app.get('/api/v1/research/case-evidence-sources')
+    def case_evidence_sources(request: Request):
+        return case_response(request,lambda user:{'sources':research_cases.evidence_sources(user),'production_ready':False})
+
+    @app.post('/api/v1/research/cases/{case_id}/evidence')
+    def case_attach_evidence(case_id:UUID,payload:AttachEvidence,request:Request):
+        return case_response(request,lambda user:research_cases.attach_evidence(user,case_id,payload),write=True)
+
+    @app.get('/api/v1/research/cases/{case_id}/evidence/{run_id}')
+    def case_attached_evidence(case_id:UUID,run_id:UUID,request:Request):
+        return case_response(request,lambda user:research_cases.attached_evidence(user,case_id,run_id))
 
     @app.get('/api/v1/research/synthetic-scoring')
     def synthetic_scoring_context(request:Request):

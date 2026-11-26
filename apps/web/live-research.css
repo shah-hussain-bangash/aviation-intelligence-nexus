@@ -112,5 +112,6 @@ body.research-locked{background:#f5f6f8}.research-locked .sidebar,.research-lock
 .research-cases .case-lineage{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px}
 .research-cases dd{margin:0;overflow-wrap:anywhere}.research-cases pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow:auto;background:#f6f4f0;padding:16px;color:#202329}
 .research-cases .case-detail{border-top:1px solid #ded8cf;padding-top:20px}.research-cases .case-timeline{padding-left:24px;border-left:2px solid #b69b68;margin-left:10px}
+.research-cases .case-attachments{margin:20px 0;padding:16px;background:var(--card2);border:1px solid var(--line);border-radius:6px}.research-cases .case-attachments code{overflow-wrap:anywhere}.research-cases .case-attachments article{padding:12px 0;border-bottom:1px solid var(--line)}
 .research-cases .case-timeline li{padding:12px 8px}.research-cases time{display:block;font-size:12px;color:#60574c}.research-cases .case-timeline p{white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:700px){.research-cases .case-grid{grid-template-columns:1fr}.research-cases .case-lineage{grid-template-columns:1fr}}
