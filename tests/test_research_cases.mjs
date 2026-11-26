@@ -6,6 +6,7 @@ import {proxyResearchRequest} from '../scripts/api-proxy.mjs';
 import {validateEvidenceSources,validateAttachments,renderEvidenceSnapshot} from '../apps/web/case-evidence.mjs';
 import {validateAgentSources,validateAgentLinks,renderAgentSnapshot} from '../apps/web/case-agent-links.mjs';
 import {validateGateSources,validateGateLinks,renderGateSnapshot} from '../apps/web/case-gate-links.mjs';
+import {CaseJobClient,validateCaseJobs,validateCaseJob,renderCaseJob,caseJobRequest} from '../apps/web/case-jobs.mjs';
 const id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',source='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const record=()=>({id,source_run_id:source,source_sha256:'a'.repeat(64),title:'<img src=x onerror=alert(1)>',status:'open',version:1,outcome:null,attachments:[],agent_links:[],gate_links:[],created_at:'2026-11-26T00:00:00Z',updated_at:'2026-11-26T00:00:00Z',scope:'historical_us_research',operational_approval:false,production_ready:false,source_snapshot:{run_id:source,model_version:'delay-v2',research_only:true,operational_serving_approved:false,limitations:['SYNTHETIC FIXTURE']},events:[{version:1,action:'opened',note:'<script>bad()</script>',created_at:'2026-11-26T00:00:00Z'}]});
 test('case contract rejects changed identity, scope, chronology and unsafe approval claims',()=>{
@@ -86,4 +87,88 @@ test('case job gateway permits fixed GET and POST without query authority',async
  for(const [path,method,status] of [[id+'/jobs','GET',200],[id+'/jobs','POST',200],[id+'/jobs?owner=peer','GET',422],[id+'/jobs?version=1','POST',422],[id+'/jobs','DELETE',405],['not-a-uuid/jobs','GET',404],[id+'/jobs/shell','POST',404]]){
   const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();
  }assert.equal(calls.length,2);
+});
+
+
+const owner={username:'synthetic-owner',role:'admin'};
+function savedCaseJob(r=record(),state='queued'){
+ return {run_id:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',state,updated_at:'2026-11-26T01:00:00Z',runtime:'bounded-ollama-tools-v2',execution:'local-background-queue-v1',research_only:true,operational_approval:false,steps:[],claims:[],request:{...caseJobRequest(r,'SYNTHETIC distribution investigation'),case_context:null}};
+}
+function jobFixture(r=record(),state='queued'){
+ const run=savedCaseJob(r,state);run.request={...caseJobRequest(r,'SYNTHETIC distribution investigation').investigation,case_context:{case_id:r.id,case_version:r.version,case_sha256:'d'.repeat(64),source_run_id:r.source_run_id,source_sha256:r.source_sha256,title:r.title,scope:'historical_us_research'}};return run;
+}
+const jobRef=run=>({run_id:run.run_id,state:run.state,updated_at:run.updated_at,case_context:run.request.case_context});
+const response=value=>({ok:true,json:async()=>structuredClone(value)});
+const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
+
+test('case job contract rejects cross-case, future versions, altered pins and approval claims',()=>{
+ const r=record(),run=jobFixture(r);assert.equal(validateCaseJob(run,r).state,'queued');assert.equal(validateCaseJobs({jobs:[jobRef(run)],production_ready:false},r).length,1);
+ for(const patch of [{operational_approval:true},{execution:'shell'},{request:{...run.request,case_context:{...run.request.case_context,case_id:source}}},{request:{...run.request,case_context:{...run.request.case_context,case_version:2}}},{request:{...run.request,case_context:{...run.request.case_context,source_sha256:'f'.repeat(64)}}},{request:{...run.request,require_peer_review:true}},{state:'awaiting_review'},{steps:Array(4).fill({})}])assert.throws(()=>validateCaseJob({...run,...patch},r));
+ assert.throws(()=>validateCaseJobs({jobs:[jobRef(run),jobRef(run)],production_ready:false},r));
+ const older={...r,version:2};assert.equal(validateCaseJob(run,older).request.case_context.case_version,1);
+ assert.throws(()=>caseJobRequest({...r,status:'closed'},'SYNTHETIC investigation'));assert.throws(()=>caseJobRequest(r,'short'));
+});
+
+test('unreviewed draft renders quoted findings and context as escaped text',()=>{
+ const r=record(),run=jobFixture(r,'awaiting_review');run.report_sha256='e'.repeat(64);run.quality={passed:true};run.claims=[{text:'<img src=x onerror=bad>',quote:'<img src=x onerror=bad>',citation:'<script>citation</script>'}];
+ const html=renderCaseJob(run,r);assert.ok(html.includes('Unreviewed research draft'));assert.ok(html.includes('Automated coverage passed'));assert.ok(html.includes('&lt;img'));assert.ok(!html.includes('<img'));assert.ok(!html.includes('<script>'));assert.ok(html.includes('do not establish answer usefulness'));
+ assert.throws(()=>renderCaseJob({...run,claims:[{...run.claims[0],text:'Unsupported paraphrase'}]},r));
+});
+
+test('case job reads and viewer interactions never submit or cancel work',async()=>{
+ const run=jobFixture(),calls=[];const client=new CaseJobClient(async(path,options)=>{calls.push({path,options});return response(path.endsWith('/jobs')?{jobs:[jobRef(run)],production_ready:false}:run);});
+ await client.setContext({...owner,role:'viewer'},record(),true);await client.select(run.run_id);await client.load();
+ assert.equal(await client.submit('SYNTHETIC distribution investigation',true),false);assert.equal(await client.cancel(),false);assert.ok(calls.every(c=>!c.options.method));assert.equal(client.selected.run_id,run.run_id);
+});
+
+test('start requires acknowledgement and verifies the submitted tool permissions',async()=>{
+ const r=record(),calls=[];const client=new CaseJobClient(async(path,options)=>{calls.push({path,options});if(!options.method)return response({jobs:[],production_ready:false});const run=jobFixture(r);run.request={...JSON.parse(options.body).investigation,case_context:run.request.case_context};return response(run);},()=>{},()=>id);
+ await client.setContext(owner,r,true);assert.equal(await client.submit('SYNTHETIC distribution investigation',false),false);assert.equal(calls.length,1);
+ assert.equal(await client.submit('SYNTHETIC distribution investigation',true),true);assert.equal(client.pending,null);assert.equal(client.selected.state,'queued');assert.equal(calls[1].options.headers['Idempotency-Key'],id);
+ assert.deepEqual(JSON.parse(calls[1].options.body).investigation.required_tools,['distribution_evidence']);assert.equal(client.rows.length,1);
+});
+
+test('uncertain submission preserves its exact key and body and blocks changed retry inputs',async()=>{
+ const posts=[];let attempts=0;const r=record();const client=new CaseJobClient(async(path,options)=>{if(!options.method)return response({jobs:[],production_ready:false});posts.push(options);if(++attempts===1)throw Error('Synthetic response loss');return response(jobFixture(r));},()=>{},()=>id);
+ await client.setContext(owner,r,true);assert.equal(await client.submit('SYNTHETIC distribution investigation',true),false);assert.ok(client.pending);
+ assert.equal(await client.submit('SYNTHETIC changed objective',true),false);assert.equal(posts.length,1);
+ assert.equal(await client.submit('SYNTHETIC distribution investigation',true),true);assert.equal(posts.length,2);assert.equal(posts[0].body,posts[1].body);assert.equal(posts[0].headers['Idempotency-Key'],posts[1].headers['Idempotency-Key']);
+});
+
+test('a saved response cannot silently expand a submitted simulation permission',async()=>{
+ const r=record();const client=new CaseJobClient(async(path,options)=>{if(!options.method)return response({jobs:[],production_ready:false});const run=jobFixture(r);run.request.include_simulation=true;return response(run);});
+ await client.setContext(owner,r,true);assert.equal(await client.submit('SYNTHETIC distribution investigation',true),false);assert.equal(client.selected,null);assert.equal(client.blocked,true);
+});
+
+test('switching cases with an in-flight run read clears and ignores the older response',async()=>{
+ const old=jobFixture(),waiting=deferred();const next={...record(),id:'dddddddd-dddd-4ddd-8ddd-dddddddddddd'};
+ const client=new CaseJobClient(async path=>path.endsWith('/jobs')?response({jobs:path.includes(next.id)?[]:[jobRef(old)],production_ready:false}):waiting.promise);
+ await client.setContext(owner,record(),true);const pending=client.select(old.run_id);await client.setContext(owner,next,true);waiting.resolve(response(old));await pending;
+ assert.equal(client.record.id,next.id);assert.equal(client.selected,null);assert.deepEqual(client.rows,[]);assert.equal(client.blocked,false);
+});
+
+test('sign-out during submission ignores completion and clears private client state',async()=>{
+ const waiting=deferred();const client=new CaseJobClient(async(path,options)=>options.method?waiting.promise:response({jobs:[],production_ready:false}));
+ await client.setContext(owner,record(),true);const submission=client.submit('SYNTHETIC distribution investigation',true);await client.setContext(null,null,false);waiting.resolve(response(jobFixture()));await submission;
+ assert.equal(client.selected,null);assert.equal(client.pending,null);assert.equal(client.user,null);assert.deepEqual(client.rows,[]);assert.equal(client.message,'');
+});
+
+test('running cancellation requests a safe stop and never resubmits an investigation',async()=>{
+ const run=jobFixture(record(),'running'),calls=[];const client=new CaseJobClient(async(path,options)=>{calls.push({path,options});if(options.method)return response({...run,cancel_requested_at:'2026-11-26T01:01:00Z'});return response(path.endsWith('/jobs')?{jobs:[jobRef(run)],production_ready:false}:run);});
+ await client.setContext(owner,record(),true);await client.select(run.run_id);assert.equal(client.canCancel,true);assert.equal(await client.cancel(),true);assert.equal(client.canCancel,false);
+ assert.equal(calls.at(-1).path,'/api/v1/research/agent-cancel');assert.deepEqual(JSON.parse(calls.at(-1).options.body),{run_id:run.run_id});assert.ok(client.message.includes('in-flight'));
+});
+
+test('conflicting saved state clears the selected draft and blocks writes until case refresh',async()=>{
+ const run=jobFixture();let deny=false;const client=new CaseJobClient(async path=>deny?{ok:false,status:409}:response(path.endsWith('/jobs')?{jobs:[jobRef(run)],production_ready:false}:run));
+ await client.setContext(owner,record(),true);await client.select(run.run_id);deny=true;await client.cancel();assert.equal(client.selected,null);assert.equal(client.canStart,false);
+});
+
+test('refresh and queued cancellation keep selector state aligned with saved checkpoints',async()=>{
+ const queued=jobFixture(),running={...queued,state:'running'};
+ const client=new CaseJobClient(async(path,options)=>response(options.method?{...running,state:'cancelled'}:path.endsWith('/jobs')?{jobs:[jobRef(queued)],production_ready:false}:running));
+ await client.setContext(owner,record(),true);assert.equal(client.rows[0].state,'queued');await client.select(queued.run_id);assert.equal(client.rows[0].state,'running');
+ await client.cancel();assert.equal(client.selected.state,'cancelled');assert.equal(client.rows[0].state,'cancelled');
+ const stopped={...client.selected,cancel_requested_at:'2026-11-26T01:01:00Z'};
+ assert.ok(!renderCaseJob(stopped,record()).includes('An in-flight call may finish'));
 });

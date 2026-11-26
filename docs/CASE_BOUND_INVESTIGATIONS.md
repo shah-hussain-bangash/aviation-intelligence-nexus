@@ -1,8 +1,20 @@
 # Case-bound local investigation jobs
 
-This opt-in API increment binds a new queued investigation to an owner-saved research case version. It does not add a dashboard submission form, operational actions, shared cases or production qualification. Existing workspaces and normal release startup are unchanged.
+The opt-in API and dashboard bind a new queued investigation to an owner-saved research case version. The dashboard currently submits the fixed recorded input-distribution tool scope. Operational actions, shared cases and production qualification remain open. Existing workspaces and normal release startup are unchanged.
 
 Use the explicit native [case workspace factory](RESEARCH_CASE_WORKFLOW.md) with its chosen separate state directory. Enable its existing local worker by setting `AIN_AGENT_JOBS=1` before starting that factory. This does not enable the feature in the running Docker release. A fresh workspace requires its own account and an authorized saved prediction/case; tests seed clearly synthetic examples. Keep case data, account passwords, sessions, logs and generated reports out of Git.
+
+## Dashboard sequence
+
+Select your case under **From prediction to investigation**. The **Investigate this case** panel appears with its title and current version. On an open case, an admin/researcher can enter an objective (12–600 characters), optionally choose the comparison example, acknowledge local AI use and select **Start case investigation**. New submissions require the recorded January–March versus May 2025 distribution-evidence tool; simulation and peer sharing are disabled in this form. These aggregate comparisons do not explain an individual flight. Case notes are not automatically sent to the model.
+
+Choose a saved run or use **Refresh investigations** / **Refresh selected run** to read checkpoints. Updates are manual; reading, selecting and refreshing do not rerun AI. The panel shows captured versus current case versions, state, tool checkpoints, saved quoted findings, automatic coverage status and an escaped JSON inspector. A completed draft is explicitly **Unreviewed** until a research review is recorded through the existing investigation controls. Automated coverage is not human assessment. This panel neither records a review nor attaches the report automatically.
+
+**Request investigation stop** cancels waiting work or requests a cooperative stop for a running call. An in-flight call may finish. Refresh to confirm the final saved state; cancellation retains completed evidence and removes any reviewable draft. Stop controls are disabled once a request is pending or the run is terminal. A closed case still permits reading/cancelling eligible owned jobs; new submissions are hidden. Viewers have read controls only for cases/jobs they own.
+
+After an uncertain submission, the form keeps the same request key and body in memory, locks edited inputs and offers **Retry same submission**. It does not retry automatically. A changed response, permission failure or conflict clears unverified output and requires inspecting refreshed state. Keys are not persisted across sign-out/reload; inspect saved runs before starting again after either. Switching case, changing its version or signing out aborts in-flight display requests and clears the previous client context. Late responses cannot repopulate a different case/session. Leaving the view does not cancel saved server work.
+
+Synthetic browser verification covers deliberate acknowledgement, real local Qwen execution, retained draft reload, older-version labelling, an isolated API outage and retry, running cancellation, viewer-owned reads and sign-out cleanup. Small-screen checks cover the new panel; they do not qualify site-wide accessibility or production use. Fixtures/reviews are labelled separately from genuine human acceptance.
 
 ## Authenticated API sequence
 
@@ -48,4 +60,4 @@ Do not run older agent code against a workspace containing case-bound jobs: olde
 
 Focused checks: `python -m unittest tests.test_case_jobs tests.test_jobs tests.test_agent_archive tests.test_case_agents tests.test_peer_review -v` and `node --test tests/test_research_cases.mjs`. Tests use synthetic accounts, predictions and review decisions. Provider responses in unit tests are mocked; the fixed recorded-distribution evidence tool is actually executed. Any separately recorded live local-model rehearsal must distinguish actual execution from useful output and genuine human review.
 
-Still open: dashboard controls for case-bound submission/monitoring, sharing permissions, genuine review and combined useful-outcome acceptance, representative load, original-user/deployed qualification and all 24 production acceptance requirements. This increment does not make the whole case journey complete.
+Still open: additional tool-scope controls, case sharing permissions, genuine review and combined useful-outcome acceptance, representative load, original-user/deployed qualification and all 24 production acceptance requirements. This increment does not make the whole case journey complete.
