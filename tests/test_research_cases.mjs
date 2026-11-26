@@ -3,13 +3,24 @@ import http from 'node:http';
 import {test} from 'node:test';
 import {validateCase,validateSources,renderCase} from '../apps/web/research-cases.mjs';
 import {proxyResearchRequest} from '../scripts/api-proxy.mjs';
+import {validateEvidenceSources,validateAttachments,renderEvidenceSnapshot} from '../apps/web/case-evidence.mjs';
 const id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',source='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
-const record=()=>({id,source_run_id:source,source_sha256:'a'.repeat(64),title:'<img src=x onerror=alert(1)>',status:'open',version:1,outcome:null,created_at:'2026-11-26T00:00:00Z',updated_at:'2026-11-26T00:00:00Z',scope:'historical_us_research',operational_approval:false,production_ready:false,source_snapshot:{run_id:source,model_version:'delay-v2',research_only:true,operational_serving_approved:false,limitations:['SYNTHETIC FIXTURE']},events:[{version:1,action:'opened',note:'<script>bad()</script>',created_at:'2026-11-26T00:00:00Z'}]});
+const record=()=>({id,source_run_id:source,source_sha256:'a'.repeat(64),title:'<img src=x onerror=alert(1)>',status:'open',version:1,outcome:null,attachments:[],created_at:'2026-11-26T00:00:00Z',updated_at:'2026-11-26T00:00:00Z',scope:'historical_us_research',operational_approval:false,production_ready:false,source_snapshot:{run_id:source,model_version:'delay-v2',research_only:true,operational_serving_approved:false,limitations:['SYNTHETIC FIXTURE']},events:[{version:1,action:'opened',note:'<script>bad()</script>',created_at:'2026-11-26T00:00:00Z'}]});
 test('case contract rejects changed identity, scope, chronology and unsafe approval claims',()=>{
  assert.equal(validateCase(record()).version,1);
  for(const change of [{id:'../private'},{source_sha256:'bad'},{version:2},{scope:'operational'},{production_ready:true},{operational_approval:true},{status:'closed'},{source_snapshot:{...record().source_snapshot,run_id:id}},{events:[{...record().events[0],action:'close'}]}])assert.throws(()=>validateCase({...record(),...change}));
  const html=renderCase(record());assert.ok(html.includes('&lt;img'));assert.ok(html.includes('&lt;script&gt;'));assert.ok(!html.includes('<script>'));assert.ok(html.includes(source));assert.ok(html.includes('not independently authenticated'));
  const closed={...record(),status:'closed',version:2,outcome:'Synthetic outcome',events:[...record().events,{version:2,action:'close',note:'Synthetic outcome',created_at:'2026-11-26T00:01:00Z'}]};assert.equal(validateCase(closed).status,'closed');
+});
+test('evidence references bind each attachment to its exact case event and reject omissions',()=>{
+ const ref={run_id:source,sha256:'c'.repeat(64),question:'<script>SYNTHETIC</script>',mode:'evidence_only',evidence_count:1,attached_version:2};
+ const r={...record(),version:2,events:[...record().events,{version:2,action:'evidence',note:'Attached saved research evidence '+source,created_at:'2026-11-26T00:01:00Z'}],attachments:[ref]};
+ assert.equal(validateAttachments(r).length,1);assert.equal(validateCase(r).version,2);assert.ok(renderCase(r).includes('&lt;script&gt;SYNTHETIC'));
+ for(const changed of [{attachments:[]},{attachments:[{...ref,attached_version:1}]},{attachments:[ref,ref]}])assert.throws(()=>validateAttachments({...r,...changed}));
+ assert.equal(validateEvidenceSources({sources:[ref],production_ready:false}).length,1);assert.throws(()=>validateEvidenceSources({sources:[ref,ref],production_ready:false}));
+ const response={...ref,case_id:id,case_version:2,research_only:true,operational_approval:false,production_ready:false,snapshot:{run_id:source,question:ref.question,mode:ref.mode,research_only:true,operational_approval:false,evidence:[{text:'<img onerror=bad>'}],claims:[]}};
+ const html=renderEvidenceSnapshot(response,r,ref);assert.ok(html.includes('&lt;img'));assert.ok(!html.includes('<img'));assert.ok(html.includes('not revalidated'));
+ for(const changed of [{sha256:'d'.repeat(64)},{case_version:3},{case_id:source},{production_ready:true},{snapshot:{...response.snapshot,run_id:id}}])assert.throws(()=>renderEvidenceSnapshot({...response,...changed},r,ref));
 });
 test('saved-source contract rejects duplicate IDs and invalid pins',()=>{
  const r={sources:[{run_id:source,source_sha256:'b'.repeat(64)}],production_ready:false};assert.equal(validateSources(r).length,1);
@@ -25,4 +36,11 @@ test('case gateway forwards only the fixed routes and methods, retains CSRF and 
  assert.equal(calls.length,5);assert.equal(calls[3].headers['idempotency-key'],id);assert.equal(calls[4].headers['x-csrf-token'],'fixture');assert.equal(calls[3].headers.cookie,'ain_session=fixture');
  for(const [path,method,status] of [['/cases','DELETE',405],['/cases/'+id,'POST',405],['/case-sources','POST',405],['/cases/'+id+'/events','GET',405],['/cases?owner=peer','GET',422],['/cases/'+id+'/private','GET',404],['/cases/not-a-uuid','GET',404]]){const r=await fetch(root+path,{method});assert.equal(r.status,status,path);await r.text();}
  const huge=await fetch(root+'/cases/'+id+'/events',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(17000)});assert.equal(huge.status,413);await huge.text();assert.equal(calls.length,5);
+});
+test('evidence gateway bounds methods and rejects caller-selected paths and query authority',async t=>{
+ const calls=[];const api=await server(t,async(req,res)=>{for await(const c of req){}calls.push(req.url);res.writeHead(200,{'Content-Type':'application/json'});res.end('{}');});
+ const port=await server(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,api)){res.writeHead(404);res.end();}});
+ const root=`http://127.0.0.1:${port}/api/v1/research`;
+ for(const [path,method,status] of [['/case-evidence-sources','GET',200],['/cases/'+id+'/evidence','POST',200],['/cases/'+id+'/evidence/'+source,'GET',200],['/cases/'+id+'/evidence','GET',405],['/cases/'+id+'/evidence/'+source,'POST',405],['/case-evidence-sources?owner=peer','GET',422],['/cases/'+id+'/evidence/not-a-uuid','GET',404],['/cases/'+id+'/evidence/'+source+'?path=private','GET',422]]){const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();}
+ assert.equal(calls.length,3);
 });

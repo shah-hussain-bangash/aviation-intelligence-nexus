@@ -28,6 +28,13 @@ class ChangeCase(BaseModel):
     note: str = Field(min_length=1, max_length=2000)
 
 
+class AttachEvidence(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    expected_version: int = Field(strict=True, ge=1, le=99)
+    evidence_run_id: UUID
+    evidence_sha256: str = Field(pattern=r'^[0-9a-f]{64}$')
+
+
 def encoded(value): return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
 def digest(value): return hashlib.sha256(encoded(value).encode()).hexdigest()
 def now(): return datetime.now(timezone.utc).isoformat()
@@ -44,10 +51,11 @@ class ResearchCaseService:
         self.case_database.parent.mkdir(parents=True, exist_ok=True)
         with closing(self.connect()) as db, db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
-            if version not in (0,1): raise ValueError('Unsupported case schema')
+            if version not in (0,1,2): raise ValueError('Unsupported case schema')
             if version == 0 and db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone():
                 raise ValueError('Existing unversioned store requires review')
             db.executescript('''
+                BEGIN IMMEDIATE;
                 CREATE TABLE IF NOT EXISTS cases(
                     id TEXT PRIMARY KEY, owner_id TEXT NOT NULL, source_run_id TEXT NOT NULL,
                     source_sha256 TEXT NOT NULL, source_json TEXT NOT NULL, title TEXT NOT NULL,
@@ -59,7 +67,13 @@ class ResearchCaseService:
                     action TEXT NOT NULL, note TEXT NOT NULL, created_at TEXT NOT NULL,
                     PRIMARY KEY(case_id,version));
                 CREATE INDEX IF NOT EXISTS cases_owner ON cases(owner_id,updated_at);
-                PRAGMA user_version=1;
+                CREATE TABLE IF NOT EXISTS case_evidence(
+                    case_id TEXT NOT NULL REFERENCES cases(id), attached_version INTEGER NOT NULL,
+                    evidence_run_id TEXT NOT NULL, evidence_sha256 TEXT NOT NULL, snapshot_json TEXT NOT NULL,
+                    PRIMARY KEY(case_id,evidence_run_id),
+                    FOREIGN KEY(case_id,attached_version) REFERENCES case_events(case_id,version));
+                PRAGMA user_version=2;
+                COMMIT;
             ''')
 
     def connect(self):
@@ -94,8 +108,21 @@ class ResearchCaseService:
         if digest(source) != row['source_sha256']: raise ValueError('Stored source snapshot changed')
         events = [dict(e) for e in db.execute('SELECT version,action,note,created_at FROM case_events WHERE case_id=? ORDER BY version', (row['id'],))]
         if [e['version'] for e in events] != list(range(1,row['version']+1)): raise ValueError('Case event history incomplete')
+        attachments=[]
+        for item in db.execute('SELECT * FROM case_evidence WHERE case_id=? ORDER BY attached_version',(row['id'],)):
+            snapshot=self.checked_evidence(item['snapshot_json'],item['evidence_run_id'])
+            if digest(snapshot)!=item['evidence_sha256'] or not 1<item['attached_version']<=row['version']:
+                raise ValueError('Evidence snapshot changed')
+            event=events[item['attached_version']-1]
+            if event['action']!='evidence' or event['note']!='Attached saved research evidence '+item['evidence_run_id']:
+                raise ValueError('Evidence event binding changed')
+            attachments.append({'run_id':item['evidence_run_id'],'sha256':item['evidence_sha256'],
+                'attached_version':item['attached_version'],'question':snapshot['question'],'mode':snapshot['mode'],
+                'evidence_count':len(snapshot['evidence'])})
+        if len(attachments)>10 or {a['attached_version'] for a in attachments}!={e['version'] for e in events if e['action']=='evidence'}:
+            raise ValueError('Evidence event inventory changed')
         return {**{k:row[k] for k in ('id','source_run_id','source_sha256','title','status','version','outcome','created_at','updated_at')},
-            'source_snapshot': source, 'events': events, 'scope': 'historical_us_research',
+            'source_snapshot': source, 'events': events, 'attachments':attachments,'scope': 'historical_us_research',
             'operational_approval': False, 'production_ready': False}
 
     def get(self, user, case_id):
@@ -143,3 +170,68 @@ class ResearchCaseService:
                 (version,'closed' if request.action=='close' else 'open',request.note if request.action=='close' else None,timestamp,str(case_id)))
             db.execute('INSERT INTO case_events VALUES(?,?,?,?,?)', (str(case_id),version,request.action,request.note,timestamp))
             return self.projection(db,db.execute('SELECT * FROM cases WHERE id=?',(str(case_id),)).fetchone())
+
+    @staticmethod
+    def checked_evidence(raw, run_id):
+        if len(raw.encode('utf-8'))>64_000: raise ValueError('Evidence exceeds bound')
+        result=json.loads(raw)
+        if not isinstance(result,dict) or result.get('run_id')!=str(run_id) or result.get('research_only') is not True or result.get('operational_approval') is not False:
+            raise ValueError('Research evidence identity required')
+        if result.get('mode') not in ('generated','evidence_only','abstained') or not isinstance(result.get('question'),str) or not 1<=len(result['question'])<=600:
+            raise ValueError('Research evidence summary required')
+        if not isinstance(result.get('evidence'),list) or len(result['evidence'])>8 or not isinstance(result.get('claims'),list) or len(result['claims'])>3:
+            raise ValueError('Bounded evidence records required')
+        # Preserve the saved response, including abstentions and rejected generation.
+        # This is an integrity/ownership check, not an answer-quality assessment.
+        digest(result)
+        return result
+
+    def evidence_source(self, user, run_id):
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            row=db.execute('SELECT result_json FROM knowledge_runs WHERE id=? AND owner_id=?',(str(run_id),user['id'])).fetchone()
+        if row is None: raise CaseMissing('Evidence unavailable')
+        return self.checked_evidence(row[0],run_id)
+
+    def evidence_sources(self,user):
+        self.allow(user)
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            rows=db.execute('SELECT id FROM knowledge_runs WHERE owner_id=? ORDER BY created_at DESC,rowid DESC LIMIT 20',(user['id'],)).fetchall()
+        result=[]
+        for row in rows:
+            snapshot=self.evidence_source(user,row[0])
+            result.append({'run_id':row[0],'sha256':digest(snapshot),'question':snapshot['question'],'mode':snapshot['mode'],'evidence_count':len(snapshot['evidence'])})
+        return result
+
+    def attach_evidence(self,user,case_id,request):
+        self.allow(user,write=True)
+        with closing(self.connect()) as db,db:
+            db.execute('BEGIN IMMEDIATE')
+            row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None: raise CaseMissing('Case unavailable')
+            current=self.projection(db,row)
+            prior=next((a for a in current['attachments'] if a['run_id']==str(request.evidence_run_id)),None)
+            if prior:
+                if prior['sha256']!=request.evidence_sha256 or prior['attached_version']!=request.expected_version+1:
+                    raise CaseConflict('Evidence already attached with different inputs')
+                return {**current,'replayed':True}
+            if row['status']!='open' or row['version']!=request.expected_version or row['version']>=100 or len(current['attachments'])>=10:
+                raise CaseConflict('Case closed, changed or attachment limit reached')
+            snapshot=self.evidence_source(user,request.evidence_run_id)
+            if digest(snapshot)!=request.evidence_sha256: raise CaseConflict('Evidence version changed')
+            version,timestamp=row['version']+1,now()
+            db.execute('UPDATE cases SET version=?,updated_at=? WHERE id=?',(version,timestamp,str(case_id)))
+            db.execute('INSERT INTO case_events VALUES(?,?,?,?,?)',(str(case_id),version,'evidence','Attached saved research evidence '+str(request.evidence_run_id),timestamp))
+            db.execute('INSERT INTO case_evidence VALUES(?,?,?,?,?)',(str(case_id),version,str(request.evidence_run_id),request.evidence_sha256,encoded(snapshot)))
+            return {**self.projection(db,db.execute('SELECT * FROM cases WHERE id=?',(str(case_id),)).fetchone()),'replayed':False}
+
+    def attached_evidence(self,user,case_id,run_id):
+        self.allow(user)
+        with closing(self.connect()) as db:
+            row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None: raise CaseMissing('Case unavailable')
+            case=self.projection(db,row)
+            item=next((a for a in case['attachments'] if a['run_id']==str(run_id)),None)
+            if item is None: raise CaseMissing('Attachment unavailable')
+            raw=db.execute('SELECT snapshot_json FROM case_evidence WHERE case_id=? AND evidence_run_id=?',(str(case_id),str(run_id))).fetchone()[0]
+            return {'case_id':str(case_id),'case_version':case['version'],**item,'snapshot':self.checked_evidence(raw,run_id),
+                'research_only':True,'operational_approval':False,'production_ready':False}
