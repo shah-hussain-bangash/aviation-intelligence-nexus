@@ -20,6 +20,8 @@ After shutdown, SQLite checks preserve all original owner rows and require exact
 
 ## Validation and limits
 
+The optional [isolated index outage/recovery extension](RETRIEVAL_INDEX_RECOVERY.md) adds `--with-retrieval-recovery` to this mode. It checks sanitized failure and unchanged history while the owned copy's index is missing, then restores its original bytes and saves one additional verified query. It leaves the shared provider running and requires exactly three probe history rows.
+
 Focused check: `python -m unittest tests.test_restored_retrieval_api -v`. The normal-authentication/proxy integration test injects synthetic embedding functions only into disposable test workers/API processes; it does not bypass authentication or contact an Ollama daemon. Other tests cover invalid combined modes, missing index, forged chunks and changed provider identity. A native run against the real local provider is separate evidence. Run `npm test` for regression checks.
 
 The report records index/model identity, probe questions, evidence counts, saved run IDs, restart checks and state preservation. A completed retrieval preparation records `inference_executed: true` and `embedding_inference_executed: true`, while `prediction_requested` remains false: evidence search runs embeddings, not the flight prediction model. It does not establish semantic answer quality, protected auditing, embedding-weight recovery, an original-account browser journey, cloud deployment or production readiness. `generate: false` is mandatory in the fixed probes; this is the retrieval/history portion of RAG, not a generated-answer evaluation. No model is fitted or changed, and all existing synthetic operational labels and production requirements remain open.

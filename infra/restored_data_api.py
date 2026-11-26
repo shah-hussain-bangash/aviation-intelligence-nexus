@@ -1,6 +1,6 @@
 """Exercise normal HTTP authentication/read access on a COPY of qualified restored state."""
 import argparse
-from contextlib import closing
+from contextlib import closing, contextmanager
 from datetime import datetime, timezone
 import hashlib
 from http.cookiejar import CookieJar
@@ -31,6 +31,29 @@ SCENARIO = {'carrier': 'AA', 'origin': 'JFK', 'destination': 'LAX',
             'flight_date': '2025-05-15', 'scheduled_departure': '09:00'}
 RETRIEVAL_QUERIES = ({'question': 'When do local research sessions expire?', 'generate': False},
                      {'question': 'Explain photosynthesis in chloroplast organelles', 'generate': False})
+
+
+@contextmanager
+def missing_owned_index(case, expected_sha256):
+    """Move only an owned case's pinned index aside; retain bytes and never overwrite on restore."""
+    case = Path(case).absolute()
+    require(case.parent == (ROOT / '.local/restored-api').absolute()
+            and re.fullmatch('[0-9a-f]{32}', case.name), 'owned_index_case_required')
+    index = ordinary(case / 'state/knowledge/index.json', 4_000_000)
+    retained = case / 'retained-knowledge-index.json'
+    require(index.resolve().is_relative_to(case.resolve()) and retained.resolve().parent == case.resolve(), 'owned_index_paths_required')
+    require(checksum(index) == expected_sha256, 'owned_index_pin_mismatch')
+    require(not retained.exists() and not retained.is_symlink() and not getattr(retained, 'is_junction', lambda: False)(),
+            'retained_index_path_occupied')
+    index.rename(retained)
+    try:
+        yield
+    finally:
+        require(not index.exists() and not index.is_symlink() and not getattr(index, 'is_junction', lambda: False)(),
+                'index_restore_would_overwrite')
+        require(checksum(ordinary(retained, 4_000_000)) == expected_sha256, 'retained_index_changed')
+        retained.rename(index)
+        require(checksum(index) == expected_sha256, 'owned_index_restore_pin_mismatch')
 
 
 def retrieval_knowledge(state):
@@ -155,7 +178,8 @@ def inspect_after(case):
             require(original == {'rows': expected['rows'], 'sha256': expected['sha256']}, 'original_knowledge_rows_changed')
             saved = plan['retrieval_probe']
             rows = db.execute('SELECT id,result_json,created_at FROM knowledge_runs WHERE owner_id=? ORDER BY rowid', (owner,)).fetchall()
-            require(len(rows) == 2 and len(saved) == 2, 'probe_retrieval_count_unexpected')
+            count = 3 if plan.get('with_retrieval_recovery') else 2
+            require(len(rows) == count and len(saved) == count, 'probe_retrieval_count_unexpected')
             require(all(row[0] == result['run_id'] and json.loads(row[1]) == result and row[2] == result['saved_at']
                         for row, result in zip(rows, saved)), 'stored_retrieval_binding_failed')
             _, index_hash, embedding_digest = retrieval_knowledge(STATE)
@@ -178,9 +202,12 @@ def inspect_after(case):
         checks.update(original_business_rows_preserved=True, one_bound_probe_prediction_only=True)
     elif not plan.get('with_retrieval'): checks['business_table_fingerprints_preserved'] = True
     if plan.get('with_retrieval'):
-        require(after['tables']['knowledge_runs']['rows'] == plan['original_tables']['knowledge_runs']['rows'] + 2, 'unexpected_knowledge_row_count')
-        checks.update(original_business_rows_preserved=True, two_bound_probe_retrievals_only=True,
+        count = 3 if plan.get('with_retrieval_recovery') else 2
+        require(after['tables']['knowledge_runs']['rows'] == plan['original_tables']['knowledge_runs']['rows'] + count, 'unexpected_knowledge_row_count')
+        checks.update(original_business_rows_preserved=True, bound_probe_retrieval_rows=count,
                       retrieval_index_and_provider_identity_preserved=True)
+        if count == 2: checks['two_bound_probe_retrievals_only'] = True
+        else: checks['three_bound_probe_retrievals_only'] = True
     return checks
 
 
@@ -220,9 +247,11 @@ def wait_ready(opener, base, processes):
 
 
 def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, api_port=18102,
-              with_prediction=False, trusted_local_model=False, with_retrieval=False):
+              with_prediction=False, trusted_local_model=False, with_retrieval=False, with_retrieval_recovery=False):
     require(type(with_prediction) is bool and (not with_prediction or trusted_local_model is True), 'explicit_trusted_local_model_required')
     require(type(with_retrieval) is bool and not (with_prediction and with_retrieval), 'separate_retrieval_or_prediction_case_required')
+    require(type(with_retrieval_recovery) is bool and (not with_retrieval_recovery or with_retrieval),
+            'retrieval_recovery_requires_retrieval_mode')
     for port in (web_port, api_port): require(type(port) is int and 1024 <= port <= 65535, 'unprivileged_port_required')
     require(web_port != api_port, 'distinct_probe_ports_required')
     qualification, source, files = admit(report_path, report_sha256, expected_revision)
@@ -236,7 +265,8 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
     state = case / 'state'; state.mkdir(parents=True, exist_ok=False)
     usernames = ['probe_' + case.name[:12] + suffix for suffix in ('_research', '_viewer')]
     plan = {'files': files, 'usernames': usernames, 'original_tables': qualification['restored_table_fingerprints'],
-            'with_prediction': with_prediction, 'with_retrieval': with_retrieval}
+            'with_prediction': with_prediction, 'with_retrieval': with_retrieval,
+            'with_retrieval_recovery': with_retrieval_recovery}
     env = {k: v for k, v in os.environ.items() if not k.startswith('AIN_') and k != 'PORT'}
     env.update(AIN_ENV='test', AIN_CONTAINER='0', AIN_AGENT_JOBS='0', AIN_MONITOR_ENABLED='0',
                AIN_SESSION_COOKIE='ain_test_session', AIN_STATE_ROOT=str(state), AIN_DB_PATH=str(state / 'ain.sqlite3'),
@@ -248,6 +278,7 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
               'primary_state_accessed': False, 'qualified_source_modified': False,
               'probe_plaintext_passwords_persisted': False, 'actual_existing_password_tested': False,
               'prediction_requested': with_prediction, 'retrieval_requested': with_retrieval,
+              'retrieval_recovery_requested': with_retrieval_recovery,
               'inference_executed': False, 'embedding_inference_executed': False,
               'model_retrained': False, 'model_accuracy_evaluated': False, 'production_ready': False, 'checks': {}}
     processes = []; logs = []; stage = 'private_copy'
@@ -322,7 +353,33 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
                 wait_ready(actor, base, processes)
                 require(request(actor, base, '/api/v1/research/knowledge-history')[3]['runs'] == list(reversed(saved_queries)),
                         'retrieval_history_not_preserved_across_api_restart')
-                report['retrieval'] = {**plan['retrieval_identity'], 'queries': list(RETRIEVAL_QUERIES),
+                if with_retrieval_recovery:
+                    with missing_owned_index(case, files['knowledge/index.json']):
+                        unavailable = request(actor, base, '/api/v1/research/knowledge-query', body=RETRIEVAL_QUERIES[0], headers=authorized)
+                        require(unavailable[0] == 503 and unavailable[3] == {
+                            'error': 'knowledge_unavailable', 'message': 'No saved result returned. Check the index, local models and database.'},
+                            'missing_index_response_not_sanitized')
+                        require(request(actor, base, '/api/v1/research/knowledge-history')[3]['runs'] == list(reversed(saved_queries)),
+                                'failed_query_saved_or_history_changed')
+                        require(request(actor, base, '/')[0] == 200, 'dashboard_not_live_during_index_outage')
+                    recovered = request(actor, base, '/api/v1/research/knowledge-query', body=RETRIEVAL_QUERIES[0], headers=authorized)
+                    require(recovered[0] == 200 and all(recovered[3].get(k) == v for k, v in baseline['expected_retrieval']['results'][0].items()),
+                            'restored_index_retrieval_failed')
+                    require(recovered[3]['actor'] == username and recovered[3]['run_id'] not in [r['run_id'] for r in saved_queries],
+                            'recovered_query_identity_failed')
+                    saved_queries.append(recovered[3])
+                    plan['retrieval_probe'] = saved_queries
+                    (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
+                    require(request(actor, base, '/api/v1/research/knowledge-history')[3]['runs'] == list(reversed(saved_queries)),
+                            'recovered_query_not_saved')
+                    report['retrieval_recovery_checks'] = {'missing_index_returns_exact_sanitized_503': True,
+                        'failed_query_adds_no_history': True, 'dashboard_stays_live': True,
+                        'restored_index_retrieves_and_saves_bound_result': True}
+                    report['retrieval_recovery'] = {'fault': 'owned_copy_index_temporarily_missing', 'query_outage_status': 503,
+                        'dashboard_outage_status': 200, 'index_bytes_restored': True,
+                        'shared_provider_stopped': False, 'failed_query_saved': False}
+                queries = list(RETRIEVAL_QUERIES) + ([RETRIEVAL_QUERIES[0]] if with_retrieval_recovery else [])
+                report['retrieval'] = {**plan['retrieval_identity'], 'queries': queries,
                                        'evidence_counts': [len(r['evidence']) for r in saved_queries],
                                        'run_ids': [r['run_id'] for r in saved_queries], 'generation_requested': False,
                                        'owned_api_restart_exercised': True, 'research_only': True}
@@ -392,7 +449,7 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
             report.update(passed=False, owned_services_stopped=False, error='owned_service_cleanup_unverified')
         for log in logs: log.close()
         report['scope'] = ('Native gateway/API rehearsal on another private copy with disposable accounts; '
-                           'optional trusted historical prediction writes one probe run, or evidence-only retrieval writes two; '
+                           'optional trusted historical prediction writes one probe run; evidence-only retrieval writes two, or three with index recovery; '
                            'no existing password, model training/accuracy evaluation, generated answer, browser interaction, live deployment or off-host qualification.')
         target = case / 'report.json'; target.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(json.dumps({'passed': report['passed'], 'report': str(target), 'owned_services_stopped': report['owned_services_stopped'], 'production_ready': False}, indent=2))
@@ -406,12 +463,13 @@ def main():
     parser.add_argument('--web-port', type=int, default=18180); parser.add_argument('--api-port', type=int, default=18102)
     parser.add_argument('--with-prediction', action='store_true'); parser.add_argument('--trusted-local-model', action='store_true')
     parser.add_argument('--with-retrieval', action='store_true')
+    parser.add_argument('--with-retrieval-recovery', action='store_true')
     args = parser.parse_args()
     try:
         report, _ = run_check(args.recovery_report, args.report_sha256, args.expected_recovery_revision,
                              web_port=args.web_port, api_port=args.api_port,
                              with_prediction=args.with_prediction, trusted_local_model=args.trusted_local_model,
-                             with_retrieval=args.with_retrieval)
+                             with_retrieval=args.with_retrieval, with_retrieval_recovery=args.with_retrieval_recovery)
         return 0 if report['passed'] else 2
     except (ValueError, OSError, RuntimeError, KeyError, TypeError):
         print(json.dumps({'passed': False, 'error': 'restored_data_api_admission_refused', 'production_ready': False})); return 2

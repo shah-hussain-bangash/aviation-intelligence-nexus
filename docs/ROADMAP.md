@@ -70,4 +70,6 @@ The [frozen generation self-review workflow](GENERATION_SELF_REVIEW.md) exports 
 
 The [restored retrieval API journey](RESTORED_RETRIEVAL_API.md) connects a copied qualified index to authenticated evidence-only queries, owner-scoped history, viewer denial and an owned API restart. It preserves original rows and records only two disposable-owner queries. Generated-answer quality, protected auditing and production acceptance remain open.
 
+The [isolated retrieval-index recovery extension](RETRIEVAL_INDEX_RECOVERY.md) verifies a sanitized failed query without saved history, continued dashboard liveness and a successful saved query after restoring only the owned copy's index. It does not stop the shared provider or qualify provider or off-host recovery, generated answers or production acceptance.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
