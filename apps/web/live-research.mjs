@@ -3,6 +3,7 @@ import {mountIntakeOverview} from './intake-overview.mjs';
 import {mountRetrieval} from './retrieval-evaluation.mjs';
 import {mountScopedLab} from './scoped-answer-lab.mjs';
 import {mountSyntheticScoring} from './synthetic-scoring.mjs';
+import {mountResearchCases} from './research-cases.mjs';
 import {mountDuration} from './duration-evaluation.mjs';
 import {mountTradeoffs} from './threshold-tradeoffs.mjs';
 import {mountQuality} from './data-quality.mjs';
@@ -82,6 +83,8 @@ if (typeof document !== 'undefined') {
   const quality = mountQuality(section.querySelector('.research-inner'));
   const batchLineage = mountBatchLineage(section.querySelector('.research-inner'));
   const scenarioUI = mountScenario(section.querySelector('.research-inner'));
+  const researchCases=mountResearchCases(section.querySelector('.research-inner'));
+  const casesLink=document.createElement('a');casesLink.className='btn sm';casesLink.href='#research-cases';casesLink.textContent='Research cases';section.querySelector('.research-toolbar').append(casesLink);
   const explanations = mountExplanations(section.querySelector('.research-inner'));
   const duration = mountDuration(section.querySelector('.research-inner'));
   const retrieval = mountRetrieval(section.querySelector('.research-inner'));
@@ -129,6 +132,7 @@ if (typeof document !== 'undefined') {
   section.querySelector('details').hidden=true;
   mountAuth(section,user=>{
     accountSecurityUI.setSession(user);
+    researchCases.setSession(user);
     intakeOverview.setSession(user);
     batchLineage.setSession(user);
     inputDistributionsUI.setSession(user);
