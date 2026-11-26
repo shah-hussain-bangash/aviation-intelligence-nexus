@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Readiness and Evidence Register (AIN-EA-12)](docs/enterprise-architecture/12-READINESS-AND-EVIDENCE-REGISTER.md)** — final document in the 12-part architecture package: all 24 open production gates, evidence validity, proposed owners, acceptance workflow and engineering priorities.
+
 - **[Operations and Recovery Plan (AIN-EA-11)](docs/enterprise-architecture/11-OPERATIONS-AND-RECOVERY-PLAN.md)** — daily startup, monitoring, incident response, trusted backups, isolated restoration, rollback boundaries and proposed operating responsibilities.
 
 - **[Requirements Traceability Matrix (AIN-EA-10)](docs/enterprise-architecture/10-REQUIREMENTS-TRACEABILITY-MATRIX.md)** — all 18 business and 8 quality requirements linked to source, representative tests, scoped evidence and open acceptance work.
