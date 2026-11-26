@@ -87,3 +87,15 @@ Negative checks cover anonymous/CSRF access, unavailable-worker submission, chan
 Scope: the stored prediction and Q&A are synthetic fixtures. The distribution reader executes against the committed historical report, and the MILP solver computes a small synthetic proposal. Planner/generator calls and the background worker loop do not run: worker availability and agent checkpoints are explicit deterministic test fixtures. Review notes identify themselves as synthetic and use `needs_changes`; closing the case does not accept those findings. No browser, real network listener, existing user database, deployment, real-user acceptance, representative load or production qualification is exercised. The temporary databases contain synthetic authentication material; keep the entire fixture directory private and out of Git.
 
 The CLI exits nonzero on failure and writes `report.json` only inside its newly created directory. Reports distinguish the prediction snapshot fingerprint from the code-hash map. Run `python -m unittest tests.test_case_journey -v` for focused regression checks. This combined state/permission rehearsal supplements the separate live-provider and browser evidence; it does not replace them.
+
+## Explicit live local-AI rehearsal
+
+To exercise the real local worker instead of deterministic checkpoint fixtures, opt in with a fresh directory:
+
+```powershell
+.\.venv\Scripts\python.exe -m pipelines.verify_case_journey .local/live-case-journey-01 --live-ai
+```
+
+This mode requires the existing approved loopback Ollama service and installed `qwen3:8b`; it never downloads a model or chooses a remote provider. It starts the real worker loop for the fresh case, submits through the API, and reads saved checkpoints for up to 150 seconds. It does not call `claim` manually or seed the report. Instrumentation wraps the actual planner, generator and tool functions without supplying responses. The report checks the saved model digest, exact case/report fingerprints, actual distribution checkpoint, successful call counts within the existing 3-planner/2-generator/3-tool budgets, automated coverage, and worker shutdown. Existing runtime call deadlines and safe-boundary cancellation still apply; a wait deadline is not a forced provider interruption.
+
+The same six-version case journey, explicit synthetic needs-changes decisions, attachment replay, dependency and role checks follow. Predictions/Q&A/reviews remain synthetic fixtures; only the approved local AI worker, recorded-evidence tool and synthetic MILP actually execute. This does not prove prediction inference, retrieval, semantic usefulness, genuine human assessment, a real HTTP listener/browser journey, representative load or production readiness. Default runs and CI remain deterministic and require no model service. Failed live reports mark execution fields unconfirmed (`null`) rather than claiming a stub or successful execution; inspect their retained private checkpoints before retrying into a new directory.
