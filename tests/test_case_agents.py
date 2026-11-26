@@ -110,9 +110,9 @@ class CaseAgentTests(unittest.TestCase):
             saved=EvidenceHistory(self.database).save(self.user,{'question':'SYNTHETIC evidence','mode':'abstained','evidence':[],'claims':[],'research_only':True,'operational_approval':False})
             self.service.attach_evidence(self.user,case['id'],AttachEvidence(expected_version=1,evidence_run_id=saved['run_id'],evidence_sha256=digest(saved)))
             before=self.service.get(self.user,case['id'])
-        with closing(sqlite3.connect(self.sidecar)) as db,db:db.execute('DROP TABLE case_agents');db.execute('PRAGMA user_version=2')
+        with closing(sqlite3.connect(self.sidecar)) as db,db:db.execute('DROP TABLE case_gates');db.execute('DROP TABLE case_agents');db.execute('PRAGMA user_version=2')
         service=ResearchCaseService(self.database,self.sidecar);self.assertEqual(service.get(self.user,case['id']),before)
-        with closing(sqlite3.connect(self.sidecar)) as db:self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],3)
+        with closing(sqlite3.connect(self.sidecar)) as db:self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],4)
 
     def test_request_bounds_csrf_and_query_authority(self):
         with authenticated_client(self.app) as client:

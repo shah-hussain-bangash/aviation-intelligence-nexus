@@ -9,6 +9,7 @@ from typing import Literal
 from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field
 from services.api.case_agents import checked_agent, agent_summary
+from services.api.case_gates import checked_gate, gate_summary
 
 
 class CaseConflict(ValueError): pass
@@ -52,7 +53,7 @@ class ResearchCaseService:
         self.case_database.parent.mkdir(parents=True, exist_ok=True)
         with closing(self.connect()) as db, db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
-            if version not in (0,1,2,3): raise ValueError('Unsupported case schema')
+            if version not in (0,1,2,3,4): raise ValueError('Unsupported case schema')
             if version == 0 and db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone():
                 raise ValueError('Existing unversioned store requires review')
             db.executescript('''
@@ -78,7 +79,12 @@ class ResearchCaseService:
                     agent_run_id TEXT NOT NULL, agent_sha256 TEXT NOT NULL, snapshot_json TEXT NOT NULL,
                     PRIMARY KEY(case_id,agent_run_id),
                     FOREIGN KEY(case_id,attached_version) REFERENCES case_events(case_id,version));
-                PRAGMA user_version=3;
+                CREATE TABLE IF NOT EXISTS case_gates(
+                    case_id TEXT NOT NULL REFERENCES cases(id), attached_version INTEGER NOT NULL,
+                    gate_run_id TEXT NOT NULL, gate_sha256 TEXT NOT NULL, snapshot_json TEXT NOT NULL,
+                    PRIMARY KEY(case_id,gate_run_id),
+                    FOREIGN KEY(case_id,attached_version) REFERENCES case_events(case_id,version));
+                PRAGMA user_version=4;
                 COMMIT;
             ''')
 
@@ -136,8 +142,16 @@ class ResearchCaseService:
             agent_links.append({'run_id':item['agent_run_id'],'sha256':item['agent_sha256'],'attached_version':version,**agent_summary(snapshot)})
         if len(agent_links)>5 or {a['attached_version'] for a in agent_links}!={e['version'] for e in events if e['action']=='agent'}:
             raise ValueError('Agent event inventory changed')
+        gate_links=[]
+        for item in db.execute('SELECT * FROM case_gates WHERE case_id=? ORDER BY attached_version',(row['id'],)):
+            snapshot=checked_gate(item['snapshot_json'],item['gate_run_id']);version=item['attached_version']
+            if digest(snapshot)!=item['gate_sha256'] or not 1<version<=row['version'] or events[version-1]['action']!='gate' or events[version-1]['note']!='Attached synthetic gate proposal '+item['gate_run_id']:
+                raise ValueError('Gate snapshot or event changed')
+            gate_links.append({'run_id':item['gate_run_id'],'sha256':item['gate_sha256'],'attached_version':version,**gate_summary(snapshot)})
+        if len(gate_links)>5 or {a['attached_version'] for a in gate_links}!={e['version'] for e in events if e['action']=='gate'}:
+            raise ValueError('Gate event inventory changed')
         return {**{k:row[k] for k in ('id','source_run_id','source_sha256','title','status','version','outcome','created_at','updated_at')},
-            'source_snapshot': source, 'events': events, 'attachments':attachments,'agent_links':agent_links,'scope': 'historical_us_research',
+            'source_snapshot': source, 'events': events, 'attachments':attachments,'agent_links':agent_links,'gate_links':gate_links,'scope': 'historical_us_research',
             'operational_approval': False, 'production_ready': False}
 
     def get(self, user, case_id):
@@ -298,4 +312,51 @@ class ResearchCaseService:
             if item is None:raise CaseMissing('Agent attachment unavailable')
             raw=db.execute('SELECT snapshot_json FROM case_agents WHERE case_id=? AND agent_run_id=?',(str(case_id),str(run_id))).fetchone()[0]
             return {'case_id':str(case_id),'case_version':case['version'],**item,'snapshot':checked_agent(raw,run_id,user['id']),
+                'research_only':True,'operational_approval':False,'production_ready':False}
+
+    def gate_source(self,user,run_id):
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            row=db.execute('SELECT result_json,scenario_hash,created_at FROM gate_runs WHERE id=? AND owner_id=?',(str(run_id),user['id'])).fetchone()
+        if row is None:raise CaseMissing('Owned gate proposal unavailable')
+        snapshot=checked_gate(row[0],run_id)
+        if snapshot['scenario_sha256']!=row[1] or snapshot['saved_at']!=row[2]:raise ValueError('Gate source metadata changed')
+        return snapshot
+
+    def gate_sources(self,user):
+        self.allow(user)
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            rows=db.execute("SELECT id FROM gate_runs WHERE owner_id=? AND json_type(result_json,'$.review')='object' ORDER BY created_at DESC,rowid DESC LIMIT 20",(user['id'],)).fetchall()
+        result=[]
+        for row in rows:
+            snapshot=self.gate_source(user,row[0]);result.append({'run_id':row[0],'sha256':digest(snapshot),**gate_summary(snapshot)})
+        return result
+
+    def attach_gate(self,user,case_id,request):
+        self.allow(user,write=True)
+        with closing(self.connect()) as db,db:
+            db.execute('BEGIN IMMEDIATE');row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None:raise CaseMissing('Case unavailable')
+            current=self.projection(db,row);prior=next((a for a in current['gate_links'] if a['run_id']==str(request.gate_run_id)),None)
+            if prior:
+                if prior['sha256']!=request.gate_sha256 or prior['attached_version']!=request.expected_version+1:raise CaseConflict('Gate attachment inputs changed')
+                return {**current,'replayed':True}
+            if row['status']!='open' or row['version']!=request.expected_version or row['version']>=100 or len(current['gate_links'])>=5:
+                raise CaseConflict('Case closed, changed or proposal limit reached')
+            snapshot=self.gate_source(user,request.gate_run_id)
+            if digest(snapshot)!=request.gate_sha256:raise CaseConflict('Gate snapshot changed')
+            version,timestamp=row['version']+1,now()
+            db.execute('UPDATE cases SET version=?,updated_at=? WHERE id=?',(version,timestamp,str(case_id)))
+            db.execute('INSERT INTO case_events VALUES(?,?,?,?,?)',(str(case_id),version,'gate','Attached synthetic gate proposal '+str(request.gate_run_id),timestamp))
+            db.execute('INSERT INTO case_gates VALUES(?,?,?,?,?)',(str(case_id),version,str(request.gate_run_id),request.gate_sha256,encoded(snapshot)))
+            return {**self.projection(db,db.execute('SELECT * FROM cases WHERE id=?',(str(case_id),)).fetchone()),'replayed':False}
+
+    def attached_gate(self,user,case_id,run_id):
+        self.allow(user)
+        with closing(self.connect()) as db:
+            row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None:raise CaseMissing('Case unavailable')
+            case=self.projection(db,row);item=next((a for a in case['gate_links'] if a['run_id']==str(run_id)),None)
+            if item is None:raise CaseMissing('Gate attachment unavailable')
+            raw=db.execute('SELECT snapshot_json FROM case_gates WHERE case_id=? AND gate_run_id=?',(str(case_id),str(run_id))).fetchone()[0]
+            return {'case_id':str(case_id),'case_version':case['version'],**item,'snapshot':checked_gate(raw,run_id),
                 'research_only':True,'operational_approval':False,'production_ready':False}

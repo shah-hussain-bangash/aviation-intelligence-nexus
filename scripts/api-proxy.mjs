@@ -14,8 +14,8 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   const caseId='[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}';
   const caseCollection=pathname==='/api/v1/research/cases';
   const caseEvent=new RegExp('^/api/v1/research/cases/'+caseId+'/events$').test(pathname);
-  const caseAttachment=new RegExp('^/api/v1/research/cases/'+caseId+'/(evidence|agents)$').test(pathname);
-  const caseRead=['/api/v1/research/case-sources','/api/v1/research/case-evidence-sources','/api/v1/research/case-agent-sources'].includes(pathname)||new RegExp('^/api/v1/research/cases/'+caseId+'$').test(pathname)||new RegExp('^/api/v1/research/cases/'+caseId+'/(evidence|agents)/'+caseId+'$').test(pathname);
+  const caseAttachment=new RegExp('^/api/v1/research/cases/'+caseId+'/(evidence|agents|gates)$').test(pathname);
+  const caseRead=['/api/v1/research/case-sources','/api/v1/research/case-evidence-sources','/api/v1/research/case-agent-sources','/api/v1/research/case-gate-sources'].includes(pathname)||new RegExp('^/api/v1/research/cases/'+caseId+'$').test(pathname)||new RegExp('^/api/v1/research/cases/'+caseId+'/(evidence|agents|gates)/'+caseId+'$').test(pathname);
   const caseRoute=caseCollection||caseEvent||caseAttachment||caseRead;
   const agent = pathname === '/api/v1/research/agent-run';
   const jobSubmit = pathname === '/api/v1/research/agent-jobs';
