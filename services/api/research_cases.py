@@ -8,6 +8,7 @@ import sqlite3
 from typing import Literal
 from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field
+from services.api.case_agents import checked_agent, agent_summary
 
 
 class CaseConflict(ValueError): pass
@@ -51,7 +52,7 @@ class ResearchCaseService:
         self.case_database.parent.mkdir(parents=True, exist_ok=True)
         with closing(self.connect()) as db, db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
-            if version not in (0,1,2): raise ValueError('Unsupported case schema')
+            if version not in (0,1,2,3): raise ValueError('Unsupported case schema')
             if version == 0 and db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone():
                 raise ValueError('Existing unversioned store requires review')
             db.executescript('''
@@ -72,7 +73,12 @@ class ResearchCaseService:
                     evidence_run_id TEXT NOT NULL, evidence_sha256 TEXT NOT NULL, snapshot_json TEXT NOT NULL,
                     PRIMARY KEY(case_id,evidence_run_id),
                     FOREIGN KEY(case_id,attached_version) REFERENCES case_events(case_id,version));
-                PRAGMA user_version=2;
+                CREATE TABLE IF NOT EXISTS case_agents(
+                    case_id TEXT NOT NULL REFERENCES cases(id), attached_version INTEGER NOT NULL,
+                    agent_run_id TEXT NOT NULL, agent_sha256 TEXT NOT NULL, snapshot_json TEXT NOT NULL,
+                    PRIMARY KEY(case_id,agent_run_id),
+                    FOREIGN KEY(case_id,attached_version) REFERENCES case_events(case_id,version));
+                PRAGMA user_version=3;
                 COMMIT;
             ''')
 
@@ -121,8 +127,17 @@ class ResearchCaseService:
                 'evidence_count':len(snapshot['evidence'])})
         if len(attachments)>10 or {a['attached_version'] for a in attachments}!={e['version'] for e in events if e['action']=='evidence'}:
             raise ValueError('Evidence event inventory changed')
+        agent_links=[]
+        for item in db.execute('SELECT * FROM case_agents WHERE case_id=? ORDER BY attached_version',(row['id'],)):
+            snapshot=checked_agent(item['snapshot_json'],item['agent_run_id'],row['owner_id'])
+            version=item['attached_version']
+            if digest(snapshot)!=item['agent_sha256'] or not 1<version<=row['version'] or events[version-1]['action']!='agent' or events[version-1]['note']!='Attached saved agent report '+item['agent_run_id']:
+                raise ValueError('Agent snapshot or event changed')
+            agent_links.append({'run_id':item['agent_run_id'],'sha256':item['agent_sha256'],'attached_version':version,**agent_summary(snapshot)})
+        if len(agent_links)>5 or {a['attached_version'] for a in agent_links}!={e['version'] for e in events if e['action']=='agent'}:
+            raise ValueError('Agent event inventory changed')
         return {**{k:row[k] for k in ('id','source_run_id','source_sha256','title','status','version','outcome','created_at','updated_at')},
-            'source_snapshot': source, 'events': events, 'attachments':attachments,'scope': 'historical_us_research',
+            'source_snapshot': source, 'events': events, 'attachments':attachments,'agent_links':agent_links,'scope': 'historical_us_research',
             'operational_approval': False, 'production_ready': False}
 
     def get(self, user, case_id):
@@ -234,4 +249,53 @@ class ResearchCaseService:
             if item is None: raise CaseMissing('Attachment unavailable')
             raw=db.execute('SELECT snapshot_json FROM case_evidence WHERE case_id=? AND evidence_run_id=?',(str(case_id),str(run_id))).fetchone()[0]
             return {'case_id':str(case_id),'case_version':case['version'],**item,'snapshot':self.checked_evidence(raw,run_id),
+                'research_only':True,'operational_approval':False,'production_ready':False}
+
+    def agent_source(self,user,run_id):
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            row=db.execute('SELECT result_json FROM agent_runs WHERE id=? AND owner_id=?',(str(run_id),user['id'])).fetchone()
+        if row is None:raise CaseMissing('Owned agent report unavailable')
+        return checked_agent(row[0],run_id,user['id'])
+
+    def agent_sources(self,user):
+        self.allow(user)
+        with closing(sqlite3.connect(self.source_database.as_uri()+'?mode=ro',uri=True,timeout=5)) as db:
+            rows=db.execute("SELECT id FROM agent_runs WHERE owner_id=? AND json_extract(result_json,'$.state') IN ('reviewed','needs_changes') ORDER BY updated_at DESC,rowid DESC LIMIT 20",(user['id'],)).fetchall()
+        result=[]
+        for row in rows:
+            snapshot=self.agent_source(user,row[0])
+            result.append({'run_id':row[0],'sha256':digest(snapshot),**agent_summary(snapshot)})
+        return result
+
+    def attach_agent(self,user,case_id,request):
+        self.allow(user,write=True)
+        with closing(self.connect()) as db,db:
+            db.execute('BEGIN IMMEDIATE')
+            row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None:raise CaseMissing('Case unavailable')
+            current=self.projection(db,row)
+            prior=next((a for a in current['agent_links'] if a['run_id']==str(request.agent_run_id)),None)
+            if prior:
+                if prior['sha256']!=request.agent_sha256 or prior['attached_version']!=request.expected_version+1:raise CaseConflict('Agent attachment inputs changed')
+                return {**current,'replayed':True}
+            if row['status']!='open' or row['version']!=request.expected_version or row['version']>=100 or len(current['agent_links'])>=5:
+                raise CaseConflict('Case closed, changed or report limit reached')
+            snapshot=self.agent_source(user,request.agent_run_id)
+            if digest(snapshot)!=request.agent_sha256:raise CaseConflict('Agent snapshot changed')
+            version,timestamp=row['version']+1,now()
+            db.execute('UPDATE cases SET version=?,updated_at=? WHERE id=?',(version,timestamp,str(case_id)))
+            db.execute('INSERT INTO case_events VALUES(?,?,?,?,?)',(str(case_id),version,'agent','Attached saved agent report '+str(request.agent_run_id),timestamp))
+            db.execute('INSERT INTO case_agents VALUES(?,?,?,?,?)',(str(case_id),version,str(request.agent_run_id),request.agent_sha256,encoded(snapshot)))
+            return {**self.projection(db,db.execute('SELECT * FROM cases WHERE id=?',(str(case_id),)).fetchone()),'replayed':False}
+
+    def attached_agent(self,user,case_id,run_id):
+        self.allow(user)
+        with closing(self.connect()) as db:
+            row=db.execute('SELECT * FROM cases WHERE id=? AND owner_id=?',(str(case_id),user['id'])).fetchone()
+            if row is None:raise CaseMissing('Case unavailable')
+            case=self.projection(db,row)
+            item=next((a for a in case['agent_links'] if a['run_id']==str(run_id)),None)
+            if item is None:raise CaseMissing('Agent attachment unavailable')
+            raw=db.execute('SELECT snapshot_json FROM case_agents WHERE case_id=? AND agent_run_id=?',(str(case_id),str(run_id))).fetchone()[0]
+            return {'case_id':str(case_id),'case_version':case['version'],**item,'snapshot':checked_agent(raw,run_id,user['id']),
                 'research_only':True,'operational_approval':False,'production_ready':False}

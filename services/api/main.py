@@ -59,6 +59,7 @@ from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScoringService
 from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, AttachEvidence, CaseConflict, CaseMissing
+from services.api.case_agents import AttachAgent
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -559,6 +560,18 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/cases/{case_id}/evidence/{run_id}')
     def case_attached_evidence(case_id:UUID,run_id:UUID,request:Request):
         return case_response(request,lambda user:research_cases.attached_evidence(user,case_id,run_id))
+
+    @app.get('/api/v1/research/case-agent-sources')
+    def case_agent_sources(request:Request):
+        return case_response(request,lambda user:{'sources':research_cases.agent_sources(user),'production_ready':False})
+
+    @app.post('/api/v1/research/cases/{case_id}/agents')
+    def case_attach_agent(case_id:UUID,payload:AttachAgent,request:Request):
+        return case_response(request,lambda user:research_cases.attach_agent(user,case_id,payload),write=True)
+
+    @app.get('/api/v1/research/cases/{case_id}/agents/{run_id}')
+    def case_attached_agent(case_id:UUID,run_id:UUID,request:Request):
+        return case_response(request,lambda user:research_cases.attached_agent(user,case_id,run_id))
 
     @app.get('/api/v1/research/synthetic-scoring')
     def synthetic_scoring_context(request:Request):

@@ -4,8 +4,9 @@ import {test} from 'node:test';
 import {validateCase,validateSources,renderCase} from '../apps/web/research-cases.mjs';
 import {proxyResearchRequest} from '../scripts/api-proxy.mjs';
 import {validateEvidenceSources,validateAttachments,renderEvidenceSnapshot} from '../apps/web/case-evidence.mjs';
+import {validateAgentSources,validateAgentLinks,renderAgentSnapshot} from '../apps/web/case-agent-links.mjs';
 const id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',source='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
-const record=()=>({id,source_run_id:source,source_sha256:'a'.repeat(64),title:'<img src=x onerror=alert(1)>',status:'open',version:1,outcome:null,attachments:[],created_at:'2026-11-26T00:00:00Z',updated_at:'2026-11-26T00:00:00Z',scope:'historical_us_research',operational_approval:false,production_ready:false,source_snapshot:{run_id:source,model_version:'delay-v2',research_only:true,operational_serving_approved:false,limitations:['SYNTHETIC FIXTURE']},events:[{version:1,action:'opened',note:'<script>bad()</script>',created_at:'2026-11-26T00:00:00Z'}]});
+const record=()=>({id,source_run_id:source,source_sha256:'a'.repeat(64),title:'<img src=x onerror=alert(1)>',status:'open',version:1,outcome:null,attachments:[],agent_links:[],created_at:'2026-11-26T00:00:00Z',updated_at:'2026-11-26T00:00:00Z',scope:'historical_us_research',operational_approval:false,production_ready:false,source_snapshot:{run_id:source,model_version:'delay-v2',research_only:true,operational_serving_approved:false,limitations:['SYNTHETIC FIXTURE']},events:[{version:1,action:'opened',note:'<script>bad()</script>',created_at:'2026-11-26T00:00:00Z'}]});
 test('case contract rejects changed identity, scope, chronology and unsafe approval claims',()=>{
  assert.equal(validateCase(record()).version,1);
  for(const change of [{id:'../private'},{source_sha256:'bad'},{version:2},{scope:'operational'},{production_ready:true},{operational_approval:true},{status:'closed'},{source_snapshot:{...record().source_snapshot,run_id:id}},{events:[{...record().events[0],action:'close'}]}])assert.throws(()=>validateCase({...record(),...change}));
@@ -26,6 +27,18 @@ test('saved-source contract rejects duplicate IDs and invalid pins',()=>{
  const r={sources:[{run_id:source,source_sha256:'b'.repeat(64)}],production_ready:false};assert.equal(validateSources(r).length,1);
  assert.throws(()=>validateSources({...r,sources:[...r.sources,...r.sources]}));assert.throws(()=>validateSources({...r,production_ready:true}));assert.throws(()=>validateSources({...r,sources:[{run_id:source,source_sha256:'x'}]}));
 });
+test('agent links preserve review state and exact event/version binding with escaped snapshots',()=>{
+ const ref={run_id:source,sha256:'d'.repeat(64),report_sha256:'e'.repeat(64),objective:'<script>SYNTHETIC findings</script>',review_state:'needs_changes',review_kind:'standard',step_count:0,attached_version:2};
+ const r={...record(),version:2,agent_links:[ref],events:[...record().events,{version:2,action:'agent',note:'Attached saved agent report '+source,created_at:'2026-11-26T00:01:00Z'}]};
+ assert.equal(validateCase(r).version,2);assert.ok(renderCase(r).includes('needs_changes'));assert.ok(renderCase(r).includes('&lt;script&gt;SYNTHETIC'));
+ assert.equal(validateAgentSources({sources:[ref],production_ready:false}).length,1);assert.throws(()=>validateAgentSources({sources:[ref,ref],production_ready:false}));
+ for(const patch of [{agent_links:[]},{agent_links:[{...ref,attached_version:1}]},{agent_links:[ref,ref]}])assert.throws(()=>validateAgentLinks({...r,...patch}));
+ const snapshot={run_id:source,state:'needs_changes',report_sha256:ref.report_sha256,runtime:'bounded-ollama-tools-v2',request:{objective:ref.objective},steps:[],reviews:[{decision:'needs_changes',report_sha256:ref.report_sha256,note:'<img src=x onerror=bad>'}],research_only:true,operational_approval:false};
+ const response={...ref,case_id:id,case_version:2,snapshot,research_only:true,operational_approval:false,production_ready:false};
+ const html=renderAgentSnapshot(response,r,ref);assert.ok(html.includes('&lt;img'));assert.ok(!html.includes('<img'));assert.ok(html.includes('not a fresh approval'));
+ for(const patch of [{case_version:3},{sha256:'f'.repeat(64)},{review_state:'reviewed'},{operational_approval:true},{snapshot:{...snapshot,state:'reviewed'}}])assert.throws(()=>renderAgentSnapshot({...response,...patch},r,ref));
+ const peer={...ref,review_kind:'second_account'};assert.throws(()=>renderAgentSnapshot({...response,review_kind:'second_account'},r,peer));
+});
 async function server(t,handler){const s=http.createServer(handler);await new Promise(resolve=>s.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>{s.closeAllConnections();s.close(resolve);}));return s.address().port;}
 test('case gateway forwards only the fixed routes and methods, retains CSRF and creation retry key',async t=>{
  const calls=[];const api=await server(t,async(req,res)=>{let body='';for await(const c of req)body+=c;calls.push({url:req.url,method:req.method,headers:req.headers,body});res.writeHead(200,{'Content-Type':'application/json'});res.end('{}');});
@@ -43,4 +56,9 @@ test('evidence gateway bounds methods and rejects caller-selected paths and quer
  const root=`http://127.0.0.1:${port}/api/v1/research`;
  for(const [path,method,status] of [['/case-evidence-sources','GET',200],['/cases/'+id+'/evidence','POST',200],['/cases/'+id+'/evidence/'+source,'GET',200],['/cases/'+id+'/evidence','GET',405],['/cases/'+id+'/evidence/'+source,'POST',405],['/case-evidence-sources?owner=peer','GET',422],['/cases/'+id+'/evidence/not-a-uuid','GET',404],['/cases/'+id+'/evidence/'+source+'?path=private','GET',422]]){const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();}
  assert.equal(calls.length,3);
+});
+test('agent attachment gateway exposes only fixed reads and writes',async t=>{
+ const calls=[];const api=await server(t,async(req,res)=>{for await(const c of req){}calls.push(req.url);res.writeHead(200,{'Content-Type':'application/json'});res.end('{}');});
+ const port=await server(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,api)){res.writeHead(404);res.end();}});const root=`http://127.0.0.1:${port}/api/v1/research`;
+ for(const [path,method,status] of [['/case-agent-sources','GET',200],['/cases/'+id+'/agents','POST',200],['/cases/'+id+'/agents/'+source,'GET',200],['/cases/'+id+'/agents','GET',405],['/cases/'+id+'/agents/'+source,'POST',405],['/case-agent-sources?owner=peer','GET',422],['/cases/'+id+'/agents/not-a-uuid','GET',404]]){const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();}assert.equal(calls.length,3);
 });
