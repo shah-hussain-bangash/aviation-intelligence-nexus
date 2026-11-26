@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Enterprise Architecture Overview (AIN-EA-03)](docs/enterprise-architecture/03-ENTERPRISE-ARCHITECTURE-OVERVIEW.md)** — current and target business, application, data, AI, integration, security and infrastructure views, with diagrams and transition decisions.
+
 - **[Business Requirements and Acceptance Criteria (AIN-EA-02)](docs/enterprise-architecture/02-BUSINESS-REQUIREMENTS-AND-ACCEPTANCE.md)** — research objectives, stakeholder responsibilities, 18 business requirements, 8 quality requirements and 6 acceptance journeys.
 
 - **[Current Implementation Baseline (AIN-EA-01)](docs/enterprise-architecture/01-CURRENT-IMPLEMENTATION-BASELINE.md)** — reviewed source revision, implemented and experimental capabilities, recorded verification, deployment limits and all 24 open production gates.
