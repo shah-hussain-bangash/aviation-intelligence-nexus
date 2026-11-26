@@ -74,4 +74,6 @@ The [isolated retrieval-index recovery extension](RETRIEVAL_INDEX_RECOVERY.md) v
 
 The [interrupted index repair command](INTERRUPTED_INDEX_REPAIR.md) restores only a missing private rehearsal index from its retained original under an explicit offline declaration and exact plan/hash/corpus checks. It does not stop orphaned services, repair a database, execute retrieval or establish automatic/production recovery.
 
+The [repaired-index search rehearsal](REPAIRED_INDEX_SEARCH.md) connects an explicitly pinned repair receipt to a new index copy and fresh synthetic account/database state. It verifies ordinary authenticated evidence search, history after API restart, viewer denial and cleanup without starting the original repaired case. Original database/account recovery, generated answers and production acceptance remain open.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
