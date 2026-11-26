@@ -20,6 +20,8 @@ A fresh receipt is written under `.local/index-repairs/<unique-case>/report.json
 
 ## Evidence and limits
 
+The separate [repaired-index service/search rehearsal](REPAIRED_INDEX_SEARCH.md) starts normal local services on another index copy with fresh synthetic accounts and an empty database. It does not start the original repaired case or qualify its database/account recovery.
+
 Focused check: `python -m unittest tests.test_recover_retrieval_index -v`. Fixtures cover actual abrupt worker exit, offline declaration and plan pins, forged corpus/model identity, changed retained bytes, nonowned cases, independent-copy preservation and a destination race. The tests assert that repair contacts neither SQLite nor Ollama. Run `npm test` for regression checks.
 
 Native verification should create a fresh synthetic rehearsal case, copy only the existing project index into it, terminate its own fault worker without cleanup, and run the versioned repair CLI. This avoids another flight-database copy and never interrupts shared services. Synthetic fixture metadata is not an original interrupted user's case or a protected recovery attestation.
