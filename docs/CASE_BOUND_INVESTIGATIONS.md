@@ -61,3 +61,13 @@ Do not run older agent code against a workspace containing case-bound jobs: olde
 Focused checks: `python -m unittest tests.test_case_jobs tests.test_jobs tests.test_agent_archive tests.test_case_agents tests.test_peer_review -v` and `node --test tests/test_research_cases.mjs`. Tests use synthetic accounts, predictions and review decisions. Provider responses in unit tests are mocked; the fixed recorded-distribution evidence tool is actually executed. Any separately recorded live local-model rehearsal must distinguish actual execution from useful output and genuine human review.
 
 Still open: additional tool-scope controls, case sharing permissions, genuine review and combined useful-outcome acceptance, representative load, original-user/deployed qualification and all 24 production acceptance requirements. This increment does not make the whole case journey complete.
+
+## Case-panel review and attachment
+
+The opt-in local case panel now offers two separate actions for the selected owned job. A writer can explicitly record `reviewed` or `needs_changes`, with a 5–1000-character note and acknowledgement. The decision pins the displayed report hash. Acceptance requires automated coverage to pass; this is not an assessment of usefulness. Viewers cannot write reviews or attachments.
+
+Attachment first reads the current case, selected saved report and eligible owned source. It refuses a changed displayed case version or review, then submits the server-issued snapshot fingerprint with the displayed expected version. A successful attachment advances the case once and retains the review state, including `needs_changes`. The original captured job version remains visible. Closed/full cases and already-attached runs offer no attachment action. No review automatically attaches a report or applies an airline action.
+
+After a timeout, refresh cases and inspect the saved run before another review or attachment; the review endpoint is not an idempotent retry API. Case/session changes clear the panel, and an obsolete attachment preflight cannot proceed to its write. The server remains authoritative for ownership, permission, report integrity and version conflicts.
+
+Focused dashboard checks: `node --test tests/test_research_cases.mjs`. Browser rehearsal uses disposable synthetic accounts and an explicitly labelled recorded-evidence fixture. Its needs-changes decision tests persistence only; it is not genuine human acceptance, a new provider run or production qualification. Existing credentials and the Docker release are unchanged.
