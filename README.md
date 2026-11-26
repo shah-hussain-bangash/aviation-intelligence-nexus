@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Requirements Traceability Matrix (AIN-EA-10)](docs/enterprise-architecture/10-REQUIREMENTS-TRACEABILITY-MATRIX.md)** — all 18 business and 8 quality requirements linked to source, representative tests, scoped evidence and open acceptance work.
+
 - **[Software Engineering Handbook (AIN-EA-09)](docs/enterprise-architecture/09-SOFTWARE-ENGINEERING-HANDBOOK.md)** — setup/startup modes, modules, testing, two-computer Git workflow, dependencies and release/recovery discipline.
 
 - **[Security and Threat Model (AIN-EA-08)](docs/enterprise-architecture/08-SECURITY-AND-THREAT-MODEL.md)** — assets, trust boundaries, 19 threats, current control limits and proposed verification/incident responsibilities.
