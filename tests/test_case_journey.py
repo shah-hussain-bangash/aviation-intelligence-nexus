@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from pipelines import verify_case_journey as journey
@@ -56,6 +57,43 @@ class CaseJourneyTests(unittest.TestCase):
         self.assertFalse(report['passed']);self.assertEqual(report['error'],'combined_journey_check_failed')
         self.assertFalse(report['synthetic_milp_executed']);self.assertFalse(report['recorded_distribution_reader_executed'])
         self.assertNotIn('PRIVATE_SENTINEL',json.dumps(report))
+
+    def test_live_flag_requires_boolean_before_creating_state(self):
+        for value in ['false',1,None]:
+            with self.assertRaisesRegex(ValueError,'explicit_live_ai_boolean_required'):
+                journey.exercise(self.root/'unused',live_ai=value)
+        self.assertFalse((self.root/'unused').exists())
+
+    def test_waiting_reads_terminal_checkpoint_without_claim_or_retry(self):
+        from unittest.mock import Mock
+        queue=Mock();queue.get.return_value={'state':'awaiting_review','reviews':[]}
+        result=journey.wait_for_job(queue,{'id':'fixture'},'fixture-run',SimpleNamespace(task=None,last_error=None))
+        self.assertEqual(result['state'],'awaiting_review')
+        queue.get.assert_called_once_with({'id':'fixture'},'fixture-run');queue.claim.assert_not_called();queue.enqueue.assert_not_called()
+
+    def test_live_wait_detects_worker_loss_and_bounded_deadline(self):
+        from unittest.mock import Mock
+        queue=Mock();queue.get.return_value={'state':'queued'}
+        with self.assertRaisesRegex(RuntimeError,'live_worker_unavailable'):
+            journey.wait_for_job(queue,{},'fixture',SimpleNamespace(task=None,last_error=None))
+        with self.assertRaisesRegex(RuntimeError,'live_worker_deadline'):
+            journey.wait_for_job(queue,{},'fixture',SimpleNamespace(task=SimpleNamespace(done=lambda:False),last_error=None),timeout=0)
+
+    def test_live_model_missing_never_calls_provider_or_claims_success(self):
+        with patch.object(journey.ollama,'models',return_value={}),patch.object(journey.ollama,'generate') as generate:
+            with self.assertRaisesRegex(RuntimeError,'local_model_unavailable'):
+                journey.exercise(self.root/'missing-model',live_ai=True)
+        generate.assert_not_called()
+
+    def test_live_failure_records_unknown_execution_without_stub_claim(self):
+        def fail(directory,**kwargs):
+            self.assertEqual(kwargs,{'live_ai':True});directory.mkdir(parents=True)
+            raise RuntimeError('journey_check_failed:live_worker_unavailable')
+        with patch.object(journey,'ROOT',self.root),patch.object(journey,'SOURCES',()),patch.object(journey,'exercise',side_effect=fail):
+            report=journey.verify(self.root/'.local'/'failed-live',live_ai=True)
+        self.assertFalse(report['passed']);self.assertTrue(report['live_ai_requested'])
+        self.assertFalse(report['worker_availability_stubbed']);self.assertFalse(report['deterministic_checkpoint_fixture'])
+        self.assertIsNone(report['planner_executed']);self.assertIsNone(report['generator_executed'])
 
 
 if __name__=='__main__':unittest.main()

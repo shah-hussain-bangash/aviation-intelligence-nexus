@@ -1,4 +1,4 @@
-"""Disposable in-process API rehearsal; deterministic checkpoints, never LLM acceptance."""
+"""Disposable API rehearsal with deterministic or explicit live local AI execution."""
 import argparse
 from contextlib import closing, ExitStack
 from datetime import datetime, timezone
@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import secrets
 import sqlite3
+import time
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 from uuid import uuid4
@@ -17,6 +18,8 @@ from agents.jobs import JobQueue
 from agents.quality import assess_report
 from agents.store import AgentStore, sha
 from agents.tools import gate_sample
+from rag import ollama
+from agents import runtime, tools
 from pipelines.synthetic_ingestion import host, local
 from pipelines.verify_import_safety import identity
 from rag.history import EvidenceHistory
@@ -28,13 +31,27 @@ from services.api.case_jobs import CaseJobs
 
 SOURCES=('pipelines/verify_case_journey.py','services/api/research_cases.py',
          'services/api/case_jobs.py','services/api/case_agents.py','services/api/case_gates.py',
-         'agents/jobs.py','agents/store.py','agents/distribution_evidence.py')
+         'agents/jobs.py','agents/store.py','agents/distribution_evidence.py',
+         'agents/runtime.py','agents/tools.py','agents/quality.py','rag/ollama.py')
 BASE='/api/v1/research/cases'
 ORIGIN={'Origin':'http://localhost:8080'}
 
 
-def exercise(directory):
+def wait_for_job(queue,owner,run_id,worker,*,timeout=150):
+    """Read bounded local checkpoints; never enqueue, claim, retry or fabricate a report."""
+    deadline=time.monotonic()+timeout
+    while True:
+        saved=queue.get(owner,run_id)
+        if saved['state'] not in ('queued','running'):return saved
+        if not worker.task or worker.task.done() or worker.last_error:
+            raise RuntimeError('journey_check_failed:live_worker_unavailable')
+        if time.monotonic()>=deadline:raise RuntimeError('journey_check_failed:live_worker_deadline')
+        time.sleep(.25)
+
+
+def exercise(directory,*,live_ai=False):
     """Create only a new isolated fixture. Existing directories are never adopted."""
+    if type(live_ai) is not bool:raise ValueError('explicit_live_ai_boolean_required')
     host();directory=local(directory);directory.mkdir(parents=True,exist_ok=False)
     database=directory/'ain.sqlite3';sidecar=directory/'research-cases.sqlite3'
     initialize(database);cases=ResearchCaseService(database,sidecar)
@@ -73,14 +90,20 @@ def exercise(directory):
         trace.append({'version':record['version'],'status':record['status'],
                       'action':record['events'][-1]['action'],'case_sha256':digest(record)})
 
-    # No worker loop or provider is started. The availability flag admits API submission only.
+    # Default mode is deterministic. Live mode spies wrap the original functions;
+    # they record real calls and never supply fixture responses or checkpoints.
     with ExitStack() as stack:
-        provider=stack.enter_context(patch('rag.ollama.generate',side_effect=RuntimeError('provider_forbidden_in_fixture')))
-        planner=stack.enter_context(patch('agents.runtime.select_tools',side_effect=RuntimeError('planner_forbidden_in_fixture')))
         worker=app.state.job_worker
-        stack.enter_context(patch.object(worker,'start'))
-        stack.enter_context(patch.object(worker,'stop',new=AsyncMock()))
-        worker.enabled=True;worker.task=SimpleNamespace(done=lambda:False)
+        model=ollama.models().get(ollama.CHAT_MODEL) if live_ai else None
+        if live_ai and not model:raise RuntimeError('journey_check_failed:local_model_unavailable')
+        provider=stack.enter_context(patch('rag.ollama.generate',**({'wraps':ollama.generate} if live_ai else {'side_effect':RuntimeError('provider_forbidden_in_fixture')})))
+        planner=stack.enter_context(patch('agents.runtime.select_tools',**({'wraps':runtime.select_tools} if live_ai else {'side_effect':RuntimeError('planner_forbidden_in_fixture')})))
+        tool_calls=stack.enter_context(patch('agents.tools.execute',wraps=tools.execute))
+        if not live_ai:
+            stack.enter_context(patch.object(worker,'start'))
+            stack.enter_context(patch.object(worker,'stop',new=AsyncMock()))
+            worker.task=SimpleNamespace(done=lambda:False)
+        worker.enabled=True
         client=stack.enter_context(TestClient(app))
         check('anonymous_denied',client.get(BASE).status_code==401)
         headers=login(client,'journey-owner')
@@ -94,6 +117,7 @@ def exercise(directory):
         qa=request(client,path+'/evidence',{'expected_version':2,'evidence_run_id':evidence['run_id'],'evidence_sha256':digest(evidence)},headers);checkpoint(qa)
         payload={'expected_version':3,'investigation':{'objective':'SYNTHETIC deterministic journey fixture; no planner execution',
             'include_distribution_evidence':True,'required_tools':['distribution_evidence']}}
+        if live_ai:payload['investigation']['objective']='SYNTHETIC case: use distribution_evidence to compare the recorded January-March and May input distributions. Quote population counts and the exact limitations. Do not explain an individual flight or recommend an airline action.'
         worker.enabled=False
         check('worker_unavailable_refuses_submission',client.post(path+'/jobs',json=payload,headers={**headers,'Idempotency-Key':str(uuid4())}).status_code==503)
         worker.enabled=True;job_headers={**headers,'Idempotency-Key':str(uuid4())}
@@ -102,15 +126,26 @@ def exercise(directory):
         replay=request(client,path+'/jobs',payload,job_headers,202)
         check('submission_replay_same_job',replay['run_id']==queued['run_id'] and replay['replayed'])
         check('captured_case_pin',queued['request']['case_context']['case_sha256']==digest(captured))
-        queue=JobQueue(store,CaseJobs(cases));claimed=queue.claim()
-        check('claimed_owned_bound_job',claimed is not None and claimed[2]['run_id']==queued['run_id'])
-        run=claimed[2];observed=observation()
-        quotes=[observed['evidence_text'].splitlines()[0],LIMIT]
-        run.update(state='awaiting_review',steps=[{'id':'T1','tool':'distribution_evidence','arguments':{},'state':'completed','observation':observed}],
-            claims=[{'text':q,'quote':q,'citation':'T1'} for q in quotes],
-            evidence_origin='SYNTHETIC deterministic checkpoint; recorded-distribution reader executed; no planner or generator',
-            finding_style='verbatim_source_extracts')
-        run['report_sha256']=sha({k:run[k] for k in ('request','steps','claims')});store.checkpoint(run)
+        queue=JobQueue(store,CaseJobs(cases))
+        if live_ai:
+            run=wait_for_job(queue,owner,queued['run_id'],worker)
+            check('live_report_awaiting_explicit_review',run['state']=='awaiting_review' and run['reviews']==[])
+            check('live_model_digest_bound',run.get('model')=={'name':ollama.CHAT_MODEL,'digest':model})
+            check('real_planner_generator_and_tool_calls',planner.call_count>0 and provider.call_count>0 and tool_calls.call_count>0)
+            check('live_call_budgets',0<planner.call_count<=3 and 0<provider.call_count<=2 and 0<tool_calls.call_count<=3)
+            check('live_worker_poll_recorded',worker.last_poll is not None and worker.task is not None and not worker.task.done())
+            check('live_distribution_checkpoint',any(s['tool']=='distribution_evidence' and s['state']=='completed' and s['observation']==observation() for s in run['steps']))
+            check('live_report_hash',run['report_sha256']==sha({k:run[k] for k in ('request','steps','claims')}))
+        else:
+            claimed=queue.claim()
+            check('claimed_owned_bound_job',claimed is not None and claimed[2]['run_id']==queued['run_id'])
+            run=claimed[2];observed=observation()
+            quotes=[observed['evidence_text'].splitlines()[0],LIMIT]
+            run.update(state='awaiting_review',steps=[{'id':'T1','tool':'distribution_evidence','arguments':{},'state':'completed','observation':observed}],
+                claims=[{'text':q,'quote':q,'citation':'T1'} for q in quotes],
+                evidence_origin='SYNTHETIC deterministic checkpoint; recorded-distribution reader executed; no planner or generator',
+                finding_style='verbatim_source_extracts')
+            run['report_sha256']=sha({k:run[k] for k in ('request','steps','claims')});store.checkpoint(run)
         check('automated_coverage',assess_report(run)['passed'])
         check('pending_draft_not_attachable',not any(s['run_id']==run['run_id'] for s in client.get('/api/v1/research/case-agent-sources').json()['sources']))
         review={'run_id':run['run_id'],'report_sha256':run['report_sha256'],'decision':'needs_changes',
@@ -143,14 +178,19 @@ def exercise(directory):
         viewer_headers=login(client,'journey-viewer')
         check('viewer_private_records_denied',client.get(path).status_code==404 and client.get(BASE).json()['cases']==[])
         check('viewer_review_and_case_writes_denied',client.post('/api/v1/research/agent-review',json=review,headers=viewer_headers).status_code==403 and client.post(path+'/events',json={'expected_version':6,'action':'note','note':'SYNTHETIC forbidden'},headers=viewer_headers).status_code==403)
-        check('no_provider_or_planner_execution',provider.call_count==planner.call_count==0)
+        if not live_ai:check('no_provider_or_planner_execution',provider.call_count==planner.call_count==0)
     # A new app/service instance must read the same saved case, not the prior Python object.
     restarted=create_app(database,research_cases=ResearchCaseService(database,sidecar))
     restarted.state.job_worker.enabled=False
     with TestClient(restarted) as client:
         login(client,'journey-owner')
         check('new_application_instance_preserves_closed_case',client.get(path).json()==closed)
+    if live_ai:check('live_worker_stopped',worker.task.done())
     return {'checks':checks,'passed':all(checks.values()),'trace':trace,'case_id':closed['id'],
+        'planner_executed':bool(live_ai and planner.call_count),'generator_executed':bool(live_ai and provider.call_count),
+        'worker_loop_executed':live_ai,'worker_availability_stubbed':not live_ai,'deterministic_checkpoint_fixture':not live_ai,
+        'provider_calls':{'planner':planner.call_count,'generator':provider.call_count,'tools':tool_calls.call_count},
+        'local_model':{'name':ollama.CHAT_MODEL,'digest':model} if live_ai else None,
         'captured_case_sha256':queued['request']['case_context']['case_sha256'],
         'source_run_id':source['run_id'],'prediction_source_sha256':source_ref['source_sha256'],
         'agent_run_id':run['run_id'],'report_sha256':run['report_sha256'],
@@ -159,23 +199,25 @@ def exercise(directory):
         'gate_snapshot_sha256':gate_ref['sha256'],'final_case_sha256':digest(closed)}
 
 
-def verify(directory):
+def verify(directory,*,live_ai=False):
+    if type(live_ai) is not bool:raise ValueError('explicit_live_ai_boolean_required')
     host()
     directory=local(directory)
     if not directory.is_relative_to(ROOT/'.local') or directory==ROOT/'.local':
         raise ValueError('new_private_directory_under_local_required')
     report={'format':'ain-combined-case-journey-v1','checked_at':datetime.now(timezone.utc).isoformat(),
-        **identity(),'passed':False,'synthetic_only':True,'transport':'in_process_asgi_testclient',
-        'prediction_inference_executed':False,'retrieval_executed':False,'planner_executed':False,
-        'generator_executed':False,'worker_loop_executed':False,'worker_availability_stubbed':True,'deterministic_checkpoint_fixture':True,
-        'recorded_distribution_reader_executed':False,'synthetic_milp_executed':False,
+        **identity(),'passed':False,'synthetic_only':True,'transport':'in_process_asgi_testclient','live_ai_requested':live_ai,
+        'prediction_inference_executed':False,'retrieval_executed':False,'planner_executed':None if live_ai else False,
+        'generator_executed':None if live_ai else False,'worker_loop_executed':None if live_ai else False,
+        'worker_availability_stubbed':not live_ai,'deterministic_checkpoint_fixture':not live_ai,
+        'recorded_distribution_reader_executed':None if live_ai else False,'synthetic_milp_executed':None if live_ai else False,
         'genuine_human_acceptance':False,'primary_database_accessed':False,
         'deployment_performed':False,'production_ready':False}
     before={p:hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest() for p in SOURCES}
     # Refuse an existing target before creating any files or publishing a report.
     if directory.exists():raise ValueError('fresh_fixture_directory_required')
     try:
-        report.update(exercise(directory))
+        report.update(exercise(directory,live_ai=True) if live_ai else exercise(directory))
         report['source_sha256'].update(before)
         report['checks']['source_unchanged']=all(hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest()==h for p,h in before.items())
         report['passed']=all(report['checks'].values())
@@ -188,8 +230,9 @@ def verify(directory):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('directory',type=Path)
+    parser.add_argument('--live-ai',action='store_true',help='Explicitly run the real local Ollama worker; fixtures still use synthetic reviews.')
     args=parser.parse_args()
-    try:report=verify(args.directory)
+    try:report=verify(args.directory,live_ai=args.live_ai)
     except ValueError as error:parser.exit(2,str(error)+'\n')
     print(json.dumps(report,indent=2));return 0 if report['passed'] else 1
 
