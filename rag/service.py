@@ -14,6 +14,7 @@ class Question(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
     question: str = Field(min_length=8, max_length=600)
     generate: bool = Field(default=False, strict=True)
+    verbatim: bool = Field(default=False,strict=True,exclude_if=lambda value:value is False)
 
 
 def validate_claims(output, evidence):
@@ -93,7 +94,7 @@ class Knowledge:
             ranked=[int(i) for i in np.argsort(-scores) if payload['chunks'][i]['source']==source_document][:8]
         evidence = [{**payload['chunks'][i], 'score': round(float(scores[i]), 4),
             'source_sha256': next(s['sha256'] for s in payload['sources'] if s['path'] == payload['chunks'][i]['source']),
-            'source_url': 'https://github.com/zenithdevelopers7-source/aviation-intelligence-nexus/blob/' + payload['revision'] + '/' + payload['chunks'][i]['source'] + '#L' + str(payload['chunks'][i]['start_line'])}
+            'source_url': 'https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/' + payload['revision'] + '/' + payload['chunks'][i]['source'] + '#L' + str(payload['chunks'][i]['start_line'])}
             for i in ranked]
         result = {'question': request.question, 'mode': 'evidence_only' if evidence else 'abstained',
             'evidence': evidence, 'claims': [], 'index_sha256': index_hash,
@@ -103,10 +104,13 @@ class Knowledge:
         if request.generate and evidence:
             try:
                 generation_digest = installed[ollama.CHAT_MODEL]
-                claims = validate_claims(ollama.generate(request.question, [{'id': e['id'], 'text': e['text']} for e in evidence]), evidence)
+                claims = validate_claims(ollama.generate(request.question, [{'id': e['id'], 'text': e['text']} for e in evidence],
+                    **({'verbatim':True} if request.verbatim else {})), evidence)
+                if request.verbatim and any(c['text']!=c['quote'] for c in claims):raise RuntimeError('Exact-quotation style mismatch')
                 result.update(mode='generated' if claims else 'abstained', claims=claims)
                 result['generation'] = {'requested': True, 'status': 'completed', 'model': ollama.CHAT_MODEL,
                     'model_digest': generation_digest, 'citation_check': 'ids and exact quotes verified; semantic entailment requires human review'}
+                if request.verbatim:result['generation']['answer_style']='verbatim_source_extracts'
             except (OSError, ValueError, KeyError, TypeError, RuntimeError):
                 result['generation'] = {'requested': True, 'status': 'unavailable_or_rejected',
                     'message': 'No validated generated answer was returned. Retrieved evidence remains available.'}

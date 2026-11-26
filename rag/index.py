@@ -45,7 +45,14 @@ def validate_vectors(values, count):
     return matrix / norms[:, None]
 
 
-def build():
+def build(*, destination=None):
+    target=INDEX
+    if destination is not None:
+        target=Path(destination).absolute()
+        if '..' in Path(destination).parts or not target.is_relative_to(ROOT/'.local') or target.suffix.lower()!='.json':
+            raise ValueError('Fresh private JSON index required')
+        if target.exists() or any(p.is_symlink() or getattr(p,'is_junction',lambda:False)() for p in (target,*target.parents)):
+            raise ValueError('Existing or redirected private index refused')
     installed = ollama.models()
     if ollama.EMBED_MODEL not in installed:
         raise RuntimeError('Required local embedding model is missing')
@@ -67,10 +74,13 @@ def build():
         'sources': sources, 'chunks': chunks, 'vectors': matrix.tolist()}
     canonical = json.dumps(payload, sort_keys=True).encode()
     envelope = {'sha256': digest(canonical), 'payload': payload}
-    INDEX.parent.mkdir(parents=True, exist_ok=True)
-    temporary = INDEX.with_suffix('.tmp')
-    temporary.write_text(json.dumps(envelope), encoding='utf-8')
-    temporary.replace(INDEX)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if destination is not None:
+        with target.open('x',encoding='utf-8') as stream:stream.write(json.dumps(envelope))
+    else:
+        temporary = target.with_suffix('.tmp')
+        temporary.write_text(json.dumps(envelope), encoding='utf-8')
+        temporary.replace(target)
     return {'sources': len(sources), 'chunks': len(chunks), 'dimensions': matrix.shape[1], 'index_sha256': envelope['sha256']}
 
 
