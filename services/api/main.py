@@ -60,6 +60,7 @@ from services.api.route_history import lookup as lookup_route, LookupBusy, Looku
 from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScoringService
 from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, AttachEvidence, CaseConflict, CaseMissing
 from services.api.case_agents import AttachAgent
+from services.api.case_gates import AttachGate
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -572,6 +573,18 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/cases/{case_id}/agents/{run_id}')
     def case_attached_agent(case_id:UUID,run_id:UUID,request:Request):
         return case_response(request,lambda user:research_cases.attached_agent(user,case_id,run_id))
+
+    @app.get('/api/v1/research/case-gate-sources')
+    def case_gate_sources(request:Request):
+        return case_response(request,lambda user:{'sources':research_cases.gate_sources(user),'production_ready':False})
+
+    @app.post('/api/v1/research/cases/{case_id}/gates')
+    def case_attach_gate(case_id:UUID,payload:AttachGate,request:Request):
+        return case_response(request,lambda user:research_cases.attach_gate(user,case_id,payload),write=True)
+
+    @app.get('/api/v1/research/cases/{case_id}/gates/{run_id}')
+    def case_attached_gate(case_id:UUID,run_id:UUID,request:Request):
+        return case_response(request,lambda user:research_cases.attached_gate(user,case_id,run_id))
 
     @app.get('/api/v1/research/synthetic-scoring')
     def synthetic_scoring_context(request:Request):

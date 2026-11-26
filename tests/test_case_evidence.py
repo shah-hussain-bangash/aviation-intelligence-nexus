@@ -93,10 +93,10 @@ class CaseEvidenceTests(unittest.TestCase):
         with authenticated_client(self.app) as client:
             case=self.open_case(client).json()
         with closing(sqlite3.connect(self.sidecar)) as db,db:
-            db.execute('DROP TABLE case_agents');db.execute('DROP TABLE case_evidence');db.execute('PRAGMA user_version=1')
+            db.execute('DROP TABLE case_gates');db.execute('DROP TABLE case_agents');db.execute('DROP TABLE case_evidence');db.execute('PRAGMA user_version=1')
         service=ResearchCaseService(self.database,self.sidecar)
         self.assertEqual(service.get(self.user,case['id']),{k:v for k,v in case.items() if k!='replayed'})
-        with closing(sqlite3.connect(self.sidecar)) as db:self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],3)
+        with closing(sqlite3.connect(self.sidecar)) as db:self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],4)
 
     def test_source_size_identity_scope_and_changed_pins(self):
         with authenticated_client(self.app) as client:
