@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Software Engineering Handbook (AIN-EA-09)](docs/enterprise-architecture/09-SOFTWARE-ENGINEERING-HANDBOOK.md)** — setup/startup modes, modules, testing, two-computer Git workflow, dependencies and release/recovery discipline.
+
 - **[Security and Threat Model (AIN-EA-08)](docs/enterprise-architecture/08-SECURITY-AND-THREAT-MODEL.md)** — assets, trust boundaries, 19 threats, current control limits and proposed verification/incident responsibilities.
 
 - **[AI and Agent Architecture (AIN-EA-07)](docs/enterprise-architecture/07-AI-AND-AGENT-ARCHITECTURE.md)** — training/inference, retrieval, scoped answers, bounded tools/jobs, research review and evaluation limits.
