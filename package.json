@@ -9,7 +9,7 @@
     "start": "node scripts/start-release.mjs",
     "dev": "node scripts/dev.mjs",
     "dev:all": "node scripts/start-local.mjs",
-    "test:web": "node --test tests/test_dashboard.mjs tests/test_startup.mjs tests/test_scoped_review.mjs tests/test_security_headers.mjs tests/test_request_ids.mjs tests/test_environment.mjs tests/test_generation_review.mjs tests/test_research_cases.mjs",
+    "test:web": "node --test tests/test_dashboard.mjs tests/test_startup.mjs tests/test_scoped_review.mjs tests/test_security_headers.mjs tests/test_request_ids.mjs tests/test_environment.mjs tests/test_generation_review.mjs tests/test_research_cases.mjs tests/test_case_usefulness.mjs",
     "config:check": "node scripts/check-environment.mjs",
     "test:python": "node scripts/python-checks.mjs",
     "test": "npm run check && npm run test:web && npm run test:python",
