@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Architecture Decision Records (AIN-EA-05)](docs/enterprise-architecture/05-ARCHITECTURE-DECISION-RECORDS.md)** — 12 retrospective implementation decisions with alternatives, consequences and pinned evidence, plus 6 proposed enterprise decisions.
+
 - **[System Architecture Diagrams (AIN-EA-04)](docs/enterprise-architecture/04-SYSTEM-ARCHITECTURE-DIAGRAMS.md)** — seven source-linked context, component, deployment, data, prediction, investigation and recovery views.
 
 - **[Enterprise Architecture Overview (AIN-EA-03)](docs/enterprise-architecture/03-ENTERPRISE-ARCHITECTURE-OVERVIEW.md)** — current and target business, application, data, AI, integration, security and infrastructure views, with diagrams and transition decisions.
