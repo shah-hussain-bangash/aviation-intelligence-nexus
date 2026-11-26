@@ -86,6 +86,7 @@ class CaseJobTests(unittest.TestCase):
     def test_missing_case_store_leaves_work_unclaimed_and_blocks_empty_startup(self):
         first=self.submit();self.cases.case_database.rename(self.root/'retained-case-store.sqlite3')
         with self.assertRaises(sqlite3.OperationalError):self.queue.claim()
+        with self.assertRaises(sqlite3.OperationalError):self.cases.get(self.user,self.case['id'])
         self.assertEqual(self.queue.get(self.user,first['run_id'])['state'],'queued')
         with patch.dict(os.environ,{'AIN_ENV':'test','AIN_STATE_ROOT':str(self.database.parent),'AIN_DB_PATH':str(self.database)},clear=True),self.assertRaises(ValueError):create_case_app()
         self.assertFalse(self.cases.case_database.exists())

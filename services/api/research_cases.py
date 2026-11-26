@@ -51,7 +51,7 @@ class ResearchCaseService:
         if any(p.is_symlink() or getattr(p, 'is_junction', lambda:False)() for p in (self.case_database, *self.case_database.parents)):
             raise ValueError('Unredirected case store required')
         self.case_database.parent.mkdir(parents=True, exist_ok=True)
-        with closing(self.connect()) as db, db:
+        with closing(self.connect(create=True)) as db, db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
             if version not in (0,1,2,3,4): raise ValueError('Unsupported case schema')
             if version == 0 and db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone():
@@ -88,8 +88,9 @@ class ResearchCaseService:
                 COMMIT;
             ''')
 
-    def connect(self):
-        db = sqlite3.connect(self.case_database, timeout=5); db.row_factory = sqlite3.Row
+    def connect(self,create=False):
+        mode='rwc' if create else 'rw'
+        db = sqlite3.connect(self.case_database.as_uri()+'?mode='+mode,uri=True,timeout=5); db.row_factory = sqlite3.Row
         db.execute('PRAGMA foreign_keys=ON')
         return db
 
