@@ -29,6 +29,8 @@ The report records HTTP checks, retained aggregate/monthly counts, state-preserv
 
 The separate [opt-in historical prediction journey](RESTORED_PREDICTION_API.md) adds explicit trusted-model admission, one persisted researcher-owned result, replay/conflict checks and an owned API restart. It is disabled by default and separately reports expected history changes; the read-only mode above remains unchanged.
 
+The separate [opt-in evidence retrieval journey](RESTORED_RETRIEVAL_API.md) adds copied-index/model identity checks, two evidence-only queries, owner-bound history across an API restart and viewer mutation denial. It uses the fixed local embedding provider and never requests generation. Prediction and retrieval probes run in separate cases.
+
 ```powershell
 .\.venv\Scripts\python.exe -m unittest tests.test_restored_data_api -v
 npm.cmd test

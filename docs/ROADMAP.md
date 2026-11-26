@@ -68,4 +68,6 @@ The [restored prediction API journey](RESTORED_PREDICTION_API.md) adds an opt-in
 
 The [frozen generation self-review workflow](GENERATION_SELF_REVIEW.md) exports exact diagnostic answers, source context and undecided annotation fields into private offline files. Its optional standalone review page collects declarations and downloads packet-bound annotations for Python assessment. It checks declared decisions against case/citation bindings and keeps unavailable runs outside answer-quality judgments. Human assessment, authenticated independent review and benchmark accuracy remain open.
 
+The [restored retrieval API journey](RESTORED_RETRIEVAL_API.md) connects a copied qualified index to authenticated evidence-only queries, owner-scoped history, viewer denial and an owned API restart. It preserves original rows and records only two disposable-owner queries. Generated-answer quality, protected auditing and production acceptance remain open.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.
