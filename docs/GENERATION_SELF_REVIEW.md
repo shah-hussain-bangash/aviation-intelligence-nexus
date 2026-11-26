@@ -46,11 +46,25 @@ Create a fresh page from the already exported packet:
 
 Open the resulting HTML file in a browser. It includes the exact saved questions, generated claims, expandable retrieved context and all six full documents. Its desktop and narrow-screen layouts use local fonts and no external assets. The renderer revalidates the packet/corpus before writing; a restrictive content policy admits only the embedded script/style hashes and blocks connections. Model content is displayed as literal text, never interpreted as HTML.
 
-Enter a reviewer label, read the sources, check the source-review box and select judgments. Unavailable runs have notes but no answer-quality rating controls. The progress display counts declarations, not correct answers. All judgments start undecided. Entries stay in memory only: **refreshing or closing the tab clears them**. There is no import/resume or automatic save in this increment.
+Enter a reviewer label, read the sources, check the source-review box and select judgments. Unavailable runs have notes but no answer-quality rating controls. The progress display counts declarations, not correct answers. A new review starts undecided. Entries stay in memory only: **refreshing restores the entries embedded when that page was built, discarding later unsaved edits**. Download before closing. There is no automatic save or browser file-import control.
 
 Click **Download review JSON** before closing. The browser chooses its normal download location and may rename repeated downloads. Run the existing `rag.semantic_review assess` command with the original packet/hash and this downloaded annotation file, choosing a new private assessment output. A browser download is not an assessed, authenticated or uploaded review. The original packet, template and report stay unchanged.
 
 Focused UI checks: `node --test tests/test_generation_review.mjs` and `python -m unittest tests.test_review_page -v`. Browser verification must exercise actual download-to-Python assessment interoperability using a clearly labelled synthetic reviewer fixture, then reset to undecided. Synthetic UI selections are not genuine human judgments.
+
+### Resume a downloaded review
+
+Build a new page using the same packet and the exact downloaded annotation file. First obtain the annotation file's SHA-256 with PowerShell `Get-FileHash -LiteralPath "<downloaded-review-file>" -Algorithm SHA256`; use its full lowercase hash below:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag.review_page --packet .local/generation-review/<unique-case>/packet.json --packet-sha256 <packet-full-sha256> --annotations "<downloaded-review-file>" --annotations-sha256 <annotation-full-sha256> --output .local/generation-review/<unique-case>/review-resumed-01.html
+```
+
+Replace the placeholders with actual values. Both annotation arguments are required together. The renderer checks the exact file bytes, packet/case/citation bindings, allowed ratings and source corpus before creating any page. A wrong hash, a review for a different packet, missing claims or malformed decisions are refused. Existing files are not overwritten.
+
+The new page preserves the supplied reviewer label, source checks, ratings and notes, and keeps evaluable decisions editable against the original undecided contract. Its identity panel records the starting review-file hash. Download a new review file after further edits and assess it through Python as usual. Refreshing the resumed page restores its starting entries, not later edits. The original packet, annotation file and diagnostic report remain unchanged.
+
+A resumed file contains unsigned declarations. Matching hashes do not authenticate a human reviewer or validate answer meaning. `review_declarations_loaded` reports whether a file was supplied; `human_ratings_supplied` is `null` on resume because the renderer cannot determine whether those declarations were human-authored. All production/operational qualification remains open. Review-file notes are embedded into the private HTML; treat that page with the same privacy as the source notes.
 
 ## Limits and checks
 
