@@ -1,4 +1,5 @@
 import {apiFetch} from './research-auth.mjs';
+import {validateAgentSources} from './case-agent-links.mjs';
 
 const states=['queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled','withdrawn'];
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
@@ -26,7 +27,13 @@ export function validateCaseJob(r,record,reference=null){
  for(const step of r.steps)require(step&&['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence'].includes(step.tool)&&['running','completed','failed','interrupted','cancelled_before_execution'].includes(step.state));
  for(const claim of r.claims)require(claim&&text(claim.quote,8000)&&claim.text===claim.quote&&text(claim.citation,80));
  if(['awaiting_review','reviewed','needs_changes'].includes(r.state))require(hash(r.report_sha256));
+ if(['reviewed','needs_changes'].includes(r.state)){
+  require(Array.isArray(r.reviews)&&r.reviews.length>0&&r.reviews.length<=10);
+  for(const review of r.reviews)require(review&&['reviewed','needs_changes'].includes(review.decision)&&review.report_sha256===r.report_sha256&&text(review.actor,160)&&text(review.note,1000)&&review.note.trim().length>=5&&date(review.at));
+  require(r.reviews.at(-1).decision===r.state);
+ }
  if(r.quality)require(typeof r.quality.passed==='boolean');
+ if(r.state==='reviewed')require(r.quality?.passed===true);
  if(r.cancel_requested_at)require(date(r.cancel_requested_at));
  require(new TextEncoder().encode(JSON.stringify(r)).length<=800000);return r;
 }
@@ -48,6 +55,8 @@ export class CaseJobClient {
  get writer(){return ['admin','researcher'].includes(this.user?.role);}
  get canStart(){return Boolean(this.writer&&this.record?.status==='open'&&this.available&&!this.blocked);}
  get canCancel(){return Boolean(this.writer&&this.available&&!this.blocked&&this.selected&&['queued','running'].includes(this.selected.state)&&!this.selected.cancel_requested_at);}
+ get canReview(){return Boolean(this.writer&&this.available&&!this.blocked&&this.selected?.state==='awaiting_review');}
+ get canAttach(){return Boolean(this.writer&&this.available&&!this.blocked&&this.record?.status==='open'&&this.record.version<100&&this.record.agent_links.length<5&&['reviewed','needs_changes'].includes(this.selected?.state)&&!this.record.agent_links.some(a=>a.run_id===this.selected.run_id));}
  remember(result){
   this.selected=result;const ref={run_id:result.run_id,state:result.state,case_context:result.request.case_context,updated_at:result.updated_at};
   this.rows=this.rows.some(r=>r.run_id===result.run_id)?this.rows.map(r=>r.run_id===result.run_id?ref:r):[ref,...this.rows].slice(0,10);
@@ -71,7 +80,7 @@ export class CaseJobClient {
   catch(error){if(current()){
    this.rows=[];this.selected=null;this.loaded=false;
    this.blocked=Boolean(error.protocol||[401,403,409].includes(error.status));
-   this.message=error.status===409?'Saved state or the request changed. Refresh cases and reselect before starting again.':error.status===429?'The local queue is full. Wait, refresh saved runs and retry the same submission.':error.status===503?'The local worker or case storage is unavailable. Refresh to check saved investigations.':error.protocol?'The response did not match this case. Results were cleared; refresh cases and reselect.':'No verified response returned. A submission may have completed. Retry the same submission or inspect saved investigations before starting another.';
+   this.message=error.status===409?'Saved state or the request changed. Refresh cases and reselect before starting again.':error.status===429?'The local queue is full. Wait, refresh saved runs and retry the same submission.':error.status===503?'The local worker or case storage is unavailable. Refresh to check saved investigations.':error.protocol?'The response did not match this case. Results were cleared; refresh cases and reselect.':'No verified response returned. A save may have completed. Refresh cases and inspect saved investigations before attempting another review or attachment.';
   }return false;}
   finally{clearTimeout(timer);if(current()){this.busy=false;this.controller=null;this.changed();}}
  }
@@ -103,15 +112,46 @@ export class CaseJobClient {
    if(current()){this.remember(result);this.message=result.state==='cancelled'?'Waiting investigation cancelled. Saved evidence is retained.':'Stop requested. Refresh after the next safe boundary; an in-flight call may finish.';}
   });
  }
+ review(decision,note,acknowledged){
+  note=note.trim();if(!this.canReview||this.busy||acknowledged!==true||!['reviewed','needs_changes'].includes(decision)||note.length<5||note.length>1000||decision==='reviewed'&&this.selected.quality?.passed!==true)return Promise.resolve(false);
+  const old=this.selected,record=this.record;
+  return this.action(async current=>{
+   const result=validateCaseJob(await this.json('/api/v1/research/agent-review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({run_id:old.run_id,report_sha256:old.report_sha256,decision,note})}),record,{run_id:old.run_id,case_context:old.request.case_context});
+   const receipt=result.reviews?.at(-1);
+   require(result.state===decision&&result.report_sha256===old.report_sha256&&receipt?.decision===decision&&receipt.note===note&&receipt.actor===this.user?.username);
+   if(current()){this.remember(result);this.message='Research review recorded for this report fingerprint. It is not an operational approval. Attachment remains a separate action.';}
+  });
+ }
+ attach(validateRecord,onCaseChanged){
+  if(!this.canAttach||this.busy)return Promise.resolve(false);const old=this.selected,record=this.record;
+  return this.action(async current=>{
+   const fresh=validateRecord(await this.json(`/api/v1/research/cases/${record.id}`));if(!current())return;
+   require(fresh.id===record.id&&fresh.version===record.version&&fresh.status==='open'&&fresh.source_sha256===record.source_sha256);
+   const saved=validateCaseJob(await this.json('/api/v1/research/agent-jobs/'+old.run_id),record,{run_id:old.run_id,case_context:old.request.case_context});if(!current())return;
+   require(saved.state===old.state&&saved.report_sha256===old.report_sha256&&JSON.stringify(saved.reviews)===JSON.stringify(old.reviews));
+   const sources=validateAgentSources(await this.json('/api/v1/research/case-agent-sources'));if(!current())return;
+   const source=sources.find(s=>s.run_id===old.run_id);require(source&&source.report_sha256===old.report_sha256&&source.review_state===old.state&&source.review_kind==='standard'&&source.objective===old.request.objective);
+   const result=validateRecord(await this.json(`/api/v1/research/cases/${record.id}/agents`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expected_version:record.version,agent_run_id:old.run_id,agent_sha256:source.sha256})}));
+   require(result.id===record.id&&result.source_sha256===record.source_sha256&&result.version===record.version+1&&result.agent_links.some(a=>a.run_id===old.run_id&&a.sha256===source.sha256&&a.report_sha256===old.report_sha256&&a.review_state===old.state&&a.attached_version===result.version));
+   if(current()){this.message='Reviewed research snapshot attached. Inspect its retained fingerprint in the case history.';onCaseChanged(result);}
+  });
+ }
 }
 
-export function mountCaseJobs(parent){
+export function mountCaseJobs(parent,{validateRecord,onCaseChanged}={}){
  const section=document.createElement('section');section.className='case-jobs';section.hidden=true;section.setAttribute('aria-labelledby','case-jobs-heading');
  section.innerHTML=`<div class="case-job-heading"><div><span class="research-badge">Case-linked local AI</span><h4 id="case-jobs-heading">Investigate this case</h4><p>Start a bounded investigation tied to the case version you have inspected.</p></div><span class="scoped-private">Owner-only</span></div><p data-context></p><form data-start><label>Case investigation objective<textarea name="objective" minlength="12" maxlength="600" required rows="3"></textarea></label><button type="button" class="btn sm" data-example>Use comparison example</button><p>New investigation scope: recorded January–March versus May 2025 input distributions. No individual-flight explanation, simulation or case sharing.</p><label class="case-job-consent"><input type="checkbox" name="ack"> I understand this starts local AI using the case title and version metadata. Case notes are not automatically sent; the output requires review.</label><button type="submit" class="btn" data-submit>Start case investigation</button></form><div class="case-job-actions"><button type="button" class="btn sm" data-refresh>Refresh investigations</button><button type="button" class="btn sm" data-run-refresh>Refresh selected run</button><button type="button" class="btn sm" data-cancel>Request investigation stop</button></div><p data-status role="status" aria-live="polite"></p><label>Saved case investigations<select data-runs aria-label="Saved case investigations"></select></label><div data-result></div><p class="case-job-scope">Updates are manual. Refreshing or selecting a run does not start AI. Leaving this view or signing out does not cancel saved work. To submit again after a reload, inspect saved runs first. Reviews and attachments use the existing investigation and case controls.</p>`;
- parent.append(section);const form=section.querySelector('[data-start]'),list=section.querySelector('[data-runs]'),result=section.querySelector('[data-result]');let renderedKey='',renderedRun=null;
+ section.querySelector('[data-result]').insertAdjacentHTML('afterend',`<form data-review hidden><h5>Record your research review</h5><p>Inspect the quoted findings and saved report first. This is an owner review, not an independent assessment or airline approval.</p><label>Review decision<select name="decision"><option value="needs_changes">Needs changes</option><option value="reviewed">Reviewed for research</option></select></label><label>Review note<textarea name="note" minlength="5" maxlength="1000" rows="3" required></textarea></label><label class="case-job-consent"><input name="ack" type="checkbox"> I inspected this report and am recording my own research decision.</label><button class="btn sm" type="submit">Save research review</button></form><div data-job-attach-controls hidden><p>Attach the saved review and report snapshot to the case version shown above. A needs-changes report keeps that label.</p><button class="btn sm" type="button" data-job-attach>Attach selected reviewed report</button></div>`);
+ section.querySelector('.case-job-scope').textContent='Updates are manual. Refreshing or selecting a run does not start AI. Review and attachment are separate explicit actions. After an uncertain save, refresh and inspect saved state before trying again.';
+ parent.append(section);const form=section.querySelector('[data-start]'),review=section.querySelector('[data-review]'),list=section.querySelector('[data-runs]'),result=section.querySelector('[data-result]');let renderedKey='',renderedRun=null;
  const client=new CaseJobClient(apiFetch,()=>{
-  section.hidden=!client.record||!client.user;if(section.hidden){form.reset();renderedKey='';renderedRun=null;result.replaceChildren();list.replaceChildren();section.querySelector('[data-context]').textContent='';section.querySelector('[data-status]').textContent='';return;}
-  if(renderedKey!==client.key){form.reset();renderedKey=client.key;renderedRun=null;result.replaceChildren();}
+  section.hidden=!client.record||!client.user;if(section.hidden){form.reset();review.reset();renderedKey='';renderedRun=null;result.replaceChildren();list.replaceChildren();section.querySelector('[data-context]').textContent='';section.querySelector('[data-status]').textContent='';return;}
+  if(renderedKey!==client.key){form.reset();review.reset();renderedKey=client.key;renderedRun=null;result.replaceChildren();}
+  if(renderedRun?.run_id!==client.selected?.run_id)review.reset();
+  review.hidden=!client.canReview;for(const e of review.elements)e.disabled=client.busy;
+  review.elements.decision.querySelector('[value="reviewed"]').disabled=client.selected?.quality?.passed!==true;
+  review.querySelector('button').disabled=client.busy||!review.elements.ack.checked||review.elements.note.value.trim().length<5;
+  section.querySelector('[data-job-attach-controls]').hidden=!client.canAttach;section.querySelector('[data-job-attach]').disabled=client.busy||!validateRecord||!onCaseChanged;
   form.hidden=!client.writer||client.record.status!=='open';
   form.elements.objective.disabled=!client.canStart||client.busy||Boolean(client.pending);form.elements.ack.disabled=form.elements.objective.disabled;
   section.querySelector('[data-example]').disabled=form.elements.objective.disabled;
@@ -128,5 +168,8 @@ export function mountCaseJobs(parent){
  form.addEventListener('submit',async event=>{event.preventDefault();if(await client.submit(form.elements.objective.value,form.elements.ack.checked)){form.elements.ack.checked=false;client.changed();}});
  section.querySelector('[data-refresh]').addEventListener('click',()=>client.load());section.querySelector('[data-run-refresh]').addEventListener('click',()=>client.select(client.selected?.run_id));
  section.querySelector('[data-cancel]').addEventListener('click',()=>client.cancel());list.addEventListener('change',()=>client.select(list.value));
+ review.addEventListener('input',()=>client.changed());
+ review.addEventListener('submit',async event=>{event.preventDefault();if(await client.review(review.elements.decision.value,review.elements.note.value,review.elements.ack.checked)){review.reset();client.changed();}});
+ section.querySelector('[data-job-attach]').addEventListener('click',()=>client.attach(validateRecord,onCaseChanged));
  return {element:section,setContext:(user,record,available)=>client.setContext(user,record,available)};
 }

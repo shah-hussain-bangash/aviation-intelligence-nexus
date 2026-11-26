@@ -172,3 +172,50 @@ test('refresh and queued cancellation keep selector state aligned with saved che
  const stopped={...client.selected,cancel_requested_at:'2026-11-26T01:01:00Z'};
  assert.ok(!renderCaseJob(stopped,record()).includes('An in-flight call may finish'));
 });
+
+const draftFixture=()=>({...jobFixture(record(),'awaiting_review'),report_sha256:'e'.repeat(64),quality:{passed:true},reviews:[]});
+const reviewedFixture=(draft=draftFixture(),decision='reviewed',note='SYNTHETIC UI contract review only')=>({...draft,state:decision,reviews:[{actor:owner.username,decision,note,report_sha256:draft.report_sha256,at:'2026-11-26T02:00:00Z'}]});
+async function selectedClient(run,handler){
+ const client=new CaseJobClient(async(path,options)=>{if(handler){const value=await handler(path,options);if(value)return value;}return response(path.endsWith('/jobs')?{jobs:[jobRef(run)],production_ready:false}:run);});
+ await client.setContext(owner,record(),true);await client.select(run.run_id);return client;
+}
+test('case review requires explicit acknowledgement, note, role and automated coverage for acceptance',async()=>{
+ let posts=0;const draft=draftFixture(),client=await selectedClient(draft,(path,options)=>{if(options.method){posts++;const b=JSON.parse(options.body);assert.equal(path,'/api/v1/research/agent-review');assert.equal(b.report_sha256,draft.report_sha256);return response(reviewedFixture(draft,b.decision,b.note));}});
+ assert.equal(await client.review('reviewed','SYNTHETIC review',false),false);assert.equal(await client.review('reviewed','bad',true),false);
+ client.selected.quality.passed=false;assert.equal(await client.review('reviewed','SYNTHETIC review',true),false);assert.equal(posts,0);
+ assert.equal(await client.review('needs_changes','SYNTHETIC fixture requires changes',true),true);assert.equal(client.selected.state,'needs_changes');assert.equal(posts,1);assert.equal(client.record.version,1);assert.deepEqual(client.record.agent_links,[]);
+ const viewer=await selectedClient(draft);viewer.user={...owner,role:'viewer'};assert.equal(await viewer.review('needs_changes','SYNTHETIC review',true),false);assert.equal(viewer.canAttach,false);
+});
+test('case review rejects an altered receipt or report fingerprint',async()=>{
+ for(const patch of [{report_sha256:'f'.repeat(64)},{reviews:[]},{reviews:[{...reviewedFixture().reviews[0],note:'Altered server response'}]}]){
+  const client=await selectedClient(draftFixture(),(path,options)=>options.method?response({...reviewedFixture(),...patch}):null);
+  assert.equal(await client.review('reviewed','SYNTHETIC UI contract review only',true),false);assert.equal(client.selected,null);assert.equal(client.blocked,true);
+ }
+});
+test('uncertain review clears selection and cannot blindly repeat the write',async()=>{
+ let posts=0;const client=await selectedClient(draftFixture(),(path,options)=>{if(options.method){posts++;throw Error('SYNTHETIC response loss');}});
+ assert.equal(await client.review('reviewed','SYNTHETIC review fixture',true),false);assert.equal(await client.review('reviewed','SYNTHETIC review fixture',true),false);assert.equal(posts,1);assert.ok(client.message.includes('inspect saved'));
+});
+const sourceFixture=run=>({run_id:run.run_id,sha256:'f'.repeat(64),report_sha256:run.report_sha256,objective:run.request.objective,review_state:run.state,review_kind:'standard',step_count:run.steps.length});
+function attachedFixture(run){const r=record();return {...r,version:2,events:[...r.events,{version:2,action:'agent',note:'Attached saved agent report '+run.run_id,created_at:r.updated_at}],agent_links:[{...sourceFixture(run),attached_version:2}]};}
+test('attachment pins refreshed owned source and displayed case version, preserving needs-changes label',async()=>{
+ const run=reviewedFixture(draftFixture(),'needs_changes'),calls=[];let attached=null;
+ const client=await selectedClient(run,(path,options)=>{calls.push({path,options});if(path.endsWith('/'+id))return response(record());if(path.endsWith('/case-agent-sources'))return response({sources:[sourceFixture(run)],production_ready:false});if(options.method)return response(attachedFixture(run));});
+ assert.equal(await client.attach(validateCase,r=>{attached=r;}),true);assert.equal(attached.version,2);assert.equal(attached.agent_links[0].review_state,'needs_changes');
+ const post=calls.filter(c=>c.options.method);assert.equal(post.length,1);assert.deepEqual(JSON.parse(post[0].options.body),{expected_version:1,agent_run_id:run.run_id,agent_sha256:'f'.repeat(64)});
+});
+test('attachment rejects changed case versions, source pins and review state without posting',async()=>{
+ for(const kind of ['version','source','review']){const run=reviewedFixture();let posts=0,called=false;
+  const client=await selectedClient(run,(path,options)=>{if(options.method){posts++;throw Error('unexpected');}if(path.endsWith('/'+id))return response(kind==='version'?{...record(),version:2,events:[...record().events,{version:2,action:'note',note:'SYNTHETIC concurrent edit',created_at:record().updated_at}]}:record());if(path.endsWith('/case-agent-sources'))return response({sources:[{...sourceFixture(run),report_sha256:'a'.repeat(64)}],production_ready:false});if(path.includes('/agent-jobs/')&&kind==='review'&&called)return response(reviewedFixture(draftFixture(),'needs_changes'));called=true;});
+  assert.equal(await client.attach(validateCase,()=>assert.fail('must not attach')),false);assert.equal(posts,0);assert.equal(client.selected,null);
+ }
+});
+test('signing out during attachment preflight prevents the mutation',async()=>{
+ const wait=deferred(),run=reviewedFixture();let posts=0;const client=await selectedClient(run,(path,options)=>{if(options.method)posts++;if(path.endsWith('/'+id))return wait.promise;});
+ const pending=client.attach(validateCase,()=>assert.fail('late case result'));await client.setContext(null,null,false);wait.resolve(response(record()));await pending;assert.equal(posts,0);assert.equal(client.selected,null);
+});
+test('closed, full and already-linked cases disallow attachment',async()=>{
+ const run=reviewedFixture(),client=await selectedClient(run);assert.equal(client.canAttach,true);
+ client.record={...record(),status:'closed'};assert.equal(client.canAttach,false);client.record={...record(),version:100};assert.equal(client.canAttach,false);
+ client.record={...record(),agent_links:[sourceFixture(run)]};assert.equal(client.canAttach,false);client.record={...record(),agent_links:Array(5).fill({run_id:id})};assert.equal(client.canAttach,false);
+});
