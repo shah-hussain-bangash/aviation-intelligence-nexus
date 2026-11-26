@@ -30,7 +30,7 @@ from optimization.gates import GateScenario, optimize
 from optimization.history import GateRunStore
 from optimization.reviews import GateReview,ReviewConflict
 from rag.service import Knowledge, Question
-from rag.history import EvidenceHistory
+from rag.history import EvidenceHistory, KnowledgeAccessChanged
 from rag import ollama
 from agents.runtime import Investigation, Investigator, Review
 from agents.store import AgentStore, Conflict
@@ -644,7 +644,11 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/research/knowledge-query')
     def knowledge_query(question: Question, request: Request):
         try:
-            return knowledge_history.save(request.state.user, knowledge.query(question))
+            return knowledge_history.save(request.state.user, knowledge.query(question),
+                                          session_token=request.cookies.get(COOKIE, ''))
+        except KnowledgeAccessChanged:
+            return JSONResponse(status_code=403, content={'error': 'access_changed',
+                'message': 'Access changed during the query. Results were withheld and not saved.'})
         except (OSError, ValueError, KeyError, TypeError, RuntimeError, sqlite3.Error):
             return JSONResponse(status_code=503, content={'error': 'knowledge_unavailable',
                 'message': 'No saved result returned. Check the index, local models and database.'})
