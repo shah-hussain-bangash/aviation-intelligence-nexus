@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Data Architecture and Governance (AIN-EA-06)](docs/enterprise-architecture/06-DATA-ARCHITECTURE-AND-GOVERNANCE.md)** — source register, storage and field contracts, temporal lineage, access, retention, recovery and governance acceptance checks.
+
 - **[Architecture Decision Records (AIN-EA-05)](docs/enterprise-architecture/05-ARCHITECTURE-DECISION-RECORDS.md)** — 12 retrospective implementation decisions with alternatives, consequences and pinned evidence, plus 6 proposed enterprise decisions.
 
 - **[System Architecture Diagrams (AIN-EA-04)](docs/enterprise-architecture/04-SYSTEM-ARCHITECTURE-DIAGRAMS.md)** — seven source-linked context, component, deployment, data, prediction, investigation and recovery views.
