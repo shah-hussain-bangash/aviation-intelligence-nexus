@@ -5,12 +5,14 @@ import json
 
 def peer_pending(run):
     try:
+        if 'case_context' in run['request']:return False
         expected=hashlib.sha256(json.dumps({k:run[k] for k in ('request','steps','claims')},sort_keys=True).encode()).hexdigest()
         return run['request'].get('require_peer_review') is True and run['state']=='awaiting_review' and run.get('report_sha256')==expected and run['research_only'] is True and run['operational_approval'] is False
     except (ValueError,TypeError,KeyError):return False
 
 
 def can_read(user,owner_id,run):
+    if 'case_context' in run['request']:return user['id']==owner_id
     return user['id']==owner_id or user['role']=='admin' or user['role']=='researcher' and peer_pending(run)
 
 

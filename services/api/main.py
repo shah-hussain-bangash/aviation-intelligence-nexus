@@ -61,6 +61,7 @@ from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScorin
 from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, AttachEvidence, CaseConflict, CaseMissing
 from services.api.case_agents import AttachAgent
 from services.api.case_gates import AttachGate
+from services.api.case_jobs import CaseJobs,CaseInvestigation
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -197,7 +198,8 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     knowledge_history = EvidenceHistory(database)
     agent_store = AgentStore(database)
     investigator = Investigator(database,knowledge,agent_store)
-    job_queue = JobQueue(agent_store)
+    case_jobs=CaseJobs(research_cases) if research_cases is not None else None
+    job_queue = JobQueue(agent_store,case_jobs=case_jobs)
     job_worker = JobWorker(job_queue, investigator, enabled=config.agent_jobs)
     auth = AuthStore(database)
     def database_probe():
@@ -533,6 +535,20 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/case-sources')
     def case_sources(request: Request):
         return case_response(request,lambda user:{'sources':research_cases.sources(user),'production_ready':False})
+
+    @app.get('/api/v1/research/cases/{case_id}/jobs')
+    def case_job_list(case_id:UUID,request:Request):
+        return case_response(request,lambda user:case_jobs.recent(user,case_id,agent_store))
+
+    @app.post('/api/v1/research/cases/{case_id}/jobs',status_code=202)
+    def case_job_submit(case_id:UUID,payload:CaseInvestigation,request:Request,idempotency_key:UUID=Header(alias='Idempotency-Key')):
+        def submit(user):
+            if not job_worker.enabled or not job_worker.task or job_worker.task.done() or job_worker.last_error:
+                return JSONResponse(status_code=503,content={'error':'background_worker_unavailable'})
+            try:return job_queue.enqueue(user,str(idempotency_key),payload.investigation,context=case_jobs.submission(user,case_id,payload))
+            except QueueFull:return JSONResponse(status_code=429,content={'error':'investigation_queue_full'})
+            except Conflict:raise CaseConflict('Case job request conflicts') from None
+        return case_response(request,submit,write=True)
 
     @app.get('/api/v1/research/cases')
     def case_list(request: Request):

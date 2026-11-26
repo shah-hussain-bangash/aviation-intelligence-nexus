@@ -1,6 +1,6 @@
 """Bounded SQLite-backed investigation queue for one local API process."""
 import asyncio
-from contextlib import closing
+from contextlib import closing,ExitStack
 import json
 import sqlite3
 from uuid import uuid4
@@ -15,15 +15,17 @@ class QueueFull(Conflict):
 
 
 class JobQueue:
-    def __init__(self, store):
+    def __init__(self, store, case_jobs=None):
         self.store = store
+        self.case_jobs = case_jobs
 
-    def enqueue(self, user, key, request):
+    def enqueue(self, user, key, request, context=None):
         payload = request.model_dump()
-        fingerprint = sha(payload)
-        with closing(self.store.connection()) as db, db:
+        with ExitStack() as locks, closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
             prior = db.execute("SELECT input_hash,result_json FROM agent_runs WHERE owner_id=? AND (request_key=? OR EXISTS (SELECT 1 FROM json_each(agent_runs.result_json,'$.submission_keys') AS aliases WHERE aliases.value=?))", (user['id'], key, key)).fetchone()
+            if context is not None:payload['case_context']=locks.enter_context(context(db,json.loads(prior['result_json']) if prior else None))
+            fingerprint = sha(payload)
             if prior:
                 if prior['input_hash'] != fingerprint:
                     raise Conflict('Request key belongs to different inputs')
@@ -65,6 +67,7 @@ class JobQueue:
             if not row or row['owner_id'] != user['id'] and user['role'] != 'admin':
                 raise KeyError('Investigation unavailable')
             result = json.loads(row['result_json'])
+            if 'case_context' in result['request'] and row['owner_id']!=user['id']:raise KeyError('Investigation unavailable')
             if result['state'] == 'cancelled':
                 return result
             if result['state']=='running':
@@ -78,7 +81,7 @@ class JobQueue:
             return result
 
     def claim(self):
-        with closing(self.store.connection()) as db, db:
+        with ExitStack() as locks, closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
             if db.execute("SELECT 1 FROM agent_runs WHERE json_extract(result_json,'$.state')='running' LIMIT 1").fetchone():
                 return None
@@ -90,6 +93,15 @@ class JobQueue:
                     result.update(state='cancelled', updated_at=now(), error='Account no longer has permission to start this investigation.')
                     db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?', (json.dumps(result), result['updated_at'], row['id']))
                     continue
+                if 'case_context' in result['request']:
+                    try:
+                        if self.case_jobs is None:raise ValueError('Case workspace is unavailable')
+                        if result['request'].get('require_peer_review'):raise ValueError('Case sharing is unavailable')
+                        locks.enter_context(self.case_jobs.claim_context(db,dict(account),result['request']['case_context']))
+                    except (ValueError,KeyError,PermissionError):
+                        result.update(state='cancelled',updated_at=now(),error='Captured case is unavailable, closed or changed; inspect the case before submitting a new investigation.')
+                        db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',(json.dumps(result),result['updated_at'],row['id']))
+                        continue
                 result.update(state='running', started_at=now(), updated_at=now())
                 db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?', (json.dumps(result), result['updated_at'], row['id']))
                 return dict(account), row['request_key'], result
@@ -110,7 +122,7 @@ class JobWorker:
             return False
         user, key, result = item
         try:
-            request = Investigation.model_validate(result['request'])
+            request = Investigation.model_validate({k:v for k,v in result['request'].items() if k!='case_context'})
             self.investigator.run(user, key, request, queued_result=result)
         except Conflict:
             # RUN_LOCK was occupied before any tool could start. Return this claim to the queue.
