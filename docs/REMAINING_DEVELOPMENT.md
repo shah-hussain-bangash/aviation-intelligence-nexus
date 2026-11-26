@@ -23,3 +23,7 @@ The Phase 1 backend now has a dashboard and fixed gateway routes, with an explic
 Finish one connected research journey before broadening more workspace screens or adding further recovery variants. Implement and test the case API, connect its UI, then attach existing evidence/agents and proposals with exact version binding. Work on useful model/data objectives in parallel only where independent data is available. Collect genuine human GenAI review while preparing platform controls locally. Merge and deployment decisions remain outside this development increment.
 
 No completion percentage, hiring probability or production-ready claim follows from this plan.
+
+## Combined workflow rehearsal
+
+The versioned [deterministic combined API rehearsal](CASE_BOUND_INVESTIGATIONS.md#combined-deterministic-api-rehearsal) checks one synthetic case across saved evidence, a version-bound job, explicit needs-changes review, report/proposal attachments, closure and a fresh application instance. It includes stale-write, cross-account and missing-dependency rejection. This provides combined state/permission regression evidence. It does not establish actual background/provider execution, genuine useful-outcome acceptance, final deployed behavior or close any production gate.

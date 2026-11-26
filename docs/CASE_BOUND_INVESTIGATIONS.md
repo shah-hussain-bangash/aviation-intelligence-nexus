@@ -71,3 +71,19 @@ Attachment first reads the current case, selected saved report and eligible owne
 After a timeout, refresh cases and inspect the saved run before another review or attachment; the review endpoint is not an idempotent retry API. Case/session changes clear the panel, and an obsolete attachment preflight cannot proceed to its write. The server remains authoritative for ownership, permission, report integrity and version conflicts.
 
 Focused dashboard checks: `node --test tests/test_research_cases.mjs`. Browser rehearsal uses disposable synthetic accounts and an explicitly labelled recorded-evidence fixture. Its needs-changes decision tests persistence only; it is not genuine human acceptance, a new provider run or production qualification. Existing credentials and the Docker release are unchanged.
+
+## Combined deterministic API rehearsal
+
+Run from the repository root, using a new private directory each time:
+
+```powershell
+.\.venv\Scripts\python.exe -m pipelines.verify_case_journey .local/case-journey-01
+```
+
+This creates only disposable synthetic accounts and fresh primary/case stores. It runs the real in-process API handlers through saved prediction → note → saved Q&A → bound investigation → explicit needs-changes review → retained report → computed synthetic gate proposal → closure. The report records all six case versions, case/report/snapshot fingerprints, source revision and code hashes. A second application instance verifies persistence.
+
+Negative checks cover anonymous/CSRF access, unavailable-worker submission, changed report pins, stale case edits, duplicate attachment replay, closed-case writes, private access by another administrator, viewer writes and a temporarily missing case store. The missing store must return 503 without creating an empty replacement; the fixture restores its own file in a `finally` block. Existing target directories and paths outside the repository's private `.local` area are refused by the command.
+
+Scope: the stored prediction and Q&A are synthetic fixtures. The distribution reader executes against the committed historical report, and the MILP solver computes a small synthetic proposal. Planner/generator calls and the background worker loop do not run: worker availability and agent checkpoints are explicit deterministic test fixtures. Review notes identify themselves as synthetic and use `needs_changes`; closing the case does not accept those findings. No browser, real network listener, existing user database, deployment, real-user acceptance, representative load or production qualification is exercised. The temporary databases contain synthetic authentication material; keep the entire fixture directory private and out of Git.
+
+The CLI exits nonzero on failure and writes `report.json` only inside its newly created directory. Reports distinguish the prediction snapshot fingerprint from the code-hash map. Run `python -m unittest tests.test_case_journey -v` for focused regression checks. This combined state/permission rehearsal supplements the separate live-provider and browser evidence; it does not replace them.
