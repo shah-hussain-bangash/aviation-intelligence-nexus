@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Security and Threat Model (AIN-EA-08)](docs/enterprise-architecture/08-SECURITY-AND-THREAT-MODEL.md)** — assets, trust boundaries, 19 threats, current control limits and proposed verification/incident responsibilities.
+
 - **[AI and Agent Architecture (AIN-EA-07)](docs/enterprise-architecture/07-AI-AND-AGENT-ARCHITECTURE.md)** — training/inference, retrieval, scoped answers, bounded tools/jobs, research review and evaluation limits.
 
 - **[Data Architecture and Governance (AIN-EA-06)](docs/enterprise-architecture/06-DATA-ARCHITECTURE-AND-GOVERNANCE.md)** — source register, storage and field contracts, temporal lineage, access, retention, recovery and governance acceptance checks.
