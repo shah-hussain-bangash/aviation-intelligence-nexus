@@ -1,6 +1,6 @@
 # Local paired research-case recovery
 
-The opt-in native case workspace stores accounts, saved results and audit records in `ain.sqlite3`, and cases in `research-cases.sqlite3`. Both must be captured together. The separate `infra.case_recovery` command creates an unsigned, **plaintext local backup** with an externally recorded manifest SHA-256. Existing `infra.recovery` and encrypted recovery formats do not automatically cover the case sidecar.
+The opt-in native case workspace stores accounts, saved results and audit records in `ain.sqlite3`, and cases in `research-cases.sqlite3`. Both must be captured together. The separate `infra.case_recovery` command creates an unsigned, **plaintext local backup** with an externally recorded manifest SHA-256. Existing `infra.recovery` and earlier encrypted recovery formats do not automatically cover the case sidecar. The separate [encrypted paired format](ENCRYPTED_CASE_RECOVERY.md) can now seal this completed bundle; it retains the original plaintext source.
 
 ## Operator sequence
 
@@ -35,4 +35,4 @@ Focused verification: `python -m unittest tests.test_case_recovery -v`. The synt
 
 This is local recovery evidence, not production qualification. Hashes and owner bindings provide consistency, not independent source authentication or tamper-proof audit. The filesystem owner can alter both data and an unprotected pin. External artifact writers rely on the operator's offline acknowledgement; the database guards do not lock external files. Directory-marker ordering is not a tested power-loss durability guarantee. Do not clear an incomplete marker to bypass failed checks.
 
-Encryption of this paired format, off-host storage and independent key recovery, retention/deletion policy, host-loss recovery, representative load, original-user acceptance and final deployed-release recovery remain unimplemented or unqualified. No automated cleanup removes incomplete targets, staging copies, source records or backups. Keep all of them private and out of Git. All 24 production acceptance requirements remain open.
+The separate encrypted paired format has synthetic local checks. Off-host storage and independent key recovery, retention/deletion policy, host-loss recovery, representative load, original-user acceptance and final deployed-release recovery remain unimplemented or unqualified. No automated cleanup removes incomplete targets, staging copies, source records or backups. Keep all of them private and out of Git. All 24 production acceptance requirements remain open.
