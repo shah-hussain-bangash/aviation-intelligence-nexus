@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Operations and Recovery Plan (AIN-EA-11)](docs/enterprise-architecture/11-OPERATIONS-AND-RECOVERY-PLAN.md)** — daily startup, monitoring, incident response, trusted backups, isolated restoration, rollback boundaries and proposed operating responsibilities.
+
 - **[Requirements Traceability Matrix (AIN-EA-10)](docs/enterprise-architecture/10-REQUIREMENTS-TRACEABILITY-MATRIX.md)** — all 18 business and 8 quality requirements linked to source, representative tests, scoped evidence and open acceptance work.
 
 - **[Software Engineering Handbook (AIN-EA-09)](docs/enterprise-architecture/09-SOFTWARE-ENGINEERING-HANDBOOK.md)** — setup/startup modes, modules, testing, two-computer Git workflow, dependencies and release/recovery discipline.
