@@ -51,7 +51,7 @@ class ResearchCaseService:
         if any(p.is_symlink() or getattr(p, 'is_junction', lambda:False)() for p in (self.case_database, *self.case_database.parents)):
             raise ValueError('Unredirected case store required')
         self.case_database.parent.mkdir(parents=True, exist_ok=True)
-        with closing(self.connect()) as db, db:
+        with closing(self.connect(create=True)) as db, db:
             version = db.execute('PRAGMA user_version').fetchone()[0]
             if version not in (0,1,2,3,4): raise ValueError('Unsupported case schema')
             if version == 0 and db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone():
@@ -88,8 +88,9 @@ class ResearchCaseService:
                 COMMIT;
             ''')
 
-    def connect(self):
-        db = sqlite3.connect(self.case_database, timeout=5); db.row_factory = sqlite3.Row
+    def connect(self,create=False):
+        mode='rwc' if create else 'rw'
+        db = sqlite3.connect(self.case_database.as_uri()+'?mode='+mode,uri=True,timeout=5); db.row_factory = sqlite3.Row
         db.execute('PRAGMA foreign_keys=ON')
         return db
 
@@ -136,6 +137,9 @@ class ResearchCaseService:
         agent_links=[]
         for item in db.execute('SELECT * FROM case_agents WHERE case_id=? ORDER BY attached_version',(row['id'],)):
             snapshot=checked_agent(item['snapshot_json'],item['agent_run_id'],row['owner_id'])
+            context=snapshot['request'].get('case_context')
+            if context and (context['case_id']!=row['id'] or context['source_sha256']!=row['source_sha256'] or context['case_version']>=item['attached_version']):
+                raise ValueError('Captured agent case binding changed')
             version=item['attached_version']
             if digest(snapshot)!=item['agent_sha256'] or not 1<version<=row['version'] or events[version-1]['action']!='agent' or events[version-1]['note']!='Attached saved agent report '+item['agent_run_id']:
                 raise ValueError('Agent snapshot or event changed')
@@ -296,6 +300,9 @@ class ResearchCaseService:
                 raise CaseConflict('Case closed, changed or report limit reached')
             snapshot=self.agent_source(user,request.agent_run_id)
             if digest(snapshot)!=request.agent_sha256:raise CaseConflict('Agent snapshot changed')
+            context=snapshot['request'].get('case_context')
+            if context and (context['case_id']!=str(case_id) or context['source_sha256']!=row['source_sha256'] or context['case_version']>row['version']):
+                raise CaseConflict('Report belongs to a different case context')
             version,timestamp=row['version']+1,now()
             db.execute('UPDATE cases SET version=?,updated_at=? WHERE id=?',(version,timestamp,str(case_id)))
             db.execute('INSERT INTO case_events VALUES(?,?,?,?,?)',(str(case_id),version,'agent','Attached saved agent report '+str(request.agent_run_id),timestamp))

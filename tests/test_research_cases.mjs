@@ -78,3 +78,12 @@ test('gate attachment gateway rejects arbitrary paths, query authority and unsup
  const port=await server(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,api)){res.writeHead(404);res.end();}});const root=`http://127.0.0.1:${port}/api/v1/research`;
  for(const [path,method,status] of [['/case-gate-sources','GET',200],['/cases/'+id+'/gates','POST',200],['/cases/'+id+'/gates/'+source,'GET',200],['/cases/'+id+'/gates','GET',405],['/cases/'+id+'/gates/'+source,'POST',405],['/case-gate-sources?owner=peer','GET',422],['/cases/'+id+'/gates/not-a-uuid','GET',404]]){const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();}assert.equal(calls.length,3);
 });
+
+test('case job gateway permits fixed GET and POST without query authority',async t=>{
+ const calls=[];const api=await server(t,async(req,res)=>{for await(const c of req){}calls.push(req.url);res.writeHead(200,{'Content-Type':'application/json'});res.end('{}');});
+ const port=await server(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,new URL(req.url,'http://localhost').pathname,api)){res.writeHead(404);res.end();}});
+ const root=`http://127.0.0.1:${port}/api/v1/research/cases/`;
+ for(const [path,method,status] of [[id+'/jobs','GET',200],[id+'/jobs','POST',200],[id+'/jobs?owner=peer','GET',422],[id+'/jobs?version=1','POST',422],[id+'/jobs','DELETE',405],['not-a-uuid/jobs','GET',404],[id+'/jobs/shell','POST',404]]){
+  const r=await fetch(root+path,{method,...(method==='POST'?{headers:{'Content-Type':'application/json'},body:'{}'}:{})});assert.equal(r.status,status,path);await r.text();
+ }assert.equal(calls.length,2);
+});

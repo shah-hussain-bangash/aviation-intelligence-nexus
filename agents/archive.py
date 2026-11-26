@@ -32,8 +32,8 @@ def page(database,user,query):
         db.row_factory=sqlite3.Row
         db.execute('PRAGMA query_only=ON')
         db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
-        owner='' if user['role']=='admin' else ' AND owner_id=?'
-        args=[] if not owner else [user['id']]
+        owner=" AND (owner_id=? OR json_type(result_json,'$.request.case_context') IS NULL)" if user['role']=='admin' else ' AND owner_id=?'
+        args=[user['id']]
         ceiling=int(query.through) if query.through is not None else db.execute('SELECT coalesce(max(rowid),0) FROM agent_runs WHERE 1=1'+owner,args).fetchone()[0]
         where='rowid<=?'+owner;values=[ceiling,*args]
         if query.before is not None:where+=' AND rowid<?';values.append(int(query.before))

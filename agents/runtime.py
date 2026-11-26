@@ -13,6 +13,7 @@ from agents.cancellation import StopRequested,finish_cancelled
 from agents.quality import assess_report, collect_claims, report_evidence
 from agents.distribution_evidence import LIMIT as DISTRIBUTION_LIMIT
 from agents.duration_evidence import required_quotes as duration_quotes
+from agents.case_context import checked_context
 
 RUN_LOCK=Lock()
 
@@ -81,6 +82,8 @@ class Investigator:
 
     def run(self,user,key,request,queued_result=None):
         payload=request.model_dump()
+        if queued_result is not None and 'case_context' in queued_result['request']:
+            payload['case_context']=checked_context(queued_result['request']['case_context'])
         prior=self.store.lookup(user,key,payload) if queued_result is None else None
         if prior: return prior
         if not RUN_LOCK.acquire(blocking=False): raise Conflict('Another investigation is running; try later')

@@ -54,7 +54,10 @@ class AgentStore:
 
     def stop_requested(self,run_id):
         with closing(self.connection()) as db:
-            row=db.execute("SELECT json_extract(result_json,'$.cancel_requested_at') FROM agent_runs WHERE id=?",(run_id,)).fetchone()
+            row=db.execute("SELECT json_extract(result_json,'$.cancel_requested_at'),json_type(result_json,'$.request.case_context'),owner_id FROM agent_runs WHERE id=?",(run_id,)).fetchone()
+            if row and row[1] is not None:
+                account=db.execute('SELECT role,active FROM auth_users WHERE id=?',(row[2],)).fetchone()
+                if not account or not account['active'] or account['role'] not in ('admin','researcher'):return True
         if not row:raise KeyError('Investigation unavailable')
         return bool(row[0])
 
@@ -65,6 +68,8 @@ class AgentStore:
             saved=db.execute('SELECT result_json FROM agent_runs WHERE id=?',(result['run_id'],)).fetchone()
             if saved:
                 metadata=json.loads(saved['result_json'])
+                if 'case_context' in metadata.get('request',{}) and result.get('request')!=metadata['request']:
+                    raise Conflict('Captured case request cannot change between checkpoints')
                 if 'submission_keys' in metadata:
                     result['submission_keys']=metadata['submission_keys']
                 for key in ['cancel_requested_at','cancel_requested_by']:
@@ -77,7 +82,8 @@ class AgentStore:
     def recent(self,user):
         with closing(self.connection()) as db:
             query='SELECT owner_id,result_json FROM agent_runs'; params=()
-            if user['role']!='admin': query+=' WHERE owner_id=?'; params=(user['id'],)
+            query+=" WHERE (owner_id=? OR json_type(result_json,'$.request.case_context') IS NULL)" if user['role']=='admin' else ' WHERE owner_id=?'
+            params=(user['id'],)
             rows=db.execute(query+' ORDER BY updated_at DESC,rowid DESC LIMIT 10',params).fetchall()
             results=[]
             for row in rows:
@@ -129,6 +135,7 @@ class AgentStore:
             db.execute('BEGIN IMMEDIATE')
             row=db.execute('SELECT owner_id,result_json FROM agent_runs WHERE id=?',(str(request.run_id),)).fetchone()
             if not row or row['owner_id']!=user['id'] and user['role']!='admin':raise KeyError('Investigation unavailable')
+            if 'case_context' in json.loads(row['result_json'])['request'] and row['owner_id']!=user['id']:raise KeyError('Investigation unavailable')
             result=json.loads(row['result_json'])
             account=db.execute('SELECT username,role,active FROM auth_users WHERE id=?',(user['id'],)).fetchone()
             if not account or not account['active'] or row['owner_id']!=user['id'] and account['role']!='admin':raise PermissionError('Current account cannot withdraw this sharing')

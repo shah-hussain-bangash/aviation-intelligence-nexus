@@ -3,6 +3,7 @@ import hashlib
 import json
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
+from agents.case_context import checked_context
 
 
 class AttachAgent(BaseModel):
@@ -23,6 +24,9 @@ def checked_agent(raw,run_id,owner_id):
     if not isinstance(request,dict) or not isinstance(request.get('objective'),str) or not 1<=len(request['objective'])<=600:
         raise ValueError('Bounded objective required')
     if not isinstance(request.get('require_peer_review',False),bool):raise ValueError('Review policy malformed')
+    if 'case_context' in request:
+        checked_context(request['case_context'])
+        if request.get('require_peer_review'):raise ValueError('Case report sharing unavailable')
     if not isinstance(result.get('steps'),list) or len(result['steps'])>3 or not isinstance(result.get('claims'),list) or len(result['claims'])>3:
         raise ValueError('Bounded report required')
     report_hash=hashlib.sha256(json.dumps({k:result[k] for k in ('request','steps','claims')},sort_keys=True,allow_nan=False).encode()).hexdigest()
