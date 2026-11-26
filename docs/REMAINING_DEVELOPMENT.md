@@ -1,0 +1,25 @@
+# Remaining development phases — 26 November 2026
+
+This is a current development plan, not production acceptance. The older completion report's 24 open requirements are an acceptance framework; its original "not implemented" descriptions predate substantial local implementation. They must not be read as a current count of missing code. Preserve that dated evidence and all 64 workspaces.
+
+| Priority / phase | Present locally | Remaining deliverable / exit evidence |
+| --- | --- | --- |
+| 1. Connected research workflow — started | Saved historical predictions, evidence, agent runs and synthetic optimization; new opt-in research-case API | Connect a saved prediction to a case, evidence/agent findings, proposal, reviewer decision and measured research outcome. Next: gateway/dashboard case UI and configured persistence. Demonstrate the whole owner-authorized journey, source/version binding and dependency failures. |
+| 2. Data and model development | Five-month historical BTS data, ingestion/lineage, frozen delay experiments, diagnostics and synthetic modelling workflows | Governed source-purpose review, scheduled production ingestion and representative processing; agree useful forecasting/regression/clustering/anomaly objectives. Evaluate new models on genuinely unused chronological data with baselines/cohorts and explicit decision criteria. Existing evaluated months are not fresh holdouts. |
+| 3. Generative AI quality | Local embeddings, public-document retrieval/generation, scoped lab, offline semantic-review page and file resume | Human assessment of the 22 evaluable saved cases; retain two unavailable cases separately. Expand only to authorized corpus material, measure grounding/answer usefulness and permission/injection behavior. Human ratings must not be manufactured by the agent. |
+| 4. Agentic workflow integration | Bounded tools, persisted jobs, cancellation and review/sharing controls | Bind investigation outputs and checkpoints to case versions; exercise the connected workflow with multiple roles, budgets, interruption and cancellation. Confirm intended automation authority and retain evidence of actual tool execution. |
+| 5. Optimization integration | Computed synthetic gate proposals and feasibility/review machinery | Connect proposals to cases; validate representative, authorized airport/resource constraints and compare with a baseline. Keep invented operational scenarios labelled synthetic. No real dispatch/gate/crew authority is implied. |
+| 6. Production platform | Local configuration/identity/audit foundations, Docker/native checks, observer and isolated backup/recovery evidence | Choose hosting and workload/owners; implement HTTPS/private networking, managed identity/MFA, managed secrets, database availability, protected audit, owned alerts and independent/off-site backup/key recovery. Continue local preparation until cloud resources/deployment are explicitly authorized. |
+| 7. Final qualification | Source/unit/integration checks and scoped local execution receipts | Qualify the final release revision: deployed critical journeys, original-user access, security/privacy review, representative load, accessibility, monitored outage/rollback/recovery and accountable acceptance. Passing development tests alone closes none of these production gates. |
+
+## Development begun in this increment
+
+[Research case workflow API](RESEARCH_CASE_WORKFLOW.md): create an owner-bound case from an exact saved prediction version, append notes, record a closing research outcome and inspect persisted history. Creation retries use an idempotency key; edits require the observed case version. The source prediction snapshot remains attached even if the original history row later disappears.
+
+This is the first backend slice of Phase 1 above. It is disabled by default, uses a separate local case database and is verified with synthetic test records. The existing authenticated database remains schema 8. UI/gateway integration, runtime configuration, case-store backup/retention, agent/optimization links, protected audit and deployed qualification are **not complete**. New API source changes also require fresh final-revision release/recovery evidence before any future deployment.
+
+## Working sequence
+
+Finish one connected research journey before broadening more workspace screens or adding further recovery variants. Implement and test the case API, connect its UI, then attach existing evidence/agents and proposals with exact version binding. Work on useful model/data objectives in parallel only where independent data is available. Collect genuine human GenAI review while preparing platform controls locally. Merge and deployment decisions remain outside this development increment.
+
+No completion percentage, hiring probability or production-ready claim follows from this plan.

@@ -58,6 +58,7 @@ from services.api.distributions import load_distributions
 from services.api.explanations import load_explanations
 from services.api.route_history import lookup as lookup_route, LookupBusy, LookupUnavailable, RouteNotObserved
 from services.api.synthetic_scoring import SyntheticScoreRequest,SyntheticScoringService
+from services.api.research_cases import ResearchCaseService, OpenCase, ChangeCase, CaseConflict, CaseMissing
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -178,11 +179,14 @@ def read_model_report(directory: Path):
 
 def create_app(database: Path | None = None, model_directory: Path | None = None,
                research_model_directory: Path | None = None, knowledge_index: Path | None = None,
-               synthetic_scoring: SyntheticScoringService | None = None):
+               synthetic_scoring: SyntheticScoringService | None = None,
+               research_cases: ResearchCaseService | None = None):
     config=validate_environment(os.environ)
     database = Path(database) if database is not None else Path(
         os.environ.get("AIN_DB_PATH", str(STATE / "ain.sqlite3")))
     model_directory = model_directory if model_directory is not None else STATE / "models/delay-baseline-v1"
+    if research_cases is not None and research_cases.source_database.resolve() != database.resolve():
+        raise ValueError('Research case source must match the authenticated database')
     research_model_directory = research_model_directory if research_model_directory is not None else STATE / "models/delay-v2"
     predictor = ResearchPredictor(research_model_directory)
     history = ResearchHistory(database)
@@ -508,6 +512,41 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.get('/api/v1/research/knowledge-status')
     def knowledge_status():
         return knowledge.status()
+
+    def case_response(request, operation, write=False):
+        if request.query_params:
+            return JSONResponse(status_code=422,content={'error':'unexpected_case_parameters'})
+        user = auth.session(request.cookies.get(COOKIE,''))
+        if not user or user['id'] != request.state.user['id'] or (write and user['role'] not in ('admin','researcher')):
+            return JSONResponse(status_code=403,content={'error':'case_access_denied'})
+        if research_cases is None:
+            return JSONResponse(status_code=503,content={'error':'research_cases_not_configured'})
+        try: return operation(user)
+        except PermissionError: return JSONResponse(status_code=403,content={'error':'case_access_denied'})
+        except CaseMissing: return JSONResponse(status_code=404,content={'error':'case_or_source_unavailable'})
+        except CaseConflict: return JSONResponse(status_code=409,content={'error':'case_version_or_request_conflict'})
+        except (sqlite3.Error, ValueError, TypeError, KeyError):
+            return JSONResponse(status_code=503,content={'error':'research_case_unavailable'})
+
+    @app.get('/api/v1/research/case-sources')
+    def case_sources(request: Request):
+        return case_response(request,lambda user:{'sources':research_cases.sources(user),'production_ready':False})
+
+    @app.get('/api/v1/research/cases')
+    def case_list(request: Request):
+        return case_response(request,lambda user:{'cases':research_cases.recent(user),'production_ready':False})
+
+    @app.get('/api/v1/research/cases/{case_id}')
+    def case_detail(case_id: UUID, request: Request):
+        return case_response(request,lambda user:research_cases.get(user,case_id))
+
+    @app.post('/api/v1/research/cases')
+    def case_open(payload: OpenCase, request: Request, idempotency_key: UUID = Header(alias='Idempotency-Key')):
+        return case_response(request,lambda user:research_cases.open(user,payload,idempotency_key),write=True)
+
+    @app.post('/api/v1/research/cases/{case_id}/events')
+    def case_event(case_id: UUID, payload: ChangeCase, request: Request):
+        return case_response(request,lambda user:research_cases.change(user,case_id,payload),write=True)
 
     @app.get('/api/v1/research/synthetic-scoring')
     def synthetic_scoring_context(request:Request):
