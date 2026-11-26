@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Current Implementation Baseline (AIN-EA-01)](docs/enterprise-architecture/01-CURRENT-IMPLEMENTATION-BASELINE.md)** — reviewed source revision, implemented and experimental capabilities, recorded verification, deployment limits and all 24 open production gates.
+
 A research project on how aviation analysts can verify flight-data lineage, evaluate delay alerts, and review synthetic gate proposals.
 
 - [75-second walkthrough](docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4) covers the delay-alert trade-off and the recorded synthetic gate-allocation scenario.
