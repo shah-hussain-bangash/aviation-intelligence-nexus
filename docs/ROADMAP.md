@@ -2,6 +2,8 @@
 
 Keep all 64 workspace options. Prioritize one integrated, measurable workflow before expanding services.
 
+The [current remaining development phases](REMAINING_DEVELOPMENT.md) reconcile older acceptance descriptions with local implementation. The next functional priority is the [persistent research-case workflow](RESEARCH_CASE_WORKFLOW.md), beginning with its opt-in authenticated backend API.
+
 The local-first [production delivery sequence](PRODUCTION_DELIVERY_PLAN.md) defines the exit evidence for these phases. Its first foundation increment is [request correlation and safe error telemetry](REQUEST_CORRELATION.md); this does not close a production acceptance requirement.
 
 1. **Foundation:** Python API, persistent database, migrations, identity, permissions and correlated audit.
