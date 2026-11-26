@@ -72,4 +72,6 @@ The [restored retrieval API journey](RESTORED_RETRIEVAL_API.md) connects a copie
 
 The [isolated retrieval-index recovery extension](RETRIEVAL_INDEX_RECOVERY.md) verifies a sanitized failed query without saved history, continued dashboard liveness and a successful saved query after restoring only the owned copy's index. It does not stop the shared provider or qualify provider or off-host recovery, generated answers or production acceptance.
 
+The [interrupted index repair command](INTERRUPTED_INDEX_REPAIR.md) restores only a missing private rehearsal index from its retained original under an explicit offline declaration and exact plan/hash/corpus checks. It does not stop orphaned services, repair a database, execute retrieval or establish automatic/production recovery.
+
 Every milestone needs executable code, observed test results, documented limitations and a reproducible demo. Planning targets and synthetic outcomes must not be presented as measured airline improvements.

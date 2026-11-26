@@ -20,6 +20,8 @@ The index is restored in a `finally` block after ordinary request/check errors. 
 
 ## Verification and limits
 
+For an interrupted, confirmed-offline private case whose index remains moved aside, use the separate [guarded offline artifact repair](INTERRUPTED_INDEX_REPAIR.md). It preserves the retained original and does not stop or restart orphaned services.
+
 Focused check: `python -m unittest tests.test_restored_retrieval_api -v`. The synthetic-provider integration test exercises real proxy/authentication, missing-file failure, unchanged history, restored retrieval and saved-result counts. Other tests verify mode admission, restoration after a body exception, occupied retained-file refusal and preservation of both versions on a restore collision. Generation is forbidden by the fixture.
 
 Run `npm test` for regression checks. Native local-provider execution is separate evidence. The report records the fault type, HTTP statuses, recovery checks, successful query IDs and original-data preservation. It does not establish provider-outage recovery, independent/off-host monitoring, load capacity, protected history, generated-answer accuracy or production readiness. No dashboard deployment or production requirement is accepted by this rehearsal.
