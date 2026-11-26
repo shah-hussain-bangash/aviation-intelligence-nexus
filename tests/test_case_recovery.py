@@ -145,6 +145,7 @@ class CaseRecoveryTests(unittest.TestCase):
         for name in ('models/delay-v2/model.joblib','models/delay-v2/report.json','knowledge/index.json'):self.assertEqual((self.state/name).read_bytes(),(self.target/name).read_bytes())
 
     def test_actual_cli_verifies_new_private_bundle_and_rejects_existing_destination(self):
+        (recovery.ROOT/'.local').mkdir(exist_ok=True)
         folder=tempfile.TemporaryDirectory(dir=recovery.ROOT/'.local');target=Path(folder.name).resolve()
         self.assertTrue(target.is_relative_to((recovery.ROOT/'.local').resolve()));self.addCleanup(folder.cleanup)
         env={k:v for k,v in os.environ.items() if not k.startswith('AIN_') and k!='PORT'}
