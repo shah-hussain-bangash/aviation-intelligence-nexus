@@ -2,6 +2,8 @@
 
 ## Start here
 
+- **[Business Requirements and Acceptance Criteria (AIN-EA-02)](docs/enterprise-architecture/02-BUSINESS-REQUIREMENTS-AND-ACCEPTANCE.md)** — research objectives, stakeholder responsibilities, 18 business requirements, 8 quality requirements and 6 acceptance journeys.
+
 - **[Current Implementation Baseline (AIN-EA-01)](docs/enterprise-architecture/01-CURRENT-IMPLEMENTATION-BASELINE.md)** — reviewed source revision, implemented and experimental capabilities, recorded verification, deployment limits and all 24 open production gates.
 
 A research project on how aviation analysts can verify flight-data lineage, evaluate delay alerts, and review synthetic gate proposals.
