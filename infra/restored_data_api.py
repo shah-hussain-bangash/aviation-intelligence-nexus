@@ -247,7 +247,8 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
               'recovery_revision': expected_revision, 'recovery_report_sha256': report_sha256,
               'primary_state_accessed': False, 'qualified_source_modified': False,
               'probe_plaintext_passwords_persisted': False, 'actual_existing_password_tested': False,
-              'prediction_requested': with_prediction, 'inference_executed': False,
+              'prediction_requested': with_prediction, 'retrieval_requested': with_retrieval,
+              'inference_executed': False, 'embedding_inference_executed': False,
               'model_retrained': False, 'model_accuracy_evaluated': False, 'production_ready': False, 'checks': {}}
     processes = []; logs = []; stage = 'private_copy'
 
@@ -265,6 +266,8 @@ def run_check(report_path, report_sha256, expected_revision, *, web_port=18180, 
         (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
         password = secrets.token_urlsafe(32); baseline = worker('prepare', password)
         if with_prediction: report['inference_executed'] = True
+        if with_retrieval:
+            report.update(inference_executed=True, embedding_inference_executed=True)
         plan.update(baseline); (case / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
         stage = 'owned_services'
         commands = ([sys.executable, '-m', 'uvicorn', 'services.api.main:app', '--host', '127.0.0.1', '--port', str(api_port),

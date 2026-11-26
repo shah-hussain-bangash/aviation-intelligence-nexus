@@ -93,6 +93,10 @@ class RestoredRetrievalApiTests(unittest.TestCase):
         self.assertTrue(report['copy_state_checks']['two_bound_probe_retrievals_only'])
         self.assertEqual(report['retrieval']['evidence_counts'][1], 0)
         self.assertFalse(report['retrieval']['generation_requested'])
+        self.assertTrue(report['retrieval_requested'])
+        self.assertTrue(report['inference_executed'])
+        self.assertTrue(report['embedding_inference_executed'])
+        self.assertFalse(report['prediction_requested'])
         self.assertTrue(report['owned_services_stopped'])
         self.assertEqual(source_pin, probe.checksum(self.case / 'restored/ain.sqlite3'))
         state = target.parent / 'state'
