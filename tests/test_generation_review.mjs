@@ -48,3 +48,18 @@ test('changed claims, skipped cases, invalid ratings and unavailable credit are 
     assert.throws(() => reviewSnapshot(initial, edits));
   }
 });
+
+test('resumed declarations remain editable against the original undecided contract', () => {
+  const initial = fixture(), saved = structuredClone(initial);
+  saved.reviewer_label = 'SYNTHETIC RESUME TEST';
+  saved.cases[0].source_checked = true; saved.cases[0].question_answered = 'no';
+  saved.cases[0].claims[0].supported = 'no'; saved.cases[0].claims[0].relevant = 'no';
+  saved.cases[0].notes = '<literal> notes';
+  const resumed = reviewSnapshot(initial, saved);
+  assert.deepEqual(resumed, saved);
+  assert.equal(reviewProgress(resumed).declared, 1);
+  resumed.cases[0].question_answered = 'uncertain';
+  assert.equal(reviewProgress(reviewSnapshot(initial, resumed)).pending, 2);
+  assert.equal(saved.cases[0].question_answered, 'no');
+  assert.deepEqual(initial, fixture());
+});

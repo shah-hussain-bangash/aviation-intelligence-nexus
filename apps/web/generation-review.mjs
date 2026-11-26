@@ -35,8 +35,8 @@ export function reviewProgress(annotations) {
   return counts;
 }
 
-export function mountGenerationReview(root, packet, initial) {
-  const edits = structuredClone(initial);
+export function mountGenerationReview(root, packet, initial, seed = initial, seedHash = null) {
+  const edits = reviewSnapshot(initial, seed);
   const node = (tag, text, className) => {
     const el = document.createElement(tag);
     if (text !== undefined) el.textContent = text;
@@ -58,11 +58,12 @@ export function mountGenerationReview(root, packet, initial) {
   sidebar.append(progress);
   const label = node('label', 'Reviewer label'), reviewer = node('input');
   reviewer.maxLength = 80; reviewer.placeholder = 'Enter your name or review label'; reviewer.autocomplete = 'off';
+  reviewer.value = edits.reviewer_label;
   reviewer.addEventListener('input', () => { edits.reviewer_label = reviewer.value; update(); });
   label.append(reviewer); sidebar.append(label);
   sidebar.append(node('p', 'Unsigned self-review. Your identity is not verified. These declarations do not approve airline operations.', 'notice'));
   const download = node('button', 'Download review JSON', 'primary'); download.type = 'button';
-  const message = node('p', 'Changes stay in this tab. Download before closing; refresh clears your entries.', 'small'); message.setAttribute('role', 'status');
+  const message = node('p', (seedHash ? 'Resumed from the supplied review file. ' : '') + 'Download new changes before closing. Refresh restores this page’s starting entries.', 'small'); message.setAttribute('role', 'status');
   download.addEventListener('click', () => {
     try {
       const annotations = reviewSnapshot(initial, edits);
@@ -77,6 +78,8 @@ export function mountGenerationReview(root, packet, initial) {
   const provenance = node('details'); provenance.append(node('summary', 'Packet & model identity'));
   provenance.append(node('p', `Packet SHA-256: ${initial.packet_sha256}`, 'mono'), node('p', `Report SHA-256: ${packet.report_sha256}`, 'mono'),
     node('p', `Generator: ${packet.report.generation_model}`), node('p', packet.report.generation_digest, 'mono'));
+  if (seedHash) provenance.append(node('p', `Starting review file SHA-256: ${seedHash}`, 'mono'),
+    node('p', 'File binding verified when this page was built. Reviewer identity and semantic correctness are not verified.', 'small'));
   sidebar.append(provenance);
   content.append(node('p', 'LOCAL FILE · NO UPLOADS · NO AUTOMATIC RATINGS', 'eyebrow'), node('h2', 'Review the saved diagnostic cases'),
     node('p', 'Support checks whether the cited context justifies the claim. Relevance checks whether the claim helps answer the question. Unavailable runs cannot receive answer-quality credit.', 'guidance'));
@@ -106,12 +109,14 @@ export function mountGenerationReview(root, packet, initial) {
       card.append(node('p', 'Unavailable / rejected. Retained for transparency; no answer-quality rating is allowed.', 'notice'));
     } else {
       const checked = node('label', undefined, 'checkbox'), input = node('input'); input.type = 'checkbox';
+      input.checked = row.source_checked;
       input.addEventListener('change', () => { row.source_checked = input.checked; update(); });
       checked.append(input, document.createTextNode(' I have checked the source context for this case.')); card.append(checked);
-      if (row.question_answered === 'uncertain') card.append(select('Does the answer address the question?', row.question_answered, value => { row.question_answered = value; }));
+      if (initial.cases[index].question_answered === 'uncertain') card.append(select('Does the answer address the question?', row.question_answered, value => { row.question_answered = value; }));
       else card.append(select('Was abstaining appropriate?', row.abstention_appropriate, value => { row.abstention_appropriate = value; }));
     }
     const notesLabel = node('label', 'Reviewer notes (optional)'), notes = node('textarea'); notes.maxLength = 2000; notes.rows = 2;
+    notes.value = row.notes;
     notes.addEventListener('input', () => { row.notes = notes.value; }); notesLabel.append(notes); card.append(notesLabel); content.append(card);
   });
   const corpus = node('details', undefined, 'case'); corpus.append(node('summary', 'Read the six full source documents'));
