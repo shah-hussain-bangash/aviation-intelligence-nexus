@@ -95,3 +95,11 @@ class KnowledgeAccessTests(unittest.TestCase):
             with self.subTest(token_type=type(token).__name__), self.assertRaises(PermissionError):
                 EvidenceHistory(self.database).save(self.user, RESULT, session_token=token)
         self.assertEqual(self.count(), 0)
+
+    def test_query_file_permission_failure_remains_service_unavailable(self):
+        with patch.object(Knowledge, 'query', side_effect=PermissionError('private filesystem detail')):
+            response = self.client.post('/api/v1/research/knowledge-query', json=QUESTION)
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()['error'], 'knowledge_unavailable')
+        self.assertNotIn('private filesystem detail', response.text)
+        self.assertEqual(self.count(), 0)
