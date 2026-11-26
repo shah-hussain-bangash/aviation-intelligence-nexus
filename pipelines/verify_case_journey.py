@@ -29,12 +29,14 @@ from services.api.main import create_app, initialize
 from services.api.paths import ROOT
 from services.api.research_cases import ResearchCaseService, digest
 from services.api.case_jobs import CaseJobs
+from services.api.prediction import ResearchPredictor,Scenario
+from pipelines.journey_prediction import copy_registered_model,SCENARIO,source_preserved,validate_options
 
 SOURCES=('pipelines/verify_case_journey.py','services/api/research_cases.py',
          'services/api/case_jobs.py','services/api/case_agents.py','services/api/case_gates.py',
          'agents/jobs.py','agents/store.py','agents/distribution_evidence.py',
          'agents/runtime.py','agents/tools.py','agents/quality.py','rag/ollama.py',
-         'rag/index.py','rag/service.py','rag/history.py')
+         'rag/index.py','rag/service.py','rag/history.py','services/api/prediction.py','pipelines/journey_prediction.py')
 BASE='/api/v1/research/cases'
 ORIGIN={'Origin':'http://localhost:8080'}
 
@@ -82,12 +84,17 @@ def validate_live_qa(saved,index_path,expected_models):
         'semantic_usefulness_assessed':False}
 
 
-def exercise(directory,*,live_ai=False,live_rag=False):
+def exercise(directory,*,live_ai=False,live_rag=False,live_prediction=False,model_sha256=None):
     """Create only a new isolated fixture. Existing directories are never adopted."""
     if type(live_ai) is not bool:raise ValueError('explicit_live_ai_boolean_required')
     if type(live_rag) is not bool:raise ValueError('explicit_live_rag_boolean_required')
     if live_rag and not live_ai:raise ValueError('live_rag_requires_live_ai')
+    validate_options(live_prediction,model_sha256)
     host();directory=local(directory);directory.mkdir(parents=True,exist_ok=False)
+    model_copy=directory/'prediction-model';prediction_execution=None
+    if live_prediction:
+        try:prediction_execution=copy_registered_model(model_copy,model_sha256)
+        except (OSError,ValueError):raise RuntimeError('journey_check_failed:registered_prediction_model_unavailable_or_mismatched') from None
     private_index=directory/'knowledge/index.json';index_calls=0
     if live_rag:
         installed=ollama.models()
@@ -98,13 +105,13 @@ def exercise(directory,*,live_ai=False,live_rag=False):
             index_calls=embedded.call_count
     database=directory/'ain.sqlite3';sidecar=directory/'research-cases.sqlite3'
     initialize(database);cases=ResearchCaseService(database,sidecar)
-    app=create_app(database,research_cases=cases,knowledge_index=private_index);password=secrets.token_urlsafe(32)
+    app=create_app(database,research_cases=cases,knowledge_index=private_index,research_model_directory=model_copy);password=secrets.token_urlsafe(32)
     for name,role in [('journey-owner','admin'),('journey-other','admin'),('journey-viewer','viewer')]:
         app.state.auth_store.create_user(name,password,role)
     with closing(sqlite3.connect(database)) as db:
         row=db.execute("SELECT id,username,role FROM auth_users WHERE username='journey-owner'").fetchone()
     owner=dict(zip(('id','username','role'),row));store=AgentStore(database)
-    source=ResearchHistory(database).save(str(uuid4()),{'scope':'SYNTHETIC combined journey'},
+    source=None if live_prediction else ResearchHistory(database).save(str(uuid4()),{'scope':'SYNTHETIC combined journey'},
         {'model_version':'delay-v2','artifact_sha256':'a'*64,'research_only':True,
          'operational_serving_approved':False,'arrival_delay_15_probability':0.2,
          'limitations':['SYNTHETIC stored prediction; no inference executed']},owner)
@@ -150,11 +157,38 @@ def exercise(directory,*,live_ai=False,live_rag=False):
         client=stack.enter_context(TestClient(app))
         check('anonymous_denied',client.get(BASE).status_code==401)
         headers=login(client,'journey-owner')
+        if live_prediction:
+            prediction_headers={**headers,'Idempotency-Key':str(uuid4())}
+            source=request(client,'/api/v1/research/predict',SCENARIO,prediction_headers)
+            replayed=request(client,'/api/v1/research/predict',SCENARIO,prediction_headers)
+            check('live_prediction_replay_same_saved_result',replayed['run_id']==source['run_id'] and replayed['replayed'])
+            check('live_prediction_model_scope_and_bounds',source['artifact_sha256']==model_sha256 and source['scenario']==SCENARIO
+                and source['research_only'] is True and source['operational_serving_approved'] is False
+                and 0<=source['arrival_delay_15_probability']<=1 and len(source['warnings'])>=4)
+            parity=ResearchPredictor(model_copy).predict(Scenario(**SCENARIO))
+            check('live_prediction_fresh_reload_parity',parity['arrival_delay_15_probability']==source['arrival_delay_15_probability'] and parity['artifact_sha256']==model_sha256)
+            check('live_prediction_unknown_airport_denied',client.post('/api/v1/research/predict',json={**SCENARIO,'origin':'DXB'},headers={**headers,'Idempotency-Key':str(uuid4())}).status_code==422)
+            check('live_prediction_future_date_denied',client.post('/api/v1/research/predict',json={**SCENARIO,'flight_date':'2026-01-01'},headers=headers).status_code==422)
+            artifact=model_copy/'model.joblib';offline=model_copy/'model.joblib.offline';artifact.rename(offline)
+            try:check('missing_prediction_artifact_denied',client.post('/api/v1/research/predict',json=SCENARIO,headers={**headers,'Idempotency-Key':str(uuid4())}).status_code==503)
+            finally:offline.rename(artifact)
+            original=artifact.read_bytes()
+            try:
+                artifact.write_bytes(original+b'SYNTHETIC PRIVATE COPY CORRUPTION CHECK')
+                check('altered_prediction_artifact_denied',client.post('/api/v1/research/predict',json=SCENARIO,headers={**headers,'Idempotency-Key':str(uuid4())}).status_code==503)
+            finally:artifact.write_bytes(original)
+            check('prediction_copy_restored',hashlib.sha256(artifact.read_bytes()).hexdigest()==model_sha256)
+            with closing(sqlite3.connect(database)) as db:
+                check('failed_predictions_not_saved',db.execute('SELECT count(*) FROM research_runs').fetchone()[0]==1)
+                stored=db.execute('SELECT result_json FROM research_runs WHERE id=? AND owner_id=?',(source['run_id'],owner['id'])).fetchone()
+                check('live_prediction_saved_exactly',stored is not None and json.loads(stored[0])==source)
+            prediction_execution.update(saved_run_id=source['run_id'],snapshot_sha256=digest(source),probability=source['arrival_delay_15_probability'],reload_parity_verified=True)
         source_ref=client.get('/api/v1/research/case-sources').json()['sources'][0]
         check('saved_prediction_pin',source_ref['run_id']==source['run_id'] and source_ref['source_sha256']==digest(source))
         opened=request(client,BASE,{'source_run_id':source['run_id'],'source_sha256':source_ref['source_sha256'],
             'title':'SYNTHETIC combined journey; no airline action'}, {**headers,'Idempotency-Key':str(uuid4())})
         path=BASE+'/'+opened['id'];checkpoint(opened)
+        if live_prediction:check('live_prediction_retained_exactly',opened['source_snapshot']==source and opened['source_sha256']==digest(source))
         check('csrf_denied',client.post(path+'/events',json={'expected_version':1,'action':'note','note':'SYNTHETIC forbidden note'},headers=ORIGIN).status_code==403)
         noted=request(client,path+'/events',{'expected_version':1,'action':'note','note':'SYNTHETIC investigation note'},headers);checkpoint(noted)
         qa_execution=None
@@ -249,17 +283,19 @@ def exercise(directory,*,live_ai=False,live_rag=False):
         check('viewer_review_and_case_writes_denied',client.post('/api/v1/research/agent-review',json=review,headers=viewer_headers).status_code==403 and client.post(path+'/events',json={'expected_version':6,'action':'note','note':'SYNTHETIC forbidden'},headers=viewer_headers).status_code==403)
         if not live_ai:check('no_provider_or_planner_execution',provider.call_count==planner.call_count==0)
     # A new app/service instance must read the same saved case, not the prior Python object.
-    restarted=create_app(database,research_cases=ResearchCaseService(database,sidecar),knowledge_index=private_index)
+    restarted=create_app(database,research_cases=ResearchCaseService(database,sidecar),knowledge_index=private_index,research_model_directory=model_copy)
     restarted.state.job_worker.enabled=False
     with TestClient(restarted) as client:
         login(client,'journey-owner')
         check('new_application_instance_preserves_closed_case',client.get(path).json()==closed)
     if live_ai:check('live_worker_stopped',worker.task.done())
+    if live_prediction:check('registered_prediction_source_preserved',source_preserved(prediction_execution))
     return {'checks':checks,'passed':all(checks.values()),'trace':trace,'case_id':closed['id'],
         'planner_executed':bool(live_ai and planner.call_count),'generator_executed':bool(live_ai and provider.call_count),
         'worker_loop_executed':live_ai,'worker_availability_stubbed':not live_ai,'deterministic_checkpoint_fixture':not live_ai,
         'provider_calls':{'planner':planner.call_count,'generator':provider.call_count-agent_generation_start,'tools':tool_calls.call_count},
         'retrieval_executed':live_rag,'qa_generation_executed':live_rag,'qa_fixture':not live_rag,'qa_execution':qa_execution,
+        'prediction_inference_executed':live_prediction,'prediction_fixture':not live_prediction,'prediction_execution':prediction_execution,
         'local_model':{'name':ollama.CHAT_MODEL,'digest':model} if live_ai else None,
         'captured_case_sha256':queued['request']['case_context']['case_sha256'],
         'source_run_id':source['run_id'],'prediction_source_sha256':source_ref['source_sha256'],
@@ -269,29 +305,36 @@ def exercise(directory,*,live_ai=False,live_rag=False):
         'gate_snapshot_sha256':gate_ref['sha256'],'final_case_sha256':digest(closed)}
 
 
-def verify(directory,*,live_ai=False,live_rag=False):
+def verify(directory,*,live_ai=False,live_rag=False,live_prediction=False,model_sha256=None):
     if type(live_ai) is not bool:raise ValueError('explicit_live_ai_boolean_required')
     if type(live_rag) is not bool:raise ValueError('explicit_live_rag_boolean_required')
     if live_rag and not live_ai:raise ValueError('live_rag_requires_live_ai')
+    validate_options(live_prediction,model_sha256)
     host()
     directory=local(directory)
     if not directory.is_relative_to(ROOT/'.local') or directory==ROOT/'.local':
         raise ValueError('new_private_directory_under_local_required')
     report={'format':'ain-combined-case-journey-v1','checked_at':datetime.now(timezone.utc).isoformat(),
         **identity(),'passed':False,'synthetic_only':True,'transport':'in_process_asgi_testclient','live_ai_requested':live_ai,
-        'scope':'Synthetic accounts, predictions, reviews and gate scenarios; fixed public project evidence, not an airline operations dataset.',
-        'prediction_inference_executed':False,'retrieval_executed':None if live_rag else False,'live_rag_requested':live_rag,
+        'scope':'Synthetic accounts, reviews and gates; historical research scenarios, fixed public project evidence, and actual prediction only when explicitly requested. Not airline operations.',
+        'live_prediction_requested':live_prediction,'prediction_fixture':not live_prediction,
+        'expected_prediction_artifact_sha256':model_sha256,
+        'prediction_inference_executed':None if live_prediction else False,'retrieval_executed':None if live_rag else False,'live_rag_requested':live_rag,
         'qa_generation_executed':None if live_rag else False,'qa_fixture':not live_rag,'planner_executed':None if live_ai else False,
         'generator_executed':None if live_ai else False,'worker_loop_executed':None if live_ai else False,
         'worker_availability_stubbed':not live_ai,'deterministic_checkpoint_fixture':not live_ai,
         'recorded_distribution_reader_executed':None if live_ai else False,'synthetic_milp_executed':None if live_ai else False,
         'genuine_human_acceptance':False,'primary_database_accessed':False,
         'deployment_performed':False,'production_ready':False}
-    before={p:hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest() for p in (*SOURCES,*(knowledge_index.SOURCES if live_rag else ()))}
+    before={p:hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest() for p in (*SOURCES,*(knowledge_index.SOURCES if live_rag else ()),*(('docs/reports/Delay_v2.json',) if live_prediction else ()))}
     # Refuse an existing target before creating any files or publishing a report.
     if directory.exists():raise ValueError('fresh_fixture_directory_required')
     try:
-        report.update(exercise(directory,live_ai=True,live_rag=True) if live_rag else exercise(directory,live_ai=True) if live_ai else exercise(directory))
+        options={}
+        if live_ai:options['live_ai']=True
+        if live_rag:options['live_rag']=True
+        if live_prediction:options.update(live_prediction=True,model_sha256=model_sha256)
+        report.update(exercise(directory,**options))
         report['source_sha256'].update(before)
         report['checks']['source_unchanged']=all(hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest()==h for p,h in before.items())
         report['passed']=all(report['checks'].values())
@@ -306,8 +349,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('directory',type=Path)
     parser.add_argument('--live-ai',action='store_true',help='Explicitly run the real local Ollama worker; fixtures still use synthetic reviews.')
     parser.add_argument('--live-rag',action='store_true',help='With --live-ai, build a fresh private index and attach an actual saved generated Q&A.')
+    parser.add_argument('--live-prediction',action='store_true',help='Copy only the registered local delay-v2 artifact and execute historical prediction.')
+    parser.add_argument('--model-sha256',help='Explicit SHA-256 of the trusted registered artifact; required with --live-prediction.')
     args=parser.parse_args()
-    try:report=verify(args.directory,live_ai=args.live_ai,live_rag=args.live_rag)
+    try:report=verify(args.directory,live_ai=args.live_ai,live_rag=args.live_rag,live_prediction=args.live_prediction,model_sha256=args.model_sha256)
     except ValueError as error:parser.exit(2,str(error)+'\n')
     print(json.dumps(report,indent=2));return 0 if report['passed'] else 1
 
