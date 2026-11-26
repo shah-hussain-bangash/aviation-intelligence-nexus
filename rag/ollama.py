@@ -38,7 +38,7 @@ def embed(texts):
     return call('embed', {'model': EMBED_MODEL, 'input': texts, 'truncate': False}, timeout=30)['embeddings']
 
 
-def generate(question, evidence, timeout=60):
+def generate(question, evidence, timeout=60, *, verbatim=False):
     if not CHAT_LOCK.acquire(blocking=False):
         raise RuntimeError('Local generator busy')
     try:
@@ -48,7 +48,7 @@ def generate(question, evidence, timeout=60):
         if not quotes:
             return {'claims': []}
         schema = {'type': 'object', 'properties': {'claims': {'type': 'array', 'maxItems': 3,
-            'items': {'type': 'object', 'properties': {'text': {'type': 'string', 'maxLength': 700},
+            'items': {'type': 'object', 'properties': {'text': ({'type':'string','enum':quotes} if verbatim else {'type': 'string', 'maxLength': 700}),
                 'citation': {'type': 'string', 'enum': [row['id'] for row in evidence]},
                 'quote': {'type': 'string', 'enum': quotes}}, 'required': ['text', 'citation', 'quote'], 'additionalProperties': False}}},
             'required': ['claims'], 'additionalProperties': False}
@@ -63,7 +63,8 @@ def generate(question, evidence, timeout=60):
                     '"quote":"exact supporting substring from that evidence"}]}. '
                     'At most three short claims. Choose a quote that directly contains the claimed fact and all claimed numbers. '
                     'Each quote must be a complete, exact 20-400 character source line or sentence; preserve table separators. '
-                    'If evidence cannot answer the question, return {"claims":[]}. Do not invent facts or citations.'},
+                    'If evidence cannot answer the question, return {"claims":[]}. Do not invent facts or citations.'
+                    + (' Exact-quotation answer style is requested: set text exactly equal to quote, copying only complete supported source wording. Do not add model labels or explanations.' if verbatim else '')},
                 {'role': 'user', 'content': json.dumps({'question': question, 'evidence': evidence})}]}
         response = call('chat', payload, timeout=timeout)
         if response.get('done') is not True or response.get('done_reason') != 'stop':
