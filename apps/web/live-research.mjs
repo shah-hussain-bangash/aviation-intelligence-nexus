@@ -5,6 +5,7 @@ import {mountScopedLab} from './scoped-answer-lab.mjs';
 import {mountSyntheticScoring} from './synthetic-scoring.mjs';
 import {mountResearchCases} from './research-cases.mjs';
 import {mountDuration} from './duration-evaluation.mjs';
+import {mountJune} from './june-evaluation.mjs';
 import {mountTradeoffs} from './threshold-tradeoffs.mjs';
 import {mountQuality} from './data-quality.mjs';
 import {mountSecurity} from './account-security.mjs';
@@ -87,6 +88,8 @@ if (typeof document !== 'undefined') {
   const casesLink=document.createElement('a');casesLink.className='btn sm';casesLink.href='#research-cases';casesLink.textContent='Research cases';section.querySelector('.research-toolbar').append(casesLink);
   const explanations = mountExplanations(section.querySelector('.research-inner'));
   const duration = mountDuration(section.querySelector('.research-inner'));
+  const june = mountJune(section.querySelector('.research-inner'));
+  const juneLink=document.createElement('a');juneLink.className='btn sm';juneLink.href='#june-evaluation';juneLink.textContent='Inspect June evaluation';juneLink.hidden=true;section.querySelector('.research-toolbar').append(juneLink);
   const retrieval = mountRetrieval(section.querySelector('.research-inner'));
   const scopedLab = mountScopedLab(section.querySelector('.research-inner'));
   const syntheticLab=mountSyntheticScoring(section.querySelector('.research-inner'));
@@ -150,6 +153,8 @@ if (typeof document !== 'undefined') {
     diagnostics.setSession(user);
     tradeoffs.setSession(user);
     duration.setSession(user);
+    june.setSession(user);
+    juneLink.hidden=!user;
     retrieval.setSession(user);
     scopedLab.setSession(user);
     syntheticLab.setSession(user);

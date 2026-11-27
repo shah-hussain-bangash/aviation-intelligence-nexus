@@ -14,6 +14,7 @@ import {validateQuality,renderQuality} from '../apps/web/data-quality.mjs';
 import {canWithdrawSharing} from '../apps/web/sharing-withdrawal.mjs';
 import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/threshold-tradeoffs.mjs';
 import {validateDuration,renderDuration} from '../apps/web/duration-evaluation.mjs';
+import {validateJune,renderJune,mountJune} from '../apps/web/june-evaluation.mjs';
 import {validateDurationSnapshot,renderDurationSnapshot} from '../apps/web/agent-duration-evidence.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
@@ -695,6 +696,43 @@ test('duration evaluation validates arithmetic and rejects false success while e
  let r=durationFixture();r.research_check.passed=true;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.model.rmse=1;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.residual_histogram.counts[0]++;assert.throws(()=>validateDuration(r));
  r=durationFixture();r.limitations[0]='<script>bad()</script>';const html=renderDuration(r);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.ok(r.test.training_mean_baseline.r2<0);assert.doesNotThrow(()=>validateDuration(r));
 });
+function juneFixture(){
+ const r=JSON.parse(fs.readFileSync(new URL('../docs/reports/June_2025_Frozen_Evaluation.json',import.meta.url),'utf8')),e=r.evaluation;
+ return {...r,format:'ain-june-evaluation-summary-v1',report_sha256:'1928b626dfe131611bd3668bdd48e8baeaf022b0bf8919c364a682ec0298c372',report_path:'docs/reports/June_2025_Frozen_Evaluation.json',integrity_verified:true,research_only:true,inference_executed_by_request:false,model:e.model,constant_training_prior:e.constant_training_prior,frozen_threshold:e.frozen_threshold,constant_probability:e.constant_probability,research_comparison:e.research_comparison,uncertainty:e.uncertainty,cohort_inventory:{carrier:14,origin:345}};
+}
+test('June card presents frozen metrics, exclusions, descriptive uncertainty and source identity',()=>{
+ const r=juneFixture();assert.equal(validateJune(r),r);const html=renderJune(r);
+ for(const text of ['611,575','599,472','0.6706','0.5816','0.6165','9,736','2,367','-0.0444','-0.0260','not percentage accuracy','globally untouched','no operational approval',r.report_sha256,r.archive_sha256])assert.ok(html.includes(text),text);
+ r.limitations[0]='<img src=x onerror=alert(1)>';assert.match(renderJune(r),/&lt;img/);assert.doesNotMatch(renderJune(r),/<img/);
+});
+test('June card rejects contradictory authority, populations, metrics, comparison and identity',()=>{
+ for(const mutate of [r=>r.production_ready=true,r=>r.inference_executed_by_request=true,r=>r.report_sha256='a'.repeat(64),r=>r.model.records++,r=>r.frozen_threshold=.5,r=>r.constant_probability=.5,r=>r.data_counts.rows_read++,r=>r.model.roc_auc=NaN,r=>r.model.log_loss=-1,r=>r.model.recall=1.1,r=>r.research_comparison.passed=false,r=>r.uncertainty.statistics.mean_log_loss_difference_model_minus_prior.point_estimate=0,r=>r.uncertainty.significance_or_independence_claim=true,r=>r.archive_sha256='bad',r=>r.limitations=[],r=>r.candidate_period='2025-07']){const r=juneFixture();mutate(r);assert.throws(()=>validateJune(r));}
+ const r=juneFixture();r.model.roc_auc=.55;r.research_comparison.checks.auc=false;r.research_comparison.passed=false;assert.match(renderJune(r),/Did not pass/);
+});
+function juneDOM(){
+ const prior=globalThis.document,nodes={};let section;
+ const node=()=>({innerHTML:'',textContent:'',disabled:false,hidden:false,events:{},addEventListener(name,fn){this.events[name]=fn;},replaceChildren(){this.innerHTML='';}});
+ globalThis.document={createElement(){section={...node(),setAttribute(){},querySelector(key){return nodes[key]??=node();}};return section;}};
+ const parent={append(){}};
+ return {parent,nodes,get section(){return section;},restore(){globalThis.document=prior;}};
+}
+const juneTick=()=>new Promise(resolve=>setImmediate(resolve));
+test('June card clears on refresh failure, signout and stale session responses',async()=>{
+ const dom=juneDOM(),pending=[];const ui=mountJune(dom.parent,{fetchEvidence:(path,options)=>{assert.equal(path,'/api/v1/research/june-evaluation');return new Promise(resolve=>pending.push({resolve,signal:options.signal}));}}),result=dom.nodes['[data-june-result]'],status=dom.nodes['[data-june-status]'],button=dom.nodes['[data-june-refresh]'];
+ const success=()=>({ok:true,json:async()=>juneFixture()});
+ try{
+  assert.equal(dom.section.hidden,true);assert.equal(button.disabled,true);assert.equal(pending.length,0);
+  ui.setSession({role:'viewer'});pending[0].resolve(success());await juneTick();assert.match(result.innerHTML,/599,472/);
+  const request=button.events.click();assert.equal(result.innerHTML,'');pending[1].resolve({ok:false});await request;assert.match(status.textContent,/cleared/);assert.equal(result.innerHTML,'');
+  ui.setSession({role:'researcher'});ui.setSession({role:'admin'});assert.equal(pending[2].signal.aborted,true);pending[3].resolve(success());await juneTick();assert.match(result.innerHTML,/599,472/);pending[2].resolve({ok:false});await juneTick();assert.match(result.innerHTML,/599,472/);
+  const last=button.events.click();ui.setSession(null);pending[4].resolve(success());await last;assert.equal(dom.section.hidden,true);assert.equal(result.innerHTML,'');assert.equal(status.textContent,'');assert.equal(button.disabled,true);
+ }finally{ui.setSession(null);for(const p of pending)p.resolve({ok:false});await juneTick();dom.restore();}
+});
+test('June card withholds an invalid successful response',async()=>{
+ const dom=juneDOM();const ui=mountJune(dom.parent,{fetchEvidence:async()=>({ok:true,json:async()=>({...juneFixture(),production_ready:true})})});
+ try{ui.setSession({role:'admin'});await juneTick();assert.equal(dom.nodes['[data-june-result]'].innerHTML,'');assert.match(dom.nodes['[data-june-status]'].textContent,/could not be verified/);}finally{ui.setSession(null);dom.restore();}
+});
+
 test('June evidence proxy forwards only fixed reads and the session cookie',async t=>{
  let calls=0;
  const backend=await serve(t,(req,res)=>{calls++;assert.equal(req.url,'/api/v1/research/june-evaluation');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"research_only":true}');});
