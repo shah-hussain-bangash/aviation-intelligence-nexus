@@ -15,6 +15,38 @@ An independent aviation decision-support portfolio project combining a comprehen
 
 **Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. A local Docker release and measured restoration are implemented; managed production identity and cloud deployment remain incomplete.**
 
+## Tableau analysis and dashboard screenshots
+
+**Historical US domestic flights, January–May 2025.** Report and screenshots prepared on 27 November 2026 from the published Tableau workbook, with Month, Airline and Origin set to All. These are recorded historical results, not current airline operations.
+
+| Scheduled flights | On-time arrivals | Delayed arrivals | Cancellation rate | Mean arrival delay |
+| ---: | ---: | ---: | ---: | ---: |
+| 2,835,101 | 79.5% | 571,908 | 1.48% | 6.2 min |
+
+- **May had the weakest monthly arrival performance:** 76.40% on time versus 81.21% in January; mean arrival delay rose from 3.76 to 10.19 minutes.
+- **Airline results varied:** Hawaiian had the highest observed on-time rate (84.40%); PSA had the lowest (71.40%). Carrier network and schedule differences prevent a causal ranking.
+- **DFW had the most origin flights in this dataset:** 127,955, with 73.48% arriving on time. The highest daily cancellation rate was 15.98% on 10 January 2025.
+
+[Read the full analysis, monthly results and definitions](docs/tableau/ANALYSIS_REPORT.md) · [Download the Tableau workbook](docs/tableau/Aviation_Intelligence_Nexus.twbx?raw=true)
+
+### Executive overview
+
+![Tableau executive overview with 2,835,101 scheduled flights, 79.5% on time, daily volume and airline and airport comparisons](docs/tableau/assets/executive-overview.png)
+
+Five weighted KPIs connect daily flight volume with monthly punctuality and reporting-carrier and major-airport comparisons.
+
+### Airline reliability benchmark
+
+![Tableau airline benchmark comparing flight volume, on-time percentage, cancellations and mean arrival delay](docs/tableau/assets/airline-benchmark.png)
+
+Compare volume and reliability together: a low cancellation rate does not necessarily imply a high on-time rate.
+
+### Network and disruption patterns
+
+![Tableau network dashboard with weekday reliability matrix, daily cancellation trend, airport on-time rates and departure delays](docs/tableau/assets/network-trends.png)
+
+The weekday/month matrix and daily cancellation series reveal where further investigation is useful. The charts do not establish the causes of disruptions.
+
 ## Running portal
 
 Captured on 27 November 2026 from the running dashboard and local API at [development revision `90bf682`](https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/tree/90bf6824f99811816356eb803e72e233fb590ac5). This development branch adds the versioned research-case workspace ahead of `main`. The browser used a disposable local account and database, repository-recorded historical analysis, and synthetic scenario data.

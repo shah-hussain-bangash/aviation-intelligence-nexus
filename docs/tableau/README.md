@@ -12,6 +12,10 @@ Open the downloaded `.twbx` in Tableau Desktop. The data is embedded; no databas
 
 Month, Airline and Origin controls are shared across all dashboards. Origin supports all airports together or one of 15 selected major airports. The airport charts display those 15 origins. There are 16 editable worksheets.
 
+## Screenshots and current analysis
+
+See the [historical analysis report](ANALYSIS_REPORT.md) for three actual Tableau screenshots, monthly results, carrier comparisons and source definitions.
+
 ## Data and definitions
 
 The package represents **2,835,101 historical US domestic reporting-carrier flights**, 1 January–31 May 2025, imported from the official Bureau of Transportation Statistics archives into this project's local database. It contains **1,154,864 daily carrier/origin/destination aggregates**, not individual flight records. All source flights contribute to the additive counts. It contains no local database, account records, credentials, live airline data or model predictions.

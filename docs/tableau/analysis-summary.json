@@ -1,0 +1,312 @@
+{
+  "prepared_on": "2026-11-27",
+  "coverage_start": "2025-01-01",
+  "coverage_end": "2025-05-31",
+  "source_workbook_sha256": "c0bfa8a2e6d1009b9335a5561899a23a2cd193ead574d37a90a34be573c2cd20",
+  "filters": {
+    "Month": "All months",
+    "Airline": "All airlines",
+    "Origin": "All origins"
+  },
+  "monthly": [
+    {
+      "name": "2025-01",
+      "flights": 539747,
+      "completed": 522269,
+      "on_time_rate": 0.8121083196590263,
+      "delayed": 98130,
+      "cancelled": 16312,
+      "cancellation_rate": 0.030221566771098312,
+      "mean_arrival_delay": 3.7566139288374383
+    },
+    {
+      "name": "2025-02",
+      "flights": 504884,
+      "completed": 496476,
+      "on_time_rate": 0.7923323584624433,
+      "delayed": 103102,
+      "cancelled": 7405,
+      "cancellation_rate": 0.014666735329303364,
+      "mean_arrival_delay": 5.71892901167428
+    },
+    {
+      "name": "2025-03",
+      "flights": 600872,
+      "completed": 592301,
+      "on_time_rate": 0.8040962281002396,
+      "delayed": 116034,
+      "cancelled": 6923,
+      "cancellation_rate": 0.011521588624532347,
+      "mean_arrival_delay": 5.451542374569686
+    },
+    {
+      "name": "2025-04",
+      "flights": 583950,
+      "completed": 577730,
+      "on_time_rate": 0.8033614318107074,
+      "delayed": 113604,
+      "cancelled": 4914,
+      "cancellation_rate": 0.008415104032879527,
+      "mean_arrival_delay": 5.664272237896595
+    },
+    {
+      "name": "2025-05",
+      "flights": 605648,
+      "completed": 597574,
+      "on_time_rate": 0.7639823687108207,
+      "delayed": 141038,
+      "cancelled": 6344,
+      "cancellation_rate": 0.010474731196998916,
+      "mean_arrival_delay": 10.188485442807083
+    }
+  ],
+  "airlines": [
+    {
+      "name": "Hawaiian Airlines",
+      "flights": 33058,
+      "completed": 32665,
+      "on_time_rate": 0.8439614266033981,
+      "delayed": 5097,
+      "cancelled": 352,
+      "cancellation_rate": 0.010647952084215621,
+      "mean_arrival_delay": 5.2351140364304305
+    },
+    {
+      "name": "Southwest Airlines",
+      "flights": 565379,
+      "completed": 558468,
+      "on_time_rate": 0.8158462078400195,
+      "delayed": 102844,
+      "cancelled": 5806,
+      "cancellation_rate": 0.010269217639848668,
+      "mean_arrival_delay": 3.145329723457745
+    },
+    {
+      "name": "Republic Airways",
+      "flights": 138591,
+      "completed": 135013,
+      "on_time_rate": 0.8145511913667572,
+      "delayed": 25038,
+      "cancelled": 3326,
+      "cancellation_rate": 0.02399867235246156,
+      "mean_arrival_delay": 2.6773792153348195
+    },
+    {
+      "name": "United Airlines",
+      "flights": 318692,
+      "completed": 315446,
+      "on_time_rate": 0.806584962243934,
+      "delayed": 61012,
+      "cancelled": 2464,
+      "cancellation_rate": 0.007731602926963965,
+      "mean_arrival_delay": 4.307634270207896
+    },
+    {
+      "name": "Spirit Airlines",
+      "flights": 89651,
+      "completed": 88240,
+      "on_time_rate": 0.8049750679963735,
+      "delayed": 17209,
+      "cancelled": 1267,
+      "cancellation_rate": 0.014132580785490402,
+      "mean_arrival_delay": 4.280530371713509
+    },
+    {
+      "name": "Delta Air Lines",
+      "flights": 406245,
+      "completed": 401975,
+      "on_time_rate": 0.8047565147086262,
+      "delayed": 78483,
+      "cancelled": 3342,
+      "cancellation_rate": 0.008226562788465088,
+      "mean_arrival_delay": 5.04343056160209
+    },
+    {
+      "name": "SkyWest Airlines",
+      "flights": 337640,
+      "completed": 331812,
+      "on_time_rate": 0.7999017515942762,
+      "delayed": 66395,
+      "cancelled": 4765,
+      "cancellation_rate": 0.014112664376258736,
+      "mean_arrival_delay": 7.5065729991682035
+    },
+    {
+      "name": "Envoy Air",
+      "flights": 115794,
+      "completed": 112290,
+      "on_time_rate": 0.7975242675215959,
+      "delayed": 22736,
+      "cancelled": 3234,
+      "cancellation_rate": 0.02792890823358723,
+      "mean_arrival_delay": 5.832540742719743
+    },
+    {
+      "name": "Alaska Airlines",
+      "flights": 94179,
+      "completed": 93031,
+      "on_time_rate": 0.7951435542991045,
+      "delayed": 19058,
+      "cancelled": 919,
+      "cancellation_rate": 0.009758013994627251,
+      "mean_arrival_delay": 2.6258988939170815
+    },
+    {
+      "name": "American Airlines",
+      "flights": 395884,
+      "completed": 387286,
+      "on_time_rate": 0.770448712321127,
+      "delayed": 88902,
+      "cancelled": 7469,
+      "cancellation_rate": 0.0188666377019531,
+      "mean_arrival_delay": 10.070482795660055
+    },
+    {
+      "name": "Allegiant Air",
+      "flights": 54076,
+      "completed": 53636,
+      "on_time_rate": 0.769613692296219,
+      "delayed": 12357,
+      "cancelled": 313,
+      "cancellation_rate": 0.005788150011095495,
+      "mean_arrival_delay": 10.082220896412856
+    },
+    {
+      "name": "JetBlue Airways",
+      "flights": 96572,
+      "completed": 95141,
+      "on_time_rate": 0.7633302151543498,
+      "delayed": 22517,
+      "cancelled": 1084,
+      "cancellation_rate": 0.011224785652155905,
+      "mean_arrival_delay": 6.895197654008261
+    },
+    {
+      "name": "Frontier Airlines",
+      "flights": 83299,
+      "completed": 81801,
+      "on_time_rate": 0.7335973887849782,
+      "delayed": 21792,
+      "cancelled": 1341,
+      "cancellation_rate": 0.0160986326366463,
+      "mean_arrival_delay": 12.9107223628073
+    },
+    {
+      "name": "PSA Airlines",
+      "flights": 106041,
+      "completed": 99546,
+      "on_time_rate": 0.7140216583288128,
+      "delayed": 28468,
+      "cancelled": 6216,
+      "cancellation_rate": 0.05861883611056101,
+      "mean_arrival_delay": 18.032336809113374
+    }
+  ],
+  "top_five_origins": [
+    {
+      "name": "DFW",
+      "flights": 127955,
+      "completed": 123144,
+      "on_time_rate": 0.7348226466575716,
+      "delayed": 32655,
+      "cancelled": 4453,
+      "cancellation_rate": 0.03480129733109296,
+      "mean_arrival_delay": 12.801606249593972
+    },
+    {
+      "name": "DEN",
+      "flights": 126377,
+      "completed": 125047,
+      "on_time_rate": 0.7564035922493143,
+      "delayed": 30461,
+      "cancelled": 999,
+      "cancellation_rate": 0.007904919407803634,
+      "mean_arrival_delay": 9.125504810191368
+    },
+    {
+      "name": "ATL",
+      "flights": 125754,
+      "completed": 123616,
+      "on_time_rate": 0.7600876909137976,
+      "delayed": 29657,
+      "cancelled": 1829,
+      "cancellation_rate": 0.01454426896957552,
+      "mean_arrival_delay": 10.84086202433342
+    },
+    {
+      "name": "ORD",
+      "flights": 120338,
+      "completed": 118634,
+      "on_time_rate": 0.7808216868688571,
+      "delayed": 26002,
+      "cancelled": 1350,
+      "cancellation_rate": 0.011218401502434808,
+      "mean_arrival_delay": 6.324578114199976
+    },
+    {
+      "name": "PHX",
+      "flights": 86087,
+      "completed": 85438,
+      "on_time_rate": 0.8273250778342189,
+      "delayed": 14753,
+      "cancelled": 461,
+      "cancellation_rate": 0.005355047800480909,
+      "mean_arrival_delay": 2.6186474402490694
+    }
+  ],
+  "top_three_cancellation_days": [
+    {
+      "name": "2025-01-10",
+      "flights": 17873,
+      "completed": 14983,
+      "on_time_rate": 0.7064673296402589,
+      "delayed": 4398,
+      "cancelled": 2856,
+      "cancellation_rate": 0.15979410283668102,
+      "mean_arrival_delay": 22.753387172128413
+    },
+    {
+      "name": "2025-01-09",
+      "flights": 17952,
+      "completed": 15937,
+      "on_time_rate": 0.7594904938194139,
+      "delayed": 3833,
+      "cancelled": 1922,
+      "cancellation_rate": 0.1070632798573975,
+      "mean_arrival_delay": 10.152851854175818
+    },
+    {
+      "name": "2025-01-21",
+      "flights": 16034,
+      "completed": 14384,
+      "on_time_rate": 0.7867769744160178,
+      "delayed": 3067,
+      "cancelled": 1629,
+      "cancellation_rate": 0.10159660720967943,
+      "mean_arrival_delay": 7.85734149054505
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "assets/airline-benchmark.png",
+      "sha256": "d4c28e240085f9536959a3b5ada4644f15c51b958b56dfe23a4fc8d4872c2324",
+      "width": 1360,
+      "height": 900,
+      "description": "Actual Tableau presentation view cropped to dashboard bounds; no values or charts altered."
+    },
+    {
+      "file": "assets/executive-overview.png",
+      "sha256": "a27ba91bee9eaa42ffd227d136147368c861c1c3ef21e18a5ea2123e1266a49c",
+      "width": 1360,
+      "height": 900,
+      "description": "Actual Tableau presentation view cropped to dashboard bounds; no values or charts altered."
+    },
+    {
+      "file": "assets/network-trends.png",
+      "sha256": "4a038c0c410edbf1011686dd8ac587979cf123d21973d6ea9169c6f9f81fc44a",
+      "width": 1360,
+      "height": 900,
+      "description": "Actual Tableau presentation view cropped to dashboard bounds; no values or charts altered."
+    }
+  ]
+}
