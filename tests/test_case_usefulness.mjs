@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {template,assess,renderPacket,executionRows,renderExecution} from '../apps/web/case-usefulness-review.mjs';
+import {template,assess,renderPacket,executionRows,renderExecution,resumeReview} from '../apps/web/case-usefulness-review.mjs';
 const hash='a'.repeat(64);
 const packet=()=>({format:'ain-case-usefulness-packet-v1',case:{title:'SYNTHETIC <script>case</script>',version:6,status:'closed'},run:{request:{objective:'SYNTHETIC <img src=x> objective'},model:{name:'qwen3:8b'},state:'needs_changes',report_sha256:hash,claims:[{text:'<script>quote</script>',citation:'T1'}]},evidence:[{id:'T1',text:'Full <img src=x> evidence'}]});
 function completed(p){const v=template(p,hash);Object.assign(v,{reviewer_label:'SYNTHETIC TEST',source_checked:true,own_assessment:true,question_answered:'yes'});v.claims.forEach(c=>Object.assign(c,{supported:'yes',relevant:'yes'}));return v;}
@@ -36,4 +36,29 @@ test('summary rejects arbitrary revision markup and never injects receipt fields
  const html=renderExecution({source_revision:'<img src=x>',transport:'<script>alert(1)</script>',checks:[]});
  assert.ok(html.includes('Not recorded'));assert.ok(html.includes('Transport not confirmed'));
  assert.ok(!html.includes('<img'));assert.ok(!html.includes('<script>'));
+});
+test('resuming preserves saved decisions but requires fresh personal acknowledgements',()=>{
+ const p=packet(),saved=completed(p);saved.claims[0].relevant='no';saved.notes='SYNTHETIC review note';
+ const before=JSON.stringify(saved),loaded=resumeReview(p,hash,before);
+ assert.equal(JSON.stringify(saved),before);assert.equal(loaded.claims[0].relevant,'no');
+ assert.equal(loaded.notes,saved.notes);assert.equal(loaded.reviewer_label,saved.reviewer_label);
+ assert.equal(loaded.source_checked,false);assert.equal(loaded.own_assessment,false);
+ assert.equal(assess(p,hash,loaded).status,'pending');
+ loaded.source_checked=true;loaded.own_assessment=true;assert.equal(assess(p,hash,loaded).status,'declared_needs_revision');
+});
+test('saved JSON from another packet or changed citations and inventory is rejected',()=>{
+ const p=packet();for(const change of [v=>v.packet_sha256='c'.repeat(64),v=>v.claims[0].citation='foreign',v=>v.claims=[],v=>v.production_ready=true,v=>v.source_checked='true']){
+  const saved=completed(p);change(saved);assert.throws(()=>resumeReview(p,hash,JSON.stringify(saved)));
+ }
+});
+test('resume rejects malformed or oversized UTF8 input and preserves blank or uncertain ratings',()=>{
+ const p=packet();for(const value of ['', '{', 'null','[]', 'x'.repeat(65537), '😀'.repeat(20000),null])assert.throws(()=>resumeReview(p,hash,value));
+ const saved=template(p,hash);saved.claims[0].relevant='uncertain';
+ const loaded=resumeReview(p,hash,JSON.stringify(saved));assert.equal(loaded.question_answered,'');
+ assert.equal(loaded.claims[0].relevant,'uncertain');assert.equal(assess(p,hash,loaded).status,'pending');
+});
+test('review offers explicit local resume without a submission form or prefilled ratings',()=>{
+ const html=renderPacket(packet());assert.ok(html.includes('Resume a saved review'));assert.ok(html.includes('Load saved ratings'));
+ assert.ok(html.includes('nothing is uploaded'));assert.ok(html.includes('must be confirmed again'));
+ assert.ok(!html.includes('<form action='));assert.ok(!html.includes('<option value="yes" selected'));
 });
