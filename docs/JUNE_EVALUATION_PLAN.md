@@ -37,3 +37,17 @@ Within that attempt, the evaluator streams and exhausts the CSV, validates requi
 The existing threshold and training prevalence stay frozen. Only the registered schedule-feature columns reach `predict_proba`; no fit, partial fit, calibration or threshold search occurs. Overall planned metrics, carrier/origin cohorts with at least 500 eligible records and both classes, and 1,000 seeded whole-flight-date cluster resamples are reported. Bootstrap loss/Brier differences are flight-weighted after resampling complete date clusters; percentile intervals are descriptive, with no independence, significance or UAE-transfer claim. A completed evaluation can fail the research comparison: `state=evaluated` means the experiment completed, not that a model was approved.
 
 `report.json` retains successful or failed results; the immutable attempt points to the output. Controlled failure codes omit row values. Inputs are rechecked after scoring, and failures never authorize a new June attempt. The active application database/model and January–May scenario API are unchanged. Focused tests: `python -m unittest discover -s tests -p test_june_evaluation.py`; all classifiers and rows in these tests are synthetic, with no real June access. Actual counts, performance and uncertainty require a separate single native run and its retained receipt.
+
+## Recorded native June result
+
+The single native attempt at execution revision `0187d9edca15f85c3dc5813e0f41149bf901da66` completed. Its [frozen aggregate report](reports/June_2025_Frozen_Evaluation.json) preserves the model/archive/plan fingerprints and private receipt hash; raw rows and the scratch identity database remain private. The report validates 611,575 unique rows, with no identical duplicates. It excludes 9,736 cancelled and 2,367 diverted flights, leaving 599,472 eligible flights and no additional missing-target exclusions. CSV EOF/CRC and June date checks completed.
+
+| Metric | Frozen model | Constant training-prior baseline |
+| --- | ---: | ---: |
+| ROC-AUC | 0.67056 | 0.50000 |
+| Log loss | 0.58164 | 0.61652 |
+| Brier score | 0.19742 | 0.21007 |
+
+All three inherited research comparison checks passed at the unchanged 0.17 demonstration threshold. This is a later-month frozen comparison, not a new selection or an operational acceptance. The 1,000 seeded bootstrap resamples used 30 flight-date clusters. Descriptive 95% percentile intervals for model-minus-baseline mean differences were **[-0.04441, -0.02605]** for log loss and **[-0.01612, -0.00944]** for Brier score. These are not independence, significance, causal or UAE-transfer claims. Carrier/origin diagnostic counts and eligible cohort metrics are retained in the JSON report; they did not select a model or threshold.
+
+The original model, registered copy, registration and archive hashes were preserved. A second request with another output directory was refused before member access, and the attempt/result receipts were unchanged. No refit, calibration, threshold search, import, active-model replacement or deployment occurred. The execution revision identifies the evaluator code; later report-publication commits do not constitute another evaluation. Source-purpose/rights qualification, globally untouched-holdout evidence and production acceptance remain open.
