@@ -67,3 +67,21 @@ The connected research section now mounts **June model evaluation** after the du
 Refresh clears the old result before requesting evidence. Invalid responses, failed requests and timeouts withhold the result. Session changes and sign-out abort pending requests, increment the response epoch and clear/hide the card; late results cannot restore another session's content. The frontend validates report identity, authority flags, finite metrics, population/exclusion arithmetic, frozen settings, comparison checks and descriptive uncertainty before rendering. Evidence strings are escaped. Source disclosure is keyboard-accessible, fingerprints wrap and narrow tables scroll within the card.
 
 Four focused card tests cover successful/negative comparisons, invalid scope/metrics/identity, escaping, refresh failures, sign-out and stale session responses. Browser inspection uses an isolated preview with simulated sessions/failures and the existing public aggregate result, not a real account or the active database. Desktop and a narrow viewport were inspected, including source disclosure, unavailable evidence and sign-out clearing. Preview-only controls do not ship in the dashboard. This does not qualify deployed account access, full accessibility or production acceptance. Existing deployed dashboard code remains unchanged until a separately authorized release.
+
+## Explicit research-agent evidence tool
+
+The native runtime and existing authenticated investigation API now accept `include_june_evidence: true` paired with `required_tools: ["june_evidence"]`. Both are required together; the flag is a strict boolean, defaults to false and is omitted when false so legacy request fingerprints/replays stay unchanged. The tool is absent from the default advertised definitions and rejects nonempty arguments before reading evidence. It consumes one of the existing three tool slots. For a focused June review, use this investigation body with the existing signed-in researcher/admin session and request identity; viewers cannot start investigations:
+
+```json
+{
+  "objective": "Use june_evidence only to review the frozen June comparison, descriptive uncertainty and full research limitations. Do not infer causes or recommend operational action.",
+  "include_june_evidence": true,
+  "required_tools": ["june_evidence"]
+}
+```
+
+`agents.june_evidence` calls the existing fingerprint-verified public summary loader. The tool opens no model, archive or database and performs no evaluation. It retains the complete compact summary as a structured snapshot, including report/archive/model/plan/revision identity. Only bounded source text is sent back to the planner. June is fixed independently of the existing January–May SQL selector; this permission does not expand SQL months or prediction serving.
+
+The report coverage gate requires exact complete quotations for the overall comparison, descriptive intervals and research-scope limitation, and canonical revalidation of the snapshot and text. It blocks missing quotations, changed metrics, changed request permission or nonempty arguments even if a stored quality flag was altered. The normal runtime can make one repair request within its existing time/call budget; a still-incomplete report cannot be marked reviewed. Source failures retain a generic failed step without fabricated evidence. Existing replay, owner checks, cancellation and review rules remain in force. A coverage pass checks structured evidence and quotation integrity, not semantic usefulness or independent acceptance; published findings remain exact source extracts.
+
+Nine focused tests (`python -m unittest discover -s tests -p test_agent_june.py`) use synthetic accounts and simulated planner/generator responses with the recorded public summary. They exercise permission/arguments, the tool bound, legacy defaults, exact snapshots, missing-quote repair/refusal, resealed tampering, source failure, replay, queue identity and HTTP role boundaries. Synthetic test review decisions are not human ratings. This API-first increment adds no dashboard opt-in or dedicated June agent/case snapshot display; the operations summary currently categorizes this new tool under its existing unknown-tool bucket. A real local-provider exercise, those UI integrations and deployed qualification remain separate work.
