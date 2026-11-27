@@ -1,0 +1,43 @@
+{
+  "format": "ain-frozen-external-month-plan-v1",
+  "plan_id": "delay-v2-june-2025-v1",
+  "candidate_period": "2025-06",
+  "known_model_periods": ["2025-01", "2025-02", "2025-03", "2025-04", "2025-05"],
+  "objective": "Measure the frozen delay-v2 model on a later historical month without refitting, selection or threshold tuning.",
+  "source_scope": "Historical US reporting-carrier records; not UAE airline operations",
+  "cohort": "Completed, non-diverted flights with finite observed arrival delay and valid scheduled-flight fields",
+  "target": "arrival_delay_minutes >= 15",
+  "inference": "Frozen registered model and preprocessing; no fit, partial_fit, calibration or threshold search",
+  "threshold": "Exact numeric threshold from the frozen registered report",
+  "baseline": "Constant training delay prevalence from the frozen registered report; never June prevalence",
+  "metrics": ["roc_auc", "average_precision", "log_loss", "brier_score", "precision", "recall", "f1", "confusion_matrix", "calibration_bins"],
+  "research_comparison": {
+    "min_auc": 0.6,
+    "max_log_loss_ratio_to_training_prior": 0.99,
+    "brier_must_beat_training_prior": true,
+    "authority": "Research comparison inherited from v2; not stakeholder or operational acceptance"
+  },
+  "uncertainty_plan": {
+    "method": "Resample complete flight-date clusters with replacement",
+    "replicates": 1000,
+    "seed": 42,
+    "interval": "Descriptive 2.5th and 97.5th percentiles",
+    "statistics": ["mean_log_loss_difference_model_minus_prior", "mean_brier_difference_model_minus_prior"],
+    "limitations": "Only one month of clusters; no independence, population-transfer or significance claim"
+  },
+  "cohort_diagnostics": {
+    "groups": ["carrier", "origin"],
+    "minimum_eligible_rows": 500,
+    "require_both_target_classes_for_discrimination": true,
+    "policy": "Report predefined groups and exclusions; do not select a model or threshold from cohort results"
+  },
+  "data_admission": "Register exact archive identity and source after this freeze; validate month, schema, identities and exclusions before evaluation. Preserve the original bytes privately.",
+  "attempt_policy": "A future evaluator must create an exclusive attempt receipt before opening candidate rows, retain failures and refuse repeated evaluation. This plan registrar does not implement that evaluator or global single-use enforcement.",
+  "limitations": [
+    "A later model period is not proof that no person or experiment previously inspected the month",
+    "Historical published schedules lack point-in-time snapshots",
+    "No forecast-of-cancellation, actual-flight confirmation, new model training or UAE transfer qualification",
+    "Data admission, inference, metric computation and bootstrap execution remain separate unfinished steps"
+  ],
+  "production_ready": false
+}
