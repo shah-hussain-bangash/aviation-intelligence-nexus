@@ -16,6 +16,8 @@ import {validateTradeoffs,tradeoffScenario,renderTradeoffs} from '../apps/web/th
 import {validateDuration,renderDuration} from '../apps/web/duration-evaluation.mjs';
 import {validateJune,renderJune,mountJune} from '../apps/web/june-evaluation.mjs';
 import {validateDurationSnapshot,renderDurationSnapshot} from '../apps/web/agent-duration-evidence.mjs';
+import {juneEvidenceText,validateJuneSnapshot,renderJuneSnapshot,JUNE_LIMIT} from '../apps/web/agent-june-evidence.mjs';
+import {loadJuneExample} from '../apps/web/investigation-lab.mjs';
 import {archiveQuery,validateArchive} from '../apps/web/agent-archive-contract.mjs';
 import {validateSecurity,renderSecurity} from '../apps/web/account-security.mjs';
 import {validateDistributions,renderDistributions} from '../apps/web/input-distributions.mjs';
@@ -731,6 +733,37 @@ test('June card clears on refresh failure, signout and stale session responses',
 test('June card withholds an invalid successful response',async()=>{
  const dom=juneDOM();const ui=mountJune(dom.parent,{fetchEvidence:async()=>({ok:true,json:async()=>({...juneFixture(),production_ready:true})})});
  try{ui.setSession({role:'admin'});await juneTick();assert.equal(dom.nodes['[data-june-result]'].innerHTML,'');assert.match(dom.nodes['[data-june-status]'].textContent,/could not be verified/);}finally{ui.setSession(null);dom.restore();}
+});
+
+function juneAgentFixture(){
+ const run=durationAgentFixture(),evaluation=juneFixture(),observation={data_kind:'recorded_june_evaluation',available:true,snapshot:{format:'ain-agent-june-v1',evaluation,research_only:true,production_ready:false},evidence_text:juneEvidenceText(evaluation)};
+ run.request={...run.request,objective:'SYNTHETIC UI fixture: review the recorded June comparison and limitations.',include_duration_evidence:false,include_june_evidence:true,required_tools:['june_evidence']};
+ run.steps=[{id:'T1',tool:'june_evidence',arguments:{},state:'completed',elapsed_ms:2,observation}];
+ run.claims=observation.evidence_text.split('\n').slice(0,3).map(quote=>({text:quote,quote,citation:'T1'}));
+ run.quality={...run.quality,passed:true,required_tools:['june_evidence'],june_evidence_mismatches:[],june_quotes_uncited:[],june_required_quotes_missing:[]};return run;
+}
+test('June agent opt-in and example retain the three-tool budget without changing legacy payloads',()=>{
+ const input={objective:'Inspect the frozen June evidence.',month:'2025-05',simulation:false,requireFlights:false,requireKnowledge:false};
+ assert.equal(Object.hasOwn(investigationPayload(input),'include_june_evidence'),false);
+ const q=investigationPayload({...input,includeJuneEvidence:true});assert.equal(q.include_june_evidence,true);assert.deepEqual(q.required_tools,['june_evidence']);assert.equal(q.month,'2025-05');
+ assert.throws(()=>investigationPayload({...input,includeJuneEvidence:true,includeDurationEvidence:true,includeModelEvidence:true,requireFlights:true}),/at most three/);
+ const form={elements:Object.fromEntries(['requireFlights','requireKnowledge','requireSimulation','simulation','routeEnabled','includeModelEvidence','includeDistributionEvidence','includeDurationEvidence','requirePeerReview','includeJuneEvidence','documentScope','month','objective'].map(k=>[k,{checked:true,value:'old',disabled:false}]))};loadJuneExample(form);
+ assert.equal(form.elements.includeJuneEvidence.checked,true);assert.equal(form.elements.requirePeerReview.checked,false);assert.equal(form.elements.requireFlights.checked,false);assert.equal(form.elements.includeDurationEvidence.checked,false);assert.equal(form.elements.documentScope.value,'');assert.match(form.elements.objective.value,/june_evidence only/);
+});
+test('June agent renders retained metrics, source scope and warnings independently of selected extracts',()=>{
+ const run=juneAgentFixture();run.claims=[];const html=renderInvestigation(run);for(const text of ['599,472','0.6706','0.5816','-0.0444','Optional historical SQL month','June evaluation retained','globally untouched'])assert.ok(html.includes(text),text);
+ run.quality.passed=false;run.quality.june_required_quotes_missing=['T1:research_scope'];assert.match(renderInvestigation(run),/Required June quotation missing/);assert.match(renderInvestigation(run),/blocked acceptance/);
+ const observation=run.steps[0].observation;assert.equal(validateJuneSnapshot(observation),observation.snapshot);observation.snapshot.evaluation.limitations[0]='<script>bad()</script>';assert.match(renderJuneSnapshot(observation),/&lt;script&gt;/);assert.doesNotMatch(renderJuneSnapshot(observation),/<script>/);
+});
+test('June agent withholds changed source text, metrics, permission, arguments and scope',()=>{
+ for(const change of [r=>r.request.include_june_evidence=false,r=>r.steps[0].arguments={month:'2025-07'},r=>r.steps[0].observation.snapshot.evaluation.model.roc_auc=.9,r=>r.steps[0].observation.snapshot.production_ready=true,r=>r.quality.june_evidence_mismatches=['T1']]){const r=juneAgentFixture();change(r);assert.match(renderInvestigation(r),/Saved June evidence could not be verified/);}
+ const r=juneAgentFixture();r.steps[0].observation.evidence_text+=' unsupported finding';assert.throws(()=>validateJuneSnapshot(r.steps[0].observation));assert.ok(juneEvidenceText(juneFixture()).includes(JUNE_LIMIT));
+});
+test('June operations category accepts earlier snapshots and distinguishes unreported counts',()=>{
+ const r=operationsFixture();assert.match(renderOperations(r,Date.parse(r.checked_at)),/Recorded June evaluation<\/th><td colspan="3">Not reported by this snapshot/);
+ for(const key of ['distribution_evidence','duration_evidence','june_evidence'])r.recent_window.tools[key]={attempted:0,completed:0,failed_or_unfinished:0};
+ assert.equal(validateOperations(r),r);assert.match(renderOperations(r,Date.parse(r.checked_at)),/Recorded June evaluation<\/th><td>0<\/td>/);
+ r.recent_window.tools.june_evidence={attempted:1,completed:0,failed_or_unfinished:0};assert.throws(()=>validateOperations(r));
 });
 
 test('June evidence proxy forwards only fixed reads and the session cookie',async t=>{

@@ -98,6 +98,12 @@ function jobFixture(r=record(),state='queued'){
  const run=savedCaseJob(r,state);run.request={...caseJobRequest(r,'SYNTHETIC distribution investigation').investigation,case_context:{case_id:r.id,case_version:r.version,case_sha256:'d'.repeat(64),source_run_id:r.source_run_id,source_sha256:r.source_sha256,title:r.title,scope:'historical_us_research'}};return run;
 }
 const jobRef=run=>({run_id:run.run_id,state:run.state,updated_at:run.updated_at,case_context:run.request.case_context});
+test('case jobs recognize June evidence only with explicit permission and requirement',()=>{
+ const r=record(),run=jobFixture(r,'running');run.steps=[{tool:'june_evidence',state:'completed'}];
+ assert.throws(()=>validateCaseJob(run,r));run.request.include_june_evidence=true;assert.throws(()=>validateCaseJob(run,r));
+ run.request.required_tools=['june_evidence'];assert.equal(validateCaseJob(run,r),run);
+ run.request.case_context.source_sha256='e'.repeat(64);assert.throws(()=>validateCaseJob(run,r));
+});
 const response=value=>({ok:true,json:async()=>structuredClone(value)});
 const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
 
