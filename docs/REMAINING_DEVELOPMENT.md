@@ -1,4 +1,4 @@
-# Remaining development phases — 26 November 2026
+# Remaining development phases — 27 November 2026
 
 This is a current development plan, not production acceptance. The older completion report's 24 open requirements are an acceptance framework; its original "not implemented" descriptions predate substantial local implementation. They must not be read as a current count of missing code. Preserve that dated evidence and all 64 workspaces.
 
@@ -39,3 +39,7 @@ The combined rehearsal also supports explicit `--live-prediction --model-sha256 
 ## Q&A access changes during execution
 
 The normal document Q&A endpoint now revalidates its session, active account, owner and permitted role inside the same SQLite write transaction that saves its answer. Logout, expiry, account disabling, viewer downgrade or a different session owner observed before that transaction's authorization check returns HTTP 403 without evidence or a saved history row. Access changes serialize with that write; an answer already committed or delivered cannot be recalled. Trusted local fixture calls may still save without a session token; the HTTP endpoint always supplies one, including an empty token when absent. Synthetic regression tests cover both mid-query changes and revocation at the history-save boundary, plus unchanged-session persistence. This adds local access-control evidence; human usefulness review, deployed qualification and the production acceptance gates remain open.
+
+## Background investigation owner access
+
+Ordinary persisted background jobs now join case-bound investigations in checking the owner's current account and researcher/admin role at cooperative runtime boundaries. A disabled or missing owner, or downgrade to viewer, stops further calls at the next check. Completed tool evidence is retained, but cancellation removes claims, report fingerprints and reviewable-draft fields. The final checkpoint also rechecks the owner under its write transaction, covering revocation after the runtime's last stop check and before report completion or conflict requeue. Previously completed reports are not retroactively changed. Signing out alone does not cancel account-owned background work; use the explicit stop action or change account access. Foreground fixture behavior is unchanged. Bounded calls already in progress are allowed to return; this is not immediate provider interruption, continuous authorization observation, external worker failover or production qualification. Synthetic accounts and controlled provider responses verify planner/tool/summary boundaries and final-save handling without changing live accounts or services.
