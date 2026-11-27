@@ -24,7 +24,7 @@ export function validateCaseJob(r,record,reference=null){
  const context=validateJobContext(r.request.case_context,record);
  if(reference)require(r.run_id===reference.run_id&&reference.case_context&&contextFields.every(k=>context[k]===reference.case_context[k]));
  require(Array.isArray(r.steps)&&r.steps.length<=3&&Array.isArray(r.claims)&&r.claims.length<=6);
- for(const step of r.steps)require(step&&['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence'].includes(step.tool)&&['running','completed','failed','interrupted','cancelled_before_execution'].includes(step.state));
+ for(const step of r.steps){require(step&&['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence','june_evidence'].includes(step.tool)&&['running','completed','failed','interrupted','cancelled_before_execution'].includes(step.state));if(step.tool==='june_evidence')require(r.request.include_june_evidence===true&&r.request.required_tools?.includes('june_evidence'));}
  for(const claim of r.claims)require(claim&&text(claim.quote,8000)&&claim.text===claim.quote&&text(claim.citation,80));
  if(['awaiting_review','reviewed','needs_changes'].includes(r.state))require(hash(r.report_sha256));
  if(['reviewed','needs_changes'].includes(r.state)){

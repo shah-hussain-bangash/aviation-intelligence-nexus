@@ -55,6 +55,14 @@ class AgentOperationsTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(self.db.read_bytes()).hexdigest(),before)
         self.assertFalse(data['external_alert_delivery']);self.assertFalse(data['production_ready'])
 
+    def test_june_tool_is_counted_without_exposing_arguments_or_claiming_provider_success(self):
+        run=self.record('awaiting_review',2,True)
+        run['steps'][0]['tool']='june_evidence';self.store.checkpoint(run)
+        data=snapshot(self.db,WORKER,NOW)
+        self.assertEqual(data['recent_window']['tools']['june_evidence'],{'attempted':1,'completed':1,'failed_or_unfinished':0})
+        self.assertEqual(data['recent_window']['tools']['unknown']['attempted'],0)
+        self.assertNotIn('PRIVATE ARGUMENT',json.dumps(data));self.assertFalse(data['production_ready'])
+
     def test_worker_states_and_invalid_times_do_not_infer_health(self):
         self.assertEqual(snapshot(self.db,WORKER,NOW)['worker']['state'],'idle')
         for changes,state in [({'enabled':False},'disabled'),({'alive':False},'unavailable'),({'error':'PRIVATE ERROR'},'unavailable'),({'last_poll':None},'unknown'),({'last_poll':(NOW-timedelta(seconds=6)).isoformat()},'unknown')]:

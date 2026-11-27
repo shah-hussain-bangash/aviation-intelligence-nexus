@@ -9,7 +9,7 @@ import time
 
 LOCK=Lock()
 STATES=('queued','running','awaiting_review','reviewed','needs_changes','failed','interrupted','cancelled','withdrawn')
-TOOLS=('flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence')
+TOOLS=('flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence','june_evidence')
 EXECUTION='local-background-queue-v1'
 
 
