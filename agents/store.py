@@ -54,8 +54,8 @@ class AgentStore:
 
     def stop_requested(self,run_id):
         with closing(self.connection()) as db:
-            row=db.execute("SELECT json_extract(result_json,'$.cancel_requested_at'),json_type(result_json,'$.request.case_context'),owner_id FROM agent_runs WHERE id=?",(run_id,)).fetchone()
-            if row and row[1] is not None:
+            row=db.execute("SELECT json_extract(result_json,'$.cancel_requested_at'),json_type(result_json,'$.request.case_context'),owner_id,json_extract(result_json,'$.execution') FROM agent_runs WHERE id=?",(run_id,)).fetchone()
+            if row and (row[1] is not None or row[3]=='local-background-queue-v1'):
                 account=db.execute('SELECT role,active FROM auth_users WHERE id=?',(row[2],)).fetchone()
                 if not account or not account['active'] or account['role'] not in ('admin','researcher'):return True
         if not row:raise KeyError('Investigation unavailable')
@@ -65,7 +65,7 @@ class AgentStore:
         result['updated_at']=now()
         with closing(self.connection()) as db,db:
             db.execute('BEGIN IMMEDIATE')
-            saved=db.execute('SELECT result_json FROM agent_runs WHERE id=?',(result['run_id'],)).fetchone()
+            saved=db.execute('SELECT result_json,owner_id FROM agent_runs WHERE id=?',(result['run_id'],)).fetchone()
             if saved:
                 metadata=json.loads(saved['result_json'])
                 if 'case_context' in metadata.get('request',{}) and result.get('request')!=metadata['request']:
@@ -76,6 +76,13 @@ class AgentStore:
                     if key in metadata:result[key]=metadata[key]
                 if metadata.get('cancel_requested_at') and result['state'] in ('awaiting_review','failed','queued'):
                     finish_cancelled(result,now())
+                # Recheck under this write lock: revocation may commit after the
+                # runtime's last cooperative stop check, before its final save.
+                protected='case_context' in metadata.get('request',{}) or metadata.get('execution')=='local-background-queue-v1'
+                if protected and metadata.get('state')=='running' and result['state'] in ('awaiting_review','failed','queued'):
+                    account=db.execute('SELECT role,active FROM auth_users WHERE id=?',(saved['owner_id'],)).fetchone()
+                    if not account or not account['active'] or account['role'] not in ('admin','researcher'):
+                        finish_cancelled(result,now())
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',
                 (json.dumps(result),result['updated_at'],result['run_id']))
 
