@@ -52,6 +52,7 @@ from services.api.request_context import install_request_context
 from services.api.diagnostics import load_diagnostics
 from services.api.thresholds import load_thresholds
 from services.api.duration import load_duration
+from services.api.june_evaluation import load_june_evaluation
 from services.api.retrieval_evaluation import load_retrieval_evaluation
 from services.api.scoped_lab import ScopedLabQuery,run as run_scoped_lab
 from services.api.distributions import load_distributions
@@ -828,6 +829,16 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         if request.query_params:return JSONResponse(status_code=422,content={'error':'retrieval_query_not_supported'})
         try:return load_retrieval_evaluation()
         except (OSError,ValueError,KeyError,TypeError,ZeroDivisionError):return JSONResponse(status_code=503,content={'error':'retrieval_evidence_unavailable','message':'Recorded retrieval evidence could not be verified. Results are withheld.'})
+
+    @app.get('/api/v1/research/june-evaluation')
+    def june_evaluation(request: Request):
+        if request.query_params:
+            return JSONResponse(status_code=422, content={'error': 'june_query_not_supported'})
+        try:
+            return load_june_evaluation()
+        except (OSError, ValueError, KeyError, TypeError):
+            return JSONResponse(status_code=503, content={'error': 'june_evidence_unavailable',
+                'message': 'Recorded June evidence could not be verified. Results are withheld.'})
 
     @app.get('/api/v1/research/duration-evaluation')
     def duration_evaluation(request: Request):
