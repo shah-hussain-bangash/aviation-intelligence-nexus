@@ -695,6 +695,15 @@ test('duration evaluation validates arithmetic and rejects false success while e
  let r=durationFixture();r.research_check.passed=true;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.model.rmse=1;assert.throws(()=>validateDuration(r));r=durationFixture();r.test.residual_histogram.counts[0]++;assert.throws(()=>validateDuration(r));
  r=durationFixture();r.limitations[0]='<script>bad()</script>';const html=renderDuration(r);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.ok(r.test.training_mean_baseline.r2<0);assert.doesNotThrow(()=>validateDuration(r));
 });
+test('June evidence proxy forwards only fixed reads and the session cookie',async t=>{
+ let calls=0;
+ const backend=await serve(t,(req,res)=>{calls++;assert.equal(req.url,'/api/v1/research/june-evaluation');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{"research_only":true}');});
+ const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/june-evaluation`;
+ assert.equal((await fetch(url,{headers:{Cookie:'ain_session=fixture; unrelated=secret'}})).status,200);
+ for(const method of ['POST','PUT','PATCH','DELETE'])assert.equal((await fetch(url,{method})).status,405);
+ assert.equal((await fetch(url+'?month=2025-07')).status,422);assert.equal((await fetch(url+'/arbitrary')).status,404);assert.equal(calls,1);
+});
+
 test('duration evidence proxy permits only fixed authenticated reads without query overrides',async t=>{
  const backend=await serve(t,(req,res)=>{assert.equal(req.url,'/api/v1/research/duration-evaluation');assert.equal(req.headers.cookie,'ain_session=fixture');res.setHeader('Content-Type','application/json');res.end('{}');});
  const frontend=await serve(t,async(req,res)=>{if(!await proxyResearchRequest(req,res,req.url.split('?')[0],backend)){res.writeHead(404);res.end();}}),url=`http://127.0.0.1:${frontend}/api/v1/research/duration-evaluation`;
