@@ -1,5 +1,7 @@
 # Aviation Intelligence Nexus
 
+**Start here for the local research case:** Follow the [reproduction and browser evidence guide](docs/case-study/RESEARCH_CASE_EVIDENCE_PACK.md), run the [captured application revision `90bf682`](https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/tree/90bf6824f99811816356eb803e72e233fb590ac5), and compare with the [screenshots from that revision](#running-portal). The guide explains how the browser harness on `main` targets the pinned application revision.
+
 - **[Tableau dashboards and downloadable workbook](docs/tableau/README.md)** — three interactive historical flight-performance dashboards with embedded aggregate data, 16 worksheets, shared filters and reconciled totals.
 
 A local research workspace for aviation analysts to inspect flight-data lineage, compare delay-alert thresholds, and review synthetic gate proposals.
