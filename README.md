@@ -1,6 +1,57 @@
 # Aviation Intelligence Nexus
 
-## Start here
+A local research workspace for aviation analysts to inspect flight-data lineage, compare delay-alert thresholds, and review synthetic gate proposals.
+
+- [75-second walkthrough](docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4) covers the delay-alert trade-off and the recorded synthetic gate-allocation scenario.
+- [One-page project summary](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_SUMMARY.md) presents the measured results and one reproducible scenario.
+- [Technical case study](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md) covers the architecture, trade-offs, and reproducibility limits.
+- [Data audit](docs/DATA_QUALITY_LINEAGE.md) covers 2,835,101 historical US domestic flight records.
+- [Delay evaluation](docs/DELAY_V2.md) reports 30.22% precision at the demonstration threshold and about 58% of eligible May flights flagged.
+- [Gate allocation example](docs/GATE_OPTIMIZATION.md) assigned 5 of 5 flights versus 4 of 5 for the greedy baseline in one synthetic scenario.
+
+An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
+
+**Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. A local Docker release and measured restoration are implemented; managed production identity and cloud deployment remain incomplete.**
+
+## Running portal
+
+Captured on 27 November 2026 from the running dashboard and local API at [development revision `90bf682`](https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/tree/90bf6824f99811816356eb803e72e233fb590ac5). This development branch adds the versioned research-case workspace ahead of `main`. The browser used a disposable local account and database, repository-recorded historical analysis, and synthetic scenario data.
+
+### Workspace sign-in
+
+![Aviation Intelligence Nexus local research sign-in](docs/case-study/assets/aviation-latest-sign-in.webp)
+
+### Command center
+
+![Aviation Intelligence Nexus command center and workspace navigation](docs/case-study/assets/aviation-latest-command-center.webp)
+
+The command center is the entry point to the 64 prototype workspaces. Operational cards use demonstration data. The connected research panels carry their own data and evidence labels.
+
+### Historical data quality and lineage
+
+![Aviation data quality panel showing historical flight coverage and recorded import checks](docs/case-study/assets/aviation-latest-data-lineage.webp)
+
+The API served the recorded five-month BTS audit covering 2,835,101 historical US domestic records. The portal shows monthly coverage, exclusions, and reconciliation with the datasets used for research. [Data audit](docs/DATA_QUALITY_LINEAGE.md)
+
+### Delay-alert threshold analysis
+
+![Aviation model decision trade-off lab comparing false alerts and missed delays on recorded April validation data](docs/case-study/assets/aviation-latest-delay-tradeoff.webp)
+
+The lab lets analysts compare missed delays, false alerts, and assumed review capacity on the recorded April validation set. Its cost and capacity inputs are hypothetical, and changing them leaves the stored model threshold unchanged. [Decision trade-offs](docs/MODEL_DECISION_TRADEOFFS.md)
+
+### Synthetic gate allocation
+
+![Gate allocation results showing five of five synthetic flights assigned versus four of five for the greedy baseline](docs/case-study/assets/aviation-latest-gate-proposal.webp)
+
+The local solver assigned 5 of 5 synthetic flights versus 4 of 5 for the greedy baseline. The portal retained the resulting proposal and its research review. [Gate optimization](docs/GATE_OPTIMIZATION.md) · [Review procedure](docs/GATE_PROPOSAL_REVIEW.md)
+
+### Versioned research case
+
+![Aviation research case showing a synthetic saved prediction, version history and the attached gate proposal](docs/case-study/assets/aviation-latest-research-case.webp)
+
+The development branch opened a case from a stored synthetic prediction fixture, saved an investigation note, and linked the reviewed gate proposal at version 3. This example uses a saved fixture in place of live model inference. [Research case workflow on the development branch](https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/90bf6824f99811816356eb803e72e233fb590ac5/docs/RESEARCH_CASE_WORKFLOW.md)
+
+## Enterprise architecture and readiness
 
 - **[Readiness and Evidence Register (AIN-EA-12)](docs/enterprise-architecture/12-READINESS-AND-EVIDENCE-REGISTER.md)** — final document in the 12-part architecture package: all 24 open production gates, evidence validity, proposed owners, acceptance workflow and engineering priorities.
 
@@ -25,21 +76,6 @@
 - **[Business Requirements and Acceptance Criteria (AIN-EA-02)](docs/enterprise-architecture/02-BUSINESS-REQUIREMENTS-AND-ACCEPTANCE.md)** — research objectives, stakeholder responsibilities, 18 business requirements, 8 quality requirements and 6 acceptance journeys.
 
 - **[Current Implementation Baseline (AIN-EA-01)](docs/enterprise-architecture/01-CURRENT-IMPLEMENTATION-BASELINE.md)** — reviewed source revision, implemented and experimental capabilities, recorded verification, deployment limits and all 24 open production gates.
-
-A research project on how aviation analysts can verify flight-data lineage, evaluate delay alerts, and review synthetic gate proposals.
-
-- [75-second walkthrough](docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4) covers the delay-alert trade-off and the recorded synthetic gate-allocation scenario.
-- [One-page project summary](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_SUMMARY.md) presents the measured results and one reproducible scenario.
-- [Technical case study](docs/case-study/AVIATION_INTELLIGENCE_NEXUS_CASE_STUDY.md) covers the architecture, trade-offs, and reproducibility limits.
-- [Data audit](docs/DATA_QUALITY_LINEAGE.md) covers 2,835,101 historical US domestic flight records.
-- [Delay evaluation](docs/DELAY_V2.md) reports 30.22% precision at the demonstration threshold and about 58% of eligible May flights flagged.
-- [Gate allocation example](docs/GATE_OPTIMIZATION.md) assigned 5 of 5 flights versus 4 of 5 for the greedy baseline in one synthetic scenario.
-
-An independent aviation decision-support portfolio project combining a comprehensive dashboard prototype with an explicit implementation and acceptance roadmap.
-
-**Current status: local research prototype with an authenticated historical-data/model panel, role-checked scenario inference, SQLite history, BTS ingestion, two measured model experiments, a synthetic gate-allocation optimizer, local document RAG and a bounded tool-calling investigation agent. The second model passed prespecified research checks; neither model is approved for operational airline serving. A local Docker release and measured restoration are implemented; managed production identity and cloud deployment remain incomplete.**
-
-![Aviation dashboard prototype](docs/images/dashboard.jpg)
 
 ## Run locally
 
