@@ -42,6 +42,38 @@ jobs:
       - run: python -m pip install -r infra/requirements-lock.txt
       - run: python -m pip check
       - run: python -m unittest discover -s tests -v
+  research-browser:
+    name: Authenticated research browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check out the pinned research-case candidate
+        uses: actions/checkout@v7
+        with:
+          ref: 90bf6824f99811816356eb803e72e233fb590ac5
+          path: .case-source
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - run: python -m pip install -r services/api/requirements-lock.txt -r infra/requirements-lock.txt playwright==1.62.0
+      - run: python -m playwright install --with-deps chromium
+      - name: Rehearse authenticated research on the current revision
+        run: python tests/browser/verify_research_portal.py --output "${{ runner.temp }}/ain-browser/current-revision.json"
+      - name: Rehearse versioned case attachment on the pinned candidate
+        run: python tests/browser/verify_research_portal.py --repository .case-source --case-workspace --output "${{ runner.temp }}/ain-browser/versioned-case.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: aviation-research-browser-evidence
+          path: ${{ runner.temp }}/ain-browser/
   containers:
     name: Container smoke checks
     runs-on: ubuntu-latest

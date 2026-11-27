@@ -51,6 +51,8 @@ The local solver assigned 5 of 5 synthetic flights versus 4 of 5 for the greedy 
 
 The development branch opened a case from a stored synthetic prediction fixture, saved an investigation note, and linked the reviewed gate proposal at version 3. This example uses a saved fixture in place of live model inference. [Research case workflow on the development branch](https://github.com/shah-hussain-bangash/aviation-intelligence-nexus/blob/90bf6824f99811816356eb803e72e233fb590ac5/docs/RESEARCH_CASE_WORKFLOW.md)
 
+[End-to-end research case evidence pack](docs/case-study/RESEARCH_CASE_EVIDENCE_PACK.md) · [Browser verification workflow](.github/workflows/checks.yml)
+
 ## Enterprise architecture and readiness
 
 - **[Readiness and Evidence Register (AIN-EA-12)](docs/enterprise-architecture/12-READINESS-AND-EVIDENCE-REGISTER.md)** — final document in the 12-part architecture package: all 24 open production gates, evidence validity, proposed owners, acceptance workflow and engineering priorities.
