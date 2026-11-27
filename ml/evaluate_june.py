@@ -60,7 +60,8 @@ def scan(snapshot,output,deadline,counts):
                 require(None not in row and all(value is not None for value in row.values()),'csv_row_shape_invalid')
                 try:values=normalize(row,'2025-06')
                 except (ValueError,TypeError,AttributeError):raise EvaluationFailure('candidate_record_invalid') from None
-                record=json.dumps(values,allow_nan=False)
+                # Numeric signed zero is the same normalized delay, not a revision.
+                record=json.dumps([0.0 if type(v) is float and v==0 else v for v in values],allow_nan=False)
                 inserted=db.execute('INSERT OR IGNORE INTO identities VALUES(?,?)',(values[1],record)).rowcount
                 if not inserted:
                     require(db.execute('SELECT value FROM identities WHERE k=?',(values[1],)).fetchone()[0]==record,

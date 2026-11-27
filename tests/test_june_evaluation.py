@@ -44,7 +44,8 @@ class JuneEvaluationTests(unittest.TestCase):
     def rows(self):
         rows=[[f'2025-06-{i//4+1:02d}','AA',str(i+1),'JFK','LAX','0900','3',str(20 if i%2 else 0),'0','0'] for i in range(12)]
         rows[9][7]='';rows[9][8]='1';rows[10][7]='';rows[10][9]='1';rows[11][7]=''
-        return rows+[rows[0].copy()]
+        duplicate=rows[0].copy();duplicate[7]='-0.0'
+        return rows+[duplicate]
 
     def admit(self,rows=None,name='admitted',header=None):
         text=io.StringIO(newline='');writer=csv.writer(text);writer.writerow(header or FIELDS);writer.writerows(self.rows() if rows is None else rows)
