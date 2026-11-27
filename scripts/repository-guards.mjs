@@ -20,7 +20,8 @@ export function candidateFiles() {
 const allowedRoots = new Set(['apps','services','pipelines','ml','rag','agents','optimization','contracts','db','infra','tests','scripts','docs','.github','.vscode']);
 const allowedRootFiles = new Set(['README.md','AGENTS.md','CHANGELOG.md','LICENSE','LICENSE.md','package.json','package-lock.json','pyproject.toml','uv.lock','requirements.txt','Makefile','Dockerfile','compose.yaml','compose.yml','.dockerignore','.gitignore','.gitattributes','.env.example']);
 const allowedExtensions = new Set(['.js','.mjs','.cjs','.ts','.tsx','.jsx','.html','.css','.json','.md','.yml','.yaml','.toml','.sql','.py','.txt','.ps1','.sh','.lock','.jpg','.jpeg','.png','.webp','.svg']);
-const reviewedBinaryFiles = new Map([['docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4','32eee7b910c70253d79ed39e0974669ead4f73e0']]);
+const tableauWorkbookPath = 'docs/tableau/Aviation_Intelligence_Nexus.twbx';
+const reviewedBinaryFiles = new Map([['docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4','32eee7b910c70253d79ed39e0974669ead4f73e0'],[tableauWorkbookPath,'e152e0d3d95253189a4c8da2a6b883265b3c9b75']]);
 export function reviewedBinary(relative,bytes){
   const expected=reviewedBinaryFiles.get(relative);
   return !!expected&&createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')===expected;
@@ -46,8 +47,10 @@ export function reviewFile(relative) {
   if (!fs.existsSync(absolute)) return errors; // A reviewed deletion has no current bytes to scan.
   const stat = fs.lstatSync(absolute);
   if (!stat.isFile() || stat.isSymbolicLink()) return [...errors, 'Only ordinary source files are eligible'];
-  if (stat.size > 5 * 1024 * 1024) errors.push('File exceeds 5 MiB automatic-publication limit');
-  if (reviewedMediaPath && stat.size <= 5 * 1024 * 1024 && !reviewedBinary(normalized,fs.readFileSync(absolute))) errors.push('Reviewed portfolio media fingerprint changed; manual review required');
+  // The explicitly published Tableau package alone has a larger, fingerprint-bound limit.
+  const publicationLimit = normalized === tableauWorkbookPath ? 20 * 1024 * 1024 : 5 * 1024 * 1024;
+  if (stat.size > publicationLimit) errors.push('File exceeds ' + (publicationLimit / 1024 / 1024) + ' MiB automatic-publication limit');
+  if (reviewedMediaPath && stat.size <= publicationLimit && !reviewedBinary(normalized,fs.readFileSync(absolute))) errors.push('Reviewed portfolio media fingerprint changed; manual review required');
   if (!['.jpg','.jpeg','.png','.webp'].includes(extension) && !reviewedMediaPath && stat.size <= 5 * 1024 * 1024) {
     const content = fs.readFileSync(absolute, 'utf8');
     for (const [name, pattern] of secretRules) if (pattern.test(content)) errors.push(`Potential sensitive value (${name}); inspect privately`);

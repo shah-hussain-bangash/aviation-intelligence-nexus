@@ -1,0 +1,23 @@
+{
+  "artifact": "Aviation_Intelligence_Nexus.twbx",
+  "sha256": "c0bfa8a2e6d1009b9335a5561899a23a2cd193ead574d37a90a34be573c2cd20",
+  "git_blob_sha1": "e152e0d3d95253189a4c8da2a6b883265b3c9b75",
+  "bytes": 17436832,
+  "source": "Bureau of Transportation Statistics historical US domestic reporting-carrier flight data",
+  "period_start": "2025-01-01",
+  "period_end": "2025-05-31",
+  "grain": "flight_date, reporting_carrier, origin, destination",
+  "aggregate_rows": 1154864,
+  "totals": {
+    "Flights": 2835101,
+    "Completed Flights": 2786350,
+    "On Time Flights": 2214442,
+    "Delayed Flights": 571908,
+    "Cancelled Flights": 41898,
+    "Diverted Flights": 6853
+  },
+  "tableau_version": "2026.3",
+  "dashboards": 3,
+  "worksheets": 16,
+  "verification": "All three dashboards rendered in Tableau; month, airline and origin filter counts reconciled to independent database queries; ZIP integrity and embedded aggregate totals verified."
+}

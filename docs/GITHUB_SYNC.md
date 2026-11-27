@@ -29,3 +29,8 @@ Raw datasets, archives, credentials, private keys, `.env` files, personal docume
 The GitHub account was renamed to `shah-hussain-bangash`; repository ID 1463875455 is unchanged. Origin and the approved sync destination now use that canonical address. Historical evidence may retain redirected links under the former username. A disconnected Desktop Commander session still blocks scheduled authenticated sync; the account rename does not repair that connection.
 
 The existing portfolio walkthrough is the only approved MP4: `docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4`, Git blob SHA-1 `32eee7b910c70253d79ed39e0974669ead4f73e0`. Source checks verify its exact path and bytes; modified clips and other MP4s require review. The 5 MiB limit and ordinary-file/symlink checks still apply.
+
+
+## Explicit Tableau publication
+
+The user requested publication of `docs/tableau/Aviation_Intelligence_Nexus.twbx` on 27 November 2026. It contains reviewed BTS historical aggregates, not raw flight records or a database. The original Tableau licensing and author metadata is preserved. Only this exact path and Git blob SHA-1 `e152e0d3d95253189a4c8da2a6b883265b3c9b75` have a 20 MiB exception; the 5 MiB limit remains for other files. Any changed workbook bytes or other package require a fresh review and fingerprint update. See [the Tableau guide](tableau/README.md) for contents and validation.

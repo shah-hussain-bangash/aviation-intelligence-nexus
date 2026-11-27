@@ -1,5 +1,7 @@
 # Aviation Intelligence Nexus
 
+- **[Tableau dashboards and downloadable workbook](docs/tableau/README.md)** — three interactive historical flight-performance dashboards with embedded aggregate data, 16 worksheets, shared filters and reconciled totals.
+
 A local research workspace for aviation analysts to inspect flight-data lineage, compare delay-alert thresholds, and review synthetic gate proposals.
 
 - [75-second walkthrough](docs/case-study/assets/aviation-intelligence-nexus-walkthrough.mp4) covers the delay-alert trade-off and the recorded synthetic gate-allocation scenario.

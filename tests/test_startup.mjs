@@ -20,6 +20,17 @@ test('portfolio media exception is restricted to exact path and unchanged commit
  }
 });
 
+test('published Tableau workbook is fingerprint-bound and does not permit other packages',()=>{
+ const path='docs/tableau/Aviation_Intelligence_Nexus.twbx';
+ const bytes=fs.readFileSync(new URL('../'+path,import.meta.url));
+ assert.equal(reviewedBinary(path,bytes),true);
+ assert.deepEqual(reviewFile(path),[]);
+ const changed=Buffer.from(bytes);changed[changed.length-1]^=1;
+ assert.equal(reviewedBinary(path,changed),false);
+ assert.equal(reviewedBinary('docs/tableau/another.twbx',bytes),false);
+ assert.ok(reviewFile('docs/tableau/another.twbx').includes('File type needs manual review'));
+});
+
 function savedContainers(){return ['api','web'].map(service=>({Name:`/ain-local-release-${service}-1`,Config:{Labels:{'com.docker.compose.project':'ain-local-release','com.docker.compose.service':service},Env:['AIN_STATE_ROOT=/app/.local/active']},HostConfig:{PortBindings:service==='web'?{'8080/tcp':[{HostIp:'127.0.0.1',HostPort:'8090'}]}:{}},Mounts:service==='api'?[{Destination:'/app/.local',Type:'volume',Name:'ain-local-release_state'}]:[]}));}
 
 test('saved dashboard startup reuses ready service without touching Docker',async()=>{
