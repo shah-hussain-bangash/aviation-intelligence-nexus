@@ -12,6 +12,7 @@ from agents.quality import document_scope
 from agents.model_evidence import observation as model_observation
 from agents.distribution_evidence import observation as distribution_observation
 from agents.duration_evidence import observation as duration_observation
+from agents.june_evidence import observation as june_observation
 from services.api.route_history import lookup as lookup_route, RouteNotObserved
 
 
@@ -33,10 +34,10 @@ class RouteArgs(EmptyArgs):
     destination: str = Field(pattern=r'^[A-Z]{3}$')
 
 
-ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs,'model_evidence':EmptyArgs,'distribution_evidence':EmptyArgs,'duration_evidence':EmptyArgs}
+ARGUMENTS={'flight_metrics':MonthArgs,'knowledge_search':SearchArgs,'gate_simulation':EmptyArgs,'route_history':RouteArgs,'model_evidence':EmptyArgs,'distribution_evidence':EmptyArgs,'duration_evidence':EmptyArgs,'june_evidence':EmptyArgs}
 
 
-def definitions(simulation, route=False, model=False, distributions=False, duration=False):
+def definitions(simulation, route=False, model=False, distributions=False, duration=False, june=False):
     descriptions = [
         ('flight_metrics','Read actual historical BTS counts and arrival-delay frequency. Month must equal the user-selected month. Never live or UAE data.',MonthArgs),
         ('knowledge_search','Retrieve cited public project evidence about models, data and optimization. No generated answer in this tool.',SearchArgs)]
@@ -50,6 +51,8 @@ def definitions(simulation, route=False, model=False, distributions=False, durat
         descriptions.append(('distribution_evidence','Read fixed January-March versus May 2025 marginal input counts, TV and base-2 JS divergence. Empty arguments only. Not live monitoring, a significance test or proof of model degradation/causality/CSV identity.',EmptyArgs))
     if duration:
         descriptions.append(('duration_evidence','Read fixed negative delay-duration regression results, mean/median baselines, severe-delay errors and limitations. Empty arguments only. The model failed its research check and is not deployed; no refitting, causal diagnosis or operational approval.',EmptyArgs))
+    if june:
+        descriptions.append(('june_evidence','Read the fixed June 2025 frozen-model comparison, descriptive date-cluster intervals and source limitations. Empty arguments only; no scoring, refitting, significance, UAE transfer, causal diagnosis or operational action.',EmptyArgs))
     return [{'type':'function','function':{'name':name,'description':description,'parameters':model.model_json_schema()}}
             for name,description,model in descriptions]
 
@@ -93,6 +96,10 @@ def gate_sample():
 
 
 def execute(name, arguments, request, database, knowledge):
+    if name=='june_evidence':
+        if not request.include_june_evidence:raise ValueError('June evidence requires explicit permission')
+        EmptyArgs.model_validate(arguments)
+        return june_observation()
     if name=='duration_evidence':
         if not request.include_duration_evidence:raise ValueError('Duration evidence requires explicit permission')
         EmptyArgs.model_validate(arguments)

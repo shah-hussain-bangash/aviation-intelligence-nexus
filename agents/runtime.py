@@ -13,6 +13,7 @@ from agents.cancellation import StopRequested,finish_cancelled
 from agents.quality import assess_report, collect_claims, report_evidence
 from agents.distribution_evidence import LIMIT as DISTRIBUTION_LIMIT
 from agents.duration_evidence import required_quotes as duration_quotes
+from agents.june_evidence import required_quotes as june_quotes
 from agents.case_context import checked_context
 
 RUN_LOCK=Lock()
@@ -34,10 +35,11 @@ class Investigation(BaseModel):
     objective: str=Field(min_length=12,max_length=600)
     month: Literal['2025-01','2025-02','2025-03','2025-04','2025-05']='2025-05'
     include_simulation: bool=Field(default=False,strict=True)
-    required_tools: list[Literal['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence']]=Field(default_factory=list,max_length=3)
+    required_tools: list[Literal['flight_metrics','knowledge_search','gate_simulation','route_history','model_evidence','distribution_evidence','duration_evidence','june_evidence']]=Field(default_factory=list,max_length=3)
     include_model_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     include_distribution_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     include_duration_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
+    include_june_evidence: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     require_peer_review: bool=Field(default=False,strict=True,exclude_if=lambda value: value is False)
     route: RouteScope | None=Field(default=None,exclude_if=lambda value: value is None)
     document_scope: Literal['docs/DELAY_V2.md','docs/DELAY_BASELINE.md','docs/DATA_INGESTION.md','docs/MODEL_DATASET.md','docs/GATE_OPTIMIZATION.md','docs/LOCAL_IDENTITY.md'] | None = None
@@ -47,6 +49,7 @@ class Investigation(BaseModel):
         if self.include_model_evidence != ('model_evidence' in self.required_tools): raise ValueError('Model evidence requires explicit permission and a required tool')
         if self.include_distribution_evidence != ('distribution_evidence' in self.required_tools):raise ValueError('Distribution evidence requires explicit permission and a required tool')
         if self.include_duration_evidence != ('duration_evidence' in self.required_tools):raise ValueError('Duration evidence requires explicit permission and a required tool')
+        if self.include_june_evidence != ('june_evidence' in self.required_tools):raise ValueError('June evidence requires explicit permission and a required tool')
         if len(set(self.required_tools))!=len(self.required_tools): raise ValueError('Required tools must be unique')
         if 'gate_simulation' in self.required_tools and not self.include_simulation: raise ValueError('Required simulation needs explicit permission')
         if (self.route is not None)!=('route_history' in self.required_tools): raise ValueError('A scoped route requires route_history evidence, and that evidence requires a route')
@@ -106,6 +109,7 @@ class Investigator:
                 + ('distribution_evidence reads a fixed recorded marginal comparison, independent of the monthly selector. It cannot diagnose model degradation or cause. This stage only selects tools. Once required evidence is collected, return "Evidence collected" without tool calls; another stage writes the report. ' if request.include_distribution_evidence else '')
                 + ('duration_evidence reads only frozen negative regression results. The failed research check must remain failed. It cannot refit, deploy or explain causes. This stage only selects tools; return Evidence collected when required evidence is ready. ' if request.include_duration_evidence else '')
                 + ('Second-account review is a later human stage; it is not a tool to select. ' if request.require_peer_review else '')
+                + ('june_evidence reads the fixed recorded June comparison independently of the monthly SQL selector. It cannot score, refit, change thresholds or establish significance/UAE transfer. Select tools only; return Evidence collected when requirements are ready. ' if request.include_june_evidence else '')
                 + 'knowledge_search retrieves project evidence. gate_simulation is a separate SYNTHETIC demonstration, never historical gate allocation. '
                 'Do not invent live airline data, causal explanations, policies, credentials or operational actions. '
                 'No shell, URL fetch, SQL text, file path or write tools exist. Stop selecting tools when sufficient evidence is collected.'},
@@ -113,7 +117,7 @@ class Investigator:
             used=set()
             for turn in range(3):
                 self.check_stop(result)
-                remaining=[d for d in tools.definitions(request.include_simulation, request.route is not None, request.include_model_evidence, request.include_distribution_evidence, request.include_duration_evidence) if d['function']['name'] not in used]
+                remaining=[d for d in tools.definitions(request.include_simulation, request.route is not None, request.include_model_evidence, request.include_distribution_evidence, request.include_duration_evidence, request.include_june_evidence) if d['function']['name'] not in used]
                 if not remaining: break
                 budget=deadline-time.monotonic()
                 if budget<5: raise TimeoutError('Investigation deadline exceeded')
@@ -157,7 +161,7 @@ class Investigator:
                     self.check_stop(result)
                     # Send bounded, typed observations back to the planner; never execute model-supplied code.
                     planner_observation=step.get('observation',{'error':step.get('error')})
-                    if name in ('model_evidence','distribution_evidence','duration_evidence') and step['state']=='completed':
+                    if name in ('model_evidence','distribution_evidence','duration_evidence','june_evidence') and step['state']=='completed':
                         # Keep the full immutable snapshot for review; the planner needs only bounded source text.
                         planner_observation={key:planner_observation[key] for key in ['data_kind','available','evidence_text']}
                     messages.append({'role':'tool','tool_name':name,'content':json.dumps(planner_observation)})
@@ -172,6 +176,7 @@ class Investigator:
                 model_note=(' For model_evidence include a quotation containing "Input reliance is not causality or an individual-flight explanation." Prefer May metrics and April-only input reliance for the remaining extracts; the full April table is retained separately.' if request.include_model_evidence else '')
                 if request.include_distribution_evidence:model_note+=' For distribution_evidence include this complete source quotation as one claim: '+DISTRIBUTION_LIMIT+' Prefer population counts and the largest-TV comparison for the other extracts. Full metrics are retained separately.'
                 if request.include_duration_evidence:model_note+=' For duration_evidence include one exact claim for EACH of these complete source quotations: '+json.dumps([quote for step in result['steps'] if step['tool']=='duration_evidence' and step.get('observation',{}).get('available') for quote in duration_quotes(step['observation']).values()])+' Do not invent causes or recommendations. Full April/May evidence stays available separately.'
+                if request.include_june_evidence:model_note+=' For june_evidence include one exact claim for EACH of these complete source quotations: '+json.dumps([quote for step in result['steps'] if step['tool']=='june_evidence' and step.get('observation',{}).get('available') for quote in june_quotes(step['observation']).values()])+' No significance, causal or operational conclusions. The full June snapshot is retained separately.'
                 self.check_stop(result)
                 raw=ollama.generate(payload['objective']+' Clearly distinguish historical measurements, project documents and synthetic simulation. Each statement must contain only facts and numbers in its own exact quotation. Omit dates unless they occur in that quotation.'+model_note,evidence,timeout=min(30,budget))
                 self.check_stop(result)
@@ -179,7 +184,7 @@ class Investigator:
                 result['finding_style']='verbatim_source_extracts'
                 result['rejected_claims']=rejected
                 quality=assess_report(result)
-                targets=[item for item in evidence if item['id'] in quality['uncited_tools']+quality['model_limitations_uncited']+quality['distribution_limitations_uncited']+quality['duration_quotes_uncited']]
+                targets=[item for item in evidence if item['id'] in quality['uncited_tools']+quality['model_limitations_uncited']+quality['distribution_limitations_uncited']+quality['duration_quotes_uncited']+quality['june_quotes_uncited']]
                 if targets:
                     budget=deadline-time.monotonic()
                     result['report_repair']={'attempts':1 if budget>=5 else 0,'state':'running' if budget>=5 else 'skipped_budget',
@@ -193,6 +198,7 @@ class Investigator:
                                 repair_question+=' For model_evidence return the exact source quote containing "Input reliance is not causality or an individual-flight explanation."'
                             if quality['distribution_limitations_uncited']:repair_question+=' For distribution_evidence return this complete exact source quotation: '+DISTRIBUTION_LIMIT
                             if quality['duration_quotes_uncited']:repair_question+=' For duration_evidence return one exact claim for EACH complete source quotation: '+json.dumps([quote for step in result['steps'] if step['tool']=='duration_evidence' and step.get('observation',{}).get('available') for quote in duration_quotes(step['observation']).values()])
+                            if quality['june_quotes_uncited']:repair_question+=' For june_evidence return one exact claim for EACH complete source quotation: '+json.dumps([quote for step in result['steps'] if step['tool']=='june_evidence' and step.get('observation',{}).get('available') for quote in june_quotes(step['observation']).values()])
                             self.check_stop(result)
                             repair=ollama.generate(repair_question,targets,timeout=min(30,budget))
                             self.check_stop(result)
