@@ -43,6 +43,28 @@ class JuneHTTPRehearsalTests(unittest.TestCase):
             self.assertFalse((self.base/'blocked').exists())
             self.assertEqual(occupied.getsockname()[1],web)
 
+    def test_explicit_june_sharing_withdrawal_through_gateway_and_fresh_session(self):
+        web,api=ports();r=verify(self.base/'sharing',peer_withdrawal=True,web_port=web,api_port=api)
+        self.assertTrue(r['passed'],r)
+        self.assertEqual(r['format'],'ain-june-sharing-http-v1')
+        self.assertEqual(r['provider_mode'],'deterministic_fixture');self.assertEqual(r['provider_calls'],[])
+        self.assertEqual(r['run']['state'],'awaiting_review')
+        self.assertEqual(r['withdrawn_run']['state'],'withdrawn')
+        self.assertEqual(r['withdrawn_run']['reviews'],[])
+        self.assertTrue(r['checks']['peer_access_ends_after_withdrawal'])
+        self.assertTrue(r['checks']['withdrawal_survives_fresh_session'])
+        self.assertIn('agents/store.py',r['execution_source_sha256'])
+        from agents.june_usefulness_review import validate
+        with self.assertRaises(ValueError):validate(r)
+        self.assertNotIn('csrf_token',json.dumps(r));self.assertNotIn('password_hash',json.dumps(r))
+        for port in (web,api):
+            with socket.socket() as probe:self.assertNotEqual(probe.connect_ex(('127.0.0.1',port)),0)
+
+    def test_nonboolean_sharing_mode_is_refused_without_state(self):
+        target=self.base/'invalid-sharing'
+        with self.assertRaises(ValueError):verify(target,peer_withdrawal='yes')
+        self.assertFalse(target.exists())
+
     def test_changed_evidence_never_starts_state_or_service(self):
         with patch('agents.verify_june_http.load_june_evaluation',side_effect=ValueError('changed evidence')):
             with self.assertRaises(ValueError):verify(self.base/'changed')
