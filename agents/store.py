@@ -121,21 +121,24 @@ class AgentStore:
             if not can_read(user,row['owner_id'],result):raise KeyError('Investigation unavailable')
             independent=result['request'].get('require_peer_review') is True
             if independent and row['owner_id']==user['id']:raise Conflict('A different researcher or administrator account must review this report')
-            if independent:
+            account=None;current_user=user
+            if independent or session_token is not None:
                 account=db.execute('SELECT username,role,active FROM auth_users WHERE id=?',(user['id'],)).fetchone()
                 if not account or not account['active'] or account['role'] not in ('researcher','admin'):raise PermissionError('Current account cannot record this review')
+                current_user={**user,'username':account['username'],'role':account['role']}
+                if not can_read(current_user,row['owner_id'],result):raise PermissionError('Current account cannot review this report')
                 if session_token is not None and not db.execute('SELECT 1 FROM auth_sessions WHERE user_id=? AND token_hash=? AND expires_at>?',(user['id'],hashlib.sha256(session_token.encode()).hexdigest(),datetime.now(timezone.utc).timestamp())).fetchone():raise PermissionError('Current session no longer permits review')
             actual_hash=sha({'request':result['request'],'steps':result['steps'],'claims':result['claims']})
             if result['state']!='awaiting_review' or result.get('report_sha256')!=report_hash or actual_hash!=report_hash: raise Conflict('Report is changed or already reviewed')
             quality=assess_report(result)
             if decision=='reviewed' and not quality['passed']: raise Conflict('Incomplete report cannot be accepted; request changes or start a revised investigation')
             result['quality']=quality
-            receipt={'actor':account['username'] if independent else user['username'],'decision':decision,'note':note,'report_sha256':report_hash,'at':now()}
+            receipt={'actor':account['username'] if account is not None else user['username'],'decision':decision,'note':note,'report_sha256':report_hash,'at':now()}
             if independent:receipt.update(second_account_review=True,reviewer_id=user['id'])
             result['reviews'].append(receipt)
             result.update(state='reviewed' if decision=='reviewed' else 'needs_changes',updated_at=now())
             db.execute('UPDATE agent_runs SET result_json=?,updated_at=? WHERE id=?',(json.dumps(result),result['updated_at'],run_id))
-            return review_view(result,user,row['owner_id'])
+            return review_view(result,current_user,row['owner_id'])
 
     def withdraw_sharing(self,user,request,session_token=None):
         with closing(self.connection()) as db,db:
