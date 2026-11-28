@@ -1,17 +1,19 @@
 import http from 'node:http';
+import https from 'node:https';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { proxyResearchRequest } from './api-proxy.mjs';
 import {runtimeConfig} from './runtime-config.mjs';
 import {securityHeaders} from './security-headers.mjs';
+import {localHttpsOptions} from './local-https.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../apps/web');
 const config=runtimeConfig();
 const port=config.webPort,apiPort=config.apiPort;
 const types = { '.mjs': 'text/javascript; charset=utf-8', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
 const inside = value => value === root || value.startsWith(root + path.sep);
-const server = http.createServer(async (req, res) => {
+const handler = async (req, res) => {
   for(const [name,value] of Object.entries(securityHeaders))res.setHeader(name,value);
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
@@ -34,7 +36,10 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': types[path.extname(real)] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-store' });
     res.end(req.method === 'HEAD' ? undefined : data);
   } catch { res.writeHead(404); res.end('Not found'); }
-});
+};
+let server;
+try{server=config.localHttps?https.createServer(localHttpsOptions(config.tlsDirectory,config.tlsPin),handler):http.createServer(handler);}
+catch{console.error('Local HTTPS startup refused.');process.exit(1);}
 server.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is already in use. Set PORT to another local port.` : 'Local server could not start.'); process.exitCode = 1; });
-server.listen(port, config.bindHost, () => console.log(`AIN dashboard: http://${config.bindHost}:${port}`));
+server.listen(port, config.bindHost, () => console.log(`AIN dashboard: ${config.localHttps?'https':'http'}://${config.bindHost}:${port}`));
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close());

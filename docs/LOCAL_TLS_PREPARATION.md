@@ -1,6 +1,6 @@
 # Local HTTPS material preparation
 
-This is the first local HTTPS preparation component. It creates and validates a short-lived, self-signed certificate bundle. It does **not** enable HTTPS on the dashboard, change authentication, install a certificate in an operating-system/browser trust store, open a port or configure a public endpoint. Existing external-TLS configuration remains rejected. Gateway integration, secure-cookie/origin behavior and authenticated HTTPS journeys remain separate work.
+This command creates and validates a short-lived, self-signed certificate bundle. It does **not** enable HTTPS on the dashboard, change authentication, install a certificate in an operating-system/browser trust store, open a port or configure a public endpoint. A separate [isolated native HTTPS rehearsal](LOCAL_HTTPS_REHEARSAL.md) now connects the gateway, test accounts and API using this material. Original-user/deployed HTTPS journeys and public TLS controls remain separate work; existing external-TLS configuration restrictions remain in place.
 
 From the project folder, choose a new private directory:
 

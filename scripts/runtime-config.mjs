@@ -1,4 +1,5 @@
 // Trusted process configuration only. Browser requests cannot select a backend or cookie namespace.
+import {privateTlsDirectory} from './local-https.mjs';
 export function routing(config={}) {
   const apiHost=config.apiHost||'127.0.0.1',sessionCookie=config.sessionCookie||'ain_session';
   if(!['127.0.0.1','api'].includes(apiHost))throw new Error('Unapproved API host.');
@@ -22,6 +23,13 @@ export function runtimeConfig(env=process.env){
   if(!['127.0.0.1','api'].includes(apiHost)||apiHost==='api'&&!container)codes.push('api_host_not_allowed');
   if(!['ain_session','ain_release_session'].includes(sessionCookie)&&!(sessionCookie==='ain_test_session'&&profile==='test'&&!container))codes.push('cookie_namespace_not_allowed');
   const modelHost=env.AIN_OLLAMA_HOST??'127.0.0.1';
+  const localHttps=env.AIN_LOCAL_HTTPS==='1';
+  if(!['0','1'].includes(env.AIN_LOCAL_HTTPS??'0'))codes.push('invalid_ain_local_https');
+  if(localHttps){
+    if(profile!=='test'||container||bindHost!=='127.0.0.1'||apiHost!=='127.0.0.1'||sessionCookie!=='ain_test_session')codes.push('local_https_requires_native_test');
+    try{privateTlsDirectory(env.AIN_LOCAL_TLS_DIRECTORY);}catch{codes.push('local_tls_directory_invalid');}
+    if(!/^[a-f0-9]{64}$/.test(env.AIN_LOCAL_TLS_SHA256??''))codes.push('local_tls_pin_invalid');
+  }else if(['AIN_LOCAL_TLS_DIRECTORY','AIN_LOCAL_TLS_SHA256'].some(k=>Object.hasOwn(env,k)))codes.push('local_tls_requires_https');
   if(!['127.0.0.1','ollama','host.docker.internal'].includes(modelHost)||modelHost!=='127.0.0.1'&&!container)codes.push('model_host_not_allowed');
   if(!container&&(env.AIN_OBSERVER_MOUNTED==='1'||env.AIN_INTAKE_OVERVIEW_MOUNTED==='1'))codes.push('container_mounts_require_container_mode');
   if((env.AIN_AUTH_PROVIDER??'local')!=='local')codes.push('identity_provider_not_configured');
@@ -32,7 +40,7 @@ export function runtimeConfig(env=process.env){
   if(Object.hasOwn(env,'AIN_DATABASE_URL'))codes.push('managed_database_not_configured');
   if(Object.hasOwn(env,'AIN_RELEASE_REVISION')&&!(/^[0-9a-f]{40}$/.test(env.AIN_RELEASE_REVISION)||['working-tree','development-working-tree'].includes(env.AIN_RELEASE_REVISION)))codes.push('invalid_release_revision');
   if(codes.length){const error=new Error('Invalid local configuration: '+codes.join(','));error.codes=[...new Set(codes)];throw error;}
-  return {...routing({apiHost,sessionCookie,profile,container}),bindHost,profile,container,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
+  return {...routing({apiHost,sessionCookie,profile,container}),bindHost,profile,container,localHttps,tlsDirectory:env.AIN_LOCAL_TLS_DIRECTORY,tlsPin:env.AIN_LOCAL_TLS_SHA256,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
 }
 
 export function environmentDiagnostic(env=process.env){

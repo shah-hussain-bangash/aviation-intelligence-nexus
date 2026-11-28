@@ -7,6 +7,12 @@ import {proxyResearchRequest} from '../scripts/api-proxy.mjs';
 import http from 'node:http';
 function childEnv(values={}){return {...Object.fromEntries(Object.entries(process.env).filter(([k])=>!k.startsWith('AIN_')&&k!=='PORT')),...values};}
 
+test('local HTTPS requires native test cookies and a private pinned bundle',()=>{
+ const valid={AIN_ENV:'test',AIN_SESSION_COOKIE:'ain_test_session',AIN_LOCAL_HTTPS:'1',AIN_LOCAL_TLS_DIRECTORY:'.local/test-tls',AIN_LOCAL_TLS_SHA256:'e'.repeat(64)};
+ assert.equal(runtimeConfig(valid).localHttps,true);assert.equal(runtimeConfig({}).localHttps,false);
+ for(const change of [{AIN_ENV:'local'},{AIN_CONTAINER:'1'},{AIN_SESSION_COOKIE:'ain_session'},{AIN_LOCAL_HTTPS:'true'},{AIN_LOCAL_TLS_DIRECTORY:'outside'},{AIN_LOCAL_TLS_DIRECTORY:'.local/../outside'},{AIN_LOCAL_TLS_SHA256:'invalid'},{AIN_LOCAL_HTTPS:'0'}])assert.throws(()=>runtimeConfig({...valid,...change}));
+});
+
 test('preview cookie routing is restricted to native test profile',()=>{
  const c=runtimeConfig({AIN_ENV:'test',AIN_SESSION_COOKIE:'ain_test_session'});assert.equal(c.sessionCookie,'ain_test_session');assert.equal(routing(c).sessionCookie,'ain_test_session');
  for(const change of [{AIN_ENV:'local'},{AIN_ENV:'production'},{AIN_CONTAINER:'1'}])assert.throws(()=>runtimeConfig({AIN_ENV:'test',AIN_SESSION_COOKIE:'ain_test_session',...change}));

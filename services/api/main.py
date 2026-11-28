@@ -220,6 +220,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     }, enabled=config.monitor)
     origins = {f"http://{host}:{port}" for host in ("127.0.0.1", "localhost")
                for port in (config.web_port,config.api_port)}
+    if config.local_https:origins={f'https://{host}:{config.web_port}' for host in ('127.0.0.1','localhost')}
 
     @asynccontextmanager
     async def lifespan(app):
@@ -331,7 +332,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         try:
             token = auth.login(credentials.username, credentials.password, request_id=request.state.request_id)
             response = JSONResponse({"authenticated": True, "user": auth.session(token), "csrf_token": csrf_token(token)})
-            response.set_cookie(COOKIE, token, max_age=SESSION_SECONDS, httponly=True, samesite="strict", secure=False, path="/api")
+            response.set_cookie(COOKIE, token, max_age=SESSION_SECONDS, httponly=True, samesite="strict", secure=config.local_https, path="/api")
             return response
         except LoginLimited:
             return JSONResponse(status_code=429, content={"error": "login_rate_limited", "message": "Try again after one minute."})
@@ -347,7 +348,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         except sqlite3.Error:
             return JSONResponse(status_code=503, content={'error':'sign_out_unconfirmed'})
         response = JSONResponse({"authenticated": False})
-        response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict")
+        response.delete_cookie(COOKIE, path="/api", httponly=True, samesite="strict", secure=config.local_https)
         return response
 
     @app.get('/api/v1/auth/security')
