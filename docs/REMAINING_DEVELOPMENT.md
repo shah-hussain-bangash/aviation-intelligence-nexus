@@ -24,6 +24,10 @@ Finish one connected research journey before broadening more workspace screens o
 
 No completion percentage, hiring probability or production-ready claim follows from this plan.
 
+## June answer human review preparation — 28 November 2026
+
+The [June usefulness review exporter](JUNE_USEFULNESS_REVIEW.md) now prepares a private readable answer/source packet and blank per-claim ratings from the pinned live authenticated HTTP receipt. It revalidates the complete execution check inventory, bounded provider completion, unreviewed draft fingerprint and canonical June evidence. Its assessor rejects changed bindings and keeps incomplete or uncertain declarations pending. It makes no provider calls, database changes or review submissions. Genuine human ratings, original-user browser validation and production acceptance remain open; synthetic test ratings are not human acceptance evidence.
+
 ## Combined workflow rehearsal
 
 The versioned [deterministic combined API rehearsal](CASE_BOUND_INVESTIGATIONS.md#combined-deterministic-api-rehearsal) checks one synthetic case across saved evidence, a version-bound job, explicit needs-changes review, report/proposal attachments, closure and a fresh application instance. It includes stale-write, cross-account and missing-dependency rejection. This provides combined state/permission regression evidence. It does not establish actual background/provider execution, genuine useful-outcome acceptance, final deployed behavior or close any production gate.
