@@ -74,14 +74,15 @@ def reserve(port):
     return sock
 
 
-def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
+def verify(output, *, live_ai=False, peer_withdrawal=False, web_port=18172, api_port=18173):
     host()
-    if type(live_ai) is not bool or web_port==api_port:raise ValueError('explicit_mode_and_distinct_ports_required')
+    if type(live_ai) is not bool or type(peer_withdrawal) is not bool or web_port==api_port:raise ValueError('explicit_mode_and_distinct_ports_required')
     if '..' in Path(output).parts:raise ValueError('fresh_private_rehearsal_required')
     output=local(output)
     if not output.is_relative_to(ROOT/'.local') or output==ROOT/'.local' or output.exists():raise ValueError('fresh_private_rehearsal_required')
     summary=load_june_evaluation();provenance=identity()
-    source_hashes={p:hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest() for p in SOURCES}
+    sources=SOURCES+('agents/store.py','agents/review_access.py','agents/review_inbox.py','agents/withdrawal.py') if peer_withdrawal else SOURCES
+    source_hashes={p:hashlib.sha256((ROOT/p).read_text(encoding='utf-8').encode()).hexdigest() for p in sources}
     with ExitStack() as ports:
         api_socket=ports.enter_context(reserve(api_port));web_probe=ports.enter_context(reserve(web_port))
         output.mkdir(parents=True,exist_ok=False)
@@ -94,6 +95,9 @@ def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
                 'ports':{'web':web_port,'api':api_port},'recorded_june_report_sha256':summary['report_sha256'],
                 'checks':{},'provider_calls':[],'run':None,'passed':False,'failure_type':None,
                 'genuine_human_usefulness_assessed':False,'production_ready':False}
+        if peer_withdrawal:
+            result.update(format='ain-june-sharing-http-v1',
+                sharing_scope='Explicit pending sharing with other local researchers; withdrawal ends future access, not previously received copies')
         checks=result['checks'];gateway=None;server=None;thread=None;worker=None;started=time.perf_counter()
         def check(name, ok):
             checks[name]=bool(ok)
@@ -145,6 +149,7 @@ def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
                 code,_,headers=anonymous.request('/')
                 check('dashboard_security_headers',code==200 and bool(headers.get('content-security-policy')) and headers.get('x-content-type-options')=='nosniff')
                 path='/api/v1/research/agent-jobs';request=Investigation(objective=OBJECTIVE,include_june_evidence=True,required_tools=['june_evidence']).model_dump()
+                if peer_withdrawal:request['require_peer_review']=True
                 check('anonymous_denied',anonymous.request('/api/v1/research/june-evaluation')[0]==401 and anonymous.request(path,request,extra={'Idempotency-Key':str(uuid4())})[0]==401)
                 viewer=Client(web_port);viewer.login('june-http-viewer',password)
                 check('viewer_submission_denied',viewer.request(path,request,extra={'Idempotency-Key':str(uuid4())})[0]==403)
@@ -172,7 +177,32 @@ def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
                 calls=len(result['provider_calls']);code,replay,_=owner.request(path,request,extra={'Idempotency-Key':key})
                 check('same_key_replay_without_provider_calls',code==202 and replay.get('replayed') is True and replay['run_id']==run['run_id'] and replay['report_sha256']==run['report_sha256'] and len(result['provider_calls'])==calls)
                 peer=Client(web_port);peer.login('june-http-peer',password)
-                check('cross_owner_read_denied',peer.request(path+'/'+run['run_id'])[0]==404 and viewer.request(path+'/'+run['run_id'])[0]==404)
+                if peer_withdrawal:
+                    read=path+'/'+run['run_id'];inbox='/api/v1/research/agent-review-inbox'
+                    code,shared,_=peer.request(read)
+                    check('explicit_peer_draft_visible',code==200 and shared['report_sha256']==run['report_sha256'] and shared['review_access']['can_review'] is True)
+                    code,pending,_=peer.request(inbox)
+                    check('peer_inbox_lists_exact_draft',code==200 and [r['run_id'] for r in pending['runs']]==[run['run_id']])
+                    check('author_cannot_self_review',run['review_access']['can_review'] is False and run['review_access']['can_withdraw'] is True)
+                    check('viewer_shared_draft_denied',viewer.request(read)[0]==404 and viewer.request(inbox)[0]==403)
+                    body={'run_id':run['run_id'],'report_sha256':run['report_sha256'],'withdrawal_key':str(uuid4()),
+                          'note':'SYNTHETIC access rehearsal: end temporary sharing without submitting a review.','acknowledged':True}
+                    withdraw='/api/v1/research/agent-withdraw-sharing'
+                    check('peer_cannot_withdraw',peer.request(withdraw,body)[0]==404)
+                    check('withdrawal_csrf_enforced',owner.request(withdraw,body,csrf=False)[0]==403)
+                    check('withdrawal_origin_enforced',owner.request(withdraw,body,extra={'Origin':'http://unapproved.invalid'})[0]==403)
+                    code,closed,_=owner.request(withdraw,body)
+                    check('owner_withdrawal_retained',code==200 and closed['state']=='withdrawn' and closed['reviews']==[])
+                    check('withdrawal_preserves_evidence',all(closed[k]==run[k] for k in ('request','steps','claims','report_sha256','reviews')))
+                    code,repeated,_=owner.request(withdraw,body)
+                    check('withdrawal_idempotent',code==200 and repeated['withdrawal_replayed'] is True and repeated['sharing_withdrawal']==closed['sharing_withdrawal'])
+                    check('changed_withdrawal_conflicts',owner.request(withdraw,{**body,'note':'SYNTHETIC different reason.'})[0]==409)
+                    code,empty,_=peer.request(inbox)
+                    check('peer_access_ends_after_withdrawal',peer.request(read)[0]==404 and code==200 and empty['runs']==[])
+                    check('viewer_access_stays_denied',viewer.request(read)[0]==404)
+                    result['withdrawn_run']=closed
+                else:
+                    check('cross_owner_read_denied',peer.request(path+'/'+run['run_id'])[0]==404 and viewer.request(path+'/'+run['run_id'])[0]==404)
                 admin=Client(web_port);admin.login('june-http-admin',password)
                 code,operations,_=admin.request('/api/v1/research/agent-operations')
                 check('admin_named_execution_observed',code==200 and operations['total_background_runs']==1 and operations['recent_window']['tools']['june_evidence']['completed']==1)
@@ -181,6 +211,7 @@ def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
                 check('logout_revokes_access',owner.request('/api/v1/auth/logout',{})[0]==200 and owner.request(path+'/'+run['run_id'])[0]==401 and stale.request(path+'/'+run['run_id'])[0]==401)
                 owner.login('june-http-owner',password);code,saved,_=owner.request(path+'/'+run['run_id'])
                 check('fresh_session_reads_same_saved_draft',code==200 and saved['report_sha256']==run['report_sha256'] and saved['reviews']==[])
+                if peer_withdrawal:check('withdrawal_survives_fresh_session',saved['state']=='withdrawn' and saved['sharing_withdrawal']==result['withdrawn_run']['sharing_withdrawal'])
                 if live_ai:
                     chats=[e for e in result['provider_calls'] if e['route']=='chat']
                     check('actual_provider_completed_within_bounds',{'planner','generator'}.issubset({e['purpose'] for e in chats}) and all(e.get('done') is True and e.get('done_reason')=='stop' for e in chats) and sum(e['purpose']=='planner' for e in chats)<=3 and sum(e['purpose']=='generator' for e in chats)<=2)
@@ -203,8 +234,8 @@ def verify(output, *, live_ai=False, web_port=18172, api_port=18173):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--live-ai',action='store_true');parser.add_argument('--web-port',type=int,default=18172);parser.add_argument('--api-port',type=int,default=18173)
-    args=parser.parse_args();r=verify(args.output,live_ai=args.live_ai,web_port=args.web_port,api_port=args.api_port)
+    parser.add_argument('--live-ai',action='store_true');parser.add_argument('--peer-withdrawal',action='store_true');parser.add_argument('--web-port',type=int,default=18172);parser.add_argument('--api-port',type=int,default=18173)
+    args=parser.parse_args();r=verify(args.output,live_ai=args.live_ai,peer_withdrawal=args.peer_withdrawal,web_port=args.web_port,api_port=args.api_port)
     print(json.dumps({k:r[k] for k in ('passed','provider_mode','checks','failure_type','elapsed_ms')},indent=2));return 0 if r['passed'] else 1
 
 
