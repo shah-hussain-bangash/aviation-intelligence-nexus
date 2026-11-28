@@ -1,0 +1,360 @@
+{
+  "scope": "Real loopback Node gateway and Uvicorn API; temporary synthetic accounts; not an original-user browser journey or human usefulness assessment",
+  "source_revision": "3cc9afcd7ada65bde86a3d5d8abbc7453359359e",
+  "working_tree_changes": false,
+  "execution_source_sha256": {
+    "agents/verify_june_http.py": "94c439b1191296401ec6d92a21604ebb53e9acaa7c7d1c3bb82fc1c2601010c1",
+    "scripts/dev.mjs": "bb35c71cb4cd4dd1d706b91b784c014bc7f46de08d5cc31df767e089fc7f0fac",
+    "scripts/api-proxy.mjs": "6bab26c5b0fc34d8018fcfb57d39ecced32fcc9b0e51223daf498feb91661c27",
+    "scripts/runtime-config.mjs": "058ecab5062c12afdbb225240ef77442b8510dee50ff16c048d137291820ec20",
+    "services/api/main.py": "8e1fa7ac7f4fa816368de7746eb0c3e4f0e4165b4499086ce3aafbb951e35e86",
+    "services/api/auth.py": "539d52f48ff4b6947810713d366f25a4df10f0c478b3482afed6d378fd5e676e",
+    "agents/jobs.py": "530b0065d343e0a01741b840f024ff76f5179675f3b1f5302edb33da241b22ba",
+    "agents/runtime.py": "f2403af01ea8ee8117af9db58fce3f4a03f316fb47ec3e652e938039d19d9792",
+    "agents/tools.py": "2af61fe15bd9fcb1525a130e42ce20aca3a2f0d7f7f204388142eb3388ad3280",
+    "agents/quality.py": "3b2d0484ab3cd774075f35c7c45fc63da422dedfbddd1e1051ebeca84d97f323",
+    "agents/june_evidence.py": "aa6cd76bc4c49fa51efa3a572b25ac8b11386fbc743f5854dad8af4150fd6d42",
+    "rag/ollama.py": "8308f97feff5409190aacfb6798ee1091cd5f0663e1402a0abc0d4f6f50c23b9",
+    "services/api/june_evaluation.py": "bd4f585d2c6e9ef51f086d1d64aa75ab29eceb55a9d5ab37103ae8ed4a56a191"
+  },
+  "provider_mode": "live_ollama",
+  "ports": {
+    "web": 18172,
+    "api": 18173
+  },
+  "recorded_june_report_sha256": "1928b626dfe131611bd3668bdd48e8baeaf022b0bf8919c364a682ec0298c372",
+  "checks": {
+    "isolated_api_started": true,
+    "owned_gateway_and_api_ready": true,
+    "dashboard_security_headers": true,
+    "anonymous_denied": true,
+    "viewer_submission_denied": true,
+    "csrf_enforced": true,
+    "origin_enforced": true,
+    "researcher_operations_denied": true,
+    "worker_and_provider_available": true,
+    "authenticated_enqueue": true,
+    "owned_completed_draft": true,
+    "authenticated_response_headers": true,
+    "canonical_june_tool_and_coverage": true,
+    "unreviewed_research_only": true,
+    "model_identity_recorded": true,
+    "same_key_replay_without_provider_calls": true,
+    "cross_owner_read_denied": true,
+    "admin_named_execution_observed": true,
+    "logout_revokes_access": true,
+    "fresh_session_reads_same_saved_draft": true,
+    "actual_provider_completed_within_bounds": true,
+    "isolated_services_stopped": true,
+    "execution_source_unchanged": true
+  },
+  "provider_calls": [
+    {
+      "route": "tags",
+      "purpose": "inventory",
+      "state": "returned"
+    },
+    {
+      "route": "tags",
+      "purpose": "inventory",
+      "state": "returned"
+    },
+    {
+      "route": "chat",
+      "purpose": "planner",
+      "state": "returned",
+      "done": true,
+      "done_reason": "stop"
+    },
+    {
+      "route": "chat",
+      "purpose": "planner",
+      "state": "returned",
+      "done": true,
+      "done_reason": "stop"
+    },
+    {
+      "route": "chat",
+      "purpose": "generator",
+      "state": "returned",
+      "done": true,
+      "done_reason": "stop"
+    }
+  ],
+  "run": {
+    "run_id": "7c15672f-736a-4da4-9d00-4cd5dbad61c6",
+    "actor": "june-http-owner",
+    "request": {
+      "objective": "Use june_evidence only to review the frozen June comparison, descriptive uncertainty and full research limitations. Include each complete required quotation. Do not query SQL, documents or simulation, infer causes, refit or recommend operational action.",
+      "month": "2025-05",
+      "include_simulation": false,
+      "required_tools": [
+        "june_evidence"
+      ],
+      "include_june_evidence": true,
+      "document_scope": null
+    },
+    "state": "awaiting_review",
+    "steps": [
+      {
+        "id": "T1",
+        "tool": "june_evidence",
+        "arguments": {},
+        "state": "completed",
+        "observation": {
+          "data_kind": "recorded_june_evaluation",
+          "available": true,
+          "snapshot": {
+            "format": "ain-agent-june-v1",
+            "evaluation": {
+              "format": "ain-june-evaluation-summary-v1",
+              "candidate_period": "2025-06",
+              "completed_at": "2026-11-27T07:34:45.046662+00:00",
+              "source_scope": "Historical US reporting carriers, conditional on completed non-diverted flights with observed arrival target",
+              "execution_revision": "0187d9edca15f85c3dc5813e0f41149bf901da66",
+              "execution_tree_sha": "75c0d50c889d457ad1feb2300603f82cc1c57a1f",
+              "report_path": "docs/reports/June_2025_Frozen_Evaluation.json",
+              "report_sha256": "1928b626dfe131611bd3668bdd48e8baeaf022b0bf8919c364a682ec0298c372",
+              "archive_sha256": "087b75e4e059516ca1181e58955d062f341933adb2706e5b2404ed10c9ecbdc6",
+              "model_sha256": "71b23232edc615a01daee387e1e7dbb2c0aa3f7dae2b4d1f33fabbc0fbbff732",
+              "plan_sha256": "7a0ddd03436675ed308368a6bf9463d1cffc88b5a94ec80559eff9ee82b7ed50",
+              "data_counts": {
+                "rows_read": 611575,
+                "unique_identities": 611575,
+                "identical_duplicates": 0,
+                "eligible_records": 599472,
+                "excluded_cancelled": 9736,
+                "excluded_diverted": 2367,
+                "excluded_missing_target": 0
+              },
+              "model": {
+                "records": 599472,
+                "delay_prevalence": 0.2825903461712974,
+                "roc_auc": 0.6705555947934609,
+                "average_precision": 0.4196614095508331,
+                "log_loss": 0.5816352151994831,
+                "brier_score": 0.19741883723440853,
+                "precision": 0.3667113566689154,
+                "recall": 0.7604793246952569,
+                "f1": 0.49481673240972973
+              },
+              "constant_training_prior": {
+                "records": 599472,
+                "delay_prevalence": 0.2825903461712974,
+                "roc_auc": 0.5,
+                "average_precision": 0.2825903461712974,
+                "log_loss": 0.6165196514085305,
+                "brier_score": 0.21007044901649957,
+                "precision": 0.2825903461712974,
+                "recall": 1.0,
+                "f1": 0.4406556575369012
+              },
+              "frozen_threshold": 0.17,
+              "constant_probability": 0.19693168289421903,
+              "research_comparison": {
+                "checks": {
+                  "auc": true,
+                  "log_loss": true,
+                  "brier": true
+                },
+                "passed": true,
+                "authority": "Research comparison inherited from v2; not stakeholder or operational acceptance",
+                "operational_approval": false
+              },
+              "uncertainty": {
+                "method": "Resample complete flight-date clusters with replacement",
+                "replicates": 1000,
+                "seed": 42,
+                "date_clusters": 30,
+                "interval": "Descriptive 2.5th and 97.5th percentiles",
+                "statistics": {
+                  "mean_log_loss_difference_model_minus_prior": {
+                    "point_estimate": -0.034884436209047305,
+                    "lower": -0.04440530102863434,
+                    "upper": -0.02604506306203578
+                  },
+                  "mean_brier_difference_model_minus_prior": {
+                    "point_estimate": -0.01265161178209104,
+                    "lower": -0.016123104473511223,
+                    "upper": -0.009438607787042853
+                  }
+                },
+                "interpretation": "Negative differences favour the frozen model; descriptive intervals only.",
+                "significance_or_independence_claim": false,
+                "limitations": "Only one month of clusters; no independence, population-transfer or significance claim"
+              },
+              "cohort_inventory": {
+                "carrier": 14,
+                "origin": 345
+              },
+              "limitations": [
+                "Historical June US records; no UAE transfer or actual-flight confirmation.",
+                "Conditional on completed non-diverted flights with observed target; reported schedules are not point-in-time snapshots.",
+                "One local unsigned checkout ledger; OS-owner edits or another checkout cannot be prevented.",
+                "No globally untouched holdout, statistical independence or production qualification is established.",
+                "No model, preprocessing, calibration or threshold refit; no deployment or operational action."
+              ],
+              "integrity_verified": true,
+              "research_only": true,
+              "inference_executed_by_request": false,
+              "globally_untouched_holdout_established": false,
+              "source_rights_verified": false,
+              "operational_approval": false,
+              "production_ready": false
+            },
+            "research_only": true,
+            "production_ready": false
+          },
+          "evidence_text": "June 2025: 599472 eligible flights; frozen-model ROC-AUC 0.670556; log loss 0.581635 versus training-prior baseline 0.616520; Brier score 0.197419 versus baseline 0.210070.\nDescriptive uncertainty: 1000 seeded resamples of 30 complete flight-date clusters; model-minus-prior 95% percentile intervals are [-0.044405, -0.026045] for mean log loss and [-0.016123, -0.009439] for mean Brier score; negative differences favour the model.\nThis frozen later-month US comparison does not establish a globally untouched holdout, statistical significance, causality, UAE validation or operational approval. No refit, threshold change, new inference or deployment is performed by this tool.\nThe fixed decision threshold is 0.17; report fingerprint 1928b626dfe131611bd3668bdd48e8baeaf022b0bf8919c364a682ec0298c372. The monthly SQL selector and January-May prediction window are unchanged."
+        },
+        "elapsed_ms": 3.89
+      }
+    ],
+    "claims": [
+      {
+        "text": "June 2025: 599472 eligible flights; frozen-model ROC-AUC 0.670556; log loss 0.581635 versus training-prior baseline 0.616520; Brier score 0.197419 versus baseline 0.210070.",
+        "citation": "T1",
+        "quote": "June 2025: 599472 eligible flights; frozen-model ROC-AUC 0.670556; log loss 0.581635 versus training-prior baseline 0.616520; Brier score 0.197419 versus baseline 0.210070."
+      },
+      {
+        "text": "Descriptive uncertainty: 1000 seeded resamples of 30 complete flight-date clusters; model-minus-prior 95% percentile intervals are [-0.044405, -0.026045] for mean log loss and [-0.016123, -0.009439] for mean Brier score; negative differences favour the model.",
+        "citation": "T1",
+        "quote": "Descriptive uncertainty: 1000 seeded resamples of 30 complete flight-date clusters; model-minus-prior 95% percentile intervals are [-0.044405, -0.026045] for mean log loss and [-0.016123, -0.009439] for mean Brier score; negative differences favour the model."
+      },
+      {
+        "text": "This frozen later-month US comparison does not establish a globally untouched holdout, statistical significance, causality, UAE validation or operational approval. No refit, threshold change, new inference or deployment is performed by this tool.",
+        "citation": "T1",
+        "quote": "This frozen later-month US comparison does not establish a globally untouched holdout, statistical significance, causality, UAE validation or operational approval. No refit, threshold change, new inference or deployment is performed by this tool."
+      }
+    ],
+    "reviews": [],
+    "created_at": "2026-11-28T05:03:51.556506+00:00",
+    "updated_at": "2026-11-28T05:04:01.287217+00:00",
+    "research_only": true,
+    "operational_approval": false,
+    "runtime": "bounded-ollama-tools-v2",
+    "execution": "local-background-queue-v1",
+    "submission_keys": [],
+    "replayed": false,
+    "started_at": "2026-11-28T05:03:51.669582+00:00",
+    "model": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"
+    },
+    "bounds": {
+      "max_tool_calls": 3,
+      "max_planner_calls": 3,
+      "max_summary_calls": 2,
+      "first_planner_timeout_seconds": 45,
+      "later_planner_timeout_seconds": 20,
+      "deadline_seconds": 120,
+      "operational_writes": false
+    },
+    "decisions": [
+      {
+        "turn": 1,
+        "tool_calls_received": 1
+      },
+      {
+        "turn": 2,
+        "tool_calls_received": 0
+      }
+    ],
+    "finding_style": "verbatim_source_extracts",
+    "rejected_claims": 0,
+    "quality": {
+      "version": "research-coverage-v1",
+      "passed": true,
+      "required_tools": [
+        "june_evidence"
+      ],
+      "missing_tools": [],
+      "failed_steps": [],
+      "unavailable_steps": [],
+      "uncited_tools": [],
+      "invalid_claims": [],
+      "covered_sources": 1,
+      "available_sources": 1,
+      "document_scope": null,
+      "document_scope_mismatches": [],
+      "route_scope_mismatches": [],
+      "model_evidence_mismatches": [],
+      "model_limitations_uncited": [],
+      "distribution_evidence_mismatches": [],
+      "distribution_limitations_uncited": [],
+      "duration_evidence_mismatches": [],
+      "duration_quotes_uncited": [],
+      "duration_required_quotes_missing": [],
+      "june_evidence_mismatches": [],
+      "june_quotes_uncited": [],
+      "june_required_quotes_missing": [],
+      "finding_style": "verbatim_source_extracts",
+      "semantic_entailment_verified": false,
+      "all_objective_parts_verified": false,
+      "meaning": "Checks explicit tool requirements, successful evidence coverage and citation/number integrity; human semantic review is still required."
+    },
+    "uncited_tools": [],
+    "report_sha256": "6c4bb8d6d8640f12c7068a0c7be040b805bdebe1e80493861d649924e43c056f",
+    "report_status": "coverage_passed",
+    "limitations": [
+      "Historical US research data and synthetic simulation are separate; no live airline feed.",
+      "Citation IDs, exact quotes and numbers are checked; semantic interpretation requires human review.",
+      "Review records document a research review only; no airline action is authorized or applied."
+    ]
+  },
+  "passed": true,
+  "failure_type": null,
+  "genuine_human_usefulness_assessed": false,
+  "production_ready": false,
+  "elapsed_ms": 11796.43,
+  "format": "ain-june-authenticated-http-public-v1",
+  "checked_at": "2026-11-28T05:04:02.034211+00:00",
+  "execution_tree_sha": "ca486b4e1335348d5a41549a3b4004a9efaede3b",
+  "private_result_sha256": "4de4067e7f262cbb29119961f46ef8b1582b85fcd5b62f2cefc608eb559f72e8",
+  "original_user_account_used": false,
+  "evaluation_repeated": false,
+  "prior_result_claim_model_provider_record_preserved": true,
+  "earlier_failed_attempt": {
+    "private_result_sha256": "629da9b53fb504a69de4927c159d850a4a39a93ac45b2c6e7dcebaf43b55870e",
+    "source_revision": "3cc9afcd7ada65bde86a3d5d8abbc7453359359e",
+    "checks": {
+      "isolated_api_started": true,
+      "owned_gateway_and_api_ready": true,
+      "dashboard_security_headers": true,
+      "anonymous_denied": true,
+      "viewer_submission_denied": true,
+      "csrf_enforced": true,
+      "origin_enforced": true,
+      "researcher_operations_denied": true,
+      "worker_and_provider_available": true,
+      "authenticated_enqueue": true,
+      "owned_completed_draft": false,
+      "isolated_services_stopped": true,
+      "execution_source_unchanged": true
+    },
+    "provider_calls": [
+      {
+        "route": "tags",
+        "purpose": "inventory",
+        "state": "returned"
+      },
+      {
+        "route": "tags",
+        "purpose": "inventory",
+        "state": "returned"
+      },
+      {
+        "route": "chat",
+        "purpose": "planner",
+        "state": "failed",
+        "error_type": "HTTPError"
+      }
+    ],
+    "failure_type": "RuntimeError",
+    "elapsed_ms": 19377.38,
+    "run_state": "failed",
+    "retained": true,
+    "cause": "First planner call returned HTTPError; underlying cause unconfirmed. A separate minimal diagnostic later completed; this is a supervised retry in a fresh directory with unchanged checked code/model settings."
+  },
+  "interpretation": "One failed attempt and one passing retry; no stability, latency benchmark, original-user browser, human usefulness or production qualification claim."
+}
