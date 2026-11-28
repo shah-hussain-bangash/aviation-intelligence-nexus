@@ -1,5 +1,6 @@
 // Fixed local research routes; never forward arbitrary destinations or browser credentials.
 import {routing} from './runtime-config.mjs';
+import {fetchApi} from './api-transport.mjs';
 import {randomUUID} from 'node:crypto';
 import {archiveQuery} from '../apps/web/agent-archive-contract.mjs';
 export async function proxyResearchRequest(req, res, pathname, apiPort,config={}) {
@@ -71,7 +72,7 @@ export async function proxyResearchRequest(req, res, pathname, apiPort,config={}
   }
   try {
     const sessionCookie = (req.headers.cookie || '').split(';').map(value=>value.trim()).find(value=>new RegExp('^'+cookieName+'=[A-Za-z0-9_-]{1,128}$').test(value));
-    const response = await fetch(`http://${apiHost}:${apiPort}${targetPath}`, {
+    const response = await fetchApi(targetPath,apiPort,config,{
       method: write ? 'POST' : 'GET', body: requestBody,
       headers: { Accept: 'application/json', ...(sessionCookie ? {Cookie:sessionCookie}:{}),
         ...(req.headers.origin ? {Origin:req.headers.origin}:{}),

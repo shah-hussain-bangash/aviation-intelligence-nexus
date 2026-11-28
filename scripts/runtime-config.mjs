@@ -24,6 +24,9 @@ export function runtimeConfig(env=process.env){
   if(!['ain_session','ain_release_session'].includes(sessionCookie)&&!(sessionCookie==='ain_test_session'&&profile==='test'&&!container))codes.push('cookie_namespace_not_allowed');
   const modelHost=env.AIN_OLLAMA_HOST??'127.0.0.1';
   const localHttps=env.AIN_LOCAL_HTTPS==='1';
+  const localApiHttps=env.AIN_LOCAL_API_HTTPS==='1';
+  if(!['0','1'].includes(env.AIN_LOCAL_API_HTTPS??'0'))codes.push('invalid_ain_local_api_https');
+  if(localApiHttps&&!localHttps)codes.push('local_api_https_requires_gateway_https');
   if(!['0','1'].includes(env.AIN_LOCAL_HTTPS??'0'))codes.push('invalid_ain_local_https');
   if(localHttps){
     if(profile!=='test'||container||bindHost!=='127.0.0.1'||apiHost!=='127.0.0.1'||sessionCookie!=='ain_test_session')codes.push('local_https_requires_native_test');
@@ -40,7 +43,7 @@ export function runtimeConfig(env=process.env){
   if(Object.hasOwn(env,'AIN_DATABASE_URL'))codes.push('managed_database_not_configured');
   if(Object.hasOwn(env,'AIN_RELEASE_REVISION')&&!(/^[0-9a-f]{40}$/.test(env.AIN_RELEASE_REVISION)||['working-tree','development-working-tree'].includes(env.AIN_RELEASE_REVISION)))codes.push('invalid_release_revision');
   if(codes.length){const error=new Error('Invalid local configuration: '+codes.join(','));error.codes=[...new Set(codes)];throw error;}
-  return {...routing({apiHost,sessionCookie,profile,container}),bindHost,profile,container,localHttps,tlsDirectory:env.AIN_LOCAL_TLS_DIRECTORY,tlsPin:env.AIN_LOCAL_TLS_SHA256,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
+  return {...routing({apiHost,sessionCookie,profile,container}),bindHost,profile,container,localHttps,localApiHttps,tlsDirectory:env.AIN_LOCAL_TLS_DIRECTORY,tlsPin:env.AIN_LOCAL_TLS_SHA256,webPort:ports.PORT,apiPort:ports.AIN_API_PORT};
 }
 
 export function environmentDiagnostic(env=process.env){

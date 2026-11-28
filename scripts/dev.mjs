@@ -7,6 +7,7 @@ import { proxyResearchRequest } from './api-proxy.mjs';
 import {runtimeConfig} from './runtime-config.mjs';
 import {securityHeaders} from './security-headers.mjs';
 import {localHttpsOptions} from './local-https.mjs';
+import {fetchApi} from './api-transport.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../apps/web');
 const config=runtimeConfig();
@@ -22,7 +23,7 @@ const handler = async (req, res) => {
       res.end(JSON.stringify({service:'ain-dashboard',api_port:apiPort})); return;
     }
     if(pathname==='/__ain/ready'&&req.method==='GET'){
-      try{const check=await fetch(`http://${config.apiHost}:${apiPort}/health/ready`,{signal:AbortSignal.timeout(2000),redirect:'error'});const state=await check.json();if(!check.ok||state.status!=='ready')throw new Error();
+      try{const check=await fetchApi('/health/ready',apiPort,config,{signal:AbortSignal.timeout(2000),redirect:'error'});const state=await check.json();if(!check.ok||state.status!=='ready')throw new Error();
         res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({service:'ain-dashboard',backend_ready:true,production_ready:false}));}
       catch{res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({service:'ain-dashboard',backend_ready:false,production_ready:false}));}return;
     }
@@ -38,7 +39,13 @@ const handler = async (req, res) => {
   } catch { res.writeHead(404); res.end('Not found'); }
 };
 let server;
-try{server=config.localHttps?https.createServer(localHttpsOptions(config.tlsDirectory,config.tlsPin),handler):http.createServer(handler);}
+try{
+  if(config.localHttps){
+    const options=localHttpsOptions(config.tlsDirectory,config.tlsPin);
+    if(config.localApiHttps)config.backendTlsCertificate=options.cert;
+    server=https.createServer(options,handler);
+  }else server=http.createServer(handler);
+}
 catch{console.error('Local HTTPS startup refused.');process.exit(1);}
 server.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is already in use. Set PORT to another local port.` : 'Local server could not start.'); process.exitCode = 1; });
 server.listen(port, config.bindHost, () => console.log(`AIN dashboard: ${config.localHttps?'https':'http'}://${config.bindHost}:${port}`));
