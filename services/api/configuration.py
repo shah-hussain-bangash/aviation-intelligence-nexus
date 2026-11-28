@@ -22,6 +22,7 @@ class LocalSettings:
     api_port:int
     agent_jobs:bool
     monitor:bool
+    local_https:bool=False
 
 
 def validate_environment(env):
@@ -46,6 +47,26 @@ def validate_environment(env):
     model_host=env.get('AIN_OLLAMA_HOST','127.0.0.1')
     if model_host not in ('127.0.0.1','ollama','host.docker.internal') or model_host!='127.0.0.1' and not container:errors.append('model_host_not_allowed')
     cookie=env.get('AIN_SESSION_COOKIE','ain_session')
+    local_https=env.get('AIN_LOCAL_HTTPS','0')=='1'
+    if env.get('AIN_LOCAL_HTTPS','0') not in ('0','1'):errors.append('invalid_ain_local_https')
+    if local_https:
+        if profile!='test' or container or bind!='127.0.0.1' or api_host!='127.0.0.1' or cookie!='ain_test_session':errors.append('local_https_requires_native_test')
+        value=env.get('AIN_LOCAL_TLS_DIRECTORY')
+        try:
+            base=Path(__file__).resolve().parents[2]/'.local'
+            if not isinstance(value,str) or not value or any(ord(c)<32 for c in value) or '..' in value.replace('\\','/').split('/'):raise ValueError()
+            target=(base.parent/Path(value)).absolute()
+            if target==base or not target.is_relative_to(base):raise ValueError()
+        except (OSError,ValueError):errors.append('local_tls_directory_invalid')
+        if not isinstance(env.get('AIN_LOCAL_TLS_SHA256'),str) or not re.fullmatch('[a-f0-9]{64}',env['AIN_LOCAL_TLS_SHA256']):errors.append('local_tls_pin_invalid')
+        try:
+            state_value=env.get('AIN_STATE_ROOT');database_value=env.get('AIN_DB_PATH')
+            if not isinstance(state_value,str) or not state_value or not isinstance(database_value,str) or not database_value:raise ValueError()
+            private_base=Path(__file__).resolve().parents[2]/'.local'
+            private_state=Path(state_value).resolve();private_database=Path(database_value).resolve()
+            if private_state==private_base or not private_state.is_relative_to(private_base) or private_database!=private_state/'ain.sqlite3':raise ValueError()
+        except (OSError,ValueError):errors.append('local_https_requires_explicit_private_state')
+    elif any(k in env for k in ('AIN_LOCAL_TLS_DIRECTORY','AIN_LOCAL_TLS_SHA256')):errors.append('local_tls_requires_https')
     if cookie not in ('ain_session','ain_release_session') and not (cookie=='ain_test_session' and profile=='test' and not container):errors.append('cookie_namespace_not_allowed')
     if not container and (flags['AIN_OBSERVER_MOUNTED'] or flags['AIN_INTAKE_OVERVIEW_MOUNTED']):errors.append('container_mounts_require_container_mode')
     if env.get('AIN_AUTH_PROVIDER','local')!='local':errors.append('identity_provider_not_configured')
@@ -69,7 +90,7 @@ def validate_environment(env):
             if resolved_state and resolved_database and resolved_database.parent!=resolved_state:errors.append('state_database_paths_mismatch')
         except (OSError,ValueError):errors.append('state_paths_invalid')
     if errors:raise ConfigurationError(errors)
-    return LocalSettings(profile,container,ports['PORT'],ports['AIN_API_PORT'],flags['AIN_AGENT_JOBS'],flags['AIN_MONITOR_ENABLED'])
+    return LocalSettings(profile,container,ports['PORT'],ports['AIN_API_PORT'],flags['AIN_AGENT_JOBS'],flags['AIN_MONITOR_ENABLED'],local_https)
 
 
 def diagnostic(env):
