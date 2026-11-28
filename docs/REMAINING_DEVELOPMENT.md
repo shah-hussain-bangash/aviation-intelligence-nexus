@@ -20,6 +20,8 @@ The Phase 1 backend now has a dashboard and fixed gateway routes, with an explic
 
 ## Working sequence
 
+Local platform preparation now includes [pinned local TLS material](LOCAL_TLS_PREPARATION.md): private seven-day loopback-only certificate generation, bounded key/certificate/manifest consistency checks and a verified ephemeral TLS fixture. The command installs no trust and starts no service. Dashboard HTTPS integration, secure-cookie/origin qualification, renewal, public certificates and cloud identity/networking remain open; the existing running HTTP dashboard and external-TLS configuration restrictions are unchanged.
+
 Finish one connected research journey before broadening more workspace screens or adding further recovery variants. Implement and test the case API, connect its UI, then attach existing evidence/agents and proposals with exact version binding. Work on useful model/data objectives in parallel only where independent data is available. Collect genuine human GenAI review while preparing platform controls locally. Merge and deployment decisions remain outside this development increment.
 
 No completion percentage, hiring probability or production-ready claim follows from this plan.
