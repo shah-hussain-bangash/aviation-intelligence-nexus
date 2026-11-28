@@ -23,6 +23,7 @@ class LocalSettings:
     agent_jobs:bool
     monitor:bool
     local_https:bool=False
+    local_api_https:bool=False
 
 
 def validate_environment(env):
@@ -48,6 +49,9 @@ def validate_environment(env):
     if model_host not in ('127.0.0.1','ollama','host.docker.internal') or model_host!='127.0.0.1' and not container:errors.append('model_host_not_allowed')
     cookie=env.get('AIN_SESSION_COOKIE','ain_session')
     local_https=env.get('AIN_LOCAL_HTTPS','0')=='1'
+    local_api_https=env.get('AIN_LOCAL_API_HTTPS','0')=='1'
+    if env.get('AIN_LOCAL_API_HTTPS','0') not in ('0','1'):errors.append('invalid_ain_local_api_https')
+    if local_api_https and not local_https:errors.append('local_api_https_requires_gateway_https')
     if env.get('AIN_LOCAL_HTTPS','0') not in ('0','1'):errors.append('invalid_ain_local_https')
     if local_https:
         if profile!='test' or container or bind!='127.0.0.1' or api_host!='127.0.0.1' or cookie!='ain_test_session':errors.append('local_https_requires_native_test')
@@ -90,7 +94,7 @@ def validate_environment(env):
             if resolved_state and resolved_database and resolved_database.parent!=resolved_state:errors.append('state_database_paths_mismatch')
         except (OSError,ValueError):errors.append('state_paths_invalid')
     if errors:raise ConfigurationError(errors)
-    return LocalSettings(profile,container,ports['PORT'],ports['AIN_API_PORT'],flags['AIN_AGENT_JOBS'],flags['AIN_MONITOR_ENABLED'],local_https)
+    return LocalSettings(profile,container,ports['PORT'],ports['AIN_API_PORT'],flags['AIN_AGENT_JOBS'],flags['AIN_MONITOR_ENABLED'],local_https,local_api_https)
 
 
 def diagnostic(env):

@@ -16,7 +16,7 @@ from urllib.request import build_opener, HTTPSHandler, HTTPCookieProcessor, Prox
 from uuid import uuid4
 
 from agents.verify_june_http import Client, reserve
-from infra.local_tls import CERT, create
+from infra.local_tls import CERT, KEY, create
 from pipelines.synthetic_ingestion import host, local
 from pipelines.verify_import_safety import identity
 from rag.ollama import NoRedirect
@@ -25,9 +25,9 @@ from services.api.main import initialize
 from services.api.paths import ROOT
 
 
-def verify(output, *, web_port=18176, api_port=18177):
+def verify(output, *, encrypted_api=False, web_port=18176, api_port=18177):
     host();output=Path(output)
-    if '..' in output.parts or web_port==api_port:raise ValueError('fresh_private_https_rehearsal_required')
+    if type(encrypted_api) is not bool or '..' in output.parts or web_port==api_port:raise ValueError('fresh_private_https_rehearsal_required')
     output=local(output)
     if output==ROOT/'.local' or not output.is_relative_to(ROOT/'.local') or output.exists():raise ValueError('fresh_private_https_rehearsal_required')
     with ExitStack() as stack:
@@ -38,26 +38,31 @@ def verify(output, *, web_port=18176, api_port=18177):
         auth.create_user('https-fixture-admin',password,'admin');auth.create_user('https-fixture-viewer',password,'viewer')
         env={k:v for k,v in os.environ.items() if not k.startswith('AIN_') and k!='PORT'}
         env.update(AIN_ENV='test',AIN_CONTAINER='0',AIN_SESSION_COOKIE='ain_test_session',
-            AIN_AGENT_JOBS='0',AIN_MONITOR_ENABLED='0',AIN_LOCAL_HTTPS='1',
+            AIN_AGENT_JOBS='0',AIN_MONITOR_ENABLED='0',AIN_LOCAL_HTTPS='1',AIN_LOCAL_API_HTTPS='1' if encrypted_api else '0',
             AIN_LOCAL_TLS_DIRECTORY=str(bundle),AIN_LOCAL_TLS_SHA256=material['certificate_sha256'],
             AIN_STATE_ROOT=str(state),AIN_DB_PATH=str(database),AIN_BIND_HOST='127.0.0.1',AIN_API_HOST='127.0.0.1',
             PORT=str(web_port),AIN_API_PORT=str(api_port),OMP_NUM_THREADS='2')
         result={'format':'ain-local-https-rehearsal-v1',**identity(),'scope':'Loopback HTTPS gateway with plaintext loopback API; synthetic accounts; no original-user browser or deployment',
             'checks':{},'passed':False,'failure_type':None,'production_ready':False}
+        result['backend_transport']='verified_https_loopback' if encrypted_api else 'plaintext_loopback'
+        if encrypted_api:result.update(format='ain-local-https-api-rehearsal-v1',scope='Verified HTTPS gateway and loopback API; synthetic accounts; no original-user browser, mutual TLS or deployment')
         checks=result['checks'];api=None;gateway=None
         context=ssl.create_default_context(cafile=str(bundle/CERT))
-        def client():
-            value=Client(web_port);value.base=f'https://127.0.0.1:{web_port}'
-            value.opener=build_opener(ProxyHandler({}),HTTPSHandler(context=context),HTTPCookieProcessor(value.cookies),NoRedirect())
+        def client(port=web_port,trust=context):
+            value=Client(port);value.base=f'https://127.0.0.1:{port}'
+            value.opener=build_opener(ProxyHandler({}),HTTPSHandler(context=trust),HTTPCookieProcessor(value.cookies),NoRedirect())
             return value
         def check(name,condition):
             checks[name]=bool(condition)
             if not condition:raise RuntimeError('local_https_check_failed')
         try:
             api_log=stack.enter_context((output/'api.log').open('wb'));web_log=stack.enter_context((output/'gateway.log').open('wb'))
+            def launch_api(tls_bundle):
+                command=[sys.executable,'-m','uvicorn','services.api.main:app','--host','127.0.0.1','--port',str(api_port),'--no-access-log','--log-level','error']
+                if encrypted_api:command+=['--ssl-certfile',str(tls_bundle/CERT),'--ssl-keyfile',str(tls_bundle/KEY)]
+                return subprocess.Popen(command,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=api_log,stderr=subprocess.STDOUT)
             api_probe.close()
-            api=subprocess.Popen([sys.executable,'-m','uvicorn','services.api.main:app','--host','127.0.0.1','--port',str(api_port),'--no-access-log','--log-level','error'],
-                cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=api_log,stderr=subprocess.STDOUT)
+            api=launch_api(bundle)
             web_probe.close()
             gateway=subprocess.Popen(['node','scripts/dev.mjs'],cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=web_log,stderr=subprocess.STDOUT)
             anonymous=client();ready=False;limit=time.monotonic()+40
@@ -109,6 +114,42 @@ def verify(output, *, web_port=18176, api_port=18177):
             except (OSError,http.client.HTTPException):cleartext=True
             finally:plain_client.close()
             check('http_not_served_on_https_port',cleartext)
+            if encrypted_api:
+                with socket.create_connection(('127.0.0.1',api_port),timeout=3) as connection:
+                    with context.wrap_socket(connection,server_hostname='127.0.0.1') as secured:
+                        check('backend_certificate_matches_pin',hashlib.sha256(secured.getpeercert(binary_form=True)).hexdigest()==material['certificate_sha256'])
+                probe="""import fs from 'node:fs';import path from 'node:path';import {fetchApi} from './scripts/api-transport.mjs';
+const c={apiHost:'127.0.0.1',sessionCookie:'ain_test_session',profile:'test',container:false,localHttps:true,localApiHttps:true,tlsPin:'0'.repeat(64),backendTlsCertificate:fs.readFileSync(path.join(process.env.AIN_LOCAL_TLS_DIRECTORY,'certificate.pem'))};
+try{await fetchApi('/health/ready',Number(process.env.AIN_API_PORT),c,{signal:AbortSignal.timeout(3000)});process.exitCode=1;}
+catch(error){const expected=error.message==='Local API certificate rejected.';process.stdout.write(expected?'pinned-rejection':'other-failure');process.exitCode=expected?0:2;}"""
+                pinned=subprocess.run(['node','--input-type=module','-e',probe],cwd=ROOT,env=env,capture_output=True,text=True,timeout=10)
+                check('trusted_certificate_with_wrong_pin_rejected',pinned.returncode==0 and pinned.stdout=='pinned-rejection')
+                api.terminate();api.wait(timeout=10)
+                unexpected=output/'unexpected-api-tls';create(unexpected)
+                api=launch_api(unexpected)
+                direct=client(api_port,ssl.create_default_context(cafile=str(unexpected/CERT)))
+                healthy=False;limit=time.monotonic()+40
+                while api.poll() is None and time.monotonic()<limit:
+                    try:
+                        healthy=direct.request('/health/ready')[0]==200
+                        if healthy:break
+                    except (OSError,ValueError):pass
+                    time.sleep(.1)
+                check('unexpected_certificate_backend_is_running',healthy)
+                check('unexpected_certificate_blocks_readiness',anonymous.request('/__ain/ready')[0]==503)
+                check('unexpected_certificate_blocks_proxy',anonymous.request(protected)[0]==503)
+                check('frontend_stays_live_during_certificate_failure',anonymous.request('/')[0]==200)
+                api.terminate();api.wait(timeout=10);api=launch_api(bundle)
+                recovered=False;limit=time.monotonic()+40
+                while api.poll() is None and time.monotonic()<limit:
+                    try:
+                        recovered=anonymous.request('/__ain/ready')[0]==200
+                        if recovered:break
+                    except (OSError,ValueError):pass
+                    time.sleep(.1)
+                check('trusted_backend_certificate_recovers_readiness',recovered)
+                owner.login('https-fixture-admin',password)
+                check('authenticated_https_read_recovers',owner.request(protected)[0]==200)
         except Exception as error:result['failure_type']=type(error).__name__
         finally:
             for process in (gateway,api):
@@ -125,7 +166,8 @@ def verify(output, *, web_port=18176, api_port=18177):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--web-port',type=int,default=18176);parser.add_argument('--api-port',type=int,default=18177)
-    args=parser.parse_args();result=verify(args.output,web_port=args.web_port,api_port=args.api_port)
+    parser.add_argument('--encrypted-api',action='store_true')
+    args=parser.parse_args();result=verify(args.output,encrypted_api=args.encrypted_api,web_port=args.web_port,api_port=args.api_port)
     print(json.dumps({k:result[k] for k in ('passed','checks','failure_type')},indent=2));return 0 if result['passed'] else 1
 
 

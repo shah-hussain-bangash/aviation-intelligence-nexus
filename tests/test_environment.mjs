@@ -10,7 +10,9 @@ function childEnv(values={}){return {...Object.fromEntries(Object.entries(proces
 test('local HTTPS requires native test cookies and a private pinned bundle',()=>{
  const valid={AIN_ENV:'test',AIN_SESSION_COOKIE:'ain_test_session',AIN_LOCAL_HTTPS:'1',AIN_LOCAL_TLS_DIRECTORY:'.local/test-tls',AIN_LOCAL_TLS_SHA256:'e'.repeat(64)};
  assert.equal(runtimeConfig(valid).localHttps,true);assert.equal(runtimeConfig({}).localHttps,false);
+ assert.equal(runtimeConfig({...valid,AIN_LOCAL_API_HTTPS:'1'}).localApiHttps,true);
  for(const change of [{AIN_ENV:'local'},{AIN_CONTAINER:'1'},{AIN_SESSION_COOKIE:'ain_session'},{AIN_LOCAL_HTTPS:'true'},{AIN_LOCAL_TLS_DIRECTORY:'outside'},{AIN_LOCAL_TLS_DIRECTORY:'.local/../outside'},{AIN_LOCAL_TLS_SHA256:'invalid'},{AIN_LOCAL_HTTPS:'0'}])assert.throws(()=>runtimeConfig({...valid,...change}));
+ for(const env of [{AIN_LOCAL_API_HTTPS:'true'},{AIN_LOCAL_API_HTTPS:'1'},{...valid,AIN_LOCAL_HTTPS:'0',AIN_LOCAL_API_HTTPS:'1'}])assert.throws(()=>runtimeConfig(env));
 });
 
 test('preview cookie routing is restricted to native test profile',()=>{
