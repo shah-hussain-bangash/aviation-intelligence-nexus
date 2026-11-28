@@ -732,7 +732,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/research/agent-cancel')
     def cancel_investigation(job: CancelJob, request: Request):
         try:
-            result=job_queue.cancel(request.state.user, str(job.run_id))
+            result=job_queue.cancel(request.state.user, str(job.run_id), session_token=request.cookies.get(COOKIE,''))
             return JSONResponse(status_code=202,content=result) if result['state']=='running' else result
         except KeyError:
             return JSONResponse(status_code=404, content={'error': 'investigation_unavailable'})
