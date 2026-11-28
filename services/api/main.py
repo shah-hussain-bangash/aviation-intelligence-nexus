@@ -712,7 +712,9 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
         if not job_worker.enabled or not job_worker.task or job_worker.task.done() or job_worker.last_error:
             return JSONResponse(status_code=503, content={'error': 'background_worker_unavailable'})
         try:
-            return job_queue.enqueue(request.state.user, str(idempotency_key), investigation)
+            return job_queue.enqueue(request.state.user, str(idempotency_key), investigation, session_token=request.cookies.get(COOKIE,''))
+        except PermissionError:
+            return JSONResponse(status_code=403, content={'error': 'researcher_role_required'})
         except QueueFull:
             return JSONResponse(status_code=429, content={'error': 'investigation_queue_full', 'message': 'Waiting queue is full. Wait for existing jobs; retry the same request key.'})
         except Conflict:
@@ -732,7 +734,7 @@ def create_app(database: Path | None = None, model_directory: Path | None = None
     @app.post('/api/v1/research/agent-cancel')
     def cancel_investigation(job: CancelJob, request: Request):
         try:
-            result=job_queue.cancel(request.state.user, str(job.run_id))
+            result=job_queue.cancel(request.state.user, str(job.run_id), session_token=request.cookies.get(COOKIE,''))
             return JSONResponse(status_code=202,content=result) if result['state']=='running' else result
         except KeyError:
             return JSONResponse(status_code=404, content={'error': 'investigation_unavailable'})

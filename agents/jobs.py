@@ -1,6 +1,8 @@
 """Bounded SQLite-backed investigation queue for one local API process."""
 import asyncio
 from contextlib import closing,ExitStack
+from datetime import datetime, timezone
+import hashlib
 import json
 import sqlite3
 from uuid import uuid4
@@ -19,10 +21,18 @@ class JobQueue:
         self.store = store
         self.case_jobs = case_jobs
 
-    def enqueue(self, user, key, request, context=None):
+    def enqueue(self, user, key, request, context=None, session_token=None):
         payload = request.model_dump()
         with ExitStack() as locks, closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
+            if session_token is not None:
+                account=db.execute('SELECT username,role,active FROM auth_users WHERE id=?',(user['id'],)).fetchone()
+                if not account or not account['active'] or account['role'] not in ('admin','researcher'):
+                    raise PermissionError('Current account cannot submit this investigation')
+                if not db.execute('SELECT 1 FROM auth_sessions WHERE user_id=? AND token_hash=? AND expires_at>?',
+                        (user['id'],hashlib.sha256(session_token.encode()).hexdigest(),datetime.now(timezone.utc).timestamp())).fetchone():
+                    raise PermissionError('Current session no longer permits submission')
+                user={**user,'username':account['username'],'role':account['role']}
             prior = db.execute("SELECT input_hash,result_json FROM agent_runs WHERE owner_id=? AND (request_key=? OR EXISTS (SELECT 1 FROM json_each(agent_runs.result_json,'$.submission_keys') AS aliases WHERE aliases.value=?))", (user['id'], key, key)).fetchone()
             if context is not None:payload['case_context']=locks.enter_context(context(db,json.loads(prior['result_json']) if prior else None))
             fingerprint = sha(payload)
@@ -59,7 +69,7 @@ class JobQueue:
             if not can_read(user,row['owner_id'],result):raise KeyError('Investigation unavailable')
             return review_view({**result, **({'quality': assess_report(result)} if result.get('report_sha256') else {})},user,row['owner_id'])
 
-    def cancel(self, user, run_id):
+    def cancel(self, user, run_id, session_token=None):
         if user['role'] not in ('admin','researcher'):raise PermissionError('Researcher access required')
         with closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
@@ -68,11 +78,17 @@ class JobQueue:
                 raise KeyError('Investigation unavailable')
             result = json.loads(row['result_json'])
             if 'case_context' in result['request'] and row['owner_id']!=user['id']:raise KeyError('Investigation unavailable')
+            account = db.execute('SELECT username,role,active FROM auth_users WHERE id=?', (user['id'],)).fetchone()
+            if not account or not account['active'] or account['role'] not in ('admin','researcher') or row['owner_id']!=user['id'] and account['role']!='admin':
+                raise PermissionError('Current account cannot stop this investigation')
+            if session_token is not None and not db.execute('SELECT 1 FROM auth_sessions WHERE user_id=? AND token_hash=? AND expires_at>?',
+                    (user['id'],hashlib.sha256(session_token.encode()).hexdigest(),datetime.now(timezone.utc).timestamp())).fetchone():
+                raise PermissionError('Current session no longer permits cancellation')
             if result['state'] == 'cancelled':
                 return result
             if result['state']=='running':
                 if result.get('cancel_requested_at'):return result
-                result.update(cancel_requested_at=now(),cancel_requested_by=user['username'],updated_at=now())
+                result.update(cancel_requested_at=now(),cancel_requested_by=account['username'],updated_at=now())
             elif result['state']=='queued':
                 result.update(state='cancelled',updated_at=now(),cancelled_at=now(),error='Cancelled before background execution.')
             else:

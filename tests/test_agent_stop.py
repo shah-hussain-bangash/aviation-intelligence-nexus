@@ -16,6 +16,7 @@ from agents.cancellation import finish_cancelled
 from agents import tools
 from rag import ollama
 from services.api.main import initialize,create_app
+from services.api.auth import AuthStore
 
 
 def draft(question,evidence,**kwargs):
@@ -26,7 +27,11 @@ def draft(question,evidence,**kwargs):
 class AgentStopTests(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.db=Path(self.folder.name)/'state.sqlite3';initialize(self.db)
-        self.user={'id':'fixture-owner','username':'fixture-owner','role':'researcher'}
+        auth=AuthStore(self.db)
+        auth.create_user('synthetic-setup-admin','synthetic-stop-fixture-password','admin')
+        auth.create_user('fixture-owner','synthetic-stop-fixture-password','researcher')
+        with closing(auth.connect()) as db:
+            self.user=dict(db.execute("SELECT id,username,role FROM auth_users WHERE username='fixture-owner'").fetchone())
         self.store=AgentStore(self.db);self.queue=JobQueue(self.store);self.runtime=Investigator(self.db,Mock(),self.store)
         self.request=Investigation(objective='Review recorded model evidence and limitations.',include_model_evidence=True,required_tools=['model_evidence'])
 
