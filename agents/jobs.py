@@ -21,10 +21,18 @@ class JobQueue:
         self.store = store
         self.case_jobs = case_jobs
 
-    def enqueue(self, user, key, request, context=None):
+    def enqueue(self, user, key, request, context=None, session_token=None):
         payload = request.model_dump()
         with ExitStack() as locks, closing(self.store.connection()) as db, db:
             db.execute('BEGIN IMMEDIATE')
+            if session_token is not None:
+                account=db.execute('SELECT username,role,active FROM auth_users WHERE id=?',(user['id'],)).fetchone()
+                if not account or not account['active'] or account['role'] not in ('admin','researcher'):
+                    raise PermissionError('Current account cannot submit this investigation')
+                if not db.execute('SELECT 1 FROM auth_sessions WHERE user_id=? AND token_hash=? AND expires_at>?',
+                        (user['id'],hashlib.sha256(session_token.encode()).hexdigest(),datetime.now(timezone.utc).timestamp())).fetchone():
+                    raise PermissionError('Current session no longer permits submission')
+                user={**user,'username':account['username'],'role':account['role']}
             prior = db.execute("SELECT input_hash,result_json FROM agent_runs WHERE owner_id=? AND (request_key=? OR EXISTS (SELECT 1 FROM json_each(agent_runs.result_json,'$.submission_keys') AS aliases WHERE aliases.value=?))", (user['id'], key, key)).fetchone()
             if context is not None:payload['case_context']=locks.enter_context(context(db,json.loads(prior['result_json']) if prior else None))
             fingerprint = sha(payload)
